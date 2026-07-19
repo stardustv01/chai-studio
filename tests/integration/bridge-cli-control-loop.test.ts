@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { startStudioServer, type StartedStudioServer } from "../../apps/studio-server/src/index.js";
+import { runBridgeCli } from "../../packages/bridge/src/cli-runtime.js";
 
 const executeFile = promisify(execFile);
 const roots: string[] = [];
@@ -16,6 +17,60 @@ afterEach(async () => {
 });
 
 describe("public Codex bridge CLI", () => {
+  it("executes the authenticated command catalog through the in-process runtime", async () => {
+    expect(await runBridgeCli(["help"])).toMatchObject({ schemaVersion: "1.0.0" });
+
+    const parent = await mkdtemp(path.join(os.tmpdir(), "chai-bridge-runtime-"));
+    roots.push(parent);
+    const runtimeDirectory = path.join(parent, "runtime");
+    const server = await startStudioServer({ preferredPort: 0, runtimeDirectory });
+    servers.push(server);
+    const invoke = (arguments_: readonly string[]) =>
+      runBridgeCli(["--runtime-directory", runtimeDirectory, ...arguments_]);
+    const projectRoot = path.join(parent, "Direct Runtime.chai");
+
+    expect(await invoke(["status"])).toMatchObject({ status: "ok" });
+    expect(
+      await invoke(["project", "create", projectRoot, "Direct Runtime", "--starter", "showcase"]),
+    ).toMatchObject({
+      rootPath: projectRoot,
+    });
+    await invoke(["project", "snapshot"]);
+    await invoke(["project", "revisions"]);
+    await invoke(["project", "recent"]);
+    await invoke(["project", "named-versions"]);
+    await invoke(["project", "migration"]);
+    await invoke(["project", "repair"]);
+    await invoke(["selection", "get"]);
+    await invoke(["selection", "set"]);
+    await invoke(["context", "latest"]);
+
+    await invoke(["preview", "start"]);
+    await invoke(["preview", "state"]);
+    await invoke(["preview", "seek", "12"]);
+    await invoke(["preview", "step", "1"]);
+    await invoke(["preview", "quality", "balanced", "--truth", "interactive-approximation"]);
+    await invoke(["preview", "rate", "1/1"]);
+    await invoke(["preview", "in-out", "0:30"]);
+    await invoke(["preview", "in-out", "clear"]);
+    await invoke(["preview", "preload", "--before", "2", "--after", "4"]);
+    await invoke(["preview", "play"]);
+    await invoke(["preview", "pause"]);
+    await invoke(["preview", "stop"]);
+    await invoke(["preview", "unload"]);
+
+    await invoke(["capture", "list"]);
+    await invoke(["render", "profiles"]);
+    await invoke(["render", "outputs"]);
+    await invoke(["render", "requests"]);
+    await invoke(["render", "queue"]);
+    await invoke(["annotation", "list"]);
+    await invoke(["comparison", "list"]);
+    await invoke(["review", "workspace"]);
+    await invoke(["jobs", "list"]);
+    await invoke(["project", "close"]);
+  }, 30_000);
+
   it("discovers a private attachment and completes render, exact capture, QA, and receipt operations", async () => {
     const parent = await mkdtemp(path.join(os.tmpdir(), "chai-bridge-cli-"));
     roots.push(parent);
