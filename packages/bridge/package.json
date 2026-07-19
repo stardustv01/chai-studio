@@ -11,10 +11,11 @@
     }
   },
   "files": [
+    "bin",
     "dist"
   ],
   "bin": {
-    "chai-studio-bridge": "./dist/cli.js"
+    "chai-studio-bridge": "./bin/chai-studio-bridge.mjs"
   },
   "dependencies": {
     "@chai-studio/diagnostics": "workspace:*",
