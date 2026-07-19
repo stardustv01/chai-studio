@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "name": "chai-milestone-0-canonical",
+  "rights": "Generated locally for Chai Studio; no third-party media",
+  "timeline": {
+    "fps": { "num": 30000, "den": 1001 },
+    "durationFrames": 300,
+    "sampleRate": 48000,
+    "width": 640,
+    "height": 360
+  },
+  "anchors": {
+    "visualFrames": [0, 30, 150, 299],
+    "audioCueSamples": [0, 48000, 240000, 479999],
+    "bridgeRange": { "startFrame": 120, "endFrameExclusive": 180 }
+  },
+  "assets": {
+    "rawVideo": "assets/raw-video.mp4",
+    "image": "fixture-image.svg",
+    "captions": "captions.vtt",
+    "voiceover": "assets/voiceover.wav",
+    "music": "assets/music.wav",
+    "offlineMix": "assets/offline-mix.wav",
+    "alphaVideo": "assets/alpha-overlay.mov",
+    "alphaSequence": "assets/alpha-sequence"
+  }
+}

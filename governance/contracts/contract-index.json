@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen",
+  "baseline": "personal-macos-v1",
+  "contracts": [
+    {"id":"audio-transport.v1","owner":"audio-core","dependsOn":["master-time.v1"],"consumers":["preview-core","engine-adapters","render-core"]},
+    {"id":"command-authorization.v1","owner":"command-core","dependsOn":["revision-authority.v1"],"consumers":["studio-ui","local-api","cli","codex-bridge"]},
+    {"id":"qa-delivery-lifecycle.v1","owner":"qa-core","dependsOn":["revision-authority.v1","output-identity.v1"],"consumers":["render-core","deliver-ui","receipt-core"]},
+    {"id":"caption-render.v1","owner":"caption-core","dependsOn":["master-time.v1","font-dependency.v1"],"consumers":["preview-core","render-core","subtitle-export","qa-core"]},
+    {"id":"executable-isolation.v1","owner":"security-core","dependsOn":[],"consumers":["engine-adapters","worker-core","render-core","cache-core"]},
+    {"id":"privacy-diagnostics.v1","owner":"diagnostics-core","dependsOn":[],"consumers":["codex-bridge","receipt-core","support-bundle"]},
+    {"id":"shared-preflight.v1","owner":"preflight-core","dependsOn":["audio-transport.v1","caption-render.v1","executable-isolation.v1"],"consumers":["render-planner","deliver-ui","qa-core"]},
+    {"id":"source-monitor-boundary.v1","owner":"source-monitor","dependsOn":["master-time.v1","command-authorization.v1"],"consumers":["studio-ui","timeline-core"]},
+    {"id":"render-receipt.v1","owner":"render-core","dependsOn":["audio-transport.v1","qa-delivery-lifecycle.v1","caption-render.v1","executable-isolation.v1","privacy-diagnostics.v1","shared-preflight.v1"],"consumers":["deliver-ui","qa-core","release-core"]}
+  ],
+  "externalFoundations": ["master-time.v1","revision-authority.v1","output-identity.v1","font-dependency.v1"]
+}

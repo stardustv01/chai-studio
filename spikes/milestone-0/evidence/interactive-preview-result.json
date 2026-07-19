@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-07-15T08:55:00.000Z",
+  "platform": "Codex in-app browser on macOS",
+  "passed": true,
+  "assertions": {
+    "authoritativeFrameStep": true,
+    "nativeProxyFramesPreloaded": true,
+    "nativeProxySeekP95WithinBudget": true,
+    "schedulerOwnedPlayPause": true,
+    "driftInjectionVisible": true,
+    "hardResyncRestoresParity": true,
+    "bothNativeLayerFramesMappedFromMaster": true,
+    "audioSampleMappedFromMaster": true,
+    "webAudioGraphConstructed": true,
+    "offlineWebAudioEndpointSampleExact": true,
+    "halfOpenLoopWrap": true,
+    "interactiveApproximationWarningVisible": true,
+    "fidelityModeHidesApproximationWarning": true,
+    "nativeAudioSuppressed": true,
+    "noBrowserConsoleErrors": true
+  },
+  "observations": {
+    "proxyManifest": { "frameCountPerEngine": 60, "totalFrames": 120, "identity": "1d08c038c4a833e1ae1203289b233d7bf720933c483c51f71d2f8ccfc6993c66" },
+    "warmSeek": { "sampleCount": 100, "p95Ms": 2.8, "budgetMs": 150, "preloaded": true },
+    "exactSeek": { "master": 30, "remotion": 30, "hyperframes": 30, "audioSample": 48048, "deltaFrames": 0 },
+    "playPause": { "startMaster": 0, "pausedMasterObserved": 12, "remotion": 12, "hyperframes": 12, "deltaFrames": 0 },
+    "loopProbe": { "startFrame": 119, "wrappedFrameObserved": 70, "loopRange": [60, 120] },
+    "driftProbe": { "before": { "remotion": 0, "hyperframes": 1, "deltaFrames": 1 }, "afterHardResync": { "remotion": 0, "hyperframes": 0, "deltaFrames": 0 } },
+    "fidelityProbe": { "mode": "Rendered fidelity", "warningHidden": true, "pressed": true },
+    "webAudioProbe": { "sampleRate": 48000, "offlineSamples": 480480, "channels": 2, "displayed": "48,000 Hz · 480,480 samples exact" }
+  },
+  "limitations": [
+    "This proves the interactive layered monitor, truth-state UI, shared Web Audio graph, and preloaded product-owned proxy switching against 60 native frames from each engine; P09 repeats latency against production adapter processes.",
+    "The in-app browser screenshot path required reload after GPU-layer state changes; DOM state and console remained correct."
+  ]
+}

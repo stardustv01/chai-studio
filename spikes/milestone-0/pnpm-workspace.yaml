@@ -1,0 +1,8 @@
+allowBuilds:
+  '@google/genai': false
+  esbuild: true
+  onnxruntime-node: false
+  protobufjs: false
+  sharp: true
+minimumReleaseAgeExclude:
+  - hyperframes@0.7.58

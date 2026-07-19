@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path d="M7 17V6l11-2v11"/>
+  <ellipse cx="5" cy="17" rx="3" ry="2"/>
+  <ellipse cx="16" cy="15" rx="3" ry="2"/>
+  <path d="M7 9l11-2" stroke="var(--chai-icon-accent, currentColor)"/>
+</svg>

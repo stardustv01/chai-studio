@@ -1,0 +1,24 @@
+{
+  "foundation": [
+    "inspect",
+    "scrub-independent",
+    "frame-step",
+    "metadata",
+    "safe-audition",
+    "capture",
+    "codex-context"
+  ],
+  "professional": [
+    "source-marks",
+    "target-track-patching",
+    "insert",
+    "overwrite",
+    "replace",
+    "three-point-edit"
+  ],
+  "ownership": {
+    "foundationTransport": "isolated-source-clock",
+    "timelineTransport": "master-scheduler",
+    "edits": "validated-project-commands"
+  }
+}

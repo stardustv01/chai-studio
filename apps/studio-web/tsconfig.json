@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "rootDir": "src",
+    "outDir": "dist-types",
+    "tsBuildInfoFile": "dist-types/.tsbuildinfo"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    { "path": "../../packages/audio" },
+    { "path": "../../packages/captions" },
+    { "path": "../../packages/bridge" },
+    { "path": "../../packages/diagnostics" },
+    { "path": "../../packages/preview" },
+    { "path": "../../packages/qa" },
+    { "path": "../../packages/schema" },
+    { "path": "../../packages/ui-components" },
+    { "path": "../../packages/timeline" }
+  ]
+}

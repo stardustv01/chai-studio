@@ -1,0 +1,42 @@
+{
+  "name": "@chai-studio/milestone-0",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.11.0",
+  "engines": {
+    "node": ">=22.17.0"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "fixture:generate": "node scripts/generate-canonical-fixture.mjs",
+    "fixture:validate": "node scripts/validate-canonical-fixture.mjs",
+    "mixed:prepare": "node scripts/prepare-mixed-fixture.mjs",
+    "mixed:render": "node scripts/render-mixed-finish.mjs",
+    "isolation": "node scripts/run-isolation-spike.mjs",
+    "benchmarks": "node scripts/compile-benchmarks.mjs",
+    "benchmarks:native-stills": "node scripts/benchmark-native-stills.mjs",
+    "contracts:evidence": "node scripts/generate-contract-evidence.mjs",
+    "preview:sequences": "node scripts/generate-preview-sequences.mjs",
+    "prepare:fixtures": "node scripts/prepare-fixtures.mjs",
+    "hyperframes:doctor": "hyperframes doctor --json",
+    "hyperframes:doctor:validate": "node scripts/validate-doctor.mjs",
+    "hyperframes:lint": "hyperframes lint fixtures/hyperframes --json",
+    "hyperframes:check": "hyperframes check fixtures/hyperframes --json",
+    "hyperframes:snapshot": "hyperframes snapshot fixtures/hyperframes --frames 3 --json",
+    "hyperframes:determinism": "node scripts/verify-hyperframes-snapshot.mjs",
+    "hyperframes:render": "hyperframes render fixtures/hyperframes --output evidence/hyperframes-fixture.mp4 --quality draft --strict --workers 1",
+    "remotion:render": "node scripts/render-remotion.mjs",
+    "environment": "node scripts/capture-environment.mjs",
+    "gate": "node scripts/run-gate.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.489",
+    "@remotion/renderer": "4.0.489",
+    "gsap": "3.14.2",
+    "hyperframes": "0.7.58",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.489"
+  }
+}

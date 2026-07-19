@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path d="M5 16.5V20h3.5L19 9.5 14.5 5z"/>
+  <path d="M12.5 7l4.5 4.5M5 20l5-1"/>
+  <path d="M4 4h6" stroke="var(--chai-icon-accent, currentColor)"/>
+</svg>

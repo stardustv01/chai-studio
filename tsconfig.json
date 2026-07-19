@@ -1,0 +1,21 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/diagnostics" },
+    { "path": "packages/security" },
+    { "path": "packages/schema" },
+    { "path": "packages/timeline" },
+    { "path": "packages/media" },
+    { "path": "packages/audio" },
+    { "path": "packages/captions" },
+    { "path": "packages/review" },
+    { "path": "packages/engine-adapters" },
+    { "path": "packages/qa" },
+    { "path": "packages/preview" },
+    { "path": "packages/render" },
+    { "path": "packages/bridge" },
+    { "path": "packages/ui-components" },
+    { "path": "apps/studio-server" },
+    { "path": "apps/studio-web" }
+  ]
+}

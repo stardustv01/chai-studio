@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-07-15T09:45:19.174Z",
+  "passed": true,
+  "assertions": {
+    "phaseCount": true,
+    "taskCount": true,
+    "uniqueTaskIds": true,
+    "noMissingDependencies": true,
+    "acyclic": true,
+    "completeDeclaredOrder": true,
+    "baselineUnchanged": true
+  },
+  "duplicateIds": [],
+  "missingDependencies": [],
+  "changedBaselineArtifacts": [],
+  "computedTopologicalOrderCount": 379
+}

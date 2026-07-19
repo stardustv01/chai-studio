@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-07-15T12:40:36.122Z",
+  "identity": "d1e02b71030502594c16e7c8674c243301ae326d25fbb0af6a0f0fc800995f1c",
+  "passed": true,
+  "phase": "P06",
+  "taskRange": "P06.01-P06.12",
+  "environment": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v22.17.0",
+    "lockfileSha256": "1b7cae1b7c3ad71a37c7795f58d2256fe586deba126e06691241eea059e9fb03"
+  },
+  "implementationFiles": {
+    "packages/media/src/asset-registry.ts": "86b699de14448b7a353b81c7713d851dc28987eec71525185b3359e6f2ab1c36",
+    "packages/media/src/path-policy.ts": "0f0a79f289a45aa606ceb7e4d89dc7671b9572b58065f05e065df40c85e7be98",
+    "packages/media/src/media-inspection.ts": "4ad7b293a1ce0d215dc8ca0a790d3c396ca01f5753bfb55a5cefe4baa852a634",
+    "packages/media/src/asset-change-detection.ts": "f2ffe786f88218a5fd7ff68e9340b25f8f56168b07b45cc0562c1bb5c7fb908c",
+    "packages/media/src/proxy-time-map.ts": "4d23459e2a3d84c3d3513219840bc613501383c8492410c73bb6ece9d19a3be5",
+    "packages/media/src/proxy-manager.ts": "77bc4887dc0c901234f18e05ab1b3050ead6f994c5f931750e625788f035b28d",
+    "packages/media/src/proxy-jobs.ts": "202cb8d4505f93d9952c802550cfa8d259a1db6a2f513a2d217d1a90abb4db9c",
+    "packages/media/src/generated-views.ts": "cbd662569c5f06902486cdf286e467f52ea1b63ba086fbc92933a1d7abd2f2ee",
+    "packages/media/src/font-registry.ts": "41c78e1bdd1ea4d00cb74f67cf9192a5af760be7176c282fa8929f39e4ef53b3",
+    "packages/media/src/asset-index.ts": "2d80b329fc20ec6080ab3843ca7d367eaae1b32e108485a88c2c4d2fe787acdb",
+    "packages/media/src/asset-workflows.ts": "f3a33c489db8353dd092baec9f27785f3e3bf159ecdba55a28f2b1f4ab0b2a39",
+    "packages/media/src/asset-curation.ts": "fb0268bc5d1448e853eb066636663cb2350fefe18b346f05425621b783cbfa4a",
+    "packages/media/src/asset-rights.ts": "877338ed8700acc7fceb9805756b8732c4503fc5adda8a55f2364815a159f39a",
+    "packages/media/src/index.ts": "a64f6b2cbdcfaedc6e089d7e181134818c87bd6a53e99c4ef44f98c8d452f93b",
+    "packages/media/README.md": "76da9a77010b1e95972f84d891d1f8e9cfbe7c64a8a0ee5af46f334285ae6027",
+    "fixtures/deterministic/media/p06-media-cases.json": "19cbf498dbf1be3f692a871072a4197513526712314656a31f3a52132b09eaec",
+    "scripts/validate-p06-media-fixtures.mjs": "bd0d130df74954c35dd9fe739887242c5f87cdb339b42843dcabe60a3fe0d343"
+  },
+  "results": [
+    {
+      "name": "frozen-offline-install",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 181,
+      "stdout": "Scope: all 14 workspace projects\nAlready up to date\nDone in 147ms using pnpm v11.11.0\n",
+      "stderr": ""
+    },
+    {
+      "name": "media-fixture-contract",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 197,
+      "stdout": "{\n  \"passed\": true,\n  \"fixture\": \"fixtures/deterministic/media/p06-media-cases.json\",\n  \"caseCount\": 10,\n  \"requiredCaseCount\": 10,\n  \"issues\": []\n}\n",
+      "stderr": "$ node scripts/validate-p06-media-fixtures.mjs\n"
+    },
+    {
+      "name": "schema-generated-drift",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 200,
+      "stdout": "Generated schema artifacts are current (4).\n",
+      "stderr": "$ node scripts/generate-schema-validator.mjs --check\n"
+    },
+    {
+      "name": "lint-format-boundaries",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 7365,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\n  \"passed\": true,\n  \"packageCount\": 13,\n  \"dependencyEdgeCount\": 34,\n  \"problems\": []\n}\n",
+      "stderr": "$ pnpm lint:code && pnpm lint:format && pnpm lint:boundaries\n$ eslint . --max-warnings 0\n$ prettier --check .\n$ node scripts/check-package-boundaries.mjs\n"
+    },
+    {
+      "name": "strict-typecheck",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 2173,
+      "stdout": "",
+      "stderr": "$ tsc -b --pretty false && tsc -p tsconfig.tools.json --noEmit --pretty false\n"
+    },
+    {
+      "name": "unit-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 1445,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/unit/project-semantic-validation.test.ts (11 tests) 10ms\n ✓ tests/unit/media-asset-registry.test.ts (3 tests) 10ms\n ✓ tests/unit/media-inspection.test.ts (3 tests) 11ms\n ✓ tests/unit/timeline-commands.test.ts (8 tests) 12ms\n ✓ tests/unit/timeline-trim-delete.test.ts (13 tests) 18ms\n ✓ tests/unit/timeline-keyframes.test.ts (5 tests) 20ms\n ✓ tests/unit/media-asset-workflows.test.ts (7 tests) 20ms\n ✓ tests/unit/media-font-registry.test.ts (3 tests) 25ms\n ✓ tests/unit/media-generated-views.test.ts (4 tests) 34ms\n ✓ tests/unit/media-path-policy.test.ts (3 tests) 17ms\n ✓ tests/unit/diagnostics.test.ts (2 tests) 6ms\n ✓ tests/unit/rational.test.ts (9 tests) 8ms\n ✓ tests/unit/command-envelope.test.ts (11 tests) 16ms\n ✓ tests/unit/media-asset-index.test.ts (4 tests) 9ms\n ✓ tests/unit/media-change-detection.test.ts (2 tests) 17ms\n ✓ tests/unit/media-asset-rights.test.ts (4 tests) 22ms\n ✓ tests/unit/media-proxy-manager.test.ts (3 tests) 16ms\n ✓ tests/unit/timeline-derived-indexes.test.ts (4 tests) 18ms\n ✓ tests/unit/project-document-schemas.test.ts (2 tests) 13ms\n ✓ tests/unit/timeline-range-transform.test.ts (6 tests) 4ms\n ✓ tests/unit/media-proxy-jobs.test.ts (2 tests) 3ms\n ✓ tests/unit/timeline-snap.test.ts (2 tests) 3ms\n ✓ tests/unit/media-proxy-time-map.test.ts (3 tests) 3ms\n ✓ tests/unit/timeline-validation.test.ts (4 tests) 3ms\n\n Test Files  24 passed (24)\n      Tests  118 passed (118)\n   Start at  18:10:29\n   Duration  1.07s (transform 1.27s, setup 0ms, import 6.15s, tests 319ms, environment 1ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/unit\n"
+    },
+    {
+      "name": "property-fuzz-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 688,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/property/redaction.property.test.ts (1 test) 12ms\n ✓ tests/property/rational.property.test.ts (1 test) 25ms\n ✓ tests/property/timeline.property.test.ts (6 tests) 82ms\n\n Test Files  3 passed (3)\n      Tests  8 passed (8)\n   Start at  18:10:31\n   Duration  350ms (transform 179ms, setup 0ms, import 417ms, tests 119ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/property\n"
+    },
+    {
+      "name": "integration-regression-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 3156,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n{\"timestamp\":\"2026-07-15T12:40:32.006Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"health.check\",\"correlationId\":\"8e35f3e2-4de4-4636-9935-f60263c98eae\",\"data\":{\"method\":\"GET\"}}\n ✓ tests/integration/server-health.test.ts (1 test) 39ms\n ✓ tests/integration/project-initializer.test.ts (3 tests) 666ms\n     ✓ creates a complete immediately valid project with no database-only authority  442ms\n ✓ tests/integration/migration.test.ts (3 tests) 155ms\n ✓ tests/integration/project-lock.test.ts (3 tests) 1220ms\n     ✓ allows one writer, heartbeats durably, and releases only its own token  338ms\n     ✓ recovers an expired lock under an exclusive recovery gate  505ms\n     ✓ refuses recovery when policy requires manual intervention  375ms\n ✓ tests/integration/reopen-drift.test.ts (1 test) 1413ms\n     ✓ preserves authoritative bytes and semantic state without drift  1412ms\n ✓ tests/integration/command-engine.test.ts (3 tests) 1705ms\n     ✓ commits a validated envelope and exact-replays its durable idempotency receipt  633ms\n     ✓ rejects idempotency reuse for a different payload  665ms\n     ✓ records validation-only and stale-base decisions without mutating authority  406ms\n ✓ tests/integration/named-versions-lifecycle.test.ts (2 tests) 1788ms\n     ✓ links approved milestones to the exact immutable output and rebuilds its index  1470ms\n     ✓ refuses approval milestones before lifecycle evidence reaches approved  316ms\n ✓ tests/integration/autosave-recovery.test.ts (4 tests) 1839ms\n     ✓ coalesces debounced edits and supports an immediate pre-risk flush  398ms\n     ✓ offers only hash-verified candidates after an unclean shutdown  522ms\n     ✓ restores a valid candidate through immutable revision authority  562ms\n     ✓ suppresses the recovery prompt after a verified clean shutdown  356ms\n ✓ tests/integration/revision-store.test.ts (5 tests) 2046ms\n     ✓ publishes a complete revision before atomically advancing the pointer  513ms\n     ✓ keeps the old pointer authoritative when a crash interrupts staging  430ms\n     ✓ detects a complete orphan if a crash occurs after publish but before pointer swap  455ms\n     ✓ treats the new complete revision as authoritative if the process dies after pointer swap  397ms\n ✓ tests/integration/source-edit.test.ts (4 tests) 2151ms\n     ✓ persists begin/commit/abort sessions, diff evidence, and cache invalidation hooks  795ms\n     ✓ validates and commits source authority before materializing the working file  668ms\n     ✓ quarantines a candidate when an external editor changed the source  348ms\n     ✓ rejects invalid candidates and repairs working files from revision authority  338ms\n ✓ tests/integration/history.test.ts (3 tests) 2405ms\n     ✓ blocks history movement while an asynchronous operation owns a revision snapshot  961ms\n     ✓ restores and reapplies immutable content across relaunches  1029ms\n     ✓ supports multi-step undo and clears redo after a divergent edit  414ms\n\n Test Files  11 passed (11)\n      Tests  32 passed (32)\n   Start at  18:10:31\n   Duration  2.80s (transform 761ms, setup 0ms, import 2.63s, tests 15.43s, environment 1ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/integration\n"
+    },
+    {
+      "name": "visual-regression-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 449,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/visual/golden-manifest.test.ts (1 test) 3ms\n\n Test Files  1 passed (1)\n      Tests  1 passed (1)\n   Start at  18:10:34\n   Duration  71ms (transform 8ms, setup 0ms, import 13ms, tests 3ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/visual\n"
+    },
+    {
+      "name": "golden-checksums",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 210,
+      "stdout": "{\n  \"passed\": true,\n  \"checked\": 2,\n  \"mismatches\": []\n}\n",
+      "stderr": "$ node scripts/verify-goldens.mjs\n"
+    },
+    {
+      "name": "production-build",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 805,
+      "stdout": "Generated schema artifacts are current (4).\nvite v8.1.4 building client environment for production...\n\u001b[2K\rtransforming...✓ 17 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.44 kB │ gzip:  0.28 kB\ndist/assets/index-CZz5nY9x.css    9.07 kB │ gzip:  2.72 kB\ndist/assets/index-CFNulJ-l.js   189.05 kB │ gzip: 59.69 kB │ map: 824.34 kB\n\n✓ built in 67ms\n",
+      "stderr": "$ pnpm schema:check && tsc -b && pnpm --filter @chai-studio/studio-web build\n$ node scripts/generate-schema-validator.mjs --check\n$ vite build\n"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-mixed-engine",
+  "title": "Mixed Engine Bridge",
+  "projectClass": "mixed-engine-bridges",
+  "assets": ["video", "remotion-source", "hyperframes-html"],
+  "engines": ["shared", "remotion", "hyperframes"],
+  "expectedWorkflows": ["bridge", "preview", "capture", "render", "qa"]
+}

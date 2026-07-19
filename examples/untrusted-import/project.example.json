@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-untrusted-import",
+  "title": "Untrusted Imported Code",
+  "projectClass": "small",
+  "assets": ["imported-executable"],
+  "engines": ["remotion"],
+  "expectedWorkflows": ["imported-disabled", "review", "promote-or-reject", "containment"]
+}

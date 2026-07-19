@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chai Studio Complete Icon System</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #03050a; color: #f5efe2; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #03050a; }
+    main { width: 1600px; margin: 0 auto; padding: 54px 58px 62px; background: radial-gradient(circle at 88% 4%, rgba(25,217,234,.06), transparent 25%), #050810; }
+    header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 24px; border-bottom: 1px solid #202635; }
+    .eyebrow { color: #19d9ea; font-size: 11px; font-weight: 760; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 9px 0 0; font-size: 31px; line-height: 1; letter-spacing: -.035em; font-weight: 650; }
+    .subtitle { margin: 10px 0 0; max-width: 680px; color: #949daf; font-size: 13px; line-height: 1.5; }
+    .meta { color: #737d91; font: 650 10px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+    .surface { overflow: hidden; margin-top: 26px; border: 1px solid #252c3a; border-radius: 18px; }
+    .surface.dark { background: #090d16; color: #f5efe2; }
+    .surface.light { background: #f3eee4; color: #161a22; border-color: #ded7ca; }
+    .surface-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 26px; border-bottom: 1px solid rgba(126,137,157,.18); }
+    .surface-title { font-size: 10px; font-weight: 780; letter-spacing: .17em; text-transform: uppercase; }
+    .dark .surface-title { color: #c7ccd7; } .light .surface-title { color: #4b5360; }
+    .sizes { color: #778195; font: 650 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .category { padding: 20px 26px 24px; }
+    .category + .category { border-top: 1px solid rgba(126,137,157,.18); }
+    .category h2 { display: flex; gap: 9px; align-items: center; margin: 0 0 15px; font-size: 10px; font-weight: 760; letter-spacing: .14em; text-transform: uppercase; }
+    .dark .category h2 { color: #818b9f; } .light .category h2 { color: #69717d; }
+    .count { color: #19d9ea; font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .light .count { color: #087e8a; }
+    .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+    .card { min-width: 0; height: 82px; padding: 11px 12px 9px; border: 1px solid rgba(126,137,157,.15); border-radius: 11px; }
+    .dark .card { background: rgba(2,5,11,.24); } .light .card { background: rgba(255,255,255,.21); }
+    .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 620 9.5px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .dark .name { color: #aeb6c6; } .light .name { color: #444b57; }
+    .samples { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; margin-top: 8px; }
+    .sample { position: relative; height: 42px; display: flex; align-items: center; justify-content: center; }
+    .sample::before { content: ""; position: absolute; width: 32px; height: 32px; border: 1px solid rgba(126,137,157,.12); border-radius: 7px; }
+    .sample::after { content: attr(data-size); position: absolute; bottom: -4px; right: 1px; color: #768094; font: 600 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .7; }
+    .sample svg { display: block; position: relative; z-index: 1; overflow: visible; }
+    .accent-cyan { --chai-icon-accent: #19d9ea; }
+    .accent-amber { --chai-icon-accent: #f2b33f; }
+    .accent-success { --chai-icon-accent: #43d17d; }
+    .accent-danger { --chai-icon-accent: #ff5d6c; }
+    .light .accent-cyan { --chai-icon-accent: #078f9e; }
+    .light .accent-amber { --chai-icon-accent: #b56d00; }
+    .light .accent-success { --chai-icon-accent: #147a46; }
+    .light .accent-danger { --chai-icon-accent: #c72c41; }
+    footer { display: flex; justify-content: space-between; margin-top: 22px; color: #687286; font-size: 9px; }
+    footer strong { color: #f2b33f; letter-spacing: .08em; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><div class="eyebrow">Chai Studio / Complete Icon System</div><h1 id="title">Phase contact sheet</h1><p class="subtitle" id="subtitle"></p></div>
+      <div class="meta">123 GLYPHS TOTAL<br>24 × 24 MASTER GRID<br>14 / 16 / 20 / 24 PX</div>
+    </header>
+    <div id="surfaces"></div>
+    <footer><span>Generated directly from individual production-candidate SVG sources</span><strong>ISOLATED · NOT INTEGRATED</strong></footer>
+  </main>
+  <script>
+    const query = new URLSearchParams(location.search);
+    const requestedPhase = query.get('phase') || 'P0';
+    const sizes = [14, 16, 20, 24];
+
+    async function loadSvg(icon, size) {
+      const response = await fetch(`svg/${icon.name}.svg`);
+      const source = await response.text();
+      return source.replace('<svg ', `<svg class="accent-${icon.accent}" width="${size}" height="${size}" `);
+    }
+
+    async function makeCard(icon) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      const samples = await Promise.all(sizes.map(async size => `<div class="sample" data-size="${size}">${await loadSvg(icon, size)}</div>`));
+      card.innerHTML = `<div class="name">${icon.name}</div><div class="samples">${samples.join('')}</div>`;
+      return card;
+    }
+
+    async function makeSurface(theme, label, groups) {
+      const surface = document.createElement('section');
+      surface.className = `surface ${theme}`;
+      surface.innerHTML = `<div class="surface-head"><span class="surface-title">${label}</span><span class="sizes">EVERY GLYPH · FOUR LIVE SIZES</span></div>`;
+      for (const [category, categoryIcons] of groups) {
+        const section = document.createElement('section');
+        section.className = 'category';
+        section.innerHTML = `<h2>${category.replaceAll('-', ' ')} <span class="count">${categoryIcons.length}</span></h2><div class="grid"></div>`;
+        const grid = section.querySelector('.grid');
+        for (const icon of categoryIcons) grid.appendChild(await makeCard(icon));
+        surface.appendChild(section);
+      }
+      document.querySelector('#surfaces').appendChild(surface);
+    }
+
+    (async () => {
+      const manifest = await fetch('manifest.json').then(response => response.json());
+      const icons = manifest.icons.filter(icon => icon.phase === requestedPhase);
+      const grouped = new Map();
+      for (const icon of icons) {
+        if (!grouped.has(icon.category)) grouped.set(icon.category, []);
+        grouped.get(icon.category).push(icon);
+      }
+      document.querySelector('#title').textContent = `${requestedPhase} · ${icons.length} glyphs`;
+      document.querySelector('#subtitle').textContent = `${[...grouped.keys()].map(category => category.replaceAll('-', ' ')).join(' · ')}. Each source is rendered at every production size on both application surfaces.`;
+      await makeSurface('dark', 'Midnight surface', grouped);
+      await makeSurface('light', 'Warm-light surface', grouped);
+      document.documentElement.dataset.ready = 'true';
+    })();
+  </script>
+</body>
+</html>

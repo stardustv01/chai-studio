@@ -1,0 +1,15 @@
+{
+  "name": "chai-logo-production-v1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.7.63 preview",
+    "check": "npx --yes hyperframes@0.7.63 check",
+    "render": "npx --yes hyperframes@0.7.63 render",
+    "publish": "npx --yes hyperframes@0.7.63 publish"
+  },
+  "dependencies": {
+    "@fontsource-variable/noto-sans-devanagari": "5.2.8",
+    "gsap": "3.13.0"
+  }
+}

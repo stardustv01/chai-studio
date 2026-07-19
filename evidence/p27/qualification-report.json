@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "1.0.0",
+  "passed": true,
+  "environment": {
+    "schemaVersion": "1.0.0",
+    "passed": true,
+    "support": "supported",
+    "supportClass": "apple-m4-16gb",
+    "identity": {
+      "studioVersion": "1.0.0-rc.1",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "osRelease": "25.5.0",
+      "cpuModel": "Apple M4",
+      "logicalCpuCount": 10,
+      "memoryGiB": 16,
+      "nodeVersion": "v22.17.0",
+      "ffmpegVersion": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+      "ffprobeVersion": "ffprobe version 7.1.1 Copyright (c) 2007-2025 the FFmpeg developers",
+      "browserIdentity": "playwright-managed:chromium-1228",
+      "engineBrowserIdentity": "playwright-managed:chromium_headless_shell-1228",
+      "launchModel": "localhost-web-server"
+    },
+    "fingerprint": "bdb45e80a3ead9eb4ab04b4e79d16fc81738e4add1b763f8e17cd3db9d02313a",
+    "checks": [
+      {
+        "id": "platform",
+        "passed": true,
+        "observed": "darwin"
+      },
+      {
+        "id": "architecture",
+        "passed": true,
+        "observed": "arm64"
+      },
+      {
+        "id": "node",
+        "passed": true,
+        "observed": "v22.17.0"
+      },
+      {
+        "id": "ffmpeg",
+        "passed": true,
+        "observed": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers"
+      },
+      {
+        "id": "ffprobe",
+        "passed": true,
+        "observed": "ffprobe version 7.1.1 Copyright (c) 2007-2025 the FFmpeg developers"
+      },
+      {
+        "id": "ui-browser",
+        "passed": true,
+        "observed": "playwright-managed:chromium-1228"
+      },
+      {
+        "id": "engine-browser",
+        "passed": true,
+        "observed": "playwright-managed:chromium_headless_shell-1228"
+      },
+      {
+        "id": "file:pnpm-lock.yaml",
+        "passed": true,
+        "observed": "present"
+      },
+      {
+        "id": "file:apps/studio-server/dist/index.js",
+        "passed": true,
+        "observed": "present"
+      },
+      {
+        "id": "file:apps/studio-web/dist/index.html",
+        "passed": true,
+        "observed": "present"
+      },
+      {
+        "id": "file:governance/licenses/dependency-inventory.json",
+        "passed": true,
+        "observed": "present"
+      },
+      {
+        "id": "file:governance/licenses/release-review.json",
+        "passed": true,
+        "observed": "present"
+      }
+    ],
+    "cloudAccountRequired": false,
+    "desktopWrapperRequired": false
+  },
+  "installation": {
+    "prefix": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-nlJC6u/application",
+    "launcher": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-nlJC6u/application/bin/chai-studio",
+    "sourceIdentity": "ac7b0aa0bbe73dcaba4175105a54c9cc771d3694b3af376e40e47a59ab042c1a"
+  },
+  "health": {
+    "status": "ok",
+    "service": "studio-server",
+    "contractVersion": "2026-07-15",
+    "instanceId": "2afe29a6-75a1-4fe5-8fa0-b89e06f75115",
+    "projectScoped": false
+  },
+  "backup": {
+    "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087",
+    "validated": true,
+    "cacheExcluded": true
+  },
+  "restore": {
+    "destination": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-nlJC6u/Projects/Qualification Restored.chai",
+    "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087",
+    "validated": true
+  },
+  "clone": {
+    "destination": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-nlJC6u/Projects/Qualification Clone.chai",
+    "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087",
+    "validated": true
+  },
+  "archive": {
+    "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087"
+  },
+  "uninstall": {
+    "removedPrefix": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-nlJC6u/application",
+    "projectsDeleted": false
+  },
+  "projectPreservation": {
+    "originalStillPresent": true,
+    "deliveryPreserved": true,
+    "projectsDeleted": false
+  },
+  "journeyEvidence": [
+    "create/import/edit: full unit and integration gate",
+    "capture/Codex context: P18 integration and E2E gate",
+    "render/QA/approve/deliver/reproduce: P20-P22 integration and E2E gate",
+    "clean launch and uninstall preservation: this isolated qualification"
+  ]
+}

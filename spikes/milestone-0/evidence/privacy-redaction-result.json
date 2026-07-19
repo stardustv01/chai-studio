@@ -1,0 +1,6 @@
+{
+  "input": "/Users/praveengupta/Desktop/studio2/chai-studio/spikes/milestone-0/fixtures token=example-secret /Users/praveengupta/unrelated",
+  "redacted": "<project>/fixtures token=<redacted> <home>/unrelated",
+  "telemetryDefault": "zero-unsolicited",
+  "supportBundleRequiresPreview": true
+}

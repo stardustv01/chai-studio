@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-07-15T08:28:00.000Z",
+  "platform": "darwin-arm64",
+  "method": "/usr/bin/time -l around one isolated command run",
+  "mixedFinish": {
+    "realSeconds": 17.44,
+    "maximumResidentSetBytes": 427130880,
+    "peakMemoryFootprintBytes": 396238008,
+    "swaps": 0
+  },
+  "hyperframes": {
+    "realSeconds": 2.98,
+    "maximumResidentSetBytes": 218972160,
+    "peakMemoryFootprintBytes": 172979664,
+    "swaps": 0,
+    "gpu": "ANGLE Metal hardware path on Apple M4"
+  }
+}

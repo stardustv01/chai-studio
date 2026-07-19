@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "dimensions": {
+    "width": 640,
+    "height": 360
+  },
+  "fps": {
+    "num": 30000,
+    "den": 1001
+  },
+  "cues": [
+    {
+      "id": "cue-1",
+      "startFrame": 0,
+      "endFrameExclusive": 60,
+      "text": "One master clock."
+    },
+    {
+      "id": "cue-2",
+      "startFrame": 60,
+      "endFrameExclusive": 150,
+      "text": "Native engines, shared authority."
+    },
+    {
+      "id": "cue-3",
+      "startFrame": 150,
+      "endFrameExclusive": 300,
+      "text": "Every frame and sample is accounted for."
+    }
+  ],
+  "fontDependencies": [
+    {
+      "family": "Inter",
+      "source": "HyperFrames deterministic cache",
+      "hash": "pinned-by-render-dependency"
+    }
+  ],
+  "qaAnchors": [
+    {
+      "id": "cue-1",
+      "frames": [
+        0,
+        59
+      ]
+    },
+    {
+      "id": "cue-2",
+      "frames": [
+        60,
+        149
+      ]
+    },
+    {
+      "id": "cue-3",
+      "frames": [
+        150,
+        299
+      ]
+    }
+  ],
+  "identity": "a9b1f6acbce98c822fa93653792b3da1839329536895a31c57d334e2d93a401f"
+}

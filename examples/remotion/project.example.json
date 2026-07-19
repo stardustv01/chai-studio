@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-remotion",
+  "title": "Native Remotion",
+  "projectClass": "small",
+  "assets": ["remotion-source"],
+  "engines": ["remotion"],
+  "expectedWorkflows": ["discover", "inspect", "preview", "exact-capture", "render"]
+}

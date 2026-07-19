@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-07-15T09:04:00.867Z",
+  "hardwareClass": "Apple M4 / 16 GB / macOS 26.5.2",
+  "evidenceSource": "latest passing gate-report.json",
+  "schedulerCore": {
+    "sampleCount": 1000,
+    "warmSeekP95Ms": 0.001583000000000112,
+    "frameStepP95Ms": 0.0010419999999999874,
+    "tenMinutePreviewDriftFrames": 0,
+    "qualification": "pure scheduler-core measurement; native browser-proxy latency is reported separately and production process adapters repeat acceptance at P09"
+  },
+  "interactiveNativeProxy": {
+    "preloadedFrameCount": 120,
+    "seekSampleCount": 100,
+    "warmSeekP95Ms": 2.8,
+    "warmSeekBudgetMs": 150,
+    "passed": true,
+    "driftAndHardResyncVerified": true,
+    "qualification": "product-owned switching across 60 native frames per engine; production process adapter acceptance repeats at P09"
+  },
+  "projectOpen": {
+    "sampleCount": 200,
+    "warmP95Ms": 0.05245799999999967
+  },
+  "nativeStill": {
+    "hyperframes": {
+      "sampleCount": 5,
+      "p95Ms": 3384.9722500000003,
+      "deterministic": true
+    },
+    "remotion": {
+      "sampleCount": 5,
+      "p95Ms": 596.541500000003,
+      "deterministic": true,
+      "setupMs": 794.5513749999991
+    },
+    "initialBudgetMs": 5000,
+    "passed": true,
+    "qualification": "P02 hardware-class budget; expand hardware/project classes at P26"
+  },
+  "renderThroughput": {
+    "hyperframesFramesPerSecond": 20.768431983385256,
+    "mixedFinishFramesPerSecond": 17.40139211136891
+  },
+  "audio": {
+    "tenMinuteIntegerMappingDriftSamples": 0,
+    "offlineEndpointSampleExact": true
+  },
+  "gpu": {
+    "path": "ANGLE Metal hardware path on Apple M4",
+    "swaps": 0
+  },
+  "memory": {
+    "hyperframesMaximumResidentSetBytes": 218972160,
+    "mixedFinishMaximumResidentSetBytes": 427130880,
+    "mixedFinishShareOfSystemMemory": 0.024862289428710938,
+    "qualification": "single macOS /usr/bin/time sample per render path; expand at P26"
+  }
+}

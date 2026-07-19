@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-hyperframes",
+  "title": "Native HyperFrames",
+  "projectClass": "small",
+  "assets": ["hyperframes-html"],
+  "engines": ["hyperframes"],
+  "expectedWorkflows": ["check", "inspect", "preview", "exact-range", "render"]
+}

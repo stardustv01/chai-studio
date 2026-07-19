@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-07-18T06:48:00.358Z",
+  "platform": "darwin-arm64",
+  "mechanisms": [
+    "macOS sandbox-exec deny network",
+    "Node permission model",
+    "sanitized env plus macOS __CF_USER_TEXT_ENCODING",
+    "spawn wall-time/maxBuffer",
+    "V8 heap cap"
+  ],
+  "passed": true,
+  "assertions": {
+    "approvedReadWorks": true,
+    "unrelatedFilesystemDenied": true,
+    "outsideWriteDenied": true,
+    "childProcessDenied": true,
+    "workerDenied": true,
+    "networkDenied": true,
+    "environmentSanitized": true,
+    "wallTimeTerminated": true,
+    "memoryLimited": true,
+    "outputLimited": true
+  },
+  "probe": {
+    "approvedRead": {
+      "allowed": true,
+      "value": "approved fixture data"
+    },
+    "deniedRead": {
+      "allowed": false,
+      "code": "ERR_ACCESS_DENIED",
+      "message": "Access to this API has been restricted. Use --allow-fs-read to manage permissions."
+    },
+    "deniedWrite": {
+      "allowed": false,
+      "code": "ERR_ACCESS_DENIED",
+      "message": "Access to this API has been restricted. Use --allow-fs-write to manage permissions."
+    },
+    "deniedProcess": {
+      "allowed": false,
+      "code": "ERR_ACCESS_DENIED",
+      "message": "Access to this API has been restricted. Use --allow-child-process to manage permissions."
+    },
+    "deniedWorker": {
+      "allowed": false,
+      "code": "ERR_ACCESS_DENIED",
+      "message": "Access to this API has been restricted. Use --allow-worker to manage permissions."
+    },
+    "deniedNetwork": {
+      "allowed": false,
+      "code": "EPERM",
+      "message": "fetch failed"
+    },
+    "environmentKeys": [
+      "CHAI_ALLOWED",
+      "LANG",
+      "PATH",
+      "TZ",
+      "__CF_USER_TEXT_ENCODING"
+    ],
+    "allowedEnvironmentValue": "yes"
+  },
+  "enforcement": {
+    "wallTime": {
+      "status": null,
+      "signal": "SIGTERM",
+      "errorCode": "ETIMEDOUT"
+    },
+    "memory": {
+      "status": null,
+      "signal": "SIGABRT"
+    },
+    "output": {
+      "status": null,
+      "signal": "SIGTERM",
+      "errorCode": "ENOBUFS"
+    }
+  }
+}

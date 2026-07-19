@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-07-15T09:43:00Z",
+  "surface": "Codex in-app browser",
+  "url": "isolated localhost QA port",
+  "passed": true,
+  "observations": {
+    "viewport": { "width": 1280, "height": 720 },
+    "document": { "width": 1280, "height": 885 },
+    "horizontalOverflow": false,
+    "serverStatus": "Local · p03.v1",
+    "externalRuntimeResources": [],
+    "consoleWarningsOrErrors": [],
+    "visibleHeadings": ["Chai Studio", "First Light", "Rendered fidelity", "Foundation ready"],
+    "fullPageScreenshotReviewed": true
+  },
+  "decision": "The P03 shell has a clear macOS-first studio hierarchy, explicit fidelity and system-contract states, readable timeline scaffolding, and no visual or console blocker for P04 entry.",
+  "limitation": "This accepts the developer shell and visual direction, not rich editor behavior; functional editing remains dependency-gated to later phases."
+}

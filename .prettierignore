@@ -1,0 +1,14 @@
+**/dist
+**/dist-types
+**/node_modules
+spikes
+playwright-report
+test-results
+pnpm-lock.yaml
+governance/*.json
+governance/contracts/*.json
+fixtures/goldens/checksum-manifest.json
+packages/schema/src/generated
+evidence
+design/chai-logo-production-v1
+design/chai-logo-production-v2-faithful

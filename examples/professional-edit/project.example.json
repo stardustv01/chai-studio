@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-professional-edit",
+  "title": "Professional Editing",
+  "projectClass": "medium",
+  "assets": ["video", "audio"],
+  "engines": ["shared"],
+  "expectedWorkflows": ["roll", "slip", "slide", "three-point", "compound", "take", "time-remap"]
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-bridges-alpha",
+  "title": "Bridges and Alpha",
+  "projectClass": "heavy-webgl",
+  "assets": ["transparent-video", "remotion-source", "hyperframes-html"],
+  "engines": ["remotion", "hyperframes"],
+  "expectedWorkflows": ["advanced-bridge", "alpha", "boundary-qa", "fallback"]
+}

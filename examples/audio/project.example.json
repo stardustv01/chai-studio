@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-audio",
+  "title": "Audio Graph and Automation",
+  "projectClass": "audio",
+  "assets": ["multichannel-audio"],
+  "engines": ["shared"],
+  "expectedWorkflows": ["route", "automate", "duck", "measure", "offline-mix"]
+}

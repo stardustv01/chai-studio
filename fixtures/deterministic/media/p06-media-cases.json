@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P06",
+  "cases": [
+    {
+      "id": "cache-deletion",
+      "fixture": "delete a published generated-view artifact and request the same content/profile again",
+      "expected": "verified cache miss followed by deterministic regeneration",
+      "coverage": ["tests/unit/media-generated-views.test.ts"]
+    },
+    {
+      "id": "corrupt-media",
+      "fixture": "ffprobe output is not-json",
+      "expected": "media.inspect.output-invalid",
+      "coverage": ["tests/unit/media-inspection.test.ts"]
+    },
+    {
+      "id": "duplicate",
+      "fixture": "two stable asset IDs share one SHA-256 content hash",
+      "expected": "one visible review group without identity merging",
+      "coverage": ["tests/unit/media-change-detection.test.ts", "tests/unit/media-asset-workflows.test.ts"]
+    },
+    {
+      "id": "font",
+      "fixture": "synthetic OpenType name table plus missing and hash-drift resolutions",
+      "expected": "font.missing and font.hash-mismatch diagnostics",
+      "coverage": ["tests/unit/media-font-registry.test.ts"]
+    },
+    {
+      "id": "missing-media",
+      "fixture": "authorized project-relative source does not exist",
+      "expected": "media.path.missing",
+      "coverage": ["tests/unit/media-path-policy.test.ts"]
+    },
+    {
+      "id": "proxy",
+      "fixture": "VFR original mapped to a generated CFR proxy selected for preview",
+      "expected": "preview is labeled Proxy and final delivery is blocked",
+      "coverage": ["tests/unit/media-proxy-time-map.test.ts", "tests/unit/media-proxy-manager.test.ts"]
+    },
+    {
+      "id": "relink",
+      "fixture": "same bytes at a new authorized registry path and mismatched bytes",
+      "expected": "same-hash relink is reversible; mismatched hash requires replace",
+      "coverage": ["tests/unit/media-asset-workflows.test.ts"]
+    },
+    {
+      "id": "rights",
+      "fixture": "expired, territory-limited, prohibited, unattributed, and unproven licensed media",
+      "expected": "deterministic delivery blockers under the selected rights policy",
+      "coverage": ["tests/unit/media-asset-rights.test.ts"]
+    },
+    {
+      "id": "traversal",
+      "fixture": "project path contains parent traversal or resolves through an escaping symlink",
+      "expected": "media.path.traversal or media.path.symlink-escape",
+      "coverage": ["tests/unit/media-path-policy.test.ts"]
+    },
+    {
+      "id": "vfr-alpha",
+      "fixture": "ProRes yuva stream reports unequal average and real frame rates",
+      "expected": "alpha and VFR are true and exact rational rates are retained",
+      "coverage": ["tests/unit/media-inspection.test.ts"]
+    }
+  ]
+}

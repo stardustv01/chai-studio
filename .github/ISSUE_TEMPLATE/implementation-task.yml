@@ -1,0 +1,29 @@
+name: Implementation task
+description: Start dependency-ordered work with acceptance evidence defined first.
+title: "[PXX.XX] "
+labels: [implementation]
+body:
+  - type: input
+    id: task
+    attributes:
+      label: Authoritative task ID
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Passed dependencies and evidence
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Definition of done and planned proof
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Package, security, privacy, and lifecycle boundaries
+    validations:
+      required: true

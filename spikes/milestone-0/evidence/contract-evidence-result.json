@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "artifacts": [
+    "caption-plan.json",
+    "preflight-result.json",
+    "command-authorization-result.json",
+    "render-receipt.json",
+    "privacy-redaction-result.json",
+    "source-monitor-scope.json"
+  ]
+}

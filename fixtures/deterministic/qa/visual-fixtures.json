@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0.0",
+  "algorithm": "rgba8-linear-rec709-v1",
+  "reviewStatus": "reviewed",
+  "strictEnvironmentFingerprint": "9c13cb90b5588352ecfa48513f2428b8ac1400a40321966123e3d7724136dfb4",
+  "goldens": [
+    {
+      "id": "remotion-native-frame-30",
+      "category": "engine-native-remotion",
+      "source": "spikes/milestone-0/evidence/remotion-frame-30-a.png",
+      "frame": "30",
+      "normalizedPixelHash": "1a8394e50162e52541a67c8c79bff6737cbd058e38a1acb14fed515e76f3146a"
+    },
+    {
+      "id": "hyperframes-native-frame-48",
+      "category": "engine-native-hyperframes",
+      "source": "spikes/milestone-0/evidence/hyperframes-determinism-a.png",
+      "frame": "48",
+      "normalizedPixelHash": "5fddc94e4af851f52b91b86870fa6dad50b6e9dce0be9a0441f4e18407c2b340"
+    },
+    {
+      "id": "mixed-engine-boundary-contact",
+      "category": "mixed-boundary",
+      "source": "spikes/milestone-0/evidence/mixed-finish-contact.png",
+      "frame": "60",
+      "normalizedPixelHash": "bd238f975ac08c0f2c0e909ccab5b6fe40e2891813a01cb5cab96f571d1203ea"
+    },
+    {
+      "id": "caption-workspace-safe-zone",
+      "category": "captions",
+      "source": "tests/e2e/studio-visual.spec.ts-snapshots/p17-transcript-caption-system-darwin.png",
+      "frame": "2411",
+      "normalizedPixelHash": "0fb61261681aaf640b4017560e6b597137755aa5ad1f030de9caa56febcdcd4d"
+    },
+    {
+      "id": "straight-alpha-edge",
+      "category": "alpha",
+      "source": "spikes/milestone-0/fixtures/canonical/assets/alpha-sequence/frame-0030.png",
+      "frame": "29",
+      "normalizedPixelHash": "fdfbb3a892fcb80a5d11d21321ad829a443a06b015e04e73c1c780495b830c0f"
+    },
+    {
+      "id": "shader-overlay-monitor",
+      "category": "shaders",
+      "source": "tests/e2e/studio-visual.spec.ts-snapshots/p13-program-monitor-overlays-darwin.png",
+      "frame": "3174",
+      "normalizedPixelHash": "ecdd63febeb1528763bf6e6727b39e3e223c1e0c42664c3bc13b01af8e5f6443"
+    },
+    {
+      "id": "transform-curve-editor",
+      "category": "transforms",
+      "source": "tests/e2e/studio-visual.spec.ts-snapshots/p15-keyframe-curve-editor-darwin.png",
+      "frame": "2140",
+      "normalizedPixelHash": "d941d949fa5048d2f6d9725c067debd606018ce43a24b3377dd398295c51bf47"
+    },
+    {
+      "id": "difference-comparison",
+      "category": "comparisons",
+      "source": "tests/e2e/studio-visual.spec.ts-snapshots/p13-program-monitor-difference-darwin.png",
+      "frame": "2140",
+      "normalizedPixelHash": "c83768189d6b3f7701f1140a9788a48370529eb7c19792d38038723572d97190"
+    }
+  ],
+  "strictPairs": [
+    {
+      "fixtureId": "remotion-repeat-frame-30",
+      "left": "spikes/milestone-0/evidence/remotion-frame-30-a.png",
+      "right": "spikes/milestone-0/evidence/remotion-frame-30-b.png"
+    },
+    {
+      "fixtureId": "hyperframes-repeat-frame-48",
+      "left": "spikes/milestone-0/evidence/hyperframes-determinism-a.png",
+      "right": "spikes/milestone-0/evidence/hyperframes-determinism-b.png"
+    }
+  ],
+  "perceptualPolicies": [
+    {
+      "fixtureId": "mixed-preview-to-final-contact",
+      "mode": "normalized-rmse",
+      "direction": "maximum",
+      "left": "spikes/milestone-0/evidence/interactive-preview.png",
+      "right": "spikes/milestone-0/evidence/mixed-finish-contact.png",
+      "comparisonWidth": 960,
+      "comparisonHeight": 540,
+      "calibrationObserved": 0.12163278321771313,
+      "measuredThreshold": 0.121633,
+      "thresholdEvidenceHash": "c766b7d19d4a1d51963ffd245837bdd4c71e9a7a9bd9eb3216d3d53b359804e1",
+      "policyVersion": "chai-perceptual-mixed-v1"
+    }
+  ]
+}

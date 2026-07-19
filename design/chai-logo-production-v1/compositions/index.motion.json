@@ -1,0 +1,11 @@
+{
+  "duration": 2.4,
+  "maxStaticSec": 1.85,
+  "assertions": [
+    { "kind": "appearsBy", "selector": "#playhead", "bySec": 0.36 },
+    { "kind": "appearsBy", "selector": "#english-companion", "bySec": 0.62 },
+    { "kind": "before", "a": "#playhead", "b": "#english-companion" },
+    { "kind": "staysInFrame", "selector": ".lockup-svg" },
+    { "kind": "keepsMoving", "withinSelector": "#logo-reveal-clip" }
+  ]
+}

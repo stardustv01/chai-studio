@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chai Studio faithful SVG comparison</title>
+    <style>
+      :root { color-scheme: dark; --bg:#070a12; --panel:#0d1320; --line:#263247; --ink:#f5efe2; --muted:#95a2b8; --amber:#f2b33f; --cyan:#19d9ea; }
+      * { box-sizing: border-box; }
+      body { margin:0; background:radial-gradient(circle at 50% -10%,#19233b 0,var(--bg) 42%); color:var(--ink); font-family:Inter,system-ui,sans-serif; }
+      main { width:1440px; padding:42px 46px 52px; }
+      .eyebrow { color:#9a8be1; font-size:12px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
+      h1 { margin:8px 0 4px; font-size:34px; letter-spacing:-.04em; }
+      .intro { margin:0 0 24px; color:var(--muted); font-size:14px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+      .card { border:1px solid var(--line); border-radius:16px; overflow:hidden; background:rgba(9,14,24,.9); }
+      .card h2 { margin:0; padding:14px 16px; border-bottom:1px solid var(--line); color:#aab6cb; font-size:11px; letter-spacing:.16em; text-transform:uppercase; }
+      .art { min-height:390px; display:grid; place-items:center; padding:24px; }
+      .art img { width:100%; max-height:360px; object-fit:contain; }
+      .symbol-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; margin-top:18px; }
+      .symbol-row .art { min-height:300px; }
+      .symbol-row img { width:245px; height:245px; object-fit:contain; }
+      .overlay { position:relative; width:600px; height:360px; }
+      .overlay img { position:absolute; inset:0; width:600px; height:360px; opacity:.52; }
+      .overlay img:last-child { mix-blend-mode:screen; }
+      .scale-test { align-items:center; justify-content:center; gap:34px; display:flex; min-height:300px; }
+      .size { display:grid; justify-items:center; gap:8px; color:var(--muted); font:11px ui-monospace,monospace; }
+      .size img { width:var(--s); height:var(--s); }
+      .status { margin-top:18px; border:1px solid var(--line); border-radius:12px; padding:15px 18px; color:#bac4d6; font-size:13px; line-height:1.55; }
+      .status strong { color:var(--amber); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="eyebrow">Chai Studio / correction pass V2</div>
+      <h1>Approved raster → faithful custom SVG</h1>
+      <p class="intro">Direct geometry reconstruction. No standard Devanagari font substitution.</p>
+      <section class="grid">
+        <article class="card"><h2>Approved reference crop</h2><div class="art"><img src="approved-primary-reference.png" /></div></article>
+        <article class="card"><h2>New vector lockup</h2><div class="art"><img src="../masters/chai-lockup-color.svg" /></div></article>
+      </section>
+      <section class="symbol-row">
+        <article class="card"><h2>Approved compact symbol</h2><div class="art"><img src="approved-symbol-reference.png" /></div></article>
+        <article class="card"><h2>New vector app icon</h2><div class="art"><img src="../masters/chai-app-icon.svg" /></div></article>
+        <article class="card"><h2>UI scale stress test</h2><div class="scale-test">
+          <div class="size"><img style="--s:24px" src="../masters/chai-symbol-color.svg" /><span>24</span></div>
+          <div class="size"><img style="--s:32px" src="../masters/chai-symbol-color.svg" /><span>32</span></div>
+          <div class="size"><img style="--s:48px" src="../masters/chai-symbol-color.svg" /><span>48</span></div>
+          <div class="size"><img style="--s:72px" src="../masters/chai-app-icon.svg" /><span>72</span></div>
+        </div></article>
+      </section>
+      <section class="card" style="margin-top:18px"><h2>Registration overlay — differences appear as doubled edges</h2><div class="art"><div class="overlay"><img src="approved-primary-reference.png" /><img src="../masters/chai-lockup-color.svg" /></div></div></section>
+      <div class="status"><strong>Correction status:</strong> V1 remains rejected and untouched. V2 traces the approved custom silhouette into separated semantic vector layers, then cleans only raster noise and the cyan-cut gap in the continuous timeline.</div>
+    </main>
+  </body>
+</html>
+

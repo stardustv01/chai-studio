@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-07-15T09:02:58.166Z",
+  "passed": true,
+  "required": [
+    {
+      "name": "Version",
+      "ok": true,
+      "detail": "0.7.58 (latest)"
+    },
+    {
+      "name": "Node.js",
+      "ok": true,
+      "detail": "v22.17.0 (darwin arm64)"
+    },
+    {
+      "name": "CPU",
+      "ok": true,
+      "detail": "10 cores · Apple M4 @ 2400MHz"
+    },
+    {
+      "name": "Memory",
+      "ok": true,
+      "detail": "16.0 GB total · 6.1 GB available"
+    },
+    {
+      "name": "Disk",
+      "ok": true,
+      "detail": "191.0 GB free"
+    },
+    {
+      "name": "Environment",
+      "ok": true,
+      "detail": "CI (unknown) · non-TTY"
+    },
+    {
+      "name": "FFmpeg",
+      "ok": true,
+      "detail": "ffmpeg 7.1.1 at /opt/homebrew/bin/ffmpeg"
+    },
+    {
+      "name": "FFprobe",
+      "ok": true,
+      "detail": "ffprobe 7.1.1 at /opt/homebrew/bin/ffprobe"
+    },
+    {
+      "name": "Chrome",
+      "ok": true,
+      "detail": "cache: $HOME/.cache/puppeteer/chrome-headless-shell/mac_arm-150.0.7871.24/chrome-headless-shell-mac-arm64/chrome-headless-shell"
+    }
+  ],
+  "optional": [
+    {
+      "name": "whisper-cpp",
+      "ok": true,
+      "detail": "/opt/homebrew/bin/whisper-cli"
+    },
+    {
+      "name": "TTS (Kokoro)",
+      "ok": false,
+      "detail": "Not installed (optional — local voice fallback)"
+    },
+    {
+      "name": "BGM (MusicGen)",
+      "ok": false,
+      "detail": "Not installed (optional — local music fallback)"
+    },
+    {
+      "name": "Docker",
+      "ok": false,
+      "detail": "Not found"
+    },
+    {
+      "name": "Docker running",
+      "ok": false,
+      "detail": "Not running"
+    }
+  ],
+  "upstreamOverallStatus": false,
+  "meta": {
+    "version": "0.7.58",
+    "latestVersion": "0.7.58",
+    "updateAvailable": false
+  }
+}

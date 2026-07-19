@@ -1,0 +1,21 @@
+packages:
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  "@google/genai": false
+  esbuild: true
+  onnxruntime-node: false
+  protobufjs: false
+  sharp: true
+
+catalog:
+  "@types/node": 26.1.1
+  "@types/react": 19.2.17
+  "@types/react-dom": 19.2.3
+  react: 19.1.0
+  react-dom: 19.1.0
+  typescript: 5.9.3
+
+minimumReleaseAgeExclude:
+  - hyperframes@0.7.58

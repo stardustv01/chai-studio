@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chai Studio — Warm Timeline context test</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #070a12;
+        --panel: #101522;
+        --line: #232b3b;
+        --muted: #8993a8;
+        --ink: #f5efe2;
+        --cyan: #19d9ea;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(circle at 50% -15%, #172038 0, #070a12 42%);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      main {
+        width: 1440px;
+        min-height: 900px;
+        padding: 34px 42px 42px;
+      }
+      .eyebrow {
+        color: #8d7bd5;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 8px 0 4px;
+        font-size: 30px;
+        letter-spacing: -0.03em;
+      }
+      .intro {
+        margin: 0 0 24px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .concept {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+        background: rgba(13, 17, 28, 0.9);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
+      }
+      .label {
+        padding: 17px 18px 14px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+      .label h2 {
+        margin: 0;
+        font-size: 17px;
+      }
+      .label span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .rank {
+        border: 1px solid #3a4357;
+        border-radius: 999px;
+        padding: 5px 9px;
+        color: #aab3c6;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+      }
+      .surface-title {
+        margin: 14px 16px 7px;
+        color: #7f899f;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .appbar {
+        margin: 0 14px;
+        height: 58px;
+        border: 1px solid #293144;
+        border-radius: 10px;
+        background: #0b0f19;
+        display: flex;
+        align-items: center;
+        padding: 0 13px;
+        gap: 10px;
+      }
+      .appbar img {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        object-fit: cover;
+      }
+      .brand {
+        font-size: 14px;
+        font-weight: 650;
+      }
+      .workspace {
+        margin-left: auto;
+        display: flex;
+        gap: 15px;
+        color: #778198;
+        font-size: 11px;
+      }
+      .workspace b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .project {
+        margin: 0 14px;
+        height: 182px;
+        border: 1px solid #293144;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #111726, #0a0e17);
+        padding: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      .project::after {
+        content: "";
+        position: absolute;
+        inset: auto -50px -70px 40px;
+        height: 150px;
+        transform: rotate(-8deg);
+        background: linear-gradient(90deg, transparent, rgba(25, 217, 234, 0.08), rgba(141, 123, 213, 0.16));
+        filter: blur(12px);
+      }
+      .project-head {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .project img {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+      .project h3 {
+        margin: 0 0 3px;
+        font-size: 15px;
+      }
+      .project p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .timeline {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 17px;
+        z-index: 1;
+        height: 48px;
+        border-top: 1px solid #2b3447;
+        display: flex;
+        gap: 4px;
+        padding-top: 9px;
+      }
+      .clip {
+        height: 19px;
+        border-radius: 3px;
+        background: #4f4389;
+        flex: 1;
+      }
+      .clip:nth-child(2) {
+        flex: 0.55;
+        background: #176f78;
+      }
+      .playhead {
+        position: absolute;
+        top: 0;
+        bottom: -5px;
+        left: 62%;
+        width: 1px;
+        background: var(--cyan);
+        box-shadow: 0 0 8px rgba(25, 217, 234, 0.5);
+      }
+      .dock {
+        margin: 0 14px 16px;
+        height: 92px;
+        border: 1px solid #293144;
+        border-radius: 22px;
+        background: rgba(25, 30, 43, 0.86);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+      .dock .dummy {
+        width: 49px;
+        height: 49px;
+        border-radius: 12px;
+        background: linear-gradient(145deg, #647188, #222b3a);
+        opacity: 0.72;
+      }
+      .dock img {
+        width: 58px;
+        height: 58px;
+        border-radius: 14px;
+        object-fit: cover;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+        outline: 1px solid #47516a;
+      }
+      .verdict {
+        margin-top: 20px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #0d121e;
+        display: grid;
+        grid-template-columns: 190px 1fr;
+        padding: 18px 20px;
+      }
+      .verdict strong {
+        color: #f2b33f;
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .verdict p {
+        margin: 0;
+        color: #b3bbcb;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="eyebrow">Chai Studio / Brand exploration 04</div>
+      <h1>The Warm Timeline — real UI scale test</h1>
+      <p class="intro">
+        Same three placements for every direction: 48px product header, project card, and Dock tile.
+      </p>
+      <section class="grid">
+        <article class="concept">
+          <div class="label">
+            <div>
+              <h2>01 · Calligraphic</h2>
+              <span>Most expressive, least restrained</span>
+            </div>
+            <div class="rank">SOUL</div>
+          </div>
+          <div class="surface-title">Application header</div>
+          <div class="appbar">
+            <img src="01-symbol-crop.png" />
+            <div class="brand">Chai Studio</div>
+            <div class="workspace"><b>Edit</b><span>Inspect</span><span>Media</span><span>Deliver</span></div>
+          </div>
+          <div class="surface-title">Project card</div>
+          <div class="project">
+            <div class="project-head">
+              <img src="01-symbol-crop.png" />
+              <div>
+                <h3>Monsoon Film</h3>
+                <p>Edited 3 min ago · 01:42</p>
+              </div>
+            </div>
+            <div class="timeline">
+              <i class="clip"></i><i class="clip"></i><i class="clip"></i><b class="playhead"></b>
+            </div>
+          </div>
+          <div class="surface-title">Dock tile</div>
+          <div class="dock"><i class="dummy"></i><img src="01-symbol-crop.png" /><i class="dummy"></i></div>
+        </article>
+        <article class="concept">
+          <div class="label">
+            <div>
+              <h2>02 · Geometric</h2>
+              <span>Strongest silhouette at small size</span>
+            </div>
+            <div class="rank">SYSTEM</div>
+          </div>
+          <div class="surface-title">Application header</div>
+          <div class="appbar">
+            <img src="02-symbol-crop.png" />
+            <div class="brand">Chai Studio</div>
+            <div class="workspace"><b>Edit</b><span>Inspect</span><span>Media</span><span>Deliver</span></div>
+          </div>
+          <div class="surface-title">Project card</div>
+          <div class="project">
+            <div class="project-head">
+              <img src="02-symbol-crop.png" />
+              <div>
+                <h3>Monsoon Film</h3>
+                <p>Edited 3 min ago · 01:42</p>
+              </div>
+            </div>
+            <div class="timeline">
+              <i class="clip"></i><i class="clip"></i><i class="clip"></i><b class="playhead"></b>
+            </div>
+          </div>
+          <div class="surface-title">Dock tile</div>
+          <div class="dock"><i class="dummy"></i><img src="02-symbol-crop.png" /><i class="dummy"></i></div>
+        </article>
+        <article class="concept">
+          <div class="label">
+            <div>
+              <h2>03 · Balanced hybrid</h2>
+              <span>Warm pulse inside a precise mark</span>
+            </div>
+            <div class="rank">CHAI</div>
+          </div>
+          <div class="surface-title">Application header</div>
+          <div class="appbar">
+            <img src="03-symbol-crop.png" />
+            <div class="brand">Chai Studio</div>
+            <div class="workspace"><b>Edit</b><span>Inspect</span><span>Media</span><span>Deliver</span></div>
+          </div>
+          <div class="surface-title">Project card</div>
+          <div class="project">
+            <div class="project-head">
+              <img src="03-symbol-crop.png" />
+              <div>
+                <h3>Monsoon Film</h3>
+                <p>Edited 3 min ago · 01:42</p>
+              </div>
+            </div>
+            <div class="timeline">
+              <i class="clip"></i><i class="clip"></i><i class="clip"></i><b class="playhead"></b>
+            </div>
+          </div>
+          <div class="surface-title">Dock tile</div>
+          <div class="dock"><i class="dummy"></i><img src="03-symbol-crop.png" /><i class="dummy"></i></div>
+        </article>
+      </section>
+      <aside class="verdict">
+        <strong>Creative verdict</strong>
+        <p>
+          Direction 03 owns the right idea. Direction 02 contributes the small-size discipline. Direction 01
+          proves the emotion, but its rising stroke reads too literally as tea steam. The final mark should be
+          redrawn as a deterministic SVG—not shipped from these generated pixels.
+        </p>
+      </aside>
+    </main>
+  </body>
+</html>

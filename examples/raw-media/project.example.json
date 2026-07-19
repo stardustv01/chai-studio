@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-raw-media",
+  "title": "Raw Media and Relink",
+  "projectClass": "small",
+  "assets": ["video", "image"],
+  "engines": ["shared"],
+  "expectedWorkflows": ["import", "proxy", "edit", "relink", "render"]
+}

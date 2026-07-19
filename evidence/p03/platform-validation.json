@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-07-18T06:47:38.908Z",
+  "passed": true,
+  "assertions": {
+    "exactApps": true,
+    "exactOwnershipPackages": true,
+    "strictTypeScript": true,
+    "privateApps": true,
+    "publicPackageExports": true,
+    "rootCommandsComplete": true,
+    "testFixtureAndDocsComplete": true,
+    "executableCommitGate": true,
+    "ciLockfileCacheAndGoldenRules": true,
+    "requiredChecksDeclared": true
+  },
+  "apps": [
+    "studio-server",
+    "studio-web"
+  ],
+  "packages": [
+    "audio",
+    "bridge",
+    "captions",
+    "diagnostics",
+    "engine-adapters",
+    "media",
+    "preview",
+    "qa",
+    "render",
+    "review",
+    "schema",
+    "security",
+    "timeline",
+    "ui-components"
+  ],
+  "requiredScripts": [
+    "dev",
+    "build",
+    "typecheck",
+    "lint",
+    "test",
+    "test:unit",
+    "test:property",
+    "test:integration",
+    "test:visual",
+    "test:e2e",
+    "fixture:render",
+    "qa",
+    "clean-cache",
+    "release:validate"
+  ],
+  "requiredFiles": [
+    "tests/unit/diagnostics.test.ts",
+    "tests/property/redaction.property.test.ts",
+    "tests/integration/server-health.test.ts",
+    "tests/visual/golden-manifest.test.ts",
+    "tests/e2e/local-shell.spec.ts",
+    "fixtures/deterministic/studio-shell.json",
+    "fixtures/goldens/studio-shell.svg",
+    "fixtures/goldens/checksum-manifest.json",
+    "CONTRIBUTING.md",
+    "docs/architecture.md",
+    "docs/debugging.md",
+    "docs/fixtures.md",
+    "docs/test-evidence.md",
+    "docs/templates/task-evidence.md",
+    ".github/pull_request_template.md",
+    ".github/ISSUE_TEMPLATE/implementation-task.yml"
+  ]
+}

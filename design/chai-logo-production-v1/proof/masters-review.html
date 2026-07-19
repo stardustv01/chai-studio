@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chai Studio logo masters review</title>
+  <style>
+    :root { color-scheme:dark; --ink:#070a12; --ivory:#f5efe2; --amber:#f2b33f; --cyan:#19d9ea; --line:#273149; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#05070d; color:var(--ivory); font-family:Inter,ui-sans-serif,system-ui,sans-serif; }
+    main { width:1440px; min-height:1100px; padding:38px 46px 50px; background:radial-gradient(circle at 50% -12%,#17223c 0,#070a12 43%,#05070d 100%); }
+    .eyebrow { color:#9d8ee8; font-size:11px; font-weight:750; letter-spacing:.18em; text-transform:uppercase; }
+    h1 { margin:8px 0 5px; font-size:32px; letter-spacing:-.035em; }
+    .sub { margin:0 0 24px; color:#9099ad; font-size:14px; }
+    .hero-grid { display:grid; grid-template-columns:1.35fr .65fr; gap:18px; }
+    .card { border:1px solid var(--line); border-radius:18px; background:rgba(13,18,30,.92); overflow:hidden; }
+    .card-label { padding:14px 16px; border-bottom:1px solid var(--line); color:#929cb1; font-size:10px; font-weight:750; letter-spacing:.15em; text-transform:uppercase; }
+    .hero { min-height:340px; display:flex; align-items:center; justify-content:center; padding:40px; }
+    .hero img { width:min(720px,100%); max-height:250px; }
+    .symbol { min-height:340px; display:flex; align-items:center; justify-content:center; gap:30px; padding:38px; }
+    .symbol img { width:180px; height:188px; }
+    .symbol .icon { width:150px; height:150px; }
+    .scale-row { margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .surface { min-height:276px; padding:22px; }
+    .header { height:60px; border:1px solid #30394e; border-radius:10px; display:flex; align-items:center; gap:11px; padding:0 14px; background:#090d16; }
+    .header img { width:38px; height:38px; }
+    .header strong { font-size:14px; }
+    .tabs { margin-left:auto; display:flex; gap:18px; color:#78839a; font-size:11px; }
+    .tabs b { color:var(--ivory); }
+    .sizes { display:flex; align-items:flex-end; justify-content:center; gap:28px; padding:36px 0 2px; }
+    .size { text-align:center; color:#778198; font-size:10px; }
+    .size img { display:block; margin:0 auto 10px; }
+    .light { background:#f4f1e9; color:#111827; }
+    .light .card-label { border-color:#d7d1c5; color:#6e7480; }
+    .light .lockup { min-height:190px; display:flex; align-items:center; justify-content:center; padding:28px; }
+    .light img { width:640px; max-height:155px; }
+    .palette { margin-top:18px; display:flex; gap:10px; }
+    .swatch { height:54px; flex:1; border-radius:10px; border:1px solid rgba(255,255,255,.12); display:flex; align-items:flex-end; padding:8px 10px; font-size:9px; letter-spacing:.12em; }
+    footer { margin-top:18px; padding:17px 19px; border:1px solid var(--line); border-radius:12px; color:#aab3c6; font-size:13px; line-height:1.5; }
+    footer strong { color:var(--amber); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Chai Studio / isolated production sandbox</div>
+    <h1>The Warm Timeline — deterministic SVG masters</h1>
+    <p class="sub">Exact `चाय` geometry from locally frozen Noto Sans Devanagari; no ImageGen lettering is used in these masters.</p>
+    <section class="hero-grid">
+      <article class="card"><div class="card-label">Primary bilingual lockup</div><div class="hero"><img src="../masters/chai-bilingual-lockup.svg" /></div></article>
+      <article class="card"><div class="card-label">Compact symbol + app tile</div><div class="symbol"><img src="../masters/chai-symbol-color.svg" /><img class="icon" src="../masters/chai-app-icon.svg" /></div></article>
+    </section>
+    <section class="scale-row">
+      <article class="card"><div class="card-label">Actual application scale</div><div class="surface"><div class="header"><img src="../masters/chai-symbol-color.svg" /><strong>Chai Studio</strong><div class="tabs"><b>Edit</b><span>Inspect</span><span>Media</span><span>Animation</span><span>Deliver</span></div></div><div class="sizes"><div class="size"><img src="../masters/chai-symbol-color.svg" width="16" height="16" />16px</div><div class="size"><img src="../masters/chai-symbol-color.svg" width="24" height="24" />24px</div><div class="size"><img src="../masters/chai-symbol-color.svg" width="32" height="32" />32px</div><div class="size"><img src="../masters/chai-symbol-color.svg" width="48" height="48" />48px</div><div class="size"><img src="../masters/chai-app-icon.svg" width="72" height="72" />72px</div></div></div></article>
+      <article class="card light"><div class="card-label">Monochrome / light surface</div><div class="lockup"><img src="../masters/chai-wordmark-mono.svg" /></div></article>
+    </section>
+    <div class="palette"><div class="swatch" style="background:#070a12">MIDNIGHT · #070A12</div><div class="swatch" style="background:#f5efe2;color:#111827">IVORY · #F5EFE2</div><div class="swatch" style="background:#f2b33f;color:#111827">TEA AMBER · #F2B33F</div><div class="swatch" style="background:#19d9ea;color:#071018">FRESH CYAN · #19D9EA</div></div>
+    <footer><strong>Status:</strong> production candidate, not approved final. The live Chai Studio project is untouched. The 16px sample is a stress test; if its pulse/playhead merges, the UI export will use a dedicated micro-symbol rather than shrinking the full mark.</footer>
+  </main>
+</body>
+</html>

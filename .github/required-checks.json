@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "protectedBranch": "main",
+  "requiredChecks": [
+    "required-validation / quality-contracts",
+    "required-validation / reproducible-build",
+    "required-validation / local-shell-e2e"
+  ],
+  "requirePullRequest": true,
+  "dismissStaleApprovals": true,
+  "allowForcePushes": false,
+  "allowDeletions": false,
+  "note": "Apply these settings when a remote repository is created; the workflow and local commit gate already use the same validation commands."
+}

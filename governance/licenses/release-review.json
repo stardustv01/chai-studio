@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "baseline": {
+    "scope": "personal-use macOS local-only",
+    "decision": "allowed-personal-local-only",
+    "publishing": "unsupported"
+  },
+  "unknownLicenseDecision": "blocked-pending-review",
+  "triggers": [
+    {
+      "id": "public-distribution",
+      "defaultDecision": "blocked-pending-review",
+      "requiredReview": ["legal terms", "notices", "packaged SBOM", "distribution model"]
+    },
+    {
+      "id": "commercialization",
+      "defaultDecision": "blocked-pending-review",
+      "requiredReview": ["current Remotion terms", "automation behavior", "team and revenue model"]
+    },
+    {
+      "id": "team-or-automation-scale-change",
+      "defaultDecision": "blocked-pending-review",
+      "requiredReview": ["current engine terms", "seat/team limits", "render automation obligations"]
+    },
+    {
+      "id": "engine-upgrade",
+      "defaultDecision": "blocked-pending-review",
+      "requiredReview": ["new engine license", "migration behavior", "dependency notice diff"]
+    },
+    {
+      "id": "ffmpeg-or-codec-bundle-change",
+      "defaultDecision": "blocked-pending-review",
+      "requiredReview": [
+        "exact build configuration",
+        "linked libraries",
+        "codec patent and license obligations"
+      ]
+    },
+    {
+      "id": "bundled-font-or-asset-change",
+      "defaultDecision": "blocked-pending-review",
+      "requiredReview": ["source", "version/hash", "license", "attribution", "use restrictions"]
+    }
+  ],
+  "approvalRecordRequirements": [
+    "reviewer identity",
+    "review date",
+    "exact inventory identity",
+    "trigger",
+    "decision",
+    "notices and obligations",
+    "expiry or re-review condition"
+  ]
+}

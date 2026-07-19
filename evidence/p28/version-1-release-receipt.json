@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": "Chai Studio",
+  "version": "1.0.0",
+  "candidate": "1.0.0-rc.1",
+  "sourceGateIdentity": "45ce80e6f5172315ba2598824b60e2288da191a909dfaa2906798e3e5fd2b8c8",
+  "releaseManifestIdentity": "af3f0b0bded6223c631db3eeb805a2c51f5d52e003dda3ba084db2d632fa6ccc",
+  "finalManifestIdentity": null,
+  "traceabilityIdentity": "91d7a0dcb13f36af2ad4c8fae396c5c46e37c7ec60fce210dc29ca41b7a92335",
+  "technicalGateIdentity": "74db0a34e17928ab946954516cf447e34e061a9c17c2a5a3caf3971284ae8941",
+  "technicalGatePassed": true,
+  "dependencyLockSha256": "ac7b0aa0bbe73dcaba4175105a54c9cc771d3694b3af376e40e47a59ab042c1a",
+  "supportClass": "apple-m4-16gb",
+  "environmentFingerprint": "bdb45e80a3ead9eb4ab04b4e79d16fc81738e4add1b763f8e17cd3db9d02313a",
+  "knownLimitations": "docs/KNOWN_LIMITATIONS_V1.md",
+  "operationalHandoff": "docs/OPERATIONAL_HANDOFF_V1.md",
+  "ownerApproval": {
+    "status": "pending-explicit-owner-approval",
+    "inferred": false,
+    "evidence": null
+  },
+  "finalGateIdentity": null,
+  "signature": null,
+  "releaseAuthorized": false,
+  "releaseTagAuthorized": false,
+  "candidateIdentity": "04a042fecce6a55012b1966ba07090544816a64be6a4e1454e86fd784d04b416"
+}

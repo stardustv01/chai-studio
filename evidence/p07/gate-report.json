@@ -1,0 +1,130 @@
+{
+  "generatedAt": "2026-07-15T14:27:16.032Z",
+  "identity": "afe8b5df5d6edb935c4b2f6be603fa76b8b681dcfc15bf468eae119753a4be3b",
+  "passed": true,
+  "phase": "P07",
+  "taskRange": "P07.01-P07.12",
+  "environment": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v22.17.0",
+    "lockfileSha256": "0ce5cc39ef22ee8d3e78290ecfff800e43c5a197485aa405520c6548b0d49091"
+  },
+  "implementationFiles": {
+    "apps/studio-server/src/api-contract.ts": "81f3d43c48eac978f55b2843ffe73ce0ab4bbb8b35a676775002af1c2c2fd57f",
+    "apps/studio-server/src/request-security.ts": "11bf00b9dc39f6dee4eab612a826b6afe89dc020125d4f1d133c04e4f5a65aff",
+    "apps/studio-server/src/instance-policy.ts": "87441efcb9ff93a0e87f891592cceae84c3d07d4783a77187d17ed3c4d0ec34a",
+    "apps/studio-server/src/project-service.ts": "6aeac0e74cdcae91abb0bace30503be6146397dce58569024d06b7efc2b044c8",
+    "apps/studio-server/src/job-registry.ts": "647c23ab5a85c71e0726faf10d4e1173f0018d216c66ec0926f1ea9cab45563b",
+    "apps/studio-server/src/asset-service.ts": "73d54bff7e4dbf27396793e5bbd19949d25644daaeabfb2c09ad267c0e786021",
+    "apps/studio-server/src/preview-service.ts": "a45c8a406f2004573e8003312879412001dc924fa395834c92dce3869cb962de",
+    "apps/studio-server/src/interaction-service.ts": "32196d9f146dfd08df982b1adb3e53ecb83e5b34789acf2b0190f4dedc66858d",
+    "apps/studio-server/src/render-service.ts": "49552269f7c21bbebbcde0598af64af5200a6ce8e3e19d0267f619bf79f1f34e",
+    "apps/studio-server/src/event-hub.ts": "52883586acf16e9375851df410082974689c064ee16c8b03693f2b39a060cb3d",
+    "apps/studio-server/src/worker-supervisor.ts": "8c43c64b4634f65419b85c9a82a48625a718c9d9ee80b90c3ac4e5f44e483fe7",
+    "apps/studio-server/src/regenerable-index.ts": "657eb29d927d58694a6bc29336b853b43893b17ae1f60b41326343124c5abef9",
+    "apps/studio-server/src/runtime-hygiene.ts": "ec08c3b0ec9f93fb2f7350163ed694ad32ebc42e73207403e05e875cbdee7f8a",
+    "apps/studio-server/src/index.ts": "ba6aba72fd1fe82a61e276e75c83ec9c0938585b0ff2c4690736b9d4add4ba8b",
+    "packages/preview/src/session-state.ts": "3908d6d394662c22466eea29dbeb9a400226a91f2eb46d4f1dffdb24ab85bd56",
+    "packages/schema/src/command-engine.ts": "5322e6af6840b67667eb64e52d49400a15038d9a5bd15a0706fa7fc9e9e82a2f",
+    "scripts/validate-p07-server-contract.mjs": "1095f0b47c087c45e88246413d12c3ba64520871e7207d239d6a25cd6d80b94a"
+  },
+  "results": [
+    {
+      "name": "frozen-offline-install",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 214,
+      "stdout": "Scope: all 14 workspace projects\nAlready up to date\nDone in 163ms using pnpm v11.11.0\n",
+      "stderr": ""
+    },
+    {
+      "name": "server-contract",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 200,
+      "stdout": "{\n  \"passed\": true,\n  \"taskCount\": 12,\n  \"checks\": [\n    {\n      \"task\": \"P07.01\",\n      \"file\": \"apps/studio-server/src/request-security.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.02\",\n      \"file\": \"apps/studio-server/src/api-contract.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.03\",\n      \"file\": \"apps/studio-server/src/project-service.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.04\",\n      \"file\": \"packages/schema/src/command-engine.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.05\",\n      \"file\": \"apps/studio-server/src/asset-service.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.06\",\n      \"file\": \"apps/studio-server/src/preview-service.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.07\",\n      \"file\": \"apps/studio-server/src/interaction-service.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.08\",\n      \"file\": \"apps/studio-server/src/render-service.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.09\",\n      \"file\": \"apps/studio-server/src/event-hub.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.10\",\n      \"file\": \"apps/studio-server/src/worker-supervisor.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.11\",\n      \"file\": \"apps/studio-server/src/regenerable-index.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"P07.12\",\n      \"file\": \"apps/studio-server/src/runtime-hygiene.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-health.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-project-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-command-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-asset-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-preview-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-interaction-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-render-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-events-api.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/unit/server-worker-supervisor.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-regenerable-index.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"test-evidence\",\n      \"file\": \"tests/integration/server-runtime-hygiene.test.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    },\n    {\n      \"task\": \"versioned-route-surface\",\n      \"file\": \"apps/studio-server/src/index.ts\",\n      \"passed\": true,\n      \"exists\": true,\n      \"missingSymbols\": []\n    }\n  ]\n}\n",
+      "stderr": "$ node scripts/validate-p07-server-contract.mjs\n"
+    },
+    {
+      "name": "schema-generated-drift",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 203,
+      "stdout": "Generated schema artifacts are current (4).\n",
+      "stderr": "$ node scripts/generate-schema-validator.mjs --check\n"
+    },
+    {
+      "name": "lint-format-boundaries",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 8723,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\n  \"passed\": true,\n  \"packageCount\": 13,\n  \"dependencyEdgeCount\": 37,\n  \"problems\": []\n}\n",
+      "stderr": "$ pnpm lint:code && pnpm lint:format && pnpm lint:boundaries\n$ eslint . --max-warnings 0\n$ prettier --check .\n$ node scripts/check-package-boundaries.mjs\n"
+    },
+    {
+      "name": "strict-typecheck",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 2454,
+      "stdout": "",
+      "stderr": "$ tsc -b --pretty false && tsc -p tsconfig.tools.json --noEmit --pretty false\n"
+    },
+    {
+      "name": "unit-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 1867,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/unit/project-document-schemas.test.ts (2 tests) 12ms\n ✓ tests/unit/media-proxy-manager.test.ts (3 tests) 13ms\n ✓ tests/unit/media-asset-index.test.ts (4 tests) 13ms\n ✓ tests/unit/media-path-policy.test.ts (3 tests) 14ms\n ✓ tests/unit/media-asset-workflows.test.ts (7 tests) 17ms\n ✓ tests/unit/media-generated-views.test.ts (4 tests) 23ms\n ✓ tests/unit/media-font-registry.test.ts (3 tests) 25ms\n ✓ tests/unit/server-worker-supervisor.test.ts (2 tests) 24ms\n ✓ tests/unit/server-preview-service.test.ts (1 test) 198ms\n ✓ tests/unit/media-change-detection.test.ts (2 tests) 16ms\n ✓ tests/unit/server-instance-policy.test.ts (2 tests) 20ms\n ✓ tests/unit/media-asset-registry.test.ts (3 tests) 12ms\n ✓ tests/unit/timeline-commands.test.ts (8 tests) 13ms\n ✓ tests/unit/timeline-keyframes.test.ts (5 tests) 15ms\n ✓ tests/unit/timeline-trim-delete.test.ts (13 tests) 14ms\n ✓ tests/unit/timeline-derived-indexes.test.ts (4 tests) 31ms\n ✓ tests/unit/preview-session-state.test.ts (2 tests) 4ms\n ✓ tests/unit/media-inspection.test.ts (3 tests) 38ms\n ✓ tests/unit/command-envelope.test.ts (11 tests) 12ms\n ✓ tests/unit/timeline-validation.test.ts (4 tests) 4ms\n ✓ tests/unit/project-semantic-validation.test.ts (11 tests) 12ms\n ✓ tests/unit/rational.test.ts (9 tests) 5ms\n ✓ tests/unit/timeline-range-transform.test.ts (6 tests) 11ms\n ✓ tests/unit/media-asset-rights.test.ts (4 tests) 13ms\n ✓ tests/unit/server-job-registry.test.ts (2 tests) 6ms\n ✓ tests/unit/media-proxy-time-map.test.ts (3 tests) 4ms\n ✓ tests/unit/diagnostics.test.ts (2 tests) 3ms\n ✓ tests/unit/server-event-hub.test.ts (1 test) 3ms\n ✓ tests/unit/timeline-snap.test.ts (2 tests) 3ms\n ✓ tests/unit/media-proxy-jobs.test.ts (2 tests) 3ms\n ✓ tests/unit/server-api-contract.test.ts (2 tests) 2ms\n ✓ tests/unit/server-request-security.test.ts (2 tests) 2ms\n\n Test Files  32 passed (32)\n      Tests  132 passed (132)\n   Start at  19:57:06\n   Duration  1.49s (transform 1.46s, setup 0ms, import 8.44s, tests 584ms, environment 2ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/unit\n(node:61471) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61476) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61480) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61495) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61496) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61501) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61502) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    {
+      "name": "property-fuzz-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 698,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/property/redaction.property.test.ts (1 test) 11ms\n ✓ tests/property/rational.property.test.ts (1 test) 26ms\n ✓ tests/property/timeline.property.test.ts (6 tests) 84ms\n\n Test Files  3 passed (3)\n      Tests  8 passed (8)\n   Start at  19:57:08\n   Duration  359ms (transform 192ms, setup 0ms, import 426ms, tests 120ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/property\n"
+    },
+    {
+      "name": "integration-regression-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 5786,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n{\"timestamp\":\"2026-07-15T14:27:09.908Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"server.ready\",\"correlationId\":\"17d75f40-7130-4718-b3d7-0c71473fc7a3\",\"data\":{\"host\":\"127.0.0.1\",\"port\":58070,\"instancePolicy\":\"single-app\",\"sessionTokenFingerprint\":\"[REDACTED]\"}}\n ✓ tests/integration/command-engine.test.ts (3 tests) 1801ms\n     ✓ commits a validated envelope and exact-replays its durable idempotency receipt  568ms\n     ✓ rejects idempotency reuse for a different payload  682ms\n     ✓ records validation-only and stale-base decisions without mutating authority  549ms\n ✓ tests/integration/named-versions-lifecycle.test.ts (2 tests) 1885ms\n     ✓ links approved milestones to the exact immutable output and rebuilds its index  1489ms\n     ✓ refuses approval milestones before lifecycle evidence reaches approved  395ms\n ✓ tests/integration/autosave-recovery.test.ts (4 tests) 2007ms\n     ✓ coalesces debounced edits and supports an immediate pre-risk flush  338ms\n     ✓ offers only hash-verified candidates after an unclean shutdown  504ms\n     ✓ restores a valid candidate through immutable revision authority  732ms\n     ✓ suppresses the recovery prompt after a verified clean shutdown  432ms\n{\"timestamp\":\"2026-07-15T14:27:11.450Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"server.ready\",\"correlationId\":\"a89b47cc-2b57-49b8-8ee7-4048b4229a9d\",\"data\":{\"host\":\"127.0.0.1\",\"port\":58077,\"instancePolicy\":\"single-app\",\"sessionTokenFingerprint\":\"[REDACTED]\"}}\n ✓ tests/integration/revision-store.test.ts (5 tests) 2376ms\n     ✓ publishes a complete revision before atomically advancing the pointer  433ms\n     ✓ keeps the old pointer authoritative when a crash interrupts staging  424ms\n     ✓ detects a complete orphan if a crash occurs after publish but before pointer swap  512ms\n     ✓ treats the new complete revision as authoritative if the process dies after pointer swap  523ms\n     ✓ rejects stale writers and hash-tampered authoritative revisions  482ms\n ✓ tests/integration/source-edit.test.ts (4 tests) 2624ms\n     ✓ persists begin/commit/abort sessions, diff evidence, and cache invalidation hooks  717ms\n     ✓ validates and commits source authority before materializing the working file  807ms\n     ✓ quarantines a candidate when an external editor changed the source  435ms\n     ✓ rejects invalid candidates and repairs working files from revision authority  664ms\n ✓ tests/integration/asset-command-engine.test.ts (2 tests) 2638ms\n     ✓ registers, relinks, replaces, embeds manifests, invalidates caches, and restores manifests on history moves  2004ms\n     ✓ refuses relink byte substitution and manifest hash drift  633ms\n ✓ tests/integration/server-asset-api.test.ts (1 test) 2258ms\n     ✓ imports, inspects, proxies, generates views, searches, reports usage, relinks, replaces, and commits rights  2257ms\n{\"timestamp\":\"2026-07-15T14:27:12.189Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"server.ready\",\"correlationId\":\"939dbf0a-b88f-45b0-a827-716f597e7f12\",\"data\":{\"host\":\"127.0.0.1\",\"port\":58083,\"instancePolicy\":\"single-app\",\"sessionTokenFingerprint\":\"[REDACTED]\"}}\n{\"timestamp\":\"2026-07-15T14:27:12.189Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"server.ready\",\"correlationId\":\"44972734-2697-4752-bdc4-2934b56621ae\",\"data\":{\"host\":\"127.0.0.1\",\"port\":58082,\"instancePolicy\":\"single-app\",\"sessionTokenFingerprint\":\"[REDACTED]\"}}\n ✓ tests/integration/reopen-drift.test.ts (1 test) 1252ms\n     ✓ preserves authoritative bytes and semantic state without drift  1251ms\n ✓ tests/integration/project-lock.test.ts (3 tests) 1119ms\n     ✓ allows one writer, heartbeats durably, and releases only its own token  412ms\n     ✓ recovers an expired lock under an exclusive recovery gate  326ms\n     ✓ refuses recovery when policy requires manual intervention  381ms\n ✓ tests/integration/server-project-api.test.ts (1 test) 593ms\n     ✓ exposes create, recent, snapshot, history, versions, migration, repair, and close contracts  592ms\n ✓ tests/integration/server-command-api.test.ts (1 test) 1369ms\n     ✓ commits one revision, returns stale conflicts, and performs persistent undo and redo  1369ms\n ✓ tests/integration/history.test.ts (3 tests) 3476ms\n     ✓ blocks history movement while an asynchronous operation owns a revision snapshot  953ms\n     ✓ restores and reapplies immutable content across relaunches  1369ms\n     ✓ supports multi-step undo and clears redo after a divergent edit  1154ms\n{\"timestamp\":\"2026-07-15T14:27:12.873Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"server.ready\",\"correlationId\":\"97db6f84-c198-4201-8e22-0ef4db1cc623\",\"data\":{\"host\":\"127.0.0.1\",\"port\":58093,\"instancePolicy\":\"single-app\",\"sessionTokenFingerprint\":\"[REDACTED]\"}}\n ✓ tests/integration/migration.test.ts (3 tests) 124ms\n ✓ tests/integration/server-regenerable-index.test.ts (1 test) 851ms\n     ✓ rebuilds jobs, assets, and cache metadata from file authority after deletion  851ms\n ✓ tests/integration/server-interaction-api.test.ts (1 test) 1045ms\n     ✓ handles selection, context, captures, annotations, comparisons, and source-edit transactions  1044ms\n ✓ tests/integration/project-initializer.test.ts (3 tests) 247ms\n ✓ tests/integration/server-preview-api.test.ts (1 test) 421ms\n     ✓ loads, reports, controls, preloads, diagnoses, conflict-checks, and unloads a session  421ms\n ✓ tests/integration/server-runtime-hygiene.test.ts (1 test) 502ms\n     ✓ preflights disk, watches changes, quarantines safe orphans, and shuts down cleanly  501ms\n ✓ tests/integration/server-project-service.test.ts (1 test) 293ms\n{\"timestamp\":\"2026-07-15T14:27:13.321Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"health.check\",\"correlationId\":\"34f67b0c-220a-4d5f-a69a-e32e6aee373b\",\"data\":{\"method\":\"GET\"}}\n{\"timestamp\":\"2026-07-15T14:27:13.329Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"server.ready\",\"correlationId\":\"78dc7a50-dcc6-4990-8ce2-186e7f4cea82\",\"data\":{\"host\":\"127.0.0.1\",\"port\":58103,\"instancePolicy\":\"single-app\",\"sessionTokenFingerprint\":\"[REDACTED]\"}}\n{\"timestamp\":\"2026-07-15T14:27:13.330Z\",\"severity\":\"info\",\"category\":\"environment\",\"event\":\"health.check\",\"correlationId\":\"a49ca341-12c6-4520-9089-5cda6b27e1a5\",\"data\":{\"method\":\"GET\"}}\n ✓ tests/integration/server-health.test.ts (2 tests) 22ms\n ✓ tests/integration/server-render-api.test.ts (2 tests) 1531ms\n     ✓ queues output, records immutable receipt identity, runs QA, and explicitly approves  1320ms\n ✓ tests/integration/server-events-api.test.ts (1 test) 4452ms\n     ✓ streams authenticated ordered events and resumes strictly after Last-Event-ID  4451ms\n\n Test Files  22 passed (22)\n      Tests  46 passed (46)\n   Start at  19:57:08\n   Duration  5.43s (transform 1.90s, setup 0ms, import 5.79s, tests 32.89s, environment 1ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/integration\n(node:61552) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61544) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61554) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61556) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61557) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61558) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61559) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61560) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61561) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61563) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:61565) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    {
+      "name": "visual-regression-tests",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 449,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/visual/golden-manifest.test.ts (1 test) 2ms\n\n Test Files  1 passed (1)\n      Tests  1 passed (1)\n   Start at  19:57:14\n   Duration  74ms (transform 8ms, setup 0ms, import 14ms, tests 2ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/test-results/vitest.xml\n",
+      "stderr": "$ vitest run tests/visual\n"
+    },
+    {
+      "name": "golden-checksums",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 206,
+      "stdout": "{\n  \"passed\": true,\n  \"checked\": 2,\n  \"mismatches\": []\n}\n",
+      "stderr": "$ node scripts/verify-goldens.mjs\n"
+    },
+    {
+      "name": "production-build",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 811,
+      "stdout": "Generated schema artifacts are current (4).\nvite v8.1.4 building client environment for production...\n\u001b[2K\rtransforming...✓ 17 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.44 kB │ gzip:  0.28 kB\ndist/assets/index-CZz5nY9x.css    9.07 kB │ gzip:  2.72 kB\ndist/assets/index-CFNulJ-l.js   189.05 kB │ gzip: 59.69 kB │ map: 824.34 kB\n\n✓ built in 69ms\n",
+      "stderr": "$ pnpm schema:check && tsc -b && pnpm --filter @chai-studio/studio-web build\n$ node scripts/generate-schema-validator.mjs --check\n$ vite build\n"
+    },
+    {
+      "name": "security-check",
+      "passed": true,
+      "exitCode": 0,
+      "durationMs": 216,
+      "stdout": "{\n  \"passed\": true,\n  \"unsolicitedTelemetry\": false,\n  \"problems\": []\n}\n",
+      "stderr": "$ node scripts/security-check.mjs\n"
+    }
+  ]
+}

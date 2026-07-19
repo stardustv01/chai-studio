@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-07-15T08:26:24.742Z",
+  "authority": "User-approved Chai Studio planning baseline; implementation changes require change control and a new baseline identity.",
+  "scope": "Foundation plus Professional Expansion for a personal macOS-first local application",
+  "artifacts": [
+    {
+      "relativePath": "CHAI_STUDIO_MASTER_PLAN.md",
+      "bytes": 73202,
+      "sha256": "73b72f2fd25152f9811eec07c952a100c4279559639288d0d949df258b4d0bcd"
+    },
+    {
+      "relativePath": "CHAI_STUDIO_FINAL_UPDATED_IMPLEMENTATION_PLAN.md",
+      "bytes": 136752,
+      "sha256": "56c575695fa85b64f29df11a3529db5bcf713af2c740c91bea6141f728239868"
+    },
+    {
+      "relativePath": "CHAI_STUDIO_FINAL_TASK_GRAPH.json",
+      "bytes": 236464,
+      "sha256": "c2490af744904adc60ce1eb2c8cc427185412cecde15e30f13085097195181d0"
+    },
+    {
+      "relativePath": "ARCHITECTURE_DECISIONS.md",
+      "bytes": 2846,
+      "sha256": "8751e6382f31bfb471ebf6876cc024da231e92c8ddc04c8ed0ad3d88a0aac76c"
+    },
+    {
+      "relativePath": "PRODUCT_REQUIREMENTS.md",
+      "bytes": 4818,
+      "sha256": "02dba1cffd973ea28dab9ed74bbcbe4216bbc880b7e58c009004aa789d8e883d"
+    },
+    {
+      "relativePath": "PROJECT_SCHEMA.md",
+      "bytes": 3025,
+      "sha256": "b7185e970b7054f467a2b1be45b7844bc54c24c234f33a3e6056224ceefda75a"
+    },
+    {
+      "relativePath": "TEST_STRATEGY.md",
+      "bytes": 2693,
+      "sha256": "9b3851d82c7afe93de26a8d489535e7b0ecae6e485844722dccda7dbe1eaeabf"
+    },
+    {
+      "relativePath": "UI_SPECIFICATION.md",
+      "bytes": 2437,
+      "sha256": "a7b56b583a5575ce6edc74a47b15704846a971e40cc34d0ecb966710f73bf596"
+    },
+    {
+      "relativePath": "TIMING_AND_AUDIO_CONTRACT.md",
+      "bytes": 1734,
+      "sha256": "41a3f43da82f861e291f902f477b3dd43b6ad13838383be8ab4097684d76c7ba"
+    },
+    {
+      "relativePath": "ENGINE_ADAPTER_CONTRACT.md",
+      "bytes": 2698,
+      "sha256": "850c3aed5e90c42bbba2ce269f784ffc555a88442e28bfa12206a76225a5df06"
+    },
+    {
+      "relativePath": "CODEX_BRIDGE_COMMAND_CONTRACT.md",
+      "bytes": 1651,
+      "sha256": "1639c2d714930f081833a77fc17667ebb6ce865c0255f881ffbcfbdb9f68a5ae"
+    },
+    {
+      "relativePath": "QA_DELIVERY_STATE_CONTRACT.md",
+      "bytes": 1219,
+      "sha256": "aec7befce6f903214815ebed9b40639aa53c4a54041dc0430d35c34e8d1c36c1"
+    },
+    {
+      "relativePath": "CAPTION_RENDER_CONTRACT.md",
+      "bytes": 1209,
+      "sha256": "3fa948821363ef96744efdee6e48222b57679689c102aea35ad69e59c3208644"
+    },
+    {
+      "relativePath": "SECURITY_POLICY_CONTRACT.md",
+      "bytes": 1516,
+      "sha256": "933b7dfe7f1591a6bf1a28ae0b56b003247c15a6291a979dba7db878fe56024d"
+    },
+    {
+      "relativePath": "ui-samples/index.html",
+      "bytes": 2270,
+      "sha256": "89ace0196d13cc182f98239e4ae9552fed99ab0f4f8b99280fde44ea3c2d2502"
+    },
+    {
+      "relativePath": "ui-samples/01-edit-workspace.png",
+      "bytes": 507981,
+      "sha256": "6b269cedf80c50680ad425ef5623a0f36471df1620760acb71cc5add75e12cf7"
+    },
+    {
+      "relativePath": "ui-samples/02-inspect-codex-bridge.png",
+      "bytes": 559093,
+      "sha256": "ec716178bc7d4b25214df6e5490e83a6d566b158b08d5841c6faa9e47bf85881"
+    },
+    {
+      "relativePath": "ui-samples/03-deliver-render-qa.png",
+      "bytes": 210337,
+      "sha256": "3ffdfeaf717cae6b21cb15fbe7c5b96194cd4ad7c11e1aa3955c30f9d3446e8a"
+    },
+    {
+      "relativePath": "ui-samples/04-media-source-monitor.png",
+      "bytes": 284418,
+      "sha256": "1c427b9ce9ed8a9c24204b7547951caedaf653b971ba6fe26086682858de55f2"
+    },
+    {
+      "relativePath": "ui-samples/05-animation-bridge-editor.png",
+      "bytes": 484419,
+      "sha256": "b02cacc52411da28f75a362cbaecbb42942f98bcd3652751d6168692e2575e3a"
+    }
+  ],
+  "identity": "b46733c9afa777c353d3114895f1503e6abedde3849593b73755e2e09aa353d1"
+}

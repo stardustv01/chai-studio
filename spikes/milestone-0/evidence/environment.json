@@ -1,0 +1,35 @@
+{
+  "strictEnvironmentFingerprint": "5df774240ad4ed6518f1432f633df8aa2e70261db44b8e6cecf154cf62902281",
+  "compatiblePreviewFingerprint": "182218cfdc4124544dfde1cb8a1f3e19181b026ddeb6b62e6ab43d3fd0c4aaa0",
+  "strictManifest": {
+    "architecture": "arm64",
+    "chrome": "Google Chrome 150.0.7871.124 ",
+    "cpuModel": "Apple M4",
+    "ffmpeg": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+    "ffprobe": "ffprobe version 7.1.1 Copyright (c) 2007-2025 the FFmpeg developers",
+    "hyperframes": "0.7.58",
+    "locale": "en-US",
+    "lockfileSha256": "9decd52513e3bef58f16d6a3d1a31e970f4780bbc47453e0944cd051a93dbde1",
+    "node": "v22.17.0",
+    "osRelease": "25.5.0",
+    "platform": "darwin",
+    "pnpm": "11.11.0",
+    "remotion": "4.0.489",
+    "timezone": "Asia/Calcutta",
+    "totalMemoryBytes": 17179869184
+  },
+  "compatiblePreviewManifest": {
+    "architecture": "arm64",
+    "chromeMajor": "150",
+    "ffmpegMajor": "7",
+    "hyperframesCompatibilityLine": "0.7",
+    "nodeMajor": "22",
+    "platform": "darwin",
+    "remotionMajor": "4"
+  },
+  "reusePolicy": {
+    "finalArtifacts": "strict-only",
+    "previewArtifacts": "compatible-allowed-with-visible-degradation",
+    "portabilityAssumed": false
+  }
+}

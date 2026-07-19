@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chai Studio — Icon Style Proof v1</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #03050a;
+      color: #f5efe2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 1180px; background: #03050a; }
+    main { width: 1600px; min-height: 1200px; padding: 62px 64px 70px; margin: 0 auto; background:
+      radial-gradient(circle at 83% 7%, rgba(25,217,234,.065), transparent 24%),
+      radial-gradient(circle at 10% 52%, rgba(242,179,63,.045), transparent 27%),
+      #050810;
+    }
+    header { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 28px; border-bottom: 1px solid #202635; }
+    .eyebrow { color: #19d9ea; font-size: 12px; font-weight: 760; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 10px 0 0; font-size: 34px; line-height: 1; letter-spacing: -.035em; font-weight: 640; }
+    .subtitle { max-width: 575px; margin: 12px 0 0; color: #9da5b5; font-size: 14px; line-height: 1.55; }
+    .version { color: #737d91; font: 600 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+    .legend { display: flex; align-items: center; gap: 18px; margin-top: 25px; color: #9da5b5; font-size: 11px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .cyan { background: #19d9ea; } .amber { background: #f2b33f; } .ivory { background: #f5efe2; }
+    .board { margin-top: 30px; overflow: hidden; border: 1px solid #252c3a; border-radius: 20px; box-shadow: 0 28px 80px rgba(0,0,0,.28); }
+    .surface { padding: 28px 32px 31px; }
+    .surface.dark { background: #090d16; color: #f5efe2; }
+    .surface.light { background: #f3eee4; color: #161a22; }
+    .surface + .surface { border-top: 1px solid #252c3a; }
+    .surface-head, .icon-row { display: grid; grid-template-columns: 206px repeat(4, 1fr); column-gap: 18px; align-items: center; }
+    .surface-head { margin-bottom: 12px; }
+    .surface-title { font-size: 11px; font-weight: 760; letter-spacing: .16em; text-transform: uppercase; }
+    .dark .surface-title { color: #c5cad5; } .light .surface-title { color: #505763; }
+    .size-title { text-align: center; font: 650 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .55; }
+    .icon-row { min-height: 59px; border-top: 1px solid rgba(126,137,157,.16); }
+    .icon-label { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .index { width: 22px; color: #19d9ea; font: 650 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .75; }
+    .light .index { color: #087e8a; }
+    .name { overflow: hidden; text-overflow: ellipsis; font: 620 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.01em; }
+    .dark .name { color: #aeb6c6; } .light .name { color: #444b57; }
+    .sample { height: 42px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .sample::before { content: ""; position: absolute; width: 32px; height: 32px; border: 1px solid rgba(126,137,157,.11); border-radius: 7px; }
+    .sample svg { display: block; position: relative; z-index: 1; overflow: visible; }
+    .accent-cyan { --chai-icon-accent: #19d9ea; }
+    .accent-amber { --chai-icon-accent: #f2b33f; }
+    .light .accent-cyan { --chai-icon-accent: #078f9e; }
+    .light .accent-amber { --chai-icon-accent: #b56d00; }
+    footer { display: flex; justify-content: space-between; margin-top: 24px; color: #6f788b; font-size: 10px; letter-spacing: .02em; }
+    .approval { color: #f2b33f; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <div class="eyebrow">Chai Studio / Visual Language Gate</div>
+        <h1>Icon Style Proof</h1>
+        <p class="subtitle">Twelve representative production glyphs. Editorial precision, softened geometry, and only one meaningful Chai accent per icon.</p>
+      </div>
+      <div class="version">STYLE-PROOF-V1<br>24 × 24 MASTER GRID<br>1.75 PX / ROUND</div>
+    </header>
+    <div class="legend">
+      <span><i class="dot ivory"></i>Primary utility</span>
+      <span><i class="dot cyan"></i>Precision / active / verified</span>
+      <span><i class="dot amber"></i>Authored warmth / attention</span>
+    </div>
+    <section class="board" id="board"></section>
+    <footer><span>Isolated artwork candidate · no live UI integration</span><span class="approval">STATIC APPROVAL REQUIRED BEFORE P0</span></footer>
+  </main>
+  <script>
+    const icons = [
+      ['workspace-edit', 'cyan'], ['workspace-media', 'amber'], ['workspace-animation', 'cyan'],
+      ['capture-exact', 'cyan'], ['render', 'cyan'], ['play', 'cyan'],
+      ['blade-tool', 'cyan'], ['snap', 'cyan'], ['keyframe', 'cyan'],
+      ['waveform', 'amber'], ['qa-scan', 'cyan'], ['status-warning', 'amber']
+    ];
+    const sizes = [14, 16, 20, 24];
+    const board = document.querySelector('#board');
+
+    async function iconMarkup(name, accent, size) {
+      const response = await fetch(`svg/${name}.svg`);
+      const source = await response.text();
+      return source.replace('<svg ', `<svg class="accent-${accent}" width="${size}" height="${size}" `);
+    }
+
+    async function surface(theme, title) {
+      const section = document.createElement('section');
+      section.className = `surface ${theme}`;
+      section.innerHTML = `<div class="surface-head"><div class="surface-title">${title}</div>${sizes.map(size => `<div class="size-title">${size} PX</div>`).join('')}</div>`;
+      for (let i = 0; i < icons.length; i++) {
+        const [name, accent] = icons[i];
+        const row = document.createElement('div');
+        row.className = 'icon-row';
+        const samples = await Promise.all(sizes.map(async size => `<div class="sample">${await iconMarkup(name, accent, size)}</div>`));
+        row.innerHTML = `<div class="icon-label"><span class="index">${String(i + 1).padStart(2, '0')}</span><span class="name">${name}</span></div>${samples.join('')}`;
+        section.appendChild(row);
+      }
+      board.appendChild(section);
+    }
+
+    (async () => {
+      await surface('dark', 'Midnight surface');
+      await surface('light', 'Warm-light surface');
+      document.documentElement.dataset.ready = 'true';
+    })();
+  </script>
+</body>
+</html>

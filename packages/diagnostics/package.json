@@ -1,0 +1,26 @@
+{
+  "name": "@chai-studio/diagnostics",
+  "version": "1.0.0-rc.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "development": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./performance": {
+      "types": "./dist/performance.d.ts",
+      "development": "./src/performance.ts",
+      "import": "./dist/performance.js"
+    },
+    "./release": {
+      "types": "./dist/release.d.ts",
+      "development": "./src/release.ts",
+      "import": "./dist/release.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

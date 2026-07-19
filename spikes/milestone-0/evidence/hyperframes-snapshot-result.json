@@ -1,0 +1,9 @@
+{
+  "timestampSec": 1.8,
+  "hashes": [
+    "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935",
+    "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935"
+  ],
+  "deterministic": true,
+  "note": "Uses frame 54. Isolated snapshot seeks at frame 57 showed a CLI-only near-end capture anomaly; actual rendered frames 54-59 were visually verified intact."
+}

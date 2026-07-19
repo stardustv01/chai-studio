@@ -1,0 +1,74 @@
+{
+  "duration": 2.4,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#creative-signal-left-dot",
+      "bySec": 0.36
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#creative-signal-right-dot",
+      "bySec": 0.36
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#creative-vertical-top-dot",
+      "bySec": 1.2
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#creative-vertical-bottom-dot",
+      "bySec": 1.2
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#creative-cyan-layer",
+      "bySec": 1.32
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#creative-english-layer",
+      "bySec": 1.72
+    },
+    {
+      "kind": "before",
+      "a": "#creative-signal-left-dot",
+      "b": "#creative-english-layer"
+    },
+    {
+      "kind": "before",
+      "a": "#creative-signal-right-dot",
+      "b": "#creative-english-layer"
+    },
+    {
+      "kind": "before",
+      "a": "#creative-first-symbol-layer",
+      "b": "#creative-vertical-top-dot"
+    },
+    {
+      "kind": "before",
+      "a": "#creative-rest-symbol-layer",
+      "b": "#creative-vertical-top-dot"
+    },
+    {
+      "kind": "before",
+      "a": "#creative-vertical-top-dot",
+      "b": "#creative-english-layer"
+    },
+    {
+      "kind": "before",
+      "a": "#creative-vertical-bottom-dot",
+      "b": "#creative-english-layer"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#creative-mark-clip"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#creative-mark-clip",
+      "maxStaticSec": 1.45
+    }
+  ]
+}

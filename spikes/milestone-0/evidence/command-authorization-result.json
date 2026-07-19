@@ -1,0 +1,67 @@
+{
+  "capabilities": {
+    "project.inspect": {
+      "authorization": "automatic",
+      "rateCategory": "read"
+    },
+    "capture.create": {
+      "authorization": "automatic",
+      "rateCategory": "capture"
+    },
+    "project.mutate": {
+      "authorization": "validated",
+      "rateCategory": "mutation"
+    },
+    "source.edit": {
+      "authorization": "validated-source-transaction",
+      "rateCategory": "mutation"
+    },
+    "project.delete": {
+      "authorization": "explicit",
+      "rateCategory": "destructive"
+    },
+    "project.replace-all": {
+      "authorization": "explicit",
+      "rateCategory": "destructive"
+    },
+    "external.publish": {
+      "authorization": "unsupported-personal-baseline",
+      "rateCategory": "external"
+    }
+  },
+  "envelope": {
+    "commandId": "m0-command-1",
+    "idempotencyId": "m0-idempotency-1",
+    "actorId": "local-user",
+    "sessionId": "m0-session",
+    "projectId": "chai-milestone-0-canonical",
+    "baseRevisionId": "m0-revision",
+    "correlationId": "m0-correlation",
+    "capability": "project.mutate",
+    "affectedEntities": [
+      "timeline"
+    ],
+    "payload": {
+      "operation": "set-frame",
+      "frame": 30
+    }
+  },
+  "decision": {
+    "authorized": true,
+    "replayed": false,
+    "commandIdentity": "d423ced11986f8a668fe63d8f18242ac3982818610a2e31782a8a13ebb3b8cdf",
+    "authorization": "validated",
+    "rateCategory": "mutation",
+    "audit": {
+      "commandId": "m0-command-1",
+      "actorId": "local-user",
+      "sessionId": "m0-session",
+      "projectId": "chai-milestone-0-canonical",
+      "baseRevisionId": "m0-revision",
+      "correlationId": "m0-correlation",
+      "affectedEntities": [
+        "timeline"
+      ]
+    }
+  }
+}

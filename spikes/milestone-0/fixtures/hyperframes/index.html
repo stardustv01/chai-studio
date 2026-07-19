@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=640, height=360" />
+    <title>Chai Studio HyperFrames Milestone 0</title>
+    <style>
+      html,
+      body {
+        width: 640px;
+        height: 360px;
+        margin: 0;
+        overflow: hidden;
+        background: #07090d;
+        color: #f8fafc;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      #root {
+        position: relative;
+        width: 640px;
+        height: 360px;
+        overflow: hidden;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      .surface {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 75% 25%, rgba(139, 92, 246, 0.28), transparent 32%),
+          linear-gradient(145deg, #0d1119, #090b11);
+      }
+      .card {
+        width: 440px;
+        padding: 34px;
+        border: 1px solid rgba(196, 181, 253, 0.4);
+        border-radius: 24px;
+        background: rgba(17, 24, 39, 0.92);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+      }
+      .eyebrow {
+        margin: 0 0 12px;
+        color: #c4b5fd;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 0;
+        font-size: 42px;
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+      }
+      .meter {
+        width: 100%;
+        height: 8px;
+        margin-top: 26px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #252b38;
+      }
+      .meter-fill {
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform-origin: left center;
+        background: linear-gradient(90deg, #8b5cf6, #22d3ee);
+      }
+    </style>
+    <script src="./vendor/gsap.min.js"></script>
+  </head>
+  <body>
+    <div id="root" data-composition-id="chai-m0-hyperframes" data-start="0" data-width="640" data-height="360" data-duration="2" data-fps="30">
+      <section id="m0-scene" class="clip" data-start="0" data-duration="2" data-track-index="1">
+        <div class="surface">
+          <div id="m0-card" class="card">
+            <p class="eyebrow">Milestone 0</p>
+            <h1>One clock. Exact frames.</h1>
+            <div class="meter"><span id="m0-meter" class="meter-fill"></span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const timeline = gsap.timeline({ paused: true });
+      timeline.from("#m0-meter", { scaleX: 0, transformOrigin: "left center", duration: 2, ease: "none" }, 0);
+      window.__timelines["chai-m0-hyperframes"] = timeline;
+    </script>
+  </body>
+</html>

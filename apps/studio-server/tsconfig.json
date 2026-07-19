@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.package.json",
+  "compilerOptions": { "rootDir": "src", "outDir": "dist", "tsBuildInfoFile": "dist/.tsbuildinfo" },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../../packages/audio" },
+    { "path": "../../packages/bridge" },
+    { "path": "../../packages/captions" },
+    { "path": "../../packages/diagnostics" },
+    { "path": "../../packages/engine-adapters" },
+    { "path": "../../packages/media" },
+    { "path": "../../packages/preview" },
+    { "path": "../../packages/qa" },
+    { "path": "../../packages/render" },
+    { "path": "../../packages/review" },
+    { "path": "../../packages/security" },
+    { "path": "../../packages/schema" },
+    { "path": "../../packages/timeline" }
+  ]
+}

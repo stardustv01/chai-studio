@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0.0",
+  "hardwareClassId": "apple-m4-16gb",
+  "budgets": [
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "small",
+      "direction": "maximum",
+      "p95": 15,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "medium",
+      "direction": "maximum",
+      "p95": 60,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "long",
+      "direction": "maximum",
+      "p95": 130,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "hundreds-of-clips",
+      "direction": "maximum",
+      "p95": 250,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "heavy-webgl",
+      "direction": "maximum",
+      "p95": 60,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "captions",
+      "direction": "maximum",
+      "p95": 60,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "audio",
+      "direction": "maximum",
+      "p95": 120,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    },
+    {
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "hardwareClassId": "apple-m4-16gb",
+      "projectClass": "mixed-engine-bridges",
+      "direction": "maximum",
+      "p95": 100,
+      "maximumRegressionRatio": 1.15,
+      "minimumSamples": 5
+    }
+  ]
+}

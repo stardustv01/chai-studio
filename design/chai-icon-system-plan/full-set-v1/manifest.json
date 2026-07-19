@@ -1,0 +1,760 @@
+{
+  "name": "chai-studio-icon-system",
+  "version": "1.0.0-candidate",
+  "status": "isolated-full-set-candidate",
+  "integrated": false,
+  "grid": 24,
+  "strokeWidth": 1.75,
+  "liveSizes": [
+    14,
+    16,
+    20,
+    24
+  ],
+  "total": 123,
+  "phases": {
+    "P0": 48,
+    "P1": 46,
+    "P2": 29
+  },
+  "icons": [
+    {
+      "phase": "P0",
+      "category": "workspace-navigation",
+      "name": "workspace-edit",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "workspace-navigation",
+      "name": "workspace-inspect",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "workspace-navigation",
+      "name": "workspace-media",
+      "accent": "amber"
+    },
+    {
+      "phase": "P0",
+      "category": "workspace-navigation",
+      "name": "workspace-animation",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "workspace-navigation",
+      "name": "workspace-deliver",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "search",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "project-open",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "project-new",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "save-state",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "capture-exact",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "render",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "command-palette",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "diagnostics-truth",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "panel-collapse-expand",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "global-shell",
+      "name": "fullscreen",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "seek-start",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "seek-end",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "previous-frame",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "next-frame",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "play",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "pause",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "loop-range",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "mark-in",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "mark-out",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "shuttle-backward",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "shuttle-forward",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "transport",
+      "name": "playback-rate",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "select-tool",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "blade-tool",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "split-playhead",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "snap",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "linked-clips",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "undo",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "redo",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "nudge-left",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "nudge-right",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "add-track",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "delete",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "duplicate",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "copy",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "paste",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "track-lock",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "track-mute",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "track-solo",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "keyframe",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "transition",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "timeline-marker",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P0",
+      "category": "timeline-editing",
+      "name": "compound-clip",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "folder",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "footage",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "interview",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "product-media",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "audio-media",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "graphic",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "composition",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "import-media",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "relink",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "generate-proxy",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "validate-source",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "media-offline",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "duplicate-hash",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "media-source",
+      "name": "metadata",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "animated-property",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "key-add",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "key-remove",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "previous-key",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "next-key",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "curve-editor",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "graph-value",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "graph-speed",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "tangent-mode",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "interpolation-hold",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "interpolation-bezier",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "animation-keyframes",
+      "name": "distribute-time",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "waveform",
+      "accent": "amber"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "gain",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "pan",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "fade-in",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "fade-out",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "crossfade",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "sync-anchor",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "ducking",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "channel-map",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "audio",
+      "name": "loudness",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "transcript",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "captions",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "speaker-filter",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "confidence-filter",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "corrected",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "compare-script",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "caption-alignment",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "caption-position",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "safe-area",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P1",
+      "category": "transcript-captions",
+      "name": "word-highlight",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "review-bundle",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "feedback-request",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "review-issue",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "annotation",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "visibility",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "capture-isolated",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "capture-before-effects",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "capture-alpha",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "capture-ab",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "review-capture",
+      "name": "contact-sheet",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "delivery-profile",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "render-range",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "render-frame",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "render-timeline",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "named-version",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "render-queue",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "receipt",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "preflight",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "qa-scan",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "approve",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "delivery-qa",
+      "name": "deliver-output",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-ready",
+      "accent": "success"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-working",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-info",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-warning",
+      "accent": "amber"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-danger",
+      "accent": "danger"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-offline",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-read-only",
+      "accent": "cyan"
+    },
+    {
+      "phase": "P2",
+      "category": "system-truth",
+      "name": "status-conflict",
+      "accent": "cyan"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "duration": 2,
+  "assertions": [
+    { "kind": "appearsBy", "selector": "#m0-card", "bySec": 0.7 },
+    { "kind": "staysInFrame", "selector": "#m0-card" },
+    { "kind": "keepsMoving", "withinSelector": "#m0-scene", "maxStaticSec": 1.5 }
+  ]
+}

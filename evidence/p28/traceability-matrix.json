@@ -1,0 +1,248 @@
+{
+  "schemaVersion": "1.0.0",
+  "productScope": "Foundation plus Professional Expansion",
+  "releaseCandidate": "1.0.0-rc.1",
+  "rows": [
+    {
+      "task": "P28.01",
+      "status": "passed",
+      "evidence": [
+        "tests/integration/reopen-drift.test.ts",
+        "tests/integration/migration.test.ts",
+        "evidence/p27/qualification-report.json"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.02",
+      "status": "passed",
+      "evidence": [
+        "tests/integration/preview-mixed-engine.test.ts",
+        "tests/integration/shared-preview-mixed-engine.test.ts",
+        "tests/integration/remotion-real-runtime.test.ts",
+        "tests/integration/hyperframes-real-runtime.test.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.03",
+      "status": "passed",
+      "evidence": [
+        "tests/unit/professional-timeline.test.ts",
+        "tests/integration/professional-reopen-parity.test.ts",
+        "tests/integration/autosave-recovery.test.ts",
+        "tests/integration/source-edit.test.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.04",
+      "status": "passed",
+      "evidence": [
+        "tests/unit/media-proxy-manager.test.ts",
+        "tests/unit/media-font-registry.test.ts",
+        "tests/integration/server-asset-api.test.ts",
+        "tests/integration/security-trust-preflight.test.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.05",
+      "status": "passed",
+      "evidence": [
+        "tests/e2e/program-monitor.spec.ts",
+        "tests/e2e/timeline-editor.spec.ts",
+        "tests/e2e/transcript-caption.spec.ts",
+        "tests/e2e/audio-mixer.spec.ts",
+        "tests/e2e/performance-accessibility.spec.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.06",
+      "status": "passed",
+      "evidence": [
+        "tests/unit/bridge-context-capture.test.ts",
+        "tests/integration/source-edit.test.ts",
+        "tests/e2e/review-workspace.spec.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.07",
+      "status": "passed",
+      "evidence": [
+        "tests/unit/qa-visual-sync.test.ts",
+        "tests/visual/golden-manifest.test.ts",
+        "tests/integration/remotion-real-runtime.test.ts",
+        "tests/integration/hyperframes-real-runtime.test.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.08",
+      "status": "passed",
+      "evidence": [
+        "tests/unit/professional-timeline.test.ts",
+        "tests/property/shared-transitions.property.test.ts",
+        "tests/e2e/professional-editing.spec.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.09",
+      "status": "passed",
+      "evidence": [
+        "tests/property/audio-sample-mapping.property.test.ts",
+        "tests/property/caption-timing.property.test.ts",
+        "tests/integration/audio-preview-scheduler.test.ts",
+        "tests/integration/language-document-command.test.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.10",
+      "status": "passed",
+      "evidence": [
+        "tests/unit/render-dag-cache.test.ts",
+        "tests/integration/render-dag-execution.test.ts",
+        "tests/unit/render-recovery.test.ts",
+        "tests/integration/server-render-api.test.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.11",
+      "status": "passed",
+      "evidence": [
+        "tests/integration/qa-lifecycle-authority.test.ts",
+        "tests/integration/server-render-api.test.ts",
+        "tests/e2e/qa-delivery-gate.spec.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.12",
+      "status": "passed",
+      "evidence": [
+        "tests/integration/server-render-api.test.ts",
+        "apps/studio-server/src/render-service.ts",
+        "packages/qa/src/evaluators.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.13",
+      "status": "passed",
+      "evidence": [
+        "scripts/security-check.mjs",
+        "tests/unit/security-policy.test.ts",
+        "tests/integration/security-path-containment.test.ts",
+        "governance/licenses/release-review.json"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.14",
+      "status": "passed",
+      "evidence": [
+        "evidence/p26/benchmark-report.json",
+        "tests/integration/performance-soak-budget.test.ts",
+        "fixtures/performance/budgets.json"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.15",
+      "status": "passed",
+      "evidence": [
+        "evidence/p28/walkthrough-report.json",
+        "tests/e2e/studio-visual.spec.ts"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.16",
+      "status": "passed",
+      "evidence": [
+        "tests/integration/release-operations.test.ts",
+        "evidence/p27/qualification-report.json",
+        "scripts/release-operations.mjs"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.17",
+      "status": "passed",
+      "evidence": [
+        "evidence/p27/disaster-drill-report.json",
+        "tests/integration/reliability-repair.test.ts",
+        "docs/MIGRATION_ROLLBACK.md"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.18",
+      "status": "passed",
+      "evidence": [
+        "evidence/p28/traceability-matrix.json",
+        "governance/execution-baseline.json",
+        "governance/P27_ACCEPTANCE.md"
+      ],
+      "waiver": null,
+      "blocker": null
+    },
+    {
+      "task": "P28.19",
+      "status": "pending-owner-approval",
+      "evidence": [
+        "evidence/p28/version-1-release-receipt.json",
+        "docs/KNOWN_LIMITATIONS_V1.md"
+      ],
+      "waiver": null,
+      "blocker": "explicit owner approval and signature required"
+    },
+    {
+      "task": "P28.20",
+      "status": "ready-pending-release",
+      "evidence": [
+        "docs/OPERATIONAL_HANDOFF_V1.md",
+        "docs/POST_RELEASE_OPERATIONS.md",
+        "docs/MIGRATION_ROLLBACK.md"
+      ],
+      "waiver": null,
+      "blocker": null
+    }
+  ],
+  "inScopeRequirementCount": 20,
+  "implementedTechnicalCount": 18,
+  "unexplainedWaivers": 0,
+  "unresolvedTechnicalBlockers": 0,
+  "deferredOutOfScope": [
+    "cloud collaboration",
+    "public marketplace",
+    "multicam",
+    "mobile editing",
+    "nodal compositing",
+    "hosted rendering",
+    "external publishing"
+  ],
+  "identity": "91d7a0dcb13f36af2ad4c8fae396c5c46e37c7ec60fce210dc29ca41b7a92335"
+}

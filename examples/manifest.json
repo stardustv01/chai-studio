@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "examples": [
+    {
+      "id": "raw-media",
+      "file": "raw-media/project.example.json",
+      "capabilities": ["shared-video", "proxy", "relink"]
+    },
+    {
+      "id": "remotion",
+      "file": "remotion/project.example.json",
+      "capabilities": ["native-remotion", "exact-still"]
+    },
+    {
+      "id": "hyperframes",
+      "file": "hyperframes/project.example.json",
+      "capabilities": ["native-hyperframes", "exact-range"]
+    },
+    {
+      "id": "mixed-engine",
+      "file": "mixed-engine/project.example.json",
+      "capabilities": ["remotion", "hyperframes", "shared", "bridge"]
+    },
+    {
+      "id": "captions",
+      "file": "captions/project.example.json",
+      "capabilities": ["transcript", "captions", "srt", "vtt"]
+    },
+    {
+      "id": "audio",
+      "file": "audio/project.example.json",
+      "capabilities": ["audio-graph", "automation", "offline-mix"]
+    },
+    {
+      "id": "bridges-alpha",
+      "file": "bridges-alpha/project.example.json",
+      "capabilities": ["advanced-bridge", "alpha", "boundary-qa"]
+    },
+    {
+      "id": "untrusted-import",
+      "file": "untrusted-import/project.example.json",
+      "capabilities": ["imported-disabled", "trust-review", "containment"]
+    },
+    {
+      "id": "professional-edit",
+      "file": "professional-edit/project.example.json",
+      "capabilities": ["roll", "slip", "slide", "three-point", "time-remap"]
+    }
+  ]
+}

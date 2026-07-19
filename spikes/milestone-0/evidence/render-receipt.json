@@ -1,0 +1,101 @@
+{
+  "audio": {
+    "authority": "shared-graph",
+    "endpointSampleExact": true,
+    "nativeEngineAudio": "suppressed",
+    "sampleRate": 48000
+  },
+  "cacheLineage": {
+    "produced": [
+      "hyperframes-fixture",
+      "mixed-finish"
+    ],
+    "reused": []
+  },
+  "dependencies": {
+    "captionPlan": "a9b1f6acbce98c822fa93653792b3da1839329536895a31c57d334e2d93a401f",
+    "fixtureAssets": {
+      "assets/alpha-overlay.mov": "6cbdd7340ba60390321870775ece758bd136fce26ba2f2f92a03222659f0fa77",
+      "assets/music.wav": "003832db25c0b7b9bb685426c4b30ca5add4e3809467448c0e1b92e71cdf586c",
+      "assets/offline-mix.wav": "ba2fb31a5b2dd436b1898af3595a105e93c7868003586051da8a51e95ad180f0",
+      "assets/raw-video.mp4": "72eb5e9db29949b52fe63c3162cb4b570d99c92de718386ae295946cb04c0789",
+      "assets/voiceover.wav": "71c570afb4ce06f1585898f85397f2015ae12a8f2e4035efe050b540895ccd9f",
+      "captions.vtt": "223541eac1cff00a288c5a3e23a7c9f3b81337be0b172d632b587cbc9e2c4c78",
+      "fixture-image.svg": "44259ba08b48a3a2a283ea93df4b47664bbdc7cbeb45a1f15b11f7e6b267ea0b"
+    },
+    "lockfile": "9decd52513e3bef58f16d6a3d1a31e970f4780bbc47453e0944cd051a93dbde1"
+  },
+  "engines": [
+    {
+      "id": "remotion",
+      "role": "finisher",
+      "version": "4.0.489"
+    },
+    {
+      "id": "hyperframes",
+      "role": "native-intermediate",
+      "version": "0.7.58"
+    }
+  ],
+  "exceptions": [],
+  "generatedAt": "2026-07-15T09:04:01.068Z",
+  "jobId": "m0-mixed-finish",
+  "outputs": [
+    {
+      "bytes": 2480036,
+      "relativePath": "evidence/mixed-finish.mov",
+      "sha256": "4aae8d8117be447da088407e223a338b847213fb8cfb03b5742f855d28ced816"
+    }
+  ],
+  "profile": {
+    "audioCodec": "pcm_s16le",
+    "container": "mov",
+    "dimensions": [
+      640,
+      360
+    ],
+    "fps": {
+      "den": 1001,
+      "num": 30000
+    },
+    "id": "m0-pcm-mezzanine",
+    "videoCodec": "h264"
+  },
+  "projectId": "chai-milestone-0-canonical",
+  "qa": {
+    "approval": null,
+    "delivered": false,
+    "gateReportSha256": "7a5b0b7c70837dff08e0663d75c99f32d92a5d3582cd23b8788f92a6a35ba1de",
+    "state": "rendered_unchecked"
+  },
+  "reproduction": {
+    "alphaFallback": "rgba-png-sequence",
+    "commands": [
+      "node scripts/run-gate.mjs",
+      "node scripts/generate-contract-evidence.mjs"
+    ]
+  },
+  "revisionId": "m0-revision",
+  "strictEnvironment": {
+    "fingerprint": "5df774240ad4ed6518f1432f633df8aa2e70261db44b8e6cecf154cf62902281",
+    "manifest": {
+      "architecture": "arm64",
+      "chrome": "Google Chrome 150.0.7871.124 ",
+      "cpuModel": "Apple M4",
+      "ffmpeg": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+      "ffprobe": "ffprobe version 7.1.1 Copyright (c) 2007-2025 the FFmpeg developers",
+      "hyperframes": "0.7.58",
+      "locale": "en-US",
+      "lockfileSha256": "9decd52513e3bef58f16d6a3d1a31e970f4780bbc47453e0944cd051a93dbde1",
+      "node": "v22.17.0",
+      "osRelease": "25.5.0",
+      "platform": "darwin",
+      "pnpm": "11.11.0",
+      "remotion": "4.0.489",
+      "timezone": "Asia/Calcutta",
+      "totalMemoryBytes": 17179869184
+    }
+  },
+  "version": 1,
+  "identity": "b8957c874f180e455677fd169749213b778e59e0e5f616be5f80c8ee5288fe43"
+}

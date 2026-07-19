@@ -1,0 +1,29 @@
+{
+  "duration": 2.4,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#cyan-layer",
+      "bySec": 0.36
+    },
+    {
+      "kind": "appearsBy",
+      "selector": "#english-layer",
+      "bySec": 0.62
+    },
+    {
+      "kind": "before",
+      "a": "#cyan-layer",
+      "b": "#english-layer"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#faithful-mark-clip"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#faithful-mark-clip",
+      "maxStaticSec": 1.85
+    }
+  ]
+}

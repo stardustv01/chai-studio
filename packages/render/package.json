@@ -1,0 +1,24 @@
+{
+  "name": "@chai-studio/render",
+  "version": "1.0.0-rc.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "development": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@chai-studio/audio": "workspace:*",
+    "@chai-studio/diagnostics": "workspace:*",
+    "@chai-studio/engine-adapters": "workspace:*",
+    "@chai-studio/media": "workspace:*",
+    "@chai-studio/schema": "workspace:*",
+    "@chai-studio/timeline": "workspace:*"
+  }
+}

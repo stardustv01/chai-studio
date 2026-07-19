@@ -1,0 +1,15 @@
+# Studio web client state architecture
+
+The web client is a projection and command surface. It is not a second project authority.
+
+| State class                    | Owner                                         | Client rule                                                                                                                                                                                                     |
+| ------------------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Authoritative project snapshot | Studio server and immutable project revisions | Replace from versioned API snapshots/events. Never mutate nested project data locally. Commands carry the base revision and stale responses trigger a full resync.                                              |
+| Transient interaction          | Current browser window                        | Workspace, focus, hover, draft selection, open panels, dialogs, and toasts may update locally. They never serialize into project documents.                                                                     |
+| Transport                      | Preview service                               | The UI may optimistically show a pending control, but displayed frame/timecode/mode comes back from preview state or ordered events.                                                                            |
+| Command state                  | Command API                                   | Pending/idempotency/correlation records are local transport state. Success means only that the server accepted the command and returned a revision; it never implies render, QA, approval, or delivery success. |
+| Query cache                    | Browser memory                                | Read-through results are keyed by endpoint and revision/event sequence. Cache entries are discarded on revision change, resync, reconnect gap, or explicit invalidation.                                        |
+| Layout preference              | Versioned local storage                       | Per-workspace panel dimensions/collapse state are bounded and resettable. Layout state cannot affect project meaning.                                                                                           |
+| Diagnostics and performance    | Browser memory                                | Error details, event lag, long tasks, render cost, and interaction latency stay local and bounded. No telemetry leaves the machine.                                                                             |
+
+The authenticated loopback API uses correlation IDs for every request. The event subscriber resumes from its last sequence ID; replay loss triggers a snapshot resync before new events are applied. Text-entry focus suppresses editor shortcuts except commands explicitly marked safe.

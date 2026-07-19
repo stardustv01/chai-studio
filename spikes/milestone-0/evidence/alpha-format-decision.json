@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-07-15T08:18:00.000Z",
+  "target": "macOS arm64 / Remotion 4.0.489 finishing compositor",
+  "tested": {
+    "qtrleArgbMov": {
+      "ffprobeValid": true,
+      "bitDepth": 8,
+      "pixelFormat": "argb",
+      "bytesFor60Frames": 16737,
+      "remotionOffthreadVideo": false,
+      "failure": "Compositor error: Decoder not found"
+    },
+    "rgbaPngSequence": {
+      "ffprobeValid": true,
+      "bitDepthPerChannel": 8,
+      "pixelFormat": "rgba",
+      "bytesFor60Frames": 34080,
+      "relativeDiskCostVsQtrle": 2.0362060106351208,
+      "remotionImgSequence": true,
+      "status": "selected and confirmed by successful 300-frame mixed render"
+    }
+  },
+  "decision": "Use 8-bit RGBA PNG sequence as the Milestone 0 transparent bridge default for Remotion finishing. It completed the 300-frame mixed finish in the 17.0-17.4 second measured range. Retain 8-bit qtrle/ARGB MOV as a compact FFmpeg-valid fallback only for consumers that prove decoder compatibility; it is not compatible with the pinned Remotion OffthreadVideo path."
+}

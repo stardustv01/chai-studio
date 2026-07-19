@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path d="M5 4h10l4 4v12H5zM15 4v4h4"/>
+  <path d="M8 12h8M8 16h5"/>
+  <circle cx="16" cy="16" r="1.25" fill="var(--chai-icon-accent, currentColor)" stroke="none"/>
+</svg>

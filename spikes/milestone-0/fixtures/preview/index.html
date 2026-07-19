@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chai Studio Milestone 0 Preview</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #07090d; color: #f8fafc; }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 70% 0%, #24164a 0, transparent 34%), #07090d; }
+      button, input { font: inherit; }
+      .shell { min-height: 100vh; display: grid; grid-template-rows: 56px 1fr 104px; }
+      header { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid #252b38; background: rgba(9,11,17,.86); backdrop-filter: blur(18px); }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.02em; }
+      .mark { width: 28px; height: 28px; border-radius: 9px; background: linear-gradient(135deg,#8b5cf6,#22d3ee); box-shadow: 0 0 28px rgba(139,92,246,.45); }
+      .status { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #cbd5e1; }
+      .pill { border: 1px solid #4c3a78; border-radius: 999px; padding: 6px 10px; background: #19132d; color: #d8b4fe; font-weight: 700; }
+      main { display: grid; grid-template-columns: 220px minmax(520px,1fr) 250px; gap: 16px; min-height: 0; padding: 16px; }
+      aside, .monitor-panel { border: 1px solid #252b38; border-radius: 16px; background: rgba(13,17,25,.9); overflow: hidden; }
+      .panel-title { padding: 14px 16px; border-bottom: 1px solid #252b38; color: #94a3b8; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+      .layers { padding: 10px; display: grid; gap: 8px; }
+      .layer { display: grid; grid-template-columns: 8px 1fr auto; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: #111827; font-size: 13px; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; }
+      .engine { color: #94a3b8; font-size: 10px; text-transform: uppercase; }
+      .monitor-panel { display: grid; grid-template-rows: 42px 1fr; min-width: 0; }
+      .monitor-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: 1px solid #252b38; font-size: 12px; color: #94a3b8; }
+      .monitor { position: relative; place-self: center; width: min(100%, 960px); aspect-ratio: 16/9; overflow: hidden; background: #030712; box-shadow: 0 28px 90px rgba(0,0,0,.48); }
+      .monitor > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .shared { opacity: .38; }
+      .native { border: 1px solid rgba(255,255,255,.14); border-radius: 16px; box-shadow: 0 18px 48px rgba(0,0,0,.55); object-fit: cover !important; }
+      #remotion-layer { inset: 12% auto auto 6%; width: 48%; height: 48%; }
+      #hyperframes-layer { inset: auto 6% 12% auto; width: 48%; height: 48%; }
+      .approx { position: absolute; top: 14px; left: 14px; z-index: 5; display: flex; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid #a16207; border-radius: 9px; background: rgba(66,32,6,.88); color: #fde68a; font-size: 11px; font-weight: 800; }
+      .frame-hud { position: absolute; right: 14px; top: 14px; z-index: 5; padding: 8px 10px; border-radius: 9px; background: rgba(3,7,18,.8); font-variant-numeric: tabular-nums; font-size: 12px; }
+      .inspector { padding: 14px; display: grid; align-content: start; gap: 12px; }
+      .metric { padding: 12px; border-radius: 10px; background: #111827; }
+      .metric span { display: block; color: #94a3b8; font-size: 10px; text-transform: uppercase; margin-bottom: 6px; }
+      .metric strong { font-size: 14px; font-variant-numeric: tabular-nums; }
+      footer { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 14px 24px; border-top: 1px solid #252b38; background: #090b11; }
+      .transport { display: flex; gap: 8px; }
+      button { min-width: 42px; padding: 9px 12px; border: 1px solid #334155; border-radius: 9px; background: #151b28; color: #e2e8f0; cursor: pointer; }
+      button:hover { border-color: #8b5cf6; }
+      button:focus-visible, input:focus-visible { outline: 2px solid #22d3ee; outline-offset: 2px; }
+      button[aria-pressed="true"] { background: #312e81; border-color: #8b5cf6; }
+      input[type="range"] { width: 100%; accent-color: #8b5cf6; }
+      .time { font-variant-numeric: tabular-nums; color: #c4b5fd; font-weight: 800; }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <div class="brand"><span class="mark"></span>Chai Studio <span style="color:#64748b;font-weight:500">/ Canonical M0</span></div>
+        <div class="status"><span>Revision m0-001</span><span class="pill" id="mode-pill">Interactive preview</span></div>
+      </header>
+      <main>
+        <aside>
+          <div class="panel-title">Layers</div>
+          <div class="layers">
+            <div class="layer"><span class="dot" style="background:#22d3ee"></span><span>Remotion native</span><span class="engine" id="remotion-state">F0</span></div>
+            <div class="layer"><span class="dot" style="background:#8b5cf6"></span><span>HyperFrames native</span><span class="engine" id="hyperframes-state">F0</span></div>
+            <div class="layer"><span class="dot" style="background:#f59e0b"></span><span>Shared media</span><span class="engine">Exact</span></div>
+          </div>
+        </aside>
+        <section class="monitor-panel">
+          <div class="monitor-toolbar"><span>Program monitor · Fit</span><button data-testid="fidelity" id="fidelity" aria-pressed="false">Fidelity capture</button></div>
+          <div class="monitor" data-testid="program-monitor">
+            <img class="shared" src="/fixtures/canonical/fixture-image.svg" alt="Shared generated media" />
+            <img class="native" id="remotion-layer" src="/fixtures/preview/assets/remotion/frame-00.png" alt="Remotion native layer" />
+            <img class="native" id="hyperframes-layer" src="/fixtures/preview/assets/hyperframes/frame-00.png" alt="HyperFrames native layer" />
+            <div class="approx" id="approx-warning">⚠ INTERACTIVE COMPOSITE · APPROXIMATE</div>
+            <div class="frame-hud" id="frame-hud">Master F000</div>
+          </div>
+        </section>
+        <aside>
+          <div class="panel-title">Sync diagnostics</div>
+          <div class="inspector">
+            <div class="metric"><span>Clock authority</span><strong>Master scheduler</strong></div>
+            <div class="metric"><span>Frame delta</span><strong id="frame-delta">0 frames</strong></div>
+            <div class="metric"><span>Native proxies</span><strong id="proxy-state">Loading</strong></div>
+            <div class="metric"><span>Warm seek p95</span><strong id="seek-benchmark">Not measured</strong></div>
+            <div class="metric"><span>Audio sample</span><strong id="audio-sample">0</strong></div>
+            <div class="metric"><span>Web Audio graph</span><strong id="audio-graph-state">Unprimed</strong></div>
+            <div class="metric"><span>Native audio</span><strong>Suppressed</strong></div>
+            <button data-testid="benchmark-seeks" id="benchmark-seeks">Benchmark seeks</button>
+            <button data-testid="inject-drift" id="inject-drift">Inject +1 drift</button>
+            <button data-testid="hard-resync" id="hard-resync">Hard resync</button>
+          </div>
+        </aside>
+      </main>
+      <footer>
+        <div class="transport">
+          <button data-testid="previous" id="previous" aria-label="Previous frame">−1</button>
+          <button data-testid="play" id="play" aria-label="Play">▶</button>
+          <button data-testid="next" id="next" aria-label="Next frame">+1</button>
+          <button data-testid="loop" id="loop" aria-pressed="false">Loop 60–120</button>
+          <button data-testid="prime-audio" id="prime-audio">Prime audio</button>
+        </div>
+        <input data-testid="scrubber" id="scrubber" aria-label="Master frame" type="range" min="0" max="299" value="0" />
+        <div class="time" id="timecode">00:00:00:00</div>
+      </footer>
+    </div>
+    <script>
+      const state = { frame: 0, playing: false, loop: false, mode: 'interactive', lastTick: 0, accumulator: 0, drift: 0, proxiesReady: false, seekP95Ms: null };
+      const elements = Object.fromEntries(['scrubber','play','previous','next','loop','fidelity','prime-audio','benchmark-seeks','inject-drift','hard-resync','frame-hud','timecode','remotion-state','hyperframes-state','frame-delta','proxy-state','seek-benchmark','audio-sample','audio-graph-state','approx-warning','mode-pill','remotion-layer','hyperframes-layer'].map(id => [id, document.getElementById(id)]));
+      const sourceFrame = master => Math.floor(master * 1001 / 1000) % 60;
+      const audioSample = master => Math.floor(master * 48000 * 1001 / 30000);
+      const proxyUrl = (engine, frame) => `/fixtures/preview/assets/${engine}/frame-${String(frame).padStart(2,'0')}.png`;
+      const render = () => {
+        const expectedFrame = sourceFrame(state.frame);
+        const hyperframesFrame = (expectedFrame + state.drift + 60) % 60;
+        elements.scrubber.value = state.frame;
+        elements['frame-hud'].textContent = `Master F${String(state.frame).padStart(3,'0')}`;
+        elements.timecode.textContent = `00:00:${String(Math.floor(state.frame / 30)).padStart(2,'0')}:${String(state.frame % 30).padStart(2,'0')}`;
+        elements['remotion-state'].textContent = `F${expectedFrame}`;
+        elements['hyperframes-state'].textContent = `F${hyperframesFrame}`;
+        elements['frame-delta'].textContent = `${state.drift} ${Math.abs(state.drift) === 1 ? 'frame' : 'frames'}`;
+        if (elements['remotion-layer'].dataset.frame !== String(expectedFrame)) {
+          elements['remotion-layer'].src = proxyUrl('remotion', expectedFrame);
+          elements['remotion-layer'].dataset.frame = String(expectedFrame);
+        }
+        if (elements['hyperframes-layer'].dataset.frame !== String(hyperframesFrame)) {
+          elements['hyperframes-layer'].src = proxyUrl('hyperframes', hyperframesFrame);
+          elements['hyperframes-layer'].dataset.frame = String(hyperframesFrame);
+        }
+        elements['audio-sample'].textContent = audioSample(state.frame).toLocaleString();
+        elements.play.textContent = state.playing ? 'Ⅱ' : '▶';
+        elements.loop.setAttribute('aria-pressed', String(state.loop));
+        elements.fidelity.setAttribute('aria-pressed', String(state.mode === 'fidelity'));
+        elements['approx-warning'].hidden = state.mode === 'fidelity';
+        elements['mode-pill'].textContent = state.mode === 'fidelity' ? 'Rendered fidelity' : 'Interactive preview';
+        elements['proxy-state'].textContent = state.proxiesReady ? '120 frames preloaded' : 'Loading';
+        elements['seek-benchmark'].textContent = state.seekP95Ms == null ? 'Not measured' : `${state.seekP95Ms.toFixed(2)} ms`;
+      };
+      const setFrame = frame => { state.frame = Math.max(0, Math.min(299, frame)); render(); };
+      elements.previous.addEventListener('click', () => setFrame(state.frame - 1));
+      elements.next.addEventListener('click', () => setFrame(state.frame + 1));
+      elements.scrubber.addEventListener('input', event => setFrame(Number(event.target.value)));
+      elements.loop.addEventListener('click', () => { state.loop = !state.loop; render(); });
+      elements.fidelity.addEventListener('click', () => { state.mode = state.mode === 'fidelity' ? 'interactive' : 'fidelity'; render(); });
+      elements.play.addEventListener('click', () => { state.playing = !state.playing; state.lastTick = performance.now(); render(); });
+      elements['inject-drift'].addEventListener('click', () => { state.drift = 1; render(); });
+      elements['hard-resync'].addEventListener('click', () => { state.drift = 0; render(); });
+      elements['benchmark-seeks'].addEventListener('click', async () => {
+        if (!state.proxiesReady) return;
+        state.playing = false;
+        const samples = [];
+        for (let index = 0; index < 100; index += 1) {
+          const target = (index * 37) % 300;
+          const started = performance.now();
+          setFrame(target);
+          await Promise.all([elements['remotion-layer'].decode(), elements['hyperframes-layer'].decode()]);
+          samples.push(performance.now() - started);
+        }
+        samples.sort((left, right) => left - right);
+        state.seekP95Ms = samples[Math.ceil(samples.length * 0.95) - 1];
+        state.seekSamples = samples;
+        setFrame(0);
+      });
+      elements['prime-audio'].addEventListener('click', async () => {
+        try {
+          const Context = window.AudioContext || window.webkitAudioContext;
+          if (!Context || !window.OfflineAudioContext) throw new Error('WebAudioUnavailable');
+          const context = new Context({sampleRate: 48000, latencyHint: 'interactive'});
+          const programBus = context.createGain();
+          programBus.gain.value = 0;
+          programBus.connect(context.destination);
+          const offline = new OfflineAudioContext(2, 480480, 48000);
+          const offlineProgramBus = offline.createGain();
+          const voice = offline.createOscillator();
+          const music = offline.createOscillator();
+          const voiceGain = offline.createGain();
+          const musicGain = offline.createGain();
+          voice.frequency.value = 880;
+          music.frequency.value = 220;
+          voiceGain.gain.value = 0.12;
+          musicGain.gain.value = 0.04;
+          voice.connect(voiceGain).connect(offlineProgramBus);
+          music.connect(musicGain).connect(offlineProgramBus);
+          offlineProgramBus.connect(offline.destination);
+          voice.start(0); music.start(0); voice.stop(10.01); music.stop(10.01);
+          const rendered = await offline.startRendering();
+          elements['audio-graph-state'].textContent = `${context.sampleRate.toLocaleString()} Hz · ${rendered.length.toLocaleString()} samples exact`;
+          state.audioGraph = {sampleRate: context.sampleRate, baseLatency: context.baseLatency, authority: 'follower', programBusCount: 1, offlineSamples: rendered.length, channels: rendered.numberOfChannels, deterministicEndpoint: rendered.length === 480480};
+          await context.close();
+        } catch (error) {
+          elements['audio-graph-state'].textContent = `Unavailable · ${error.message || error.name}`;
+          state.audioGraph = {error: error.message || error.name};
+        }
+      });
+      const tick = now => {
+        if (state.playing) {
+          state.accumulator += now - state.lastTick;
+          while (state.accumulator >= 1001 / 30) {
+            state.accumulator -= 1001 / 30;
+            let next = state.frame + 1;
+            if (state.loop && next >= 120) next = 60;
+            if (next > 299) { next = 299; state.playing = false; }
+            setFrame(next);
+          }
+          state.lastTick = now;
+        }
+        requestAnimationFrame(tick);
+      };
+      const preload = async () => {
+        const urls = [];
+        for (let frame = 0; frame < 60; frame += 1) urls.push(proxyUrl('remotion', frame), proxyUrl('hyperframes', frame));
+        await Promise.all(urls.map(url => new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = resolve;
+          image.onerror = reject;
+          image.src = url;
+        })));
+        state.proxiesReady = true;
+        render();
+      };
+      render();
+      preload().catch(error => { elements['proxy-state'].textContent = `Failed · ${error.name}`; state.proxyError = error.name; });
+      requestAnimationFrame(tick);
+      window.__chaiPreview = { state, setFrame };
+    </script>
+  </body>
+</html>

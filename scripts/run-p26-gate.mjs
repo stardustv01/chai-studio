@@ -1,0 +1,82 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { runAcceptanceGate } from "./run-acceptance-gate.mjs";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+await runAcceptanceGate({
+  root,
+  phase: "P26",
+  taskRange: "P26.01-P26.11",
+  contractName: "performance-accessibility-contract",
+  contractScript: "scripts/validate-p26-performance-contract.mjs",
+  extraChecks: [
+    [
+      "measured-benchmark",
+      [
+        ["./node_modules/.bin/tsc", ["-b", "packages/diagnostics", "packages/schema", "packages/timeline"]],
+        ["node", ["scripts/run-p26-benchmarks.mjs"]],
+        ["node", ["scripts/validate-p26-performance-contract.mjs"]],
+      ],
+    ],
+    [
+      "focused-performance-accessibility-fixtures",
+      [
+        [
+          "./node_modules/.bin/vitest",
+          [
+            "run",
+            "tests/unit/performance-contract.test.ts",
+            "tests/unit/preview-degradation.test.ts",
+            "tests/unit/shortcut-accessibility.test.ts",
+            "tests/unit/timeline-performance.test.ts",
+            "tests/property/performance-degradation.property.test.ts",
+            "tests/integration/performance-soak-budget.test.ts",
+          ],
+        ],
+      ],
+    ],
+  ],
+  implementationFiles: [
+    "package.json",
+    "pnpm-lock.yaml",
+    "packages/diagnostics/package.json",
+    "packages/diagnostics/src/index.ts",
+    "packages/diagnostics/src/performance.ts",
+    "packages/diagnostics/src/stress.ts",
+    "packages/preview/package.json",
+    "packages/preview/src/degradation.ts",
+    "packages/timeline/src/derived-indexes.ts",
+    "packages/timeline/src/diff.ts",
+    "packages/timeline/src/index.ts",
+    "apps/studio-web/package.json",
+    "apps/studio-web/tsconfig.json",
+    "apps/studio-web/src/App.tsx",
+    "apps/studio-web/src/accessibility.ts",
+    "apps/studio-web/src/performance.ts",
+    "apps/studio-web/src/shortcut-editor.tsx",
+    "apps/studio-web/src/shortcut-profile.ts",
+    "apps/studio-web/src/shortcuts.ts",
+    "apps/studio-web/src/styles.css",
+    "apps/studio-web/src/timeline-editor.tsx",
+    "apps/studio-web/src/use-studio-runtime.ts",
+    "fixtures/performance/project-classes.json",
+    "fixtures/performance/budgets.json",
+    "docs/PERFORMANCE_ACCESSIBILITY.md",
+    "governance/adrs/0009-p26-production-budgets.md",
+    "governance/adrs/README.md",
+    "scripts/run-p26-benchmarks.mjs",
+    "scripts/validate-p26-performance-contract.mjs",
+    "scripts/run-p26-gate.mjs",
+    "tests/unit/performance-contract.test.ts",
+    "tests/unit/preview-degradation.test.ts",
+    "tests/unit/shortcut-accessibility.test.ts",
+    "tests/unit/timeline-performance.test.ts",
+    "tests/property/performance-degradation.property.test.ts",
+    "tests/integration/performance-soak-budget.test.ts",
+    "tests/e2e/performance-accessibility.spec.ts",
+    "tests/e2e/studio-visual.spec.ts",
+    "tests/e2e/studio-visual.spec.ts-snapshots/p26-honest-degradation-darwin.png",
+    "tests/e2e/studio-visual.spec.ts-snapshots/p26-accessibility-diagnostics-darwin.png",
+    "tests/e2e/studio-visual.spec.ts-snapshots/p26-shortcut-editor-darwin.png",
+  ],
+});

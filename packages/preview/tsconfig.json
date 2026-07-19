@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.package.json",
+  "compilerOptions": { "rootDir": "src", "outDir": "dist", "tsBuildInfoFile": "dist/.tsbuildinfo" },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../audio" },
+    { "path": "../diagnostics" },
+    { "path": "../engine-adapters" },
+    { "path": "../media" },
+    { "path": "../timeline" }
+  ]
+}

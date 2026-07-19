@@ -1,0 +1,23 @@
+{
+  "composition": {
+    "id": "ChaiMilestone0",
+    "width": 640,
+    "height": 360,
+    "fps": 30,
+    "durationInFrames": 60,
+    "props": {},
+    "defaultProps": {},
+    "defaultCodec": null,
+    "defaultOutName": null,
+    "defaultVideoImageFormat": null,
+    "defaultPixelFormat": null,
+    "defaultProResProfile": null,
+    "defaultSampleRate": null
+  },
+  "frame": 30,
+  "hashes": [
+    "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0",
+    "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0"
+  ],
+  "deterministic": true
+}

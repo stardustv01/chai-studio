@@ -1,0 +1,204 @@
+{
+  "chai.project": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "revisionId": "revision-0001",
+    "title": "First Light",
+    "createdAt": "2026-07-15T00:00:00Z",
+    "updatedAt": "2026-07-15T00:00:00Z",
+    "video": {
+      "width": 1920,
+      "height": 1080,
+      "fps": { "numerator": "30000", "denominator": "1001" },
+      "colorSpace": "rec709"
+    },
+    "audio": { "sampleRate": 48000, "channelLayout": "stereo" },
+    "activeTimelineId": "timeline-main-0001",
+    "deliveryProfileId": null,
+    "enginePins": { "remotion": "4.0.489", "hyperframes": "0.7.58" },
+    "capabilityFlags": { "mixedEngine": true },
+    "rightsNotes": [],
+    "sources": {}
+  },
+  "timeline": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "revisionId": "revision-0001",
+    "timelineId": "timeline-main-0001",
+    "fps": { "numerator": "30000", "denominator": "1001" },
+    "durationFrames": "300",
+    "tracks": [
+      {
+        "id": "track-video-0001",
+        "kind": "video",
+        "name": "Video 1",
+        "order": 0,
+        "locked": false,
+        "hidden": false,
+        "muted": false,
+        "solo": false,
+        "clips": [
+          {
+            "id": "clip-opening-0001",
+            "assetId": "asset-video-0001",
+            "engine": "shared",
+            "startFrame": "0",
+            "durationFrames": "300",
+            "sourceInFrame": "0",
+            "sourceDurationFrames": "300",
+            "capability": "native",
+            "audioBusId": "bus-program-0001"
+          }
+        ]
+      }
+    ],
+    "audioBusIds": ["bus-program-0001"],
+    "approvalReferenceIds": [],
+    "audioGraph": {
+      "schemaVersion": "1.0.0",
+      "graphId": "audio-graph-main-0001",
+      "sampleRate": 48000,
+      "channelLayout": "stereo",
+      "masterBusId": "bus-master-0001",
+      "sources": [],
+      "buses": [
+        {
+          "id": "bus-program-0001",
+          "name": "Program",
+          "kind": "aux",
+          "parentBusId": "bus-master-0001",
+          "gainDb": 0,
+          "pan": 0,
+          "muted": false,
+          "solo": false,
+          "automationLaneIds": []
+        },
+        {
+          "id": "bus-master-0001",
+          "name": "Master",
+          "kind": "master",
+          "parentBusId": null,
+          "gainDb": 0,
+          "pan": 0,
+          "muted": false,
+          "solo": false,
+          "automationLaneIds": []
+        }
+      ],
+      "clips": [],
+      "automationLanes": [],
+      "crossfades": [],
+      "duckingRules": [],
+      "channelMaps": [],
+      "syncAnchors": [],
+      "processingReferences": []
+    }
+  },
+  "assets": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "revisionId": "revision-0001",
+    "assets": [
+      {
+        "id": "asset-video-0001",
+        "path": "assets/opening.mov",
+        "contentHash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "kind": "video",
+        "durationFrames": "300",
+        "fps": { "numerator": "30000", "denominator": "1001" },
+        "hasAudio": true,
+        "hasAlpha": false,
+        "variableFrameRate": false,
+        "rights": "owned",
+        "validationState": "valid"
+      }
+    ]
+  },
+  "settings": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "revisionId": "revision-0001",
+    "autosaveIntervalMs": 5000,
+    "autosaveRetention": 20,
+    "outputDirectory": "renders",
+    "allowImportedExecutableContent": false,
+    "networkAllowlist": []
+  },
+  "transaction": {
+    "schemaVersion": "1.0.0",
+    "transactionId": "transaction-init-0001",
+    "commandId": "command-init-0001",
+    "idempotencyId": "idempotency-init-0001",
+    "correlationId": "correlation-init-0001",
+    "commandEnvelopeHash": "3333333333333333333333333333333333333333333333333333333333333333",
+    "actor": { "id": "actor-user-0001", "kind": "user", "sessionId": "session-local-0001" },
+    "capability": { "name": "project-core", "version": "1.0.0" },
+    "declaredScope": "mutation",
+    "authorizationId": null,
+    "validationOnly": false,
+    "result": "committed",
+    "history": {
+      "action": "commit",
+      "contentRevisionId": "revision-0001",
+      "undoStack": [],
+      "redoStack": []
+    },
+    "namedVersion": {
+      "id": "version-draft-0001",
+      "name": "Draft",
+      "revisionId": "revision-0001",
+      "createdAt": "2026-07-15T00:00:00Z",
+      "actorId": "actor-user-0001",
+      "outputId": null
+    },
+    "timestamp": "2026-07-15T00:00:00Z",
+    "parentRevisionId": null,
+    "resultingRevisionId": "revision-0001",
+    "beforeHashes": {},
+    "afterHashes": {
+      "chai.project.json": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "affectedEntityIds": ["project-fixture-0001"],
+    "commandSummary": "Create project",
+    "diffSummary": "Created the initial coordinated revision.",
+    "warnings": [],
+    "sourceEdit": null
+  },
+  "current-revision": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "revisionId": "revision-0001",
+    "revisionHash": "2222222222222222222222222222222222222222222222222222222222222222",
+    "committedAt": "2026-07-15T00:00:00Z"
+  },
+  "autosave-metadata": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "cleanShutdown": true,
+    "lastOpenedRevisionId": "revision-0001",
+    "entries": []
+  },
+  "named-versions": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "versions": [
+      {
+        "id": "version-draft-0001",
+        "name": "Draft",
+        "revisionId": "revision-0001",
+        "createdAt": "2026-07-15T00:00:00Z",
+        "actorId": "actor-user-0001",
+        "outputId": null
+      }
+    ]
+  },
+  "approval-state": {
+    "schemaVersion": "1.0.0",
+    "projectId": "project-fixture-0001",
+    "revisionId": "revision-0001",
+    "state": null,
+    "outputId": null,
+    "updatedAt": "2026-07-15T00:00:00Z",
+    "history": []
+  }
+}

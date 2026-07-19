@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "@remotion/compositor-darwin-arm64",
+  "version": "4.0.489",
+  "manifestLicense": null,
+  "repository": "https://github.com/remotion-dev/remotion/tree/v4.0.489/packages/compositor-darwin-arm64",
+  "repositoryLicense": "https://github.com/remotion-dev/remotion/blob/v4.0.489/LICENSE.md",
+  "classification": "Remotion License (repository scope; package manifest omits license field)",
+  "classificationBasis": "The published package identifies the Remotion monorepo package path and version, while the exact v4.0.489 repository root supplies the Remotion License. This is an engineering inventory classification, not legal advice.",
+  "binaryNotice": "The package includes the Remotion compositor, FFmpeg executables, and linked media libraries. Repository-license classification does not replace packaging-time collection of all binary notices, linked-library licences, codec obligations, or patent review.",
+  "personalLocalUse": "allowed-under-current-personal-baseline",
+  "publicDistribution": "blocked-pending-release-review",
+  "commercialization": "blocked-pending-release-review",
+  "reviewTriggers": [
+    "Remotion version change",
+    "entity or team eligibility change",
+    "public distribution",
+    "commercialization",
+    "binary or codec bundle change"
+  ],
+  "reviewedOn": "2026-07-18"
+}

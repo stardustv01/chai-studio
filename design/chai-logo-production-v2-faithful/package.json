@@ -1,0 +1,16 @@
+{
+  "name": "chai-logo-production-v2-faithful",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "extract": "python3 scripts/extract-reference-masks.py",
+    "build": "node scripts/build-faithful-vectors.mjs",
+    "dev": "npx --yes hyperframes@0.7.63 preview",
+    "check": "npx --yes hyperframes@0.7.63 check"
+  },
+  "dependencies": {
+    "gsap": "3.13.0",
+    "potrace": "2.1.8"
+  }
+}
+

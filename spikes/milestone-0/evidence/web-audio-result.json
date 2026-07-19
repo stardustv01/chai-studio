@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-07-15T08:42:00.000Z",
+  "platform": "Codex in-app browser on macOS",
+  "passed": true,
+  "previewGraph": {
+    "sampleRate": 48000,
+    "authority": "master-scheduler follower",
+    "programBuses": 1,
+    "nativeEngineAudio": "suppressed",
+    "interactiveContextPolicy": "construct without audible autoplay; start and resume remain user-gesture transport actions"
+  },
+  "offlineGraph": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "durationFrames": 300,
+    "timelineFps": "30000/1001",
+    "expectedSamples": 480480,
+    "renderedSamples": 480480,
+    "endpointSampleExact": true
+  },
+  "consoleErrors": [],
+  "initialRejectedApproach": "Awaiting AudioContext.resume() in the headless/in-app browser left the probe suspended; deterministic verification now constructs the preview graph without audible autoplay and uses OfflineAudioContext for exact rendering."
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": false,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["node", "vitest/globals", "@playwright/test"]
+  },
+  "include": ["tests/**/*.ts", "tests/**/*.tsx", "types/**/*.d.ts", "*.config.ts", "apps/*/vite.config.ts"]
+}

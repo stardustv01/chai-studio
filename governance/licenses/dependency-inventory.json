@@ -1,0 +1,3517 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedFrom": "local frozen workspace and installed dependency metadata",
+  "generatedAtPolicy": "deterministic-no-timestamp",
+  "scope": {
+    "baseline": "personal-use macOS local application",
+    "publicDistribution": "blocked-pending-release-review",
+    "commercialization": "blocked-pending-release-review"
+  },
+  "engines": [
+    {
+      "name": "@remotion/bundler",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/bundler",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/player",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/player",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/renderer",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/renderer",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "hyperframes",
+      "version": "0.7.58",
+      "license": "Apache-2.0",
+      "source": "https://github.com/heygen-com/hyperframes",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "remotion",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/core",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    }
+  ],
+  "ffmpeg": {
+    "source": "external PATH tool; not bundled by current application",
+    "available": true,
+    "executable": "/opt/homebrew/bin/ffmpeg",
+    "versionLine": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+    "configurationLine": "configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/7.1.1_3 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon",
+    "distributionObligation": "P25 must review the exact binary configuration, linked libraries, enabled codecs, and notices before bundling or distribution."
+  },
+  "browser": [
+    {
+      "name": "chromium",
+      "revision": "1228",
+      "browserVersion": "149.0.7827.55",
+      "source": "Playwright-managed browser cache",
+      "bundledByCurrentApplication": false,
+      "licenseReview": "Chromium notices and bundled-codec configuration must be captured by P25 packaging."
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1228",
+      "browserVersion": "149.0.7827.55",
+      "source": "Playwright-managed browser cache",
+      "bundledByCurrentApplication": false,
+      "licenseReview": "Chromium notices and bundled-codec configuration must be captured by P25 packaging."
+    }
+  ],
+  "fonts": {
+    "bundledApplicationFonts": [],
+    "rule": "Project fonts remain user assets with hash/rights evidence; any P25 bundled font requires a new inventory row."
+  },
+  "assets": {
+    "bundledApplicationMedia": [],
+    "rule": "Golden fixtures and test media are not application distribution assets; shipped assets require source, hash, license, notice, and restrictions."
+  },
+  "reviewedLicenseClassifications": [
+    {
+      "schemaVersion": "1.0.0",
+      "package": "@remotion/compositor-darwin-arm64",
+      "version": "4.0.489",
+      "manifestLicense": null,
+      "repository": "https://github.com/remotion-dev/remotion/tree/v4.0.489/packages/compositor-darwin-arm64",
+      "repositoryLicense": "https://github.com/remotion-dev/remotion/blob/v4.0.489/LICENSE.md",
+      "classification": "Remotion License (repository scope; package manifest omits license field)",
+      "classificationBasis": "The published package identifies the Remotion monorepo package path and version, while the exact v4.0.489 repository root supplies the Remotion License. This is an engineering inventory classification, not legal advice.",
+      "binaryNotice": "The package includes the Remotion compositor, FFmpeg executables, and linked media libraries. Repository-license classification does not replace packaging-time collection of all binary notices, linked-library licences, codec obligations, or patent review.",
+      "personalLocalUse": "allowed-under-current-personal-baseline",
+      "publicDistribution": "blocked-pending-release-review",
+      "commercialization": "blocked-pending-release-review",
+      "reviewTriggers": [
+        "Remotion version change",
+        "entity or team eligibility change",
+        "public distribution",
+        "commercialization",
+        "binary or codec bundle change"
+      ],
+      "reviewedOn": "2026-07-18"
+    }
+  ],
+  "workspacePackages": [
+    {
+      "name": "@chai-studio/audio",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/audio",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/bridge",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/bridge",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/captions",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/captions",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/diagnostics",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/diagnostics",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/engine-adapters",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/engine-adapters",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/media",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/media",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/preview",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/preview",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/qa",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/qa",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/render",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/render",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/review",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/review",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/schema",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/schema",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/security",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/security",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/studio-server",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "apps/studio-server",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/studio-web",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "apps/studio-web",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/timeline",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/timeline",
+      "private": true
+    },
+    {
+      "name": "@chai-studio/ui-components",
+      "version": "1.0.0-rc.1",
+      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "source": "packages/ui-components",
+      "private": true
+    }
+  ],
+  "installedDependencyTree": [
+    {
+      "name": "@babel/helper-string-parser",
+      "version": "7.29.7",
+      "license": "MIT",
+      "source": "https://github.com/babel/babel.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@babel/helper-validator-identifier",
+      "version": "7.29.7",
+      "license": "MIT",
+      "source": "https://github.com/babel/babel.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@babel/parser",
+      "version": "7.29.7",
+      "license": "MIT",
+      "source": "https://github.com/babel/babel.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@babel/types",
+      "version": "7.29.7",
+      "license": "MIT",
+      "source": "https://github.com/babel/babel.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@bcoe/v8-coverage",
+      "version": "1.0.2",
+      "license": "MIT",
+      "source": "git://github.com/bcoe/v8-coverage.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@esbuild/darwin-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "git+https://github.com/evanw/esbuild.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@esbuild/darwin-arm64",
+      "version": "0.28.1",
+      "license": "MIT",
+      "source": "git+https://github.com/evanw/esbuild.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint-community/eslint-utils",
+      "version": "4.9.1",
+      "license": "MIT",
+      "source": "https://github.com/eslint-community/eslint-utils",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint-community/regexpp",
+      "version": "4.12.2",
+      "license": "MIT",
+      "source": "https://github.com/eslint-community/regexpp",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint/config-array",
+      "version": "0.23.5",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/eslint/rewrite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint/config-helpers",
+      "version": "0.6.0",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/eslint/rewrite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint/core",
+      "version": "1.2.1",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/eslint/rewrite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint/js",
+      "version": "10.0.1",
+      "license": "MIT",
+      "source": "https://github.com/eslint/eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint/object-schema",
+      "version": "3.0.5",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/eslint/rewrite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@eslint/plugin-kit",
+      "version": "0.7.2",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/eslint/rewrite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@google/genai",
+      "version": "1.52.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/googleapis/js-genai.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@hono/node-server",
+      "version": "1.19.14",
+      "license": "MIT",
+      "source": "https://github.com/honojs/node-server.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@humanfs/core",
+      "version": "0.19.2",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/humanwhocodes/humanfs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@humanfs/node",
+      "version": "0.16.8",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/humanwhocodes/humanfs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@humanfs/types",
+      "version": "0.15.0",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/humanwhocodes/humanfs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@humanwhocodes/module-importer",
+      "version": "1.0.1",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/humanwhocodes/module-importer.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@humanwhocodes/retry",
+      "version": "0.4.3",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/humanwhocodes/retry.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@img/colour",
+      "version": "1.1.0",
+      "license": "MIT",
+      "source": "git+https://github.com/lovell/colour.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@img/sharp-darwin-arm64",
+      "version": "0.34.5",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/lovell/sharp.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@img/sharp-libvips-darwin-arm64",
+      "version": "1.2.4",
+      "license": "LGPL-3.0-or-later",
+      "source": "git+https://github.com/lovell/sharp-libvips.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@jridgewell/gen-mapping",
+      "version": "0.3.13",
+      "license": "MIT",
+      "source": "git+https://github.com/jridgewell/sourcemaps.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@jridgewell/resolve-uri",
+      "version": "3.1.2",
+      "license": "MIT",
+      "source": "https://github.com/jridgewell/resolve-uri",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@jridgewell/source-map",
+      "version": "0.3.11",
+      "license": "MIT",
+      "source": "git+https://github.com/jridgewell/sourcemaps.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@jridgewell/sourcemap-codec",
+      "version": "1.5.5",
+      "license": "MIT",
+      "source": "git+https://github.com/jridgewell/sourcemaps.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@jridgewell/trace-mapping",
+      "version": "0.3.31",
+      "license": "MIT",
+      "source": "git+https://github.com/jridgewell/sourcemaps.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@mediabunny/aac-encoder",
+      "version": "1.50.8",
+      "license": "MPL-2.0",
+      "source": "git+https://github.com/Vanilagy/mediabunny.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@mediabunny/flac-encoder",
+      "version": "1.50.8",
+      "license": "MPL-2.0",
+      "source": "git+https://github.com/Vanilagy/mediabunny.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@mediabunny/mp3-encoder",
+      "version": "1.50.8",
+      "license": "MPL-2.0",
+      "source": "git+https://github.com/Vanilagy/mediabunny.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@module-federation/error-codes",
+      "version": "0.22.0",
+      "license": "MIT",
+      "source": "git+https://github.com/module-federation/core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@module-federation/runtime",
+      "version": "0.22.0",
+      "license": "MIT",
+      "source": "git+https://github.com/module-federation/core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@module-federation/runtime-core",
+      "version": "0.22.0",
+      "license": "MIT",
+      "source": "git+https://github.com/module-federation/core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@module-federation/runtime-tools",
+      "version": "0.22.0",
+      "license": "MIT",
+      "source": "git+https://github.com/module-federation/core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@module-federation/sdk",
+      "version": "0.22.0",
+      "license": "MIT",
+      "source": "git+https://github.com/module-federation/core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@module-federation/webpack-bundler-runtime",
+      "version": "0.22.0",
+      "license": "MIT",
+      "source": "git+https://github.com/module-federation/core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@oxc-project/types",
+      "version": "0.139.0",
+      "license": "MIT",
+      "source": "git+https://github.com/oxc-project/oxc.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@playwright/test",
+      "version": "1.61.1",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/microsoft/playwright.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/aspromise",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/base64",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/codegen",
+      "version": "2.0.5",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/eventemitter",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/fetch",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/float",
+      "version": "1.0.2",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/path",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/pool",
+      "version": "1.1.0",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/dcodeIO/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@protobufjs/utf8",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/protobufjs/protobuf.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@puppeteer/browsers",
+      "version": "3.0.6",
+      "license": "Apache-2.0",
+      "source": "https://github.com/puppeteer/puppeteer/tree/main/packages/browsers",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/bundler",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/bundler",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/canvas-capture",
+      "version": "4.0.489",
+      "license": "Remotion License",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/canvas-capture",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/compositor-darwin-arm64",
+      "version": "4.0.489",
+      "license": "Remotion License (repository scope; package manifest omits license field)",
+      "licenseEvidence": "https://github.com/remotion-dev/remotion/blob/v4.0.489/LICENSE.md",
+      "licenseClassificationBasis": "The published package identifies the Remotion monorepo package path and version, while the exact v4.0.489 repository root supplies the Remotion License. This is an engineering inventory classification, not legal advice.",
+      "binaryNotice": "The package includes the Remotion compositor, FFmpeg executables, and linked media libraries. Repository-license classification does not replace packaging-time collection of all binary notices, linked-library licences, codec obligations, or patent review.",
+      "publicDistribution": "blocked-pending-release-review",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/compositor-darwin-arm64",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/licensing",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/licensing",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/media-parser",
+      "version": "4.0.489",
+      "license": "Remotion License https://remotion.dev/license",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/media-parser",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/media-utils",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/media-utils",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/player",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/player",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/renderer",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/renderer",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/streaming",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/streaming",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/studio",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/studio",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/studio-shared",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/studio-shared",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/timeline-utils",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/timeline-utils",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/web-renderer",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/web-renderer",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@remotion/zod-types",
+      "version": "4.0.489",
+      "license": "MIT",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/zod-types",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rolldown/binding-darwin-arm64",
+      "version": "1.1.5",
+      "license": "MIT",
+      "source": "git+https://github.com/rolldown/rolldown.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rolldown/pluginutils",
+      "version": "1.0.1",
+      "license": "MIT",
+      "source": "git+https://github.com/rolldown/plugins.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rspack/binding",
+      "version": "1.7.11",
+      "license": "MIT",
+      "source": "web-infra-dev/rspack",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rspack/binding-darwin-arm64",
+      "version": "1.7.11",
+      "license": "MIT",
+      "source": "https://github.com/web-infra-dev/rspack",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rspack/core",
+      "version": "1.7.11",
+      "license": "MIT",
+      "source": "https://github.com/web-infra-dev/rspack",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rspack/lite-tapable",
+      "version": "1.1.0",
+      "license": "MIT",
+      "source": "https://github.com/rspack-contrib/rspack-lite-tapable",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@rspack/plugin-react-refresh",
+      "version": "1.6.1",
+      "license": "MIT",
+      "source": "https://github.com/rstackjs/rspack-plugin-react-refresh",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@standard-schema/spec",
+      "version": "1.1.0",
+      "license": "MIT",
+      "source": "https://github.com/standard-schema/standard-schema",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@swc/helpers",
+      "version": "0.5.23",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/swc-project/swc.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/chai",
+      "version": "5.2.3",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/deep-eql",
+      "version": "4.0.2",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/dom-mediacapture-transform",
+      "version": "0.1.12",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/dom-webcodecs",
+      "version": "0.1.13",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/eslint",
+      "version": "9.6.1",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/eslint-scope",
+      "version": "3.7.7",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/esrecurse",
+      "version": "4.3.1",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/estree",
+      "version": "1.0.9",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/json-schema",
+      "version": "7.0.15",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/node",
+      "version": "26.1.1",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/react",
+      "version": "19.2.17",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "19.2.3",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@types/retry",
+      "version": "0.12.0",
+      "license": "MIT",
+      "source": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/project-service",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/scope-manager",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/tsconfig-utils",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/type-utils",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/types",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/typescript-estree",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/utils",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@typescript-eslint/visitor-keys",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitejs/plugin-react",
+      "version": "6.0.3",
+      "license": "MIT",
+      "source": "git+https://github.com/vitejs/vite-plugin-react.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/coverage-v8",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/expect",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/mocker",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/pretty-format",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/runner",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/snapshot",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/spy",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@vitest/utils",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/ast",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/floating-point-hex-parser",
+      "version": "1.13.2",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/helper-api-error",
+      "version": "1.13.2",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/helper-buffer",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/helper-numbers",
+      "version": "1.13.2",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/helper-wasm-bytecode",
+      "version": "1.13.2",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/helper-wasm-section",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/ieee754",
+      "version": "1.13.2",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/leb128",
+      "version": "1.13.2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/utf8",
+      "version": "1.13.2",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/wasm-edit",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/wasm-gen",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/wasm-opt",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/wasm-parser",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@webassemblyjs/wast-printer",
+      "version": "1.14.1",
+      "license": "MIT",
+      "source": "https://github.com/xtuc/webassemblyjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@xtuc/ieee754",
+      "version": "1.2.0",
+      "license": "BSD-3-Clause",
+      "source": "git://github.com/feross/ieee754.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "@xtuc/long",
+      "version": "4.2.2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/dcodeIO/long.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "acorn",
+      "version": "8.17.0",
+      "license": "MIT",
+      "source": "git+https://github.com/acornjs/acorn.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "acorn-import-phases",
+      "version": "1.0.4",
+      "license": "MIT",
+      "source": "https://github.com/nicolo-ribaudo/acorn-import-phases.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "acorn-jsx",
+      "version": "5.3.2",
+      "license": "MIT",
+      "source": "https://github.com/acornjs/acorn-jsx",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "adm-zip",
+      "version": "0.5.18",
+      "license": "MIT",
+      "source": "https://github.com/cthackers/adm-zip.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "agent-base",
+      "version": "7.1.4",
+      "license": "MIT",
+      "source": "https://github.com/TooTallNate/proxy-agents.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ajv",
+      "version": "6.15.0",
+      "license": "MIT",
+      "source": "https://github.com/ajv-validator/ajv.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "license": "MIT",
+      "source": "ajv-validator/ajv",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ajv-formats",
+      "version": "2.1.1",
+      "license": "MIT",
+      "source": "git+https://github.com/ajv-validator/ajv-formats.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ajv-keywords",
+      "version": "5.1.0",
+      "license": "MIT",
+      "source": "git+https://github.com/epoberezkin/ajv-keywords.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ansi-regex",
+      "version": "6.2.2",
+      "license": "MIT",
+      "source": "chalk/ansi-regex",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ansi-styles",
+      "version": "6.2.3",
+      "license": "MIT",
+      "source": "chalk/ansi-styles",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "assertion-error",
+      "version": "2.0.1",
+      "license": "MIT",
+      "source": "git@github.com:chaijs/assertion-error.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ast-v8-to-istanbul",
+      "version": "1.0.5",
+      "license": "MIT",
+      "source": "git+https://github.com/AriPerkkio/ast-v8-to-istanbul.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "balanced-match",
+      "version": "4.0.4",
+      "license": "MIT",
+      "source": "git://github.com/juliangruber/balanced-match.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "base64-js",
+      "version": "1.5.1",
+      "license": "MIT",
+      "source": "git://github.com/beatgammit/base64-js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "baseline-browser-mapping",
+      "version": "2.10.43",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/web-platform-dx/baseline-browser-mapping.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "bignumber.js",
+      "version": "9.3.1",
+      "license": "MIT",
+      "source": "https://github.com/MikeMcl/bignumber.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "brace-expansion",
+      "version": "5.0.7",
+      "license": "MIT",
+      "source": "git+https://github.com/juliangruber/brace-expansion.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "brotli",
+      "version": "1.3.3",
+      "license": "MIT",
+      "source": "https://github.com/devongovett/brotli.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "browserslist",
+      "version": "4.28.6",
+      "license": "MIT",
+      "source": "browserslist/browserslist",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "buffer-equal-constant-time",
+      "version": "1.0.1",
+      "license": "BSD-3-Clause",
+      "source": "git@github.com:goinstant/buffer-equal-constant-time.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "buffer-from",
+      "version": "1.1.2",
+      "license": "MIT",
+      "source": "LinusU/buffer-from",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "bundle-name",
+      "version": "4.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/bundle-name",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "caniuse-lite",
+      "version": "1.0.30001805",
+      "license": "CC-BY-4.0",
+      "source": "browserslist/caniuse-lite",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "chai",
+      "version": "6.2.2",
+      "license": "MIT",
+      "source": "https://github.com/chaijs/chai",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "chalk",
+      "version": "5.6.2",
+      "license": "MIT",
+      "source": "chalk/chalk",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "chrome-trace-event",
+      "version": "1.0.4",
+      "license": "MIT",
+      "source": "github:samccone/chrome-trace-event",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "chromium-bidi",
+      "version": "16.0.1",
+      "license": "Apache-2.0",
+      "source": "https://github.com/GoogleChromeLabs/chromium-bidi.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "citty",
+      "version": "0.2.2",
+      "license": "MIT",
+      "source": "unjs/citty",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "cliui",
+      "version": "9.0.1",
+      "license": "ISC",
+      "source": "yargs/cliui",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "clone",
+      "version": "2.1.2",
+      "license": "MIT",
+      "source": "git://github.com/pvorb/node-clone.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "commander",
+      "version": "2.20.3",
+      "license": "MIT",
+      "source": "https://github.com/tj/commander.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "compare-versions",
+      "version": "6.1.1",
+      "license": "MIT",
+      "source": "git+https://github.com/omichelsen/compare-versions.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "concurrently",
+      "version": "10.0.3",
+      "license": "MIT",
+      "source": "https://github.com/open-cli-tools/concurrently.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "convert-source-map",
+      "version": "2.0.0",
+      "license": "MIT",
+      "source": "git://github.com/thlorenz/convert-source-map.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "cross-spawn",
+      "version": "7.0.6",
+      "license": "MIT",
+      "source": "git@github.com:moxystudio/node-cross-spawn.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "css-loader",
+      "version": "7.1.4",
+      "license": "MIT",
+      "source": "webpack/css-loader",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "cssesc",
+      "version": "3.0.0",
+      "license": "MIT",
+      "source": "https://github.com/mathiasbynens/cssesc.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "csstype",
+      "version": "3.2.3",
+      "license": "MIT",
+      "source": "https://github.com/frenic/csstype",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "data-uri-to-buffer",
+      "version": "4.0.1",
+      "license": "MIT",
+      "source": "git://github.com/TooTallNate/node-data-uri-to-buffer.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "debug",
+      "version": "4.4.3",
+      "license": "MIT",
+      "source": "git://github.com/debug-js/debug.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "deep-is",
+      "version": "0.1.4",
+      "license": "MIT",
+      "source": "http://github.com/thlorenz/deep-is.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "default-browser",
+      "version": "5.5.0",
+      "license": "MIT",
+      "source": "sindresorhus/default-browser",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "default-browser-id",
+      "version": "5.0.1",
+      "license": "MIT",
+      "source": "sindresorhus/default-browser-id",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "define-data-property",
+      "version": "1.1.4",
+      "license": "MIT",
+      "source": "git+https://github.com/ljharb/define-data-property.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "define-lazy-prop",
+      "version": "2.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/define-lazy-prop",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "define-lazy-prop",
+      "version": "3.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/define-lazy-prop",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "define-properties",
+      "version": "1.2.1",
+      "license": "MIT",
+      "source": "git://github.com/ljharb/define-properties.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "detect-libc",
+      "version": "2.1.2",
+      "license": "Apache-2.0",
+      "source": "git://github.com/lovell/detect-libc.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "devtools-protocol",
+      "version": "0.0.1638949",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/ChromeDevTools/devtools-protocol",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "dfa",
+      "version": "1.2.0",
+      "license": "MIT",
+      "source": "git+ssh://git@github.com/devongovett/dfa.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ecdsa-sig-formatter",
+      "version": "1.0.11",
+      "license": "Apache-2.0",
+      "source": "git+ssh://git@github.com/Brightspace/node-ecdsa-sig-formatter.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "electron-to-chromium",
+      "version": "1.5.389",
+      "license": "ISC",
+      "source": "git+https://github.com/Kilian/electron-to-chromium.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "emoji-regex",
+      "version": "10.6.0",
+      "license": "MIT",
+      "source": "https://github.com/mathiasbynens/emoji-regex.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "enhanced-resolve",
+      "version": "5.24.2",
+      "license": "MIT",
+      "source": "git+https://github.com/webpack/enhanced-resolve.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "error-stack-parser",
+      "version": "2.1.4",
+      "license": "MIT",
+      "source": "git://github.com/stacktracejs/error-stack-parser.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "es-define-property",
+      "version": "1.0.1",
+      "license": "MIT",
+      "source": "git+https://github.com/ljharb/es-define-property.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "es-errors",
+      "version": "1.3.0",
+      "license": "MIT",
+      "source": "git+https://github.com/ljharb/es-errors.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "es-module-lexer",
+      "version": "2.3.1",
+      "license": "MIT",
+      "source": "git+https://github.com/guybedford/es-module-lexer.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "esbuild",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "git+https://github.com/evanw/esbuild.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "esbuild",
+      "version": "0.28.1",
+      "license": "MIT",
+      "source": "git+https://github.com/evanw/esbuild.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "escalade",
+      "version": "3.2.0",
+      "license": "MIT",
+      "source": "lukeed/escalade",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "escape-string-regexp",
+      "version": "4.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/escape-string-regexp",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "eslint",
+      "version": "10.7.0",
+      "license": "MIT",
+      "source": "eslint/eslint",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "eslint-scope",
+      "version": "5.1.1",
+      "license": "BSD-2-Clause",
+      "source": "eslint/eslint-scope",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "eslint-scope",
+      "version": "9.1.2",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/eslint/js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "eslint-visitor-keys",
+      "version": "3.4.3",
+      "license": "Apache-2.0",
+      "source": "eslint/eslint-visitor-keys",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "eslint-visitor-keys",
+      "version": "5.0.1",
+      "license": "Apache-2.0",
+      "source": "https://github.com/eslint/js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "espree",
+      "version": "11.2.0",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/eslint/js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "esquery",
+      "version": "1.7.0",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/estools/esquery.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "esrecurse",
+      "version": "4.3.0",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/estools/esrecurse.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "estraverse",
+      "version": "4.3.0",
+      "license": "BSD-2-Clause",
+      "source": "http://github.com/estools/estraverse.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "estraverse",
+      "version": "5.3.0",
+      "license": "BSD-2-Clause",
+      "source": "http://github.com/estools/estraverse.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "estree-walker",
+      "version": "3.0.3",
+      "license": "MIT",
+      "source": "https://github.com/Rich-Harris/estree-walker",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "esutils",
+      "version": "2.0.3",
+      "license": "BSD-2-Clause",
+      "source": "http://github.com/estools/esutils.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "events",
+      "version": "3.3.0",
+      "license": "MIT",
+      "source": "git://github.com/Gozala/events.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "execa",
+      "version": "5.1.1",
+      "license": "MIT",
+      "source": "sindresorhus/execa",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "expect-type",
+      "version": "1.4.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/mmkal/expect-type.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "extend",
+      "version": "3.0.2",
+      "license": "MIT",
+      "source": "https://github.com/justmoon/node-extend.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fast-check",
+      "version": "4.9.0",
+      "license": "MIT",
+      "source": "git+https://github.com/dubzzz/fast-check.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "license": "MIT",
+      "source": "git+https://github.com/epoberezkin/fast-deep-equal.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fast-json-stable-stringify",
+      "version": "2.1.0",
+      "license": "MIT",
+      "source": "git://github.com/epoberezkin/fast-json-stable-stringify.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fast-levenshtein",
+      "version": "2.0.6",
+      "license": "MIT",
+      "source": "https://github.com/hiddentao/fast-levenshtein.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fast-uri",
+      "version": "3.1.3",
+      "license": "BSD-3-Clause",
+      "source": "git+https://github.com/fastify/fast-uri.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fdir",
+      "version": "6.5.0",
+      "license": "MIT",
+      "source": "git+https://github.com/thecodrr/fdir.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fetch-blob",
+      "version": "3.2.0",
+      "license": "MIT",
+      "source": "https://github.com/node-fetch/fetch-blob.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "file-entry-cache",
+      "version": "8.0.0",
+      "license": "MIT",
+      "source": "jaredwray/file-entry-cache",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "find-up",
+      "version": "5.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/find-up",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "flat-cache",
+      "version": "4.0.1",
+      "license": "MIT",
+      "source": "jaredwray/flat-cache",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "flatted",
+      "version": "3.4.2",
+      "license": "ISC",
+      "source": "git+https://github.com/WebReflection/flatted.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fontkit",
+      "version": "2.0.4",
+      "license": "MIT",
+      "source": "git://github.com/foliojs/fontkit.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "formdata-polyfill",
+      "version": "4.0.10",
+      "license": "MIT",
+      "source": "git+https://jimmywarting@github.com/jimmywarting/FormData.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fs-monkey",
+      "version": "1.0.3",
+      "license": "Unlicense",
+      "source": "https://github.com/streamich/fs-monkey.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fsevents",
+      "version": "2.3.2",
+      "license": "MIT",
+      "source": "https://github.com/fsevents/fsevents.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "fsevents",
+      "version": "2.3.3",
+      "license": "MIT",
+      "source": "https://github.com/fsevents/fsevents.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "gaxios",
+      "version": "7.2.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/googleapis/google-cloud-node.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "gcp-metadata",
+      "version": "8.1.2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/googleapis/google-cloud-node-core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "get-caller-file",
+      "version": "2.0.5",
+      "license": "ISC",
+      "source": "git+https://github.com/stefanpenner/get-caller-file.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "get-east-asian-width",
+      "version": "1.6.0",
+      "license": "MIT",
+      "source": "sindresorhus/get-east-asian-width",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "get-stream",
+      "version": "6.0.1",
+      "license": "MIT",
+      "source": "sindresorhus/get-stream",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "giget",
+      "version": "3.3.0",
+      "license": "MIT",
+      "source": "unjs/giget",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "glob-parent",
+      "version": "6.0.2",
+      "license": "ISC",
+      "source": "gulpjs/glob-parent",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "glob-to-regexp",
+      "version": "0.4.1",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/fitzgen/glob-to-regexp.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "global-agent",
+      "version": "4.1.3",
+      "license": "BSD-3-Clause",
+      "source": "https://github.com/gajus/global-agent",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "globalthis",
+      "version": "1.0.4",
+      "license": "MIT",
+      "source": "git://github.com/ljharb/System.global.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "google-auth-library",
+      "version": "10.9.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/googleapis/google-cloud-node.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "google-logging-utils",
+      "version": "1.1.3",
+      "license": "Apache-2.0",
+      "source": "https://github.com/googleapis/google-cloud-node-core.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "gopd",
+      "version": "1.2.0",
+      "license": "MIT",
+      "source": "git+https://github.com/ljharb/gopd.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "graceful-fs",
+      "version": "4.2.11",
+      "license": "ISC",
+      "source": "https://github.com/isaacs/node-graceful-fs",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "has-flag",
+      "version": "4.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/has-flag",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "has-property-descriptors",
+      "version": "1.0.2",
+      "license": "MIT",
+      "source": "git+https://github.com/inspect-js/has-property-descriptors.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "hono",
+      "version": "4.12.30",
+      "license": "MIT",
+      "source": "git+https://github.com/honojs/hono.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "html-entities",
+      "version": "2.6.0",
+      "license": "MIT",
+      "source": "https://github.com/mdevils/html-entities.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "html-escaper",
+      "version": "2.0.2",
+      "license": "MIT",
+      "source": "https://github.com/WebReflection/html-escaper.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "https-proxy-agent",
+      "version": "7.0.6",
+      "license": "MIT",
+      "source": "https://github.com/TooTallNate/proxy-agents.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "human-signals",
+      "version": "2.1.0",
+      "license": "Apache-2.0",
+      "source": "ehmicky/human-signals",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "hyperframes",
+      "version": "0.7.58",
+      "license": "Apache-2.0",
+      "source": "https://github.com/heygen-com/hyperframes",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "icss-utils",
+      "version": "5.1.0",
+      "license": "ISC",
+      "source": "git+https://github.com/css-modules/icss-utils.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ignore",
+      "version": "5.3.2",
+      "license": "MIT",
+      "source": "git@github.com:kaelzhang/node-ignore.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ignore",
+      "version": "7.0.6",
+      "license": "MIT",
+      "source": "git@github.com:kaelzhang/node-ignore.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "imurmurhash",
+      "version": "0.1.4",
+      "license": "MIT",
+      "source": "https://github.com/jensyt/imurmurhash-js",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-docker",
+      "version": "2.2.1",
+      "license": "MIT",
+      "source": "sindresorhus/is-docker",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-docker",
+      "version": "3.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/is-docker",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-extglob",
+      "version": "2.1.1",
+      "license": "MIT",
+      "source": "jonschlinkert/is-extglob",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-glob",
+      "version": "4.0.3",
+      "license": "MIT",
+      "source": "micromatch/is-glob",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-inside-container",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/is-inside-container",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-stream",
+      "version": "2.0.1",
+      "license": "MIT",
+      "source": "sindresorhus/is-stream",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-wsl",
+      "version": "2.2.0",
+      "license": "MIT",
+      "source": "sindresorhus/is-wsl",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "is-wsl",
+      "version": "3.1.1",
+      "license": "MIT",
+      "source": "sindresorhus/is-wsl",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "isexe",
+      "version": "2.0.0",
+      "license": "ISC",
+      "source": "git+https://github.com/isaacs/isexe.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "istanbul-lib-coverage",
+      "version": "3.2.2",
+      "license": "BSD-3-Clause",
+      "source": "git+ssh://git@github.com/istanbuljs/istanbuljs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "istanbul-lib-report",
+      "version": "3.0.1",
+      "license": "BSD-3-Clause",
+      "source": "git+ssh://git@github.com/istanbuljs/istanbuljs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "istanbul-reports",
+      "version": "3.2.0",
+      "license": "BSD-3-Clause",
+      "source": "git+ssh://git@github.com/istanbuljs/istanbuljs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "jest-worker",
+      "version": "27.5.1",
+      "license": "MIT",
+      "source": "https://github.com/facebook/jest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "js-tokens",
+      "version": "10.0.0",
+      "license": "MIT",
+      "source": "lydell/js-tokens",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "json-bigint",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "git@github.com:sidorares/json-bigint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "json-buffer",
+      "version": "3.0.1",
+      "license": "MIT",
+      "source": "git://github.com/dominictarr/json-buffer.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "json-parse-even-better-errors",
+      "version": "2.3.1",
+      "license": "MIT",
+      "source": "https://github.com/npm/json-parse-even-better-errors",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "0.4.1",
+      "license": "MIT",
+      "source": "git+https://github.com/epoberezkin/json-schema-traverse.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "git+https://github.com/epoberezkin/json-schema-traverse.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "json-stable-stringify-without-jsonify",
+      "version": "1.0.1",
+      "license": "MIT",
+      "source": "git://github.com/samn/json-stable-stringify.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "jwa",
+      "version": "2.0.1",
+      "license": "MIT",
+      "source": "git://github.com/brianloveswords/node-jwa.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "jws",
+      "version": "4.0.1",
+      "license": "MIT",
+      "source": "git://github.com/brianloveswords/node-jws.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "keyv",
+      "version": "4.5.4",
+      "license": "MIT",
+      "source": "git+https://github.com/jaredwray/keyv.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "levn",
+      "version": "0.4.1",
+      "license": "MIT",
+      "source": "git://github.com/gkz/levn.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "lightningcss",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "source": "https://github.com/parcel-bundler/lightningcss.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "lightningcss-darwin-arm64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "source": "https://github.com/parcel-bundler/lightningcss.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "loader-runner",
+      "version": "4.3.2",
+      "license": "MIT",
+      "source": "git+https://github.com/webpack/loader-runner.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "locate-path",
+      "version": "6.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/locate-path",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "lodash.sortby",
+      "version": "4.7.0",
+      "license": "MIT",
+      "source": "lodash/lodash",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "long",
+      "version": "5.3.2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/dcodeIO/long.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "lru-cache",
+      "version": "6.0.0",
+      "license": "ISC",
+      "source": "git://github.com/isaacs/node-lru-cache.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "magic-string",
+      "version": "0.30.21",
+      "license": "MIT",
+      "source": "git+https://github.com/Rich-Harris/magic-string.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "magicast",
+      "version": "0.5.3",
+      "license": "MIT",
+      "source": "unjs/magicast",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "make-dir",
+      "version": "4.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/make-dir",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "matcher",
+      "version": "4.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/matcher",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "mediabunny",
+      "version": "1.50.8",
+      "license": "MPL-2.0",
+      "source": "git+https://github.com/Vanilagy/mediabunny.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "memfs",
+      "version": "3.4.3",
+      "license": "Unlicense",
+      "source": "https://github.com/streamich/memfs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "merge-stream",
+      "version": "2.0.0",
+      "license": "MIT",
+      "source": "grncdr/merge-stream",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "mime-db",
+      "version": "1.52.0",
+      "license": "MIT",
+      "source": "jshttp/mime-db",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "mime-types",
+      "version": "2.1.35",
+      "license": "MIT",
+      "source": "jshttp/mime-types",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "mimic-fn",
+      "version": "2.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/mimic-fn",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "minimatch",
+      "version": "10.2.5",
+      "license": "BlueOak-1.0.0",
+      "source": "git@github.com:isaacs/minimatch",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "mitt",
+      "version": "3.0.1",
+      "license": "MIT",
+      "source": "developit/mitt",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "modern-tar",
+      "version": "0.7.6",
+      "license": "MIT",
+      "source": "git+https://github.com/ayuhito/modern-tar.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ms",
+      "version": "2.1.3",
+      "license": "MIT",
+      "source": "vercel/ms",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "nanoid",
+      "version": "3.3.16",
+      "license": "MIT",
+      "source": "ai/nanoid",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "natural-compare",
+      "version": "1.4.0",
+      "license": "MIT",
+      "source": "git://github.com/litejs/natural-compare-lite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "neo-async",
+      "version": "2.6.2",
+      "license": "MIT",
+      "source": "git@github.com:suguru03/neo-async.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "node-domexception",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "git+https://github.com/jimmywarting/node-domexception.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "node-fetch",
+      "version": "3.3.2",
+      "license": "MIT",
+      "source": "https://github.com/node-fetch/node-fetch.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "node-releases",
+      "version": "2.0.51",
+      "license": "MIT",
+      "source": "https://github.com/chicoxyzzy/node-releases.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "npm-run-path",
+      "version": "4.0.1",
+      "license": "MIT",
+      "source": "sindresorhus/npm-run-path",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "object-keys",
+      "version": "1.1.1",
+      "license": "MIT",
+      "source": "git://github.com/ljharb/object-keys.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "obug",
+      "version": "2.1.3",
+      "license": "MIT",
+      "source": "git+https://github.com/sxzz/obug.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "onetime",
+      "version": "5.1.2",
+      "license": "MIT",
+      "source": "sindresorhus/onetime",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "onnxruntime-common",
+      "version": "1.27.0",
+      "license": "MIT",
+      "source": "https://github.com/Microsoft/onnxruntime.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "onnxruntime-node",
+      "version": "1.27.0",
+      "license": "MIT",
+      "source": "https://github.com/Microsoft/onnxruntime.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "open",
+      "version": "10.2.0",
+      "license": "MIT",
+      "source": "sindresorhus/open",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "open",
+      "version": "8.4.2",
+      "license": "MIT",
+      "source": "sindresorhus/open",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "optionator",
+      "version": "0.9.4",
+      "license": "MIT",
+      "source": "git://github.com/gkz/optionator.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "p-limit",
+      "version": "3.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/p-limit",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "p-locate",
+      "version": "5.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/p-locate",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "p-retry",
+      "version": "4.6.2",
+      "license": "MIT",
+      "source": "sindresorhus/p-retry",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "pako",
+      "version": "0.2.9",
+      "license": "MIT",
+      "source": "nodeca/pako",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "path-exists",
+      "version": "4.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/path-exists",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "path-key",
+      "version": "3.1.1",
+      "license": "MIT",
+      "source": "sindresorhus/path-key",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "pathe",
+      "version": "2.0.3",
+      "license": "MIT",
+      "source": "unjs/pathe",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "picocolors",
+      "version": "1.1.1",
+      "license": "ISC",
+      "source": "alexeyraspopov/picocolors",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "picomatch",
+      "version": "4.0.5",
+      "license": "MIT",
+      "source": "micromatch/picomatch",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "playwright",
+      "version": "1.61.1",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/microsoft/playwright.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "playwright-core",
+      "version": "1.61.1",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/microsoft/playwright.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss",
+      "version": "8.5.19",
+      "license": "MIT",
+      "source": "postcss/postcss",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss-modules-extract-imports",
+      "version": "3.1.0",
+      "license": "ISC",
+      "source": "https://github.com/css-modules/postcss-modules-extract-imports.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss-modules-local-by-default",
+      "version": "4.2.0",
+      "license": "MIT",
+      "source": "https://github.com/css-modules/postcss-modules-local-by-default.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss-modules-scope",
+      "version": "3.2.1",
+      "license": "ISC",
+      "source": "https://github.com/css-modules/postcss-modules-scope.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss-modules-values",
+      "version": "4.0.0",
+      "license": "ISC",
+      "source": "git+https://github.com/css-modules/postcss-modules-values.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss-selector-parser",
+      "version": "7.1.4",
+      "license": "MIT",
+      "source": "https://github.com/postcss/postcss-selector-parser.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "postcss-value-parser",
+      "version": "4.2.0",
+      "license": "MIT",
+      "source": "https://github.com/TrySound/postcss-value-parser.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "prelude-ls",
+      "version": "1.2.1",
+      "license": "MIT",
+      "source": "git://github.com/gkz/prelude-ls.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "prettier",
+      "version": "3.9.5",
+      "license": "MIT",
+      "source": "prettier/prettier",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "protobufjs",
+      "version": "7.6.5",
+      "license": "BSD-3-Clause",
+      "source": "protobufjs/protobuf.js",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "punycode",
+      "version": "2.3.1",
+      "license": "MIT",
+      "source": "https://github.com/mathiasbynens/punycode.js.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "puppeteer-core",
+      "version": "25.3.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer-core",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "pure-rand",
+      "version": "8.4.2",
+      "license": "MIT",
+      "source": "git+https://github.com/dubzzz/pure-rand.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "react",
+      "version": "19.1.0",
+      "license": "MIT",
+      "source": "https://github.com/facebook/react.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.1.0",
+      "license": "MIT",
+      "source": "https://github.com/facebook/react.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "react-refresh",
+      "version": "0.18.0",
+      "license": "MIT",
+      "source": "https://github.com/facebook/react.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "remotion",
+      "version": "4.0.489",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "source": "https://github.com/remotion-dev/remotion/tree/main/packages/core",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "require-from-string",
+      "version": "2.0.2",
+      "license": "MIT",
+      "source": "floatdrop/require-from-string",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "restructure",
+      "version": "3.0.2",
+      "license": "MIT",
+      "source": "git://github.com/devongovett/restructure.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "retry",
+      "version": "0.13.1",
+      "license": "MIT",
+      "source": "git://github.com/tim-kos/node-retry.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "rolldown",
+      "version": "1.1.5",
+      "license": "MIT",
+      "source": "git+https://github.com/rolldown/rolldown.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "run-applescript",
+      "version": "7.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/run-applescript",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "rxjs",
+      "version": "7.8.2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/reactivex/rxjs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "safe-buffer",
+      "version": "5.2.1",
+      "license": "MIT",
+      "source": "git://github.com/feross/safe-buffer.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "scheduler",
+      "version": "0.26.0",
+      "license": "MIT",
+      "source": "https://github.com/facebook/react.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "schema-utils",
+      "version": "4.3.3",
+      "license": "MIT",
+      "source": "webpack/schema-utils",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "semver",
+      "version": "7.5.3",
+      "license": "ISC",
+      "source": "https://github.com/npm/node-semver.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "semver",
+      "version": "7.8.5",
+      "license": "ISC",
+      "source": "git+https://github.com/npm/node-semver.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "serialize-error",
+      "version": "8.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/serialize-error",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "sharp",
+      "version": "0.34.5",
+      "license": "Apache-2.0",
+      "source": "git://github.com/lovell/sharp.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "shebang-command",
+      "version": "2.0.0",
+      "license": "MIT",
+      "source": "kevva/shebang-command",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "shebang-regex",
+      "version": "3.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/shebang-regex",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "shell-quote",
+      "version": "1.8.4",
+      "license": "MIT",
+      "source": "http://github.com/ljharb/shell-quote.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "siginfo",
+      "version": "2.0.0",
+      "license": "ISC",
+      "source": "git+https://github.com/emilbayes/siginfo.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "signal-exit",
+      "version": "3.0.7",
+      "license": "ISC",
+      "source": "https://github.com/tapjs/signal-exit.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "source-map",
+      "version": "0.6.1",
+      "license": "BSD-3-Clause",
+      "source": "http://github.com/mozilla/source-map.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "source-map",
+      "version": "0.8.0-beta.0",
+      "license": "BSD-3-Clause",
+      "source": "http://github.com/mozilla/source-map.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "source-map-js",
+      "version": "1.2.1",
+      "license": "BSD-3-Clause",
+      "source": "7rulnik/source-map-js",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "source-map-support",
+      "version": "0.5.21",
+      "license": "MIT",
+      "source": "https://github.com/evanw/node-source-map-support",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "stackback",
+      "version": "0.0.2",
+      "license": "MIT",
+      "source": "git://github.com/shtylman/node-stackback.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "stackframe",
+      "version": "1.3.4",
+      "license": "MIT",
+      "source": "git://github.com/stacktracejs/stackframe.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "std-env",
+      "version": "4.2.0",
+      "license": "MIT",
+      "source": "unjs/std-env",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "string-width",
+      "version": "7.2.0",
+      "license": "MIT",
+      "source": "sindresorhus/string-width",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "strip-ansi",
+      "version": "7.2.0",
+      "license": "MIT",
+      "source": "chalk/strip-ansi",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "strip-final-newline",
+      "version": "2.0.0",
+      "license": "MIT",
+      "source": "sindresorhus/strip-final-newline",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "style-loader",
+      "version": "4.0.0",
+      "license": "MIT",
+      "source": "webpack-contrib/style-loader",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "supports-color",
+      "version": "10.2.2",
+      "license": "MIT",
+      "source": "chalk/supports-color",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "supports-color",
+      "version": "7.2.0",
+      "license": "MIT",
+      "source": "chalk/supports-color",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "supports-color",
+      "version": "8.1.1",
+      "license": "MIT",
+      "source": "chalk/supports-color",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tapable",
+      "version": "2.3.3",
+      "license": "MIT",
+      "source": "http://github.com/webpack/tapable.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "terser",
+      "version": "5.49.0",
+      "license": "BSD-2-Clause",
+      "source": "https://github.com/terser/terser",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "terser-webpack-plugin",
+      "version": "5.6.1",
+      "license": "MIT",
+      "source": "webpack/minimizer-webpack-plugin",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tiny-inflate",
+      "version": "1.0.3",
+      "license": "MIT",
+      "source": "git://github.com/devongovett/tiny-inflate.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tinybench",
+      "version": "2.9.0",
+      "license": "MIT",
+      "source": "tinylibs/tinybench",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tinyexec",
+      "version": "1.2.4",
+      "license": "MIT",
+      "source": "git+https://github.com/tinylibs/tinyexec.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tinyglobby",
+      "version": "0.2.17",
+      "license": "MIT",
+      "source": "git+https://github.com/SuperchupuDev/tinyglobby.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tinyrainbow",
+      "version": "3.1.0",
+      "license": "MIT",
+      "source": "git+https://github.com/tinylibs/tinyrainbow.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tr46",
+      "version": "1.0.1",
+      "license": "MIT",
+      "source": "Sebmaster/tr46.js",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tree-kill",
+      "version": "1.2.2",
+      "license": "MIT",
+      "source": "git://github.com/pkrumins/node-tree-kill.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ts-api-utils",
+      "version": "2.5.0",
+      "license": "MIT",
+      "source": "https://github.com/JoshuaKGoldberg/ts-api-utils",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tslib",
+      "version": "2.8.1",
+      "license": "0BSD",
+      "source": "https://github.com/Microsoft/tslib.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "tsx",
+      "version": "4.23.1",
+      "license": "MIT",
+      "source": "privatenumber/tsx",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "type-check",
+      "version": "0.4.0",
+      "license": "MIT",
+      "source": "git://github.com/gkz/type-check.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "type-fest",
+      "version": "0.20.2",
+      "license": "(MIT OR CC0-1.0)",
+      "source": "sindresorhus/type-fest",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "typed-query-selector",
+      "version": "2.12.2",
+      "license": "MIT",
+      "source": "g-plane/typed-query-selector",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "typescript",
+      "version": "5.9.3",
+      "license": "Apache-2.0",
+      "source": "https://github.com/microsoft/TypeScript.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "typescript-eslint",
+      "version": "8.64.0",
+      "license": "MIT",
+      "source": "https://github.com/typescript-eslint/typescript-eslint.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "undici-types",
+      "version": "8.3.0",
+      "license": "MIT",
+      "source": "git+https://github.com/nodejs/undici.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "unicode-properties",
+      "version": "1.4.1",
+      "license": "MIT",
+      "source": "git://github.com/devongovett/unicode-properties.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "unicode-trie",
+      "version": "2.0.0",
+      "license": "MIT",
+      "source": "git://github.com/devongovett/unicode-trie.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "update-browserslist-db",
+      "version": "1.2.3",
+      "license": "MIT",
+      "source": "browserslist/update-db",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "uri-js",
+      "version": "4.4.1",
+      "license": "BSD-2-Clause",
+      "source": "http://github.com/garycourt/uri-js",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "util-deprecate",
+      "version": "1.0.2",
+      "license": "MIT",
+      "source": "git://github.com/TooTallNate/util-deprecate.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "vite",
+      "version": "8.1.4",
+      "license": "MIT",
+      "source": "git+https://github.com/vitejs/vite.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "vitest",
+      "version": "4.1.10",
+      "license": "MIT",
+      "source": "git+https://github.com/vitest-dev/vitest.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "watchpack",
+      "version": "2.5.2",
+      "license": "MIT",
+      "source": "https://github.com/webpack/watchpack.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "web-streams-polyfill",
+      "version": "3.3.3",
+      "license": "MIT",
+      "source": "git+https://github.com/MattiasBuelens/web-streams-polyfill.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "webdriver-bidi-protocol",
+      "version": "0.4.2",
+      "license": "Apache-2.0",
+      "source": "git+https://github.com/GoogleChromeLabs/webdriver-bidi-protocol.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "webidl-conversions",
+      "version": "4.0.2",
+      "license": "BSD-2-Clause",
+      "source": "jsdom/webidl-conversions",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "webpack",
+      "version": "5.105.0",
+      "license": "MIT",
+      "source": "https://github.com/webpack/webpack.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "webpack-sources",
+      "version": "3.5.1",
+      "license": "MIT",
+      "source": "git+https://github.com/webpack/webpack-sources.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "whatwg-url",
+      "version": "7.1.0",
+      "license": "MIT",
+      "source": "jsdom/whatwg-url",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "which",
+      "version": "2.0.2",
+      "license": "ISC",
+      "source": "git://github.com/isaacs/node-which.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "why-is-node-running",
+      "version": "2.3.0",
+      "license": "MIT",
+      "source": "https://github.com/mafintosh/why-is-node-running.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "word-wrap",
+      "version": "1.2.5",
+      "license": "MIT",
+      "source": "jonschlinkert/word-wrap",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "wrap-ansi",
+      "version": "9.0.2",
+      "license": "MIT",
+      "source": "chalk/wrap-ansi",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "ws",
+      "version": "8.21.0",
+      "license": "MIT",
+      "source": "git+https://github.com/websockets/ws.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "wsl-utils",
+      "version": "0.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/wsl-utils",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "y18n",
+      "version": "5.0.8",
+      "license": "ISC",
+      "source": "yargs/y18n",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "yallist",
+      "version": "4.0.0",
+      "license": "ISC",
+      "source": "git+https://github.com/isaacs/yallist.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "yargs",
+      "version": "18.0.0",
+      "license": "MIT",
+      "source": "https://github.com/yargs/yargs.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "yargs-parser",
+      "version": "22.0.0",
+      "license": "ISC",
+      "source": "https://github.com/yargs/yargs-parser.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "yocto-queue",
+      "version": "0.1.0",
+      "license": "MIT",
+      "source": "sindresorhus/yocto-queue",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "zod",
+      "version": "3.25.76",
+      "license": "MIT",
+      "source": "git+https://github.com/colinhacks/zod.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    },
+    {
+      "name": "zod",
+      "version": "4.3.6",
+      "license": "MIT",
+      "source": "git+https://github.com/colinhacks/zod.git",
+      "notice": null,
+      "distributionClass": "installed-development-tree"
+    }
+  ],
+  "releaseObligations": [
+    "Preserve every required license and notice for packaged code.",
+    "Re-review current Remotion terms before public distribution, commercialization, team growth, automation-scale change, or engine upgrade.",
+    "Review the exact FFmpeg binary and codec configuration before bundling.",
+    "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents."
+  ],
+  "identityHash": "cc4cd7f5020afb94449f705b220e1f96b8c121409d21e3cd8dce0086b2c69b38"
+}

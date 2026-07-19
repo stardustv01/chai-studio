@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-07-15T09:46:00Z",
+  "command": "pnpm audit --prod --audit-level high",
+  "passed": true,
+  "result": "No known vulnerabilities found",
+  "scope": "pinned production dependency graph",
+  "note": "Registry advisory state is time-sensitive and CI repeats this check."
+}

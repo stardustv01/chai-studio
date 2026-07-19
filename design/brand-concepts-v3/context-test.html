@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chai Studio Brand Concepts V3 Context Test</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        background: #070b10;
+        color: #f1f7ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #070b10;
+      }
+      main {
+        width: 1440px;
+        min-height: 1200px;
+        padding: 34px 40px 42px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -0.03em;
+      }
+      .intro {
+        margin: 8px 0 24px;
+        color: #91a2b6;
+        font-size: 14px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+      .concept {
+        border: 1px solid #26374c;
+        border-radius: 12px;
+        background: #0c131d;
+        overflow: hidden;
+      }
+      .concept > h2 {
+        margin: 0;
+        padding: 13px 15px;
+        border-bottom: 1px solid #26374c;
+        font-size: 15px;
+      }
+      .header-demo {
+        height: 48px;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        background: #0a0f16;
+        border-bottom: 1px solid #1e2b3b;
+      }
+      .header-demo strong {
+        font-size: 13px;
+      }
+      .header-demo .nav {
+        margin-left: auto;
+        color: #7f91a5;
+        font-size: 11px;
+        word-spacing: 13px;
+      }
+      .context-row {
+        display: grid;
+        grid-template-columns: 1fr 130px;
+        gap: 14px;
+        padding: 14px;
+      }
+      .project-card {
+        height: 118px;
+        border: 1px solid #2c4057;
+        border-radius: 9px;
+        background: linear-gradient(145deg, #0d1622, #121b2a);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 17px;
+      }
+      .project-copy strong {
+        display: block;
+        font-size: 14px;
+      }
+      .project-copy span {
+        display: block;
+        margin-top: 5px;
+        color: #8598ac;
+        font:
+          11px ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+      }
+      .dock-wrap {
+        display: grid;
+        place-items: center;
+        border: 1px solid #24354a;
+        border-radius: 9px;
+        background: #090f17;
+      }
+      .dock-tile {
+        width: 86px;
+        height: 86px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #354969;
+        border-radius: 20px;
+        background: #0a0f16;
+        box-shadow: 0 12px 28px #0008;
+        overflow: hidden;
+      }
+      .crop {
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: #0a0f16;
+      }
+      .crop img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.48);
+      }
+      .header-mark {
+        width: 25px;
+        height: 25px;
+        border-radius: 6px;
+      }
+      .project-mark {
+        width: 62px;
+        height: 62px;
+        border-radius: 10px;
+        flex: 0 0 auto;
+      }
+      .dock-mark {
+        width: 68px;
+        height: 68px;
+        border-radius: 14px;
+      }
+      .wordmark-header {
+        width: 148px;
+        height: 30px;
+        overflow: hidden;
+        background: #0a0f16;
+      }
+      .wordmark-header img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .wordmark-project {
+        width: 190px;
+        height: 68px;
+        overflow: hidden;
+        background: #0a0f16;
+        border-radius: 7px;
+      }
+      .wordmark-project img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .wordmark-symbol img {
+        transform: scale(1.65);
+      }
+      .wordmark-card {
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Chai Studio — Round 3 context test</h1>
+      <p class="intro">
+        Every direction is shown in a 48 px Studio header, project-launcher card, and 86 px Dock tile. Concept
+        raster only; no UI integration.
+      </p>
+      <section class="grid">
+        <article class="concept">
+          <h2>01 · Chai Signature</h2>
+          <div class="header-demo">
+            <div class="wordmark-header"><img src="01-chai-signature.png" alt="" /></div>
+            <span class="nav">Edit Inspect Media Animation Deliver</span>
+          </div>
+          <div class="context-row">
+            <div class="project-card wordmark-card">
+              <div class="wordmark-project"><img src="01-chai-signature.png" alt="" /></div>
+              <div class="project-copy"><strong>Launch Film</strong><span>Revision 428</span></div>
+            </div>
+            <div class="dock-wrap">
+              <div class="dock-tile">
+                <div class="crop dock-mark wordmark-symbol">
+                  <img src="01b-chai-signature-symbol-crop.png" alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="concept">
+          <h2>02 · First Light Frame</h2>
+          <div class="header-demo">
+            <div class="crop header-mark"><img src="02-first-light-frame.png" alt="" /></div>
+            <strong>Chai Studio</strong><span class="nav">Edit Inspect Media Animation Deliver</span>
+          </div>
+          <div class="context-row">
+            <div class="project-card">
+              <div class="crop project-mark"><img src="02-first-light-frame.png" alt="" /></div>
+              <div class="project-copy"><strong>Launch Film</strong><span>Revision 428</span></div>
+            </div>
+            <div class="dock-wrap">
+              <div class="dock-tile">
+                <div class="crop dock-mark"><img src="02-first-light-frame.png" alt="" /></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="concept">
+          <h2>03 · Warm Core</h2>
+          <div class="header-demo">
+            <div class="crop header-mark"><img src="03-warm-core.png" alt="" /></div>
+            <strong>Chai Studio</strong><span class="nav">Edit Inspect Media Animation Deliver</span>
+          </div>
+          <div class="context-row">
+            <div class="project-card">
+              <div class="crop project-mark"><img src="03-warm-core.png" alt="" /></div>
+              <div class="project-copy"><strong>Launch Film</strong><span>Revision 428</span></div>
+            </div>
+            <div class="dock-wrap">
+              <div class="dock-tile">
+                <div class="crop dock-mark"><img src="03-warm-core.png" alt="" /></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="concept">
+          <h2>04 · Two Currents</h2>
+          <div class="header-demo">
+            <div class="crop header-mark"><img src="04-two-currents.png" alt="" /></div>
+            <strong>Chai Studio</strong><span class="nav">Edit Inspect Media Animation Deliver</span>
+          </div>
+          <div class="context-row">
+            <div class="project-card">
+              <div class="crop project-mark"><img src="04-two-currents.png" alt="" /></div>
+              <div class="project-copy"><strong>Launch Film</strong><span>Revision 428</span></div>
+            </div>
+            <div class="dock-wrap">
+              <div class="dock-tile">
+                <div class="crop dock-mark"><img src="04-two-currents.png" alt="" /></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="concept">
+          <h2>05 · Living Cut</h2>
+          <div class="header-demo">
+            <div class="crop header-mark"><img src="05-living-cut.png" alt="" /></div>
+            <strong>Chai Studio</strong><span class="nav">Edit Inspect Media Animation Deliver</span>
+          </div>
+          <div class="context-row">
+            <div class="project-card">
+              <div class="crop project-mark"><img src="05-living-cut.png" alt="" /></div>
+              <div class="project-copy"><strong>Launch Film</strong><span>Revision 428</span></div>
+            </div>
+            <div class="dock-wrap">
+              <div class="dock-tile">
+                <div class="crop dock-mark"><img src="05-living-cut.png" alt="" /></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="concept">
+          <h2>06 · Breathing Frame</h2>
+          <div class="header-demo">
+            <div class="crop header-mark"><img src="06-breathing-frame.png" alt="" /></div>
+            <strong>Chai Studio</strong><span class="nav">Edit Inspect Media Animation Deliver</span>
+          </div>
+          <div class="context-row">
+            <div class="project-card">
+              <div class="crop project-mark"><img src="06-breathing-frame.png" alt="" /></div>
+              <div class="project-copy"><strong>Launch Film</strong><span>Revision 428</span></div>
+            </div>
+            <div class="dock-wrap">
+              <div class="dock-tile">
+                <div class="crop dock-mark"><img src="06-breathing-frame.png" alt="" /></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

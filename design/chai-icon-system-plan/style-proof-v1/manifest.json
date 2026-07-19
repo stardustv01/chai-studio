@@ -1,0 +1,31 @@
+{
+  "name": "chai-studio-icon-style-proof",
+  "version": "1.0.0-candidate",
+  "status": "isolated-static-approval-candidate",
+  "integrated": false,
+  "grid": 24,
+  "strokeWidth": 1.75,
+  "linecap": "round",
+  "linejoin": "round",
+  "liveSizes": [14, 16, 20, 24],
+  "colors": {
+    "primaryDark": "#F5EFE2",
+    "primaryLight": "#161A22",
+    "precisionAccent": "#19D9EA",
+    "warmthAccent": "#F2B33F"
+  },
+  "icons": [
+    { "name": "workspace-edit", "accent": "precision", "role": "workspace" },
+    { "name": "workspace-media", "accent": "warmth", "role": "workspace" },
+    { "name": "workspace-animation", "accent": "precision", "role": "workspace" },
+    { "name": "capture-exact", "accent": "precision", "role": "action" },
+    { "name": "render", "accent": "precision", "role": "action" },
+    { "name": "play", "accent": "precision", "role": "transport" },
+    { "name": "blade-tool", "accent": "precision", "role": "timeline-tool" },
+    { "name": "snap", "accent": "precision", "role": "timeline-tool" },
+    { "name": "keyframe", "accent": "precision", "role": "animation" },
+    { "name": "waveform", "accent": "warmth", "role": "audio" },
+    { "name": "qa-scan", "accent": "precision", "role": "qa" },
+    { "name": "status-warning", "accent": "warmth", "role": "status" }
+  ]
+}

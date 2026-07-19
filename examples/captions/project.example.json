@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "example-captions",
+  "title": "Transcript and Captions",
+  "projectClass": "captions",
+  "assets": ["audio", "transcript", "captions"],
+  "engines": ["shared"],
+  "expectedWorkflows": ["import", "correct", "style", "qa", "srt", "vtt"]
+}

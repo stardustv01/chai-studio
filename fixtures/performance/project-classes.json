@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "1.0.0",
+  "hardwareClasses": [
+    {
+      "id": "apple-m4-16gb",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "cpuModel": "Apple M4",
+      "logicalCpuCount": 10,
+      "memoryGiB": 16,
+      "gpuClass": "Apple M4 integrated",
+      "osRelease": "macOS 26.x"
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "perf-small-v1",
+      "projectClass": "small",
+      "durationFrames": 1800,
+      "trackCount": 3,
+      "clipCount": 24,
+      "captionCount": 12,
+      "audioClipCount": 4,
+      "nativeLayerCount": 2,
+      "webglLayerCount": 0,
+      "bridgeCount": 1,
+      "sourceIdentity": "synthetic-p26-small-v1"
+    },
+    {
+      "id": "perf-medium-v1",
+      "projectClass": "medium",
+      "durationFrames": 18000,
+      "trackCount": 12,
+      "clipCount": 180,
+      "captionCount": 120,
+      "audioClipCount": 24,
+      "nativeLayerCount": 16,
+      "webglLayerCount": 2,
+      "bridgeCount": 8,
+      "sourceIdentity": "synthetic-p26-medium-v1"
+    },
+    {
+      "id": "perf-long-v1",
+      "projectClass": "long",
+      "durationFrames": 216000,
+      "trackCount": 24,
+      "clipCount": 360,
+      "captionCount": 1800,
+      "audioClipCount": 64,
+      "nativeLayerCount": 32,
+      "webglLayerCount": 4,
+      "bridgeCount": 16,
+      "sourceIdentity": "synthetic-p26-long-v1"
+    },
+    {
+      "id": "perf-hundreds-v1",
+      "projectClass": "hundreds-of-clips",
+      "durationFrames": 90000,
+      "trackCount": 48,
+      "clipCount": 750,
+      "captionCount": 400,
+      "audioClipCount": 120,
+      "nativeLayerCount": 80,
+      "webglLayerCount": 8,
+      "bridgeCount": 42,
+      "sourceIdentity": "synthetic-p26-hundreds-v1"
+    },
+    {
+      "id": "perf-webgl-v1",
+      "projectClass": "heavy-webgl",
+      "durationFrames": 3600,
+      "trackCount": 10,
+      "clipCount": 90,
+      "captionCount": 12,
+      "audioClipCount": 12,
+      "nativeLayerCount": 24,
+      "webglLayerCount": 24,
+      "bridgeCount": 18,
+      "sourceIdentity": "synthetic-p26-webgl-v1"
+    },
+    {
+      "id": "perf-captions-v1",
+      "projectClass": "captions",
+      "durationFrames": 54000,
+      "trackCount": 8,
+      "clipCount": 120,
+      "captionCount": 5000,
+      "audioClipCount": 12,
+      "nativeLayerCount": 8,
+      "webglLayerCount": 0,
+      "bridgeCount": 4,
+      "sourceIdentity": "synthetic-p26-captions-v1"
+    },
+    {
+      "id": "perf-audio-v1",
+      "projectClass": "audio",
+      "durationFrames": 54000,
+      "trackCount": 32,
+      "clipCount": 320,
+      "captionCount": 60,
+      "audioClipCount": 240,
+      "nativeLayerCount": 6,
+      "webglLayerCount": 0,
+      "bridgeCount": 4,
+      "sourceIdentity": "synthetic-p26-audio-v1"
+    },
+    {
+      "id": "perf-mixed-bridges-v1",
+      "projectClass": "mixed-engine-bridges",
+      "durationFrames": 18000,
+      "trackCount": 16,
+      "clipCount": 240,
+      "captionCount": 120,
+      "audioClipCount": 32,
+      "nativeLayerCount": 96,
+      "webglLayerCount": 12,
+      "bridgeCount": 80,
+      "sourceIdentity": "synthetic-p26-mixed-bridges-v1"
+    }
+  ]
+}

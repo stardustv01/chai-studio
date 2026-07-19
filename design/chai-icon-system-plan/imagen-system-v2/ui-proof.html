@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chai Studio Imagen Icons — UI Size Proof</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #03050a; color: #f5efe2; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #03050a; }
+    main { width: 1600px; margin: 0 auto; padding: 52px 58px 60px; background: radial-gradient(circle at 86% 3%, rgba(25,217,234,.06), transparent 24%), #050810; }
+    header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 23px; border-bottom: 1px solid #202635; }
+    .eyebrow { color: #19d9ea; font-size: 11px; font-weight: 760; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 9px 0 0; font-size: 31px; line-height: 1; letter-spacing: -.035em; font-weight: 650; }
+    .subtitle { margin: 10px 0 0; color: #949daf; font-size: 13px; }
+    .meta { color: #737d91; font: 650 10px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+    .surface { overflow: hidden; margin-top: 26px; border: 1px solid #252c3a; border-radius: 18px; }
+    .surface.dark { background: #090d16; color: #f5efe2; }
+    .surface.light { background: #f3eee4; color: #161a22; border-color: #ded7ca; }
+    .surface-head { display: flex; justify-content: space-between; align-items: center; padding: 19px 24px; border-bottom: 1px solid rgba(126,137,157,.18); }
+    .surface-title { font-size: 10px; font-weight: 780; letter-spacing: .17em; text-transform: uppercase; }
+    .dark .surface-title { color: #c7ccd7; } .light .surface-title { color: #4b5360; }
+    .surface-note { color: #778195; font: 650 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .sheet { padding: 18px 24px 24px; }
+    .sheet + .sheet { border-top: 1px solid rgba(126,137,157,.18); }
+    .sheet h2 { margin: 0 0 13px; color: #19d9ea; font: 750 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .light .sheet h2 { color: #087e8a; }
+    .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .card { height: 86px; min-width: 0; padding: 10px 11px 8px; border: 1px solid rgba(126,137,157,.15); border-radius: 10px; }
+    .dark .card { background: rgba(2,5,11,.25); } .light .card { background: rgba(255,255,255,.22); }
+    .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 620 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .dark .name { color: #aeb6c6; } .light .name { color: #444b57; }
+    .samples { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; margin-top: 7px; }
+    .sample { position: relative; height: 48px; display: flex; align-items: center; justify-content: center; }
+    .sample::before { content: ""; position: absolute; width: 32px; height: 32px; border: 1px solid rgba(126,137,157,.14); border-radius: 7px; }
+    .sample::after { content: attr(data-size); position: absolute; bottom: -2px; right: 1px; color: #768094; font: 600 7px/1 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .75; }
+    .sample img { display: block; position: relative; z-index: 1; object-fit: contain; }
+    footer { display: flex; justify-content: space-between; margin-top: 22px; color: #687286; font-size: 9px; }
+    footer strong { color: #f2b33f; letter-spacing: .08em; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><div class="eyebrow">Chai Studio / Imagen System v2</div><h1 id="title">Exact UI-size proof</h1><p class="subtitle">Every sample is rendered at its stated CSS pixel size. The 32 px outline is the control target, not part of the icon.</p></div>
+      <div class="meta">DEVICE SCALE 1<br>14 / 16 / 20 / 24 PX<br>DARK + LIGHT SURFACES</div>
+    </header>
+    <div id="surfaces"></div>
+    <footer><span>Browser-rendered from individual transparent PNG assets</span><strong>OPTICAL QA · NOT INTEGRATED</strong></footer>
+  </main>
+  <script>
+    const sizes = [14, 16, 20, 24];
+    const groups = { a: [0,1,2,3], b: [4,5,6,7], c: [8,9,10] };
+    const requested = new URLSearchParams(location.search).get('group') || 'a';
+
+    function card(icon, theme) {
+      const article = document.createElement('article');
+      article.className = 'card';
+      const folder = theme === 'dark' ? 'transparent-384' : 'light-384';
+      article.innerHTML = `<div class="name">${icon}</div><div class="samples">${sizes.map(size => `<div class="sample" data-size="${size}"><img src="icons/${folder}/${icon}.png" width="${size}" height="${size}" alt=""></div>`).join('')}</div>`;
+      return article;
+    }
+
+    function surface(theme, label, sheets) {
+      const section = document.createElement('section');
+      section.className = `surface ${theme}`;
+      section.innerHTML = `<div class="surface-head"><span class="surface-title">${label}</span><span class="surface-note">EXACT CSS PIXELS · 32 PX TARGET GUIDE</span></div>`;
+      for (const sheet of sheets) {
+        const block = document.createElement('section');
+        block.className = 'sheet';
+        block.innerHTML = `<h2>${sheet.file.replace('.png','').replaceAll('-', ' ')}</h2><div class="grid"></div>`;
+        const grid = block.querySelector('.grid');
+        for (const icon of sheet.icons) grid.appendChild(card(icon, theme));
+        section.appendChild(block);
+      }
+      return section;
+    }
+
+    (async () => {
+      const manifest = await fetch('sheet-manifest.json').then(response => response.json());
+      const sheets = groups[requested].map(index => manifest.sheets[index]);
+      const count = sheets.reduce((total, sheet) => total + sheet.icons.length, 0);
+      document.querySelector('#title').textContent = `Proof ${requested.toUpperCase()} · ${count} icons`;
+      document.querySelector('#surfaces').append(surface('dark', 'Midnight surface', sheets));
+      document.querySelector('#surfaces').append(surface('light', 'Warm-light surface', sheets));
+      await Promise.all([...document.images].map(image => image.decode()));
+      document.documentElement.dataset.ready = 'true';
+    })();
+  </script>
+</body>
+</html>

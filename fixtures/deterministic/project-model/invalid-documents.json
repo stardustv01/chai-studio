@@ -1,0 +1,56 @@
+[
+  {
+    "kind": "chai.project",
+    "mutation": "numeric-fps",
+    "path": "/video/fps",
+    "value": 29.97
+  },
+  {
+    "kind": "timeline",
+    "mutation": "negative-duration",
+    "path": "/durationFrames",
+    "value": "-1"
+  },
+  {
+    "kind": "assets",
+    "mutation": "path-traversal",
+    "path": "/assets/0/path",
+    "value": "../secret.mov"
+  },
+  {
+    "kind": "settings",
+    "mutation": "unsafe-output-path",
+    "path": "/outputDirectory",
+    "value": "/tmp/output"
+  },
+  {
+    "kind": "transaction",
+    "mutation": "malformed-hash",
+    "path": "/afterHashes/chai.project.json",
+    "value": "not-a-hash"
+  },
+  {
+    "kind": "current-revision",
+    "mutation": "non-canonical-version",
+    "path": "/schemaVersion",
+    "value": "1"
+  },
+  {
+    "kind": "autosave-metadata",
+    "mutation": "invalid-clean-shutdown",
+    "path": "/cleanShutdown",
+    "value": "yes"
+  },
+  {
+    "kind": "named-versions",
+    "mutation": "invalid-version-name",
+    "path": "/versions/0/name",
+    "value": "Published"
+  },
+  {
+    "kind": "approval-state",
+    "mutation": "invalid-lifecycle-state",
+    "path": "/state",
+    "value": "render_complete"
+  }
+]

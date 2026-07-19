@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-07-15T08:36:36.921Z",
+  "sampleCountPerEngine": 5,
+  "hyperframes": {
+    "durationsMs": [
+      3294.288291,
+      3384.9722500000003,
+      3130.7356660000005,
+      3141.46925,
+      3116.7271249999994
+    ],
+    "p95Ms": 3384.9722500000003,
+    "deterministic": true,
+    "hashes": [
+      "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935",
+      "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935",
+      "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935",
+      "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935",
+      "eb8e8433516e6d28f17bad582dbc52fbbaceba9bd059462b38040b721c5d2935"
+    ],
+    "measurement": "independent CLI process and browser launch per sample"
+  },
+  "remotion": {
+    "setupMs": 794.5513749999991,
+    "durationsMs": [
+      596.541500000003,
+      500.24324999999953,
+      499.1753749999989,
+      465.1658749999988,
+      518.5111249999973
+    ],
+    "p95Ms": 596.541500000003,
+    "deterministic": true,
+    "hashes": [
+      "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0",
+      "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0",
+      "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0",
+      "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0",
+      "8e0343be634dc5876cf5b8ba9ecf5d31100f13b83b4278522d719dc6e5ff77c0"
+    ],
+    "measurement": "one bundle/serve setup followed by five independent still renders"
+  },
+  "passed": true
+}

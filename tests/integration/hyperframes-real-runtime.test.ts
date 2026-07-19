@@ -1,0 +1,139 @@
+import { access, mkdtemp, readFile, rm } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { afterEach, describe, expect, it } from "vitest";
+import {
+  collectHyperframesDependencies,
+  discoverHyperframesCompositions,
+  HyperframesCliRuntime,
+  HyperframesRenderer,
+  normalizeRemotionPng,
+  pinnedHyperframesVersion,
+  validateHyperframesSource,
+  type HyperframesSourceDescriptor,
+} from "../../packages/engine-adapters/src/index.js";
+import { normalizeRational } from "../../packages/schema/src/index.js";
+import { isolatedEngineExecutable, isolatedEngineIdentity } from "../../scripts/browser-isolation.mjs";
+
+const directories: string[] = [];
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const projectRoot = path.join(root, "spikes/milestone-0/fixtures/hyperframes");
+const executable = path.join(root, "packages/engine-adapters/node_modules/.bin/hyperframes");
+const browserExecutable = isolatedEngineExecutable;
+
+afterEach(async () => {
+  await Promise.all(
+    directories.splice(0).map((directory) => rm(directory, { recursive: true, force: true })),
+  );
+});
+
+describe("P11 real pinned HyperFrames runtime", () => {
+  it("discovers, checks, captures exact boundary frames, and renders an exact range", async () => {
+    await access(executable);
+    await access(browserExecutable);
+    const outputRoot = await mkdtemp(path.join(os.tmpdir(), "chai-hyperframes-real-"));
+    directories.push(outputRoot);
+    const runtime = new HyperframesCliRuntime(executable, browserExecutable);
+    expect(runtime.version).toBe(pinnedHyperframesVersion);
+    const discovery = await discoverHyperframesCompositions({
+      source,
+      runtime,
+      signal: new AbortController().signal,
+    });
+    expect(discovery).toMatchObject({
+      valid: true,
+      selectedComposition: {
+        compositionId: "chai-m0-hyperframes",
+        width: 640,
+        height: 360,
+        durationFrames: "60",
+        frameAdapters: [{ kind: "gsap", seekable: true }],
+      },
+    });
+    const composition = discovery.selectedComposition;
+    if (composition === null) throw new Error("Real HyperFrames fixture discovery failed.");
+    const validation = await validateHyperframesSource({
+      source,
+      composition,
+      runtime,
+      signal: new AbortController().signal,
+    });
+    expect(validation, JSON.stringify(validation.diagnostics, null, 2)).toMatchObject({ valid: true });
+    expect(validation.seekable).toBe(true);
+    const dependencies = await collectHyperframesDependencies(source, composition.compositionId);
+    expect(dependencies.entries.map((entry) => entry.kind)).toEqual(
+      expect.arrayContaining(["html", "script", "adapter", "package", "variables"]),
+    );
+    const renderer = new HyperframesRenderer(runtime, "/opt/homebrew/bin/ffmpeg");
+    const common = {
+      source,
+      composition,
+      environment: {
+        strictEnvironmentFingerprint: `strict-hyperframes-0.7.58-${isolatedEngineIdentity}-ffmpeg7.1.1`,
+        browserIdentity: isolatedEngineIdentity,
+        browserExecutable,
+        colorContractId: "chai-hyperframes-rgba8-straight-v1",
+        colorSpace: "srgb" as const,
+        alphaMode: "straight" as const,
+        settingsHash: "hyperframes-png-sequence-draft-strict-v1",
+      },
+      dependencySet: dependencies,
+      signal: new AbortController().signal,
+    };
+    const frame54a = await renderer.renderStill({
+      ...common,
+      frame: "54",
+      outputPath: path.join(outputRoot, "frame-54-a.png"),
+    });
+    const frame54b = await renderer.renderStill({
+      ...common,
+      frame: "54",
+      outputPath: path.join(outputRoot, "frame-54-b.png"),
+    });
+    expect(frame54a.artifactHash).toBe("bbae879dcf9fd5d0ec6bc8d04c9ab4dd75ca8027fdb36d93be39e98f48a8edad");
+    expect(frame54b.normalizedPixelHash).toBe(frame54a.normalizedPixelHash);
+
+    const frame57 = await renderer.renderStill({
+      ...common,
+      frame: "57",
+      outputPath: path.join(outputRoot, "frame-57.png"),
+    });
+    const acceptedFrame57 = normalizeRemotionPng(
+      await readFile(path.join(root, "spikes/milestone-0/fixtures/preview/assets/hyperframes/frame-57.png")),
+    );
+    expect(frame57.normalizedPixelHash).toBe(acceptedFrame57.normalizedPixelHash);
+
+    const progress: string[] = [];
+    const outputPath = path.join(outputRoot, "frames-54-59.mp4");
+    const range = await renderer.renderRange({
+      ...common,
+      startFrame: "54",
+      endFrameExclusive: "60",
+      outputPath,
+      codec: "h264",
+      onProgress: (update) => progress.push(update.stage),
+    });
+    await access(outputPath);
+    expect(range).toMatchObject({
+      range: { startFrame: "54", endFrameExclusive: "60" },
+      codec: "h264",
+      dependencyGraphHash: dependencies.dependencyGraphHash,
+      trustClass: "trusted-authored",
+    });
+    expect(range.artifactHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(progress).toEqual(expect.arrayContaining(["validating", "capturing", "encoding", "committing"]));
+  }, 180_000);
+});
+
+const source: HyperframesSourceDescriptor = {
+  sourceId: "source-hyperframes-milestone0-0001",
+  projectRoot,
+  entryFile: path.join(projectRoot, "index.html"),
+  compositionId: "chai-m0-hyperframes",
+  declaredFps: normalizeRational(30n, 1n),
+  variableOverrides: {},
+  trustClass: "trusted-authored",
+  approvedNetworkResources: [],
+  expectedVersion: pinnedHyperframesVersion,
+};

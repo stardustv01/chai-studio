@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "ruleId": "schema",
+      "version": 1,
+      "severity": "info",
+      "message": "schema valid"
+    },
+    {
+      "ruleId": "assets",
+      "version": 1,
+      "severity": "info",
+      "message": "assets available"
+    },
+    {
+      "ruleId": "rights",
+      "version": 1,
+      "severity": "info",
+      "message": "rights confirmed"
+    },
+    {
+      "ruleId": "alpha",
+      "version": 1,
+      "severity": "info",
+      "message": "supported alpha bridge"
+    },
+    {
+      "ruleId": "trust",
+      "version": 1,
+      "severity": "info",
+      "message": "trust policy passed"
+    },
+    {
+      "ruleId": "disk",
+      "version": 1,
+      "severity": "info",
+      "message": "disk available"
+    },
+    {
+      "ruleId": "environment",
+      "version": 1,
+      "severity": "info",
+      "message": "strict environment match"
+    }
+  ],
+  "counts": {
+    "blocking": 0,
+    "warning": 0,
+    "info": 7
+  }
+}

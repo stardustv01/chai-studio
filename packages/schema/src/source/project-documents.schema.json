@@ -1,0 +1,1747 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chai.studio/schema/project-documents.v1.json",
+  "title": "Chai Studio authoritative project document bundle",
+  "$defs": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9._:-]{2,127}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "bigint": { "type": "string", "pattern": "^-?(0|[1-9][0-9]{0,77})$" },
+    "nonNegativeBigint": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,77})$" },
+    "positiveBigint": { "type": "string", "pattern": "^[1-9][0-9]{0,77}$" },
+    "rational": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator"],
+      "properties": {
+        "numerator": { "$ref": "#/$defs/bigint" },
+        "denominator": { "$ref": "#/$defs/positiveBigint" }
+      }
+    },
+    "qaState": {
+      "enum": ["rendered_unchecked", "qa_failed", "qa_warning", "qa_passed", "approved", "delivered"]
+    },
+    "timelinePropertyValue": {
+      "anyOf": [
+        { "type": "number" },
+        { "type": "string", "maxLength": 10000 },
+        { "type": "boolean" },
+        {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 1,
+          "maxItems": 16
+        }
+      ]
+    },
+    "timelineProperty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "defaultValue",
+        "unit",
+        "minimum",
+        "maximum",
+        "step",
+        "ownership",
+        "keyframeable",
+        "capability",
+        "safeToEdit",
+        "nativeAnimation",
+        "supportsSharedConversion"
+      ],
+      "properties": {
+        "value": { "$ref": "#/$defs/timelinePropertyValue" },
+        "defaultValue": { "$ref": "#/$defs/timelinePropertyValue" },
+        "unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "px",
+                "percent",
+                "degrees",
+                "frames",
+                "ratio",
+                "decibels",
+                "color",
+                "text",
+                "enum",
+                "file",
+                "boolean"
+              ]
+            },
+            { "type": "null" }
+          ]
+        },
+        "minimum": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+        "maximum": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+        "step": { "anyOf": [{ "type": "number", "exclusiveMinimum": 0 }, { "type": "null" }] },
+        "ownership": { "enum": ["shared", "engine-native"] },
+        "keyframeable": { "type": "boolean" },
+        "capability": {
+          "enum": ["native", "unified", "bake_required", "fallback_available", "unsupported", "experimental"]
+        },
+        "safeToEdit": { "type": "boolean" },
+        "nativeAnimation": { "type": "boolean" },
+        "supportsSharedConversion": { "type": "boolean" }
+      }
+    },
+    "transcript": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "transcriptId",
+        "sourceAudio",
+        "language",
+        "direction",
+        "importedFrom",
+        "speakers",
+        "words",
+        "phrases"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "transcriptId": { "$ref": "#/$defs/id" },
+        "sourceAudio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["assetId", "streamIndex", "contentHash", "sampleRate"],
+          "properties": {
+            "assetId": { "$ref": "#/$defs/id" },
+            "streamIndex": { "type": "integer", "minimum": 0 },
+            "contentHash": { "$ref": "#/$defs/sha256" },
+            "sampleRate": { "type": "integer", "enum": [44100, 48000, 96000] }
+          }
+        },
+        "language": { "type": "string", "minLength": 2, "maxLength": 64 },
+        "direction": { "enum": ["ltr", "rtl", "auto"] },
+        "importedFrom": { "enum": ["internal", "srt", "vtt", "transcription"] },
+        "speakers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "color"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+              "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$" }
+            }
+          }
+        },
+        "words": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "text",
+              "startSample",
+              "endSampleExclusive",
+              "startFrame",
+              "endFrameExclusive",
+              "confidence",
+              "correctionState",
+              "locked"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "text": { "type": "string", "minLength": 1, "maxLength": 1000 },
+              "startSample": { "$ref": "#/$defs/nonNegativeBigint" },
+              "endSampleExclusive": { "$ref": "#/$defs/positiveBigint" },
+              "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "endFrameExclusive": { "$ref": "#/$defs/positiveBigint" },
+              "confidence": {
+                "anyOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "null" }]
+              },
+              "correctionState": { "enum": ["machine", "reviewed", "corrected"] },
+              "locked": { "type": "boolean" }
+            }
+          }
+        },
+        "phrases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "speakerId",
+              "wordIds",
+              "text",
+              "startFrame",
+              "endFrameExclusive",
+              "confidence",
+              "correctionState",
+              "locked",
+              "captionCueId"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "speakerId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+              "wordIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "text": { "type": "string", "minLength": 1, "maxLength": 10000 },
+              "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "endFrameExclusive": { "$ref": "#/$defs/positiveBigint" },
+              "confidence": {
+                "anyOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "null" }]
+              },
+              "correctionState": { "enum": ["machine", "reviewed", "corrected"] },
+              "locked": { "type": "boolean" },
+              "captionCueId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+            }
+          }
+        }
+      }
+    },
+    "captionDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "captionDocumentId", "transcriptId", "styles", "cues"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "captionDocumentId": { "$ref": "#/$defs/id" },
+        "transcriptId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "styles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "fontAssetId",
+              "fontFamily",
+              "fontSizePx",
+              "fontWeight",
+              "lineHeight",
+              "fillColor",
+              "backgroundColor",
+              "alignment",
+              "verticalPositionPercent",
+              "safeAreaPercent",
+              "maxLines",
+              "maxCharactersPerLine",
+              "maxCharactersPerSecond",
+              "highlightMode"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+              "fontAssetId": { "$ref": "#/$defs/id" },
+              "fontFamily": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "fontSizePx": { "type": "number", "minimum": 8, "maximum": 512 },
+              "fontWeight": { "type": "integer", "minimum": 100, "maximum": 900 },
+              "lineHeight": { "type": "number", "minimum": 0.8, "maximum": 3 },
+              "fillColor": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$" },
+              "backgroundColor": {
+                "type": "string",
+                "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+              },
+              "alignment": { "enum": ["left", "center", "right"] },
+              "verticalPositionPercent": { "type": "number", "minimum": 0, "maximum": 100 },
+              "safeAreaPercent": { "type": "number", "minimum": 0, "maximum": 40 },
+              "maxLines": { "type": "integer", "minimum": 1, "maximum": 6 },
+              "maxCharactersPerLine": { "type": "integer", "minimum": 4, "maximum": 200 },
+              "maxCharactersPerSecond": { "type": "number", "minimum": 1, "maximum": 100 },
+              "highlightMode": { "enum": ["none", "word", "line"] }
+            }
+          }
+        },
+        "cues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "trackId",
+              "transcriptId",
+              "phraseId",
+              "startFrame",
+              "endFrameExclusive",
+              "text",
+              "lines",
+              "speakerId",
+              "wordIds",
+              "locked",
+              "styleTemplateId"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "trackId": { "$ref": "#/$defs/id" },
+              "transcriptId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+              "phraseId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+              "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "endFrameExclusive": { "$ref": "#/$defs/positiveBigint" },
+              "text": { "type": "string", "minLength": 1, "maxLength": 10000 },
+              "lines": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1, "maxLength": 1000 },
+                "minItems": 1,
+                "maxItems": 6
+              },
+              "speakerId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+              "wordIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              },
+              "locked": { "type": "boolean" },
+              "styleTemplateId": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      }
+    },
+    "normalizedPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 1 },
+        "y": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "annotationDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "id",
+        "projectId",
+        "revisionId",
+        "entityIds",
+        "captureId",
+        "frameRange",
+        "coordinateSpace",
+        "geometry",
+        "category",
+        "color",
+        "body",
+        "author",
+        "order",
+        "visible",
+        "locked",
+        "privacyBehavior",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "id": { "$ref": "#/$defs/id" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "entityIds": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "maxItems": 64,
+          "uniqueItems": true
+        },
+        "captureId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "frameRange": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["startFrame", "endFrameExclusive"],
+              "properties": {
+                "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+                "endFrameExclusive": { "$ref": "#/$defs/positiveBigint" }
+              }
+            },
+            { "type": "null" }
+          ]
+        },
+        "coordinateSpace": { "const": "source-normalized" },
+        "geometry": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "point"],
+              "properties": {
+                "kind": { "enum": ["point", "text"] },
+                "point": { "$ref": "#/$defs/normalizedPoint" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "rectangle"],
+              "properties": {
+                "kind": { "enum": ["rectangle", "blur-privacy"] },
+                "rectangle": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["x", "y", "width", "height"],
+                  "properties": {
+                    "x": { "type": "number", "minimum": 0, "maximum": 1 },
+                    "y": { "type": "number", "minimum": 0, "maximum": 1 },
+                    "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+                    "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "start", "end"],
+              "properties": {
+                "kind": { "const": "arrow" },
+                "start": { "$ref": "#/$defs/normalizedPoint" },
+                "end": { "$ref": "#/$defs/normalizedPoint" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "points"],
+              "properties": {
+                "kind": { "const": "freehand" },
+                "points": {
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/normalizedPoint" },
+                  "minItems": 2,
+                  "maxItems": 4096
+                }
+              }
+            }
+          ]
+        },
+        "category": { "enum": ["note", "issue", "privacy", "approval", "guide"] },
+        "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$" },
+        "body": { "type": "string", "maxLength": 16384 },
+        "author": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "sessionId"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" },
+            "kind": { "enum": ["user", "codex", "system"] },
+            "sessionId": { "$ref": "#/$defs/id" }
+          }
+        },
+        "order": { "type": "integer", "minimum": 0 },
+        "visible": { "type": "boolean" },
+        "locked": { "type": "boolean" },
+        "privacyBehavior": { "enum": ["none", "redact-preview-and-export"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "reviewActor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "sessionId"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["user", "codex", "system"] },
+        "sessionId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "reviewFrameRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startFrame", "endFrameExclusive"],
+      "properties": {
+        "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+        "endFrameExclusive": { "$ref": "#/$defs/positiveBigint" }
+      }
+    },
+    "reviewIssueStatus": {
+      "enum": ["open", "acknowledged", "fixed-unverified", "resolved", "accepted-exception", "rejected"]
+    },
+    "reviewState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "bundles",
+        "issues",
+        "comparisons",
+        "requests",
+        "actions",
+        "exceptions",
+        "alternateTakes"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "bundles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "schemaVersion",
+              "id",
+              "projectId",
+              "targetRevisionId",
+              "title",
+              "origin",
+              "selectedEntityIds",
+              "markerIds",
+              "phraseIds",
+              "frames",
+              "ranges",
+              "captureIds",
+              "annotationIds",
+              "issueIds",
+              "author",
+              "status",
+              "requestedDecision",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+              "id": { "$ref": "#/$defs/id" },
+              "projectId": { "$ref": "#/$defs/id" },
+              "targetRevisionId": { "$ref": "#/$defs/id" },
+              "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "origin": {
+                "enum": ["selection", "marker", "phrase", "capture", "range", "delivery-candidate"]
+              },
+              "selectedEntityIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "markerIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "phraseIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "frames": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/nonNegativeBigint" },
+                "uniqueItems": true,
+                "maxItems": 1000
+              },
+              "ranges": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/reviewFrameRange" },
+                "maxItems": 1000
+              },
+              "captureIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 1000
+              },
+              "annotationIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 1000
+              },
+              "issueIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 1000
+              },
+              "author": { "$ref": "#/$defs/reviewActor" },
+              "status": {
+                "enum": [
+                  "draft",
+                  "requested",
+                  "in-review",
+                  "changes-requested",
+                  "decision-recorded",
+                  "closed"
+                ]
+              },
+              "requestedDecision": { "enum": ["feedback", "approve-candidate", "accept-exception"] },
+              "createdAt": { "$ref": "#/$defs/timestamp" },
+              "updatedAt": { "$ref": "#/$defs/timestamp" }
+            }
+          }
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "bundleId",
+              "title",
+              "body",
+              "category",
+              "severity",
+              "status",
+              "entityIds",
+              "frameRange",
+              "annotationIds",
+              "transitions",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "bundleId": { "$ref": "#/$defs/id" },
+              "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "body": { "type": "string", "maxLength": 10000 },
+              "category": { "enum": ["visual", "audio", "caption", "sync", "rights", "delivery", "other"] },
+              "severity": { "enum": ["info", "warning", "error"] },
+              "status": { "$ref": "#/$defs/reviewIssueStatus" },
+              "entityIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "frameRange": { "anyOf": [{ "$ref": "#/$defs/reviewFrameRange" }, { "type": "null" }] },
+              "annotationIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 1000
+              },
+              "transitions": {
+                "type": "array",
+                "maxItems": 1000,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["from", "to", "actor", "revisionId", "evidenceHashes", "comment", "at"],
+                  "properties": {
+                    "from": { "$ref": "#/$defs/reviewIssueStatus" },
+                    "to": { "$ref": "#/$defs/reviewIssueStatus" },
+                    "actor": { "$ref": "#/$defs/reviewActor" },
+                    "revisionId": { "$ref": "#/$defs/id" },
+                    "evidenceHashes": {
+                      "type": "array",
+                      "items": { "$ref": "#/$defs/sha256" },
+                      "uniqueItems": true,
+                      "maxItems": 256
+                    },
+                    "comment": { "type": "string", "minLength": 1, "maxLength": 10000 },
+                    "at": { "$ref": "#/$defs/timestamp" }
+                  }
+                }
+              },
+              "createdAt": { "$ref": "#/$defs/timestamp" },
+              "updatedAt": { "$ref": "#/$defs/timestamp" }
+            }
+          }
+        },
+        "comparisons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "leftRevisionId",
+              "rightRevisionId",
+              "timelineId",
+              "frameRange",
+              "mode",
+              "linkedNavigation",
+              "split",
+              "captureIds",
+              "createdAt"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "leftRevisionId": { "$ref": "#/$defs/id" },
+              "rightRevisionId": { "$ref": "#/$defs/id" },
+              "timelineId": { "$ref": "#/$defs/id" },
+              "frameRange": { "$ref": "#/$defs/reviewFrameRange" },
+              "mode": { "enum": ["side-by-side", "wipe", "difference", "onion-skin"] },
+              "linkedNavigation": { "const": true },
+              "split": { "type": "number", "minimum": 0, "maximum": 1 },
+              "captureIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 1000
+              },
+              "createdAt": { "$ref": "#/$defs/timestamp" }
+            }
+          }
+        },
+        "requests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "bundleId",
+              "requestedBy",
+              "requestedDecision",
+              "targetRevisionId",
+              "requiredQaState",
+              "status",
+              "createdAt",
+              "updatedAt"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "bundleId": { "$ref": "#/$defs/id" },
+              "requestedBy": { "$ref": "#/$defs/reviewActor" },
+              "requestedDecision": { "enum": ["feedback", "approve-candidate", "accept-exception"] },
+              "targetRevisionId": { "$ref": "#/$defs/id" },
+              "requiredQaState": { "anyOf": [{ "$ref": "#/$defs/qaState" }, { "type": "null" }] },
+              "status": { "enum": ["open", "acted", "withdrawn"] },
+              "createdAt": { "$ref": "#/$defs/timestamp" },
+              "updatedAt": { "$ref": "#/$defs/timestamp" }
+            }
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "requestId",
+              "actor",
+              "decision",
+              "comment",
+              "evidenceHashes",
+              "revisionId",
+              "lifecycleEffect",
+              "qaTransitionId",
+              "createdAt"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "requestId": { "$ref": "#/$defs/id" },
+              "actor": { "$ref": "#/$defs/reviewActor" },
+              "decision": {
+                "enum": ["commented", "changes-requested", "recommended-approval", "recommended-rejection"]
+              },
+              "comment": { "type": "string", "maxLength": 10000 },
+              "evidenceHashes": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/sha256" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "revisionId": { "$ref": "#/$defs/id" },
+              "lifecycleEffect": { "const": "none" },
+              "qaTransitionId": { "type": "null" },
+              "createdAt": { "$ref": "#/$defs/timestamp" }
+            }
+          }
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "issueId",
+              "scope",
+              "reason",
+              "evidenceHashes",
+              "approver",
+              "acceptedAt",
+              "expiresAt",
+              "reviewAt",
+              "active"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "issueId": { "$ref": "#/$defs/id" },
+              "scope": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "entityIds", "frameRange", "qaCodes", "outputId"],
+                "properties": {
+                  "kind": { "enum": ["entity", "frame-range", "qa-code", "output"] },
+                  "entityIds": {
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/id" },
+                    "uniqueItems": true,
+                    "maxItems": 256
+                  },
+                  "frameRange": { "anyOf": [{ "$ref": "#/$defs/reviewFrameRange" }, { "type": "null" }] },
+                  "qaCodes": {
+                    "type": "array",
+                    "items": { "type": "string", "minLength": 1, "maxLength": 240 },
+                    "uniqueItems": true,
+                    "maxItems": 256
+                  },
+                  "outputId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+                }
+              },
+              "reason": { "type": "string", "minLength": 1, "maxLength": 10000 },
+              "evidenceHashes": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/sha256" },
+                "uniqueItems": true,
+                "minItems": 1,
+                "maxItems": 256
+              },
+              "approver": { "$ref": "#/$defs/reviewActor" },
+              "acceptedAt": { "$ref": "#/$defs/timestamp" },
+              "expiresAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+              "reviewAt": { "$ref": "#/$defs/timestamp" },
+              "active": { "type": "boolean" }
+            }
+          }
+        },
+        "alternateTakes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "stackId",
+              "label",
+              "revisionId",
+              "clipIds",
+              "sourceIds",
+              "active",
+              "createdAt"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "stackId": { "$ref": "#/$defs/id" },
+              "label": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "revisionId": { "$ref": "#/$defs/id" },
+              "clipIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "sourceIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true,
+                "maxItems": 256
+              },
+              "active": { "type": "boolean" },
+              "createdAt": { "$ref": "#/$defs/timestamp" }
+            }
+          }
+        }
+      }
+    },
+    "audioAutomationKeyframe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "frame", "value", "interpolation"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "frame": { "$ref": "#/$defs/nonNegativeBigint" },
+        "value": { "type": "number" },
+        "interpolation": { "enum": ["hold", "linear", "ease-in", "ease-out", "ease-in-out"] }
+      }
+    },
+    "audioGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "graphId",
+        "sampleRate",
+        "channelLayout",
+        "masterBusId",
+        "sources",
+        "buses",
+        "clips",
+        "automationLanes",
+        "crossfades",
+        "duckingRules",
+        "channelMaps",
+        "syncAnchors",
+        "processingReferences"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "graphId": { "$ref": "#/$defs/id" },
+        "sampleRate": { "type": "integer", "enum": [44100, 48000, 96000] },
+        "channelLayout": { "enum": ["mono", "stereo", "5.1", "7.1"] },
+        "masterBusId": { "$ref": "#/$defs/id" },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "assetId",
+              "streamIndex",
+              "contentHash",
+              "originalPath",
+              "proxyPath",
+              "sourceSampleRate",
+              "sourceChannels",
+              "previewPolicy"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "assetId": { "$ref": "#/$defs/id" },
+              "streamIndex": { "type": "integer", "minimum": 0 },
+              "contentHash": { "$ref": "#/$defs/sha256" },
+              "originalPath": { "$ref": "#/$defs/relativePath" },
+              "proxyPath": { "anyOf": [{ "$ref": "#/$defs/relativePath" }, { "type": "null" }] },
+              "sourceSampleRate": { "type": "integer", "minimum": 8000, "maximum": 384000 },
+              "sourceChannels": { "type": "integer", "minimum": 1, "maximum": 32 },
+              "previewPolicy": { "enum": ["proxy-preferred", "original-only"] }
+            }
+          }
+        },
+        "buses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "kind",
+              "parentBusId",
+              "gainDb",
+              "pan",
+              "muted",
+              "solo",
+              "automationLaneIds"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "name": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "kind": { "enum": ["voiceover", "music", "sfx", "ambience", "aux", "master"] },
+              "parentBusId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+              "gainDb": { "type": "number", "minimum": -120, "maximum": 24 },
+              "pan": { "type": "number", "minimum": -1, "maximum": 1 },
+              "muted": { "type": "boolean" },
+              "solo": { "type": "boolean" },
+              "automationLaneIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              }
+            }
+          }
+        },
+        "clips": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "timelineClipId",
+              "sourceId",
+              "busId",
+              "startFrame",
+              "endFrameExclusive",
+              "sourceStartSample",
+              "sourceEndSampleExclusive",
+              "gainDb",
+              "pan",
+              "muted",
+              "fadeInFrames",
+              "fadeOutFrames",
+              "fadeCurve",
+              "automationLaneIds",
+              "channelMapId",
+              "syncAnchorIds",
+              "processingReferenceIds"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "timelineClipId": { "$ref": "#/$defs/id" },
+              "sourceId": { "$ref": "#/$defs/id" },
+              "busId": { "$ref": "#/$defs/id" },
+              "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "endFrameExclusive": { "$ref": "#/$defs/nonNegativeBigint" },
+              "sourceStartSample": { "$ref": "#/$defs/nonNegativeBigint" },
+              "sourceEndSampleExclusive": { "$ref": "#/$defs/nonNegativeBigint" },
+              "gainDb": { "type": "number", "minimum": -120, "maximum": 24 },
+              "pan": { "type": "number", "minimum": -1, "maximum": 1 },
+              "muted": { "type": "boolean" },
+              "fadeInFrames": { "$ref": "#/$defs/nonNegativeBigint" },
+              "fadeOutFrames": { "$ref": "#/$defs/nonNegativeBigint" },
+              "fadeCurve": { "enum": ["linear", "equal-power"] },
+              "automationLaneIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              },
+              "channelMapId": { "$ref": "#/$defs/id" },
+              "syncAnchorIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              },
+              "processingReferenceIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              }
+            }
+          }
+        },
+        "automationLanes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "targetKind", "targetId", "property", "keyframes"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "targetKind": { "enum": ["clip", "bus"] },
+              "targetId": { "$ref": "#/$defs/id" },
+              "property": { "enum": ["gainDb", "pan"] },
+              "keyframes": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/audioAutomationKeyframe" }
+              }
+            }
+          }
+        },
+        "crossfades": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "fromClipId", "toClipId", "startFrame", "endFrameExclusive", "curve"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "fromClipId": { "$ref": "#/$defs/id" },
+              "toClipId": { "$ref": "#/$defs/id" },
+              "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "endFrameExclusive": { "$ref": "#/$defs/nonNegativeBigint" },
+              "curve": { "enum": ["linear", "equal-power"] }
+            }
+          }
+        },
+        "duckingRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "triggerBusId",
+              "targetBusId",
+              "thresholdDb",
+              "reductionDb",
+              "attackFrames",
+              "releaseFrames",
+              "generatedAutomationLaneId"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "triggerBusId": { "$ref": "#/$defs/id" },
+              "targetBusId": { "$ref": "#/$defs/id" },
+              "thresholdDb": { "type": "number", "minimum": -120, "maximum": 0 },
+              "reductionDb": { "type": "number", "minimum": -60, "maximum": 0 },
+              "attackFrames": { "$ref": "#/$defs/nonNegativeBigint" },
+              "releaseFrames": { "$ref": "#/$defs/nonNegativeBigint" },
+              "generatedAutomationLaneId": {
+                "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+              }
+            }
+          }
+        },
+        "channelMaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "inputChannels", "outputChannels", "matrix"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "inputChannels": { "type": "integer", "minimum": 1, "maximum": 32 },
+              "outputChannels": { "type": "integer", "minimum": 1, "maximum": 8 },
+              "matrix": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": { "type": "number", "minimum": -4, "maximum": 4 },
+                  "minItems": 1,
+                  "maxItems": 32
+                },
+                "minItems": 1,
+                "maxItems": 8
+              }
+            }
+          }
+        },
+        "syncAnchors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "frame", "sourceSample", "toleranceSamples"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "label": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "frame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "sourceSample": { "$ref": "#/$defs/nonNegativeBigint" },
+              "toleranceSamples": { "$ref": "#/$defs/nonNegativeBigint" }
+            }
+          }
+        },
+        "processingReferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "kind",
+              "sourceId",
+              "generatedAssetId",
+              "inputContentHash",
+              "settingsHash",
+              "outputContentHash",
+              "status"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "kind": { "enum": ["normalize", "noise-reduction"] },
+              "sourceId": { "$ref": "#/$defs/id" },
+              "generatedAssetId": { "$ref": "#/$defs/id" },
+              "inputContentHash": { "$ref": "#/$defs/sha256" },
+              "settingsHash": { "$ref": "#/$defs/sha256" },
+              "outputContentHash": { "$ref": "#/$defs/sha256" },
+              "status": { "enum": ["planned", "ready", "failed"] }
+            }
+          }
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "projectId",
+        "revisionId",
+        "title",
+        "createdAt",
+        "updatedAt",
+        "video",
+        "audio",
+        "activeTimelineId",
+        "deliveryProfileId",
+        "enginePins",
+        "capabilityFlags",
+        "rightsNotes",
+        "sources"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "updatedAt": { "$ref": "#/$defs/timestamp" },
+        "video": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height", "fps", "colorSpace"],
+          "properties": {
+            "width": { "type": "integer", "minimum": 16, "maximum": 16384 },
+            "height": { "type": "integer", "minimum": 16, "maximum": 16384 },
+            "fps": { "$ref": "#/$defs/rational" },
+            "colorSpace": { "enum": ["rec709", "display-p3", "rec2020"] }
+          }
+        },
+        "audio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sampleRate", "channelLayout"],
+          "properties": {
+            "sampleRate": { "type": "integer", "enum": [44100, 48000, 96000] },
+            "channelLayout": { "enum": ["mono", "stereo", "5.1", "7.1"] }
+          }
+        },
+        "activeTimelineId": { "$ref": "#/$defs/id" },
+        "deliveryProfileId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "enginePins": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 120 }
+        },
+        "capabilityFlags": { "type": "object", "additionalProperties": { "type": "boolean" } },
+        "rightsNotes": { "type": "array", "items": { "type": "string", "maxLength": 2000 } },
+        "sources": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/relativePath" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["engine", "contentHash", "content"],
+            "properties": {
+              "engine": { "enum": ["remotion", "hyperframes", "shared"] },
+              "contentHash": { "$ref": "#/$defs/sha256" },
+              "content": { "type": "string", "maxLength": 5000000 }
+            }
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "projectId",
+        "revisionId",
+        "timelineId",
+        "fps",
+        "durationFrames",
+        "tracks",
+        "audioBusIds",
+        "approvalReferenceIds"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "timelineId": { "$ref": "#/$defs/id" },
+        "fps": { "$ref": "#/$defs/rational" },
+        "durationFrames": { "$ref": "#/$defs/nonNegativeBigint" },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "name", "order", "locked", "hidden", "muted", "solo", "clips"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "kind": { "enum": ["video", "audio", "caption", "data"] },
+              "name": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "order": { "type": "integer", "minimum": 0 },
+              "locked": { "type": "boolean" },
+              "hidden": { "type": "boolean" },
+              "muted": { "type": "boolean" },
+              "solo": { "type": "boolean" },
+              "clips": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "assetId",
+                    "engine",
+                    "startFrame",
+                    "durationFrames",
+                    "sourceInFrame",
+                    "sourceDurationFrames",
+                    "capability",
+                    "audioBusId"
+                  ],
+                  "properties": {
+                    "id": { "$ref": "#/$defs/id" },
+                    "assetId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+                    "engine": { "enum": ["shared", "remotion", "hyperframes"] },
+                    "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+                    "durationFrames": { "$ref": "#/$defs/positiveBigint" },
+                    "sourceInFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+                    "sourceDurationFrames": { "$ref": "#/$defs/positiveBigint" },
+                    "capability": {
+                      "enum": [
+                        "native",
+                        "unified",
+                        "bake_required",
+                        "fallback_available",
+                        "unsupported",
+                        "experimental"
+                      ]
+                    },
+                    "audioBusId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+                    "name": { "type": "string", "minLength": 1, "maxLength": 240 },
+                    "linkGroupId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+                    "selectionGroupId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": { "type": "string", "maxLength": 2000 }
+                    },
+                    "properties": {
+                      "type": "object",
+                      "propertyNames": { "type": "string", "minLength": 1, "maxLength": 240 },
+                      "additionalProperties": { "$ref": "#/$defs/timelineProperty" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "audioBusIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "approvalReferenceIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["primaryId", "selectedIds", "anchorId"],
+          "properties": {
+            "primaryId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+            "selectedIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+            "anchorId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+          }
+        },
+        "inOutRange": {
+          "anyOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["startFrame", "endFrame"],
+              "properties": {
+                "startFrame": { "$ref": "#/$defs/nonNegativeBigint" },
+                "endFrame": { "$ref": "#/$defs/positiveBigint" }
+              }
+            }
+          ]
+        },
+        "markers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "frame",
+              "duration",
+              "label",
+              "category",
+              "issueSeverity",
+              "annotationReferenceIds",
+              "ripplePolicy"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "frame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "duration": { "$ref": "#/$defs/nonNegativeBigint" },
+              "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+              "category": { "enum": ["note", "issue", "chapter", "approval", "guide"] },
+              "issueSeverity": {
+                "anyOf": [{ "enum": ["info", "warning", "error"] }, { "type": "null" }]
+              },
+              "annotationReferenceIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              },
+              "ripplePolicy": { "enum": ["anchored-time", "anchored-content"] }
+            }
+          }
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "ownerEntityId",
+              "propertyPath",
+              "frame",
+              "value",
+              "interpolation",
+              "inTangent",
+              "outTangent",
+              "authority",
+              "preserveNativeAnimation"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "ownerEntityId": { "$ref": "#/$defs/id" },
+              "propertyPath": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "frame": { "$ref": "#/$defs/nonNegativeBigint" },
+              "value": { "$ref": "#/$defs/timelinePropertyValue" },
+              "interpolation": {
+                "enum": [
+                  "hold",
+                  "linear",
+                  "ease",
+                  "ease-in",
+                  "ease-out",
+                  "ease-in-out",
+                  "bezier",
+                  "spring",
+                  "native"
+                ]
+              },
+              "inTangent": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "prefixItems": [{ "type": "number" }, { "type": "number" }],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  { "type": "null" }
+                ]
+              },
+              "outTangent": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "prefixItems": [{ "type": "number" }, { "type": "number" }],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  { "type": "null" }
+                ]
+              },
+              "authority": { "enum": ["shared", "engine-native"] },
+              "preserveNativeAnimation": { "type": "boolean" }
+            }
+          }
+        },
+        "automation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "ownerEntityId", "propertyPath", "keyframeIds", "authority"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "ownerEntityId": { "$ref": "#/$defs/id" },
+              "propertyPath": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "keyframeIds": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/id" },
+                "uniqueItems": true
+              },
+              "authority": { "enum": ["shared", "engine-native"] }
+            }
+          }
+        },
+        "professionalMetadata": {
+          "type": "object",
+          "propertyNames": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "additionalProperties": { "type": "string", "maxLength": 1000000 }
+        },
+        "audioGraph": { "$ref": "#/$defs/audioGraph" },
+        "transcripts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/transcript" }
+        },
+        "captionDocuments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/captionDocument" }
+        },
+        "annotations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/annotationDocument" }
+        },
+        "reviewState": { "$ref": "#/$defs/reviewState" }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "projectId", "revisionId", "assets"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "path",
+              "contentHash",
+              "kind",
+              "durationFrames",
+              "fps",
+              "hasAudio",
+              "hasAlpha",
+              "variableFrameRate",
+              "rights",
+              "validationState"
+            ],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "path": { "$ref": "#/$defs/relativePath" },
+              "contentHash": { "$ref": "#/$defs/sha256" },
+              "kind": { "enum": ["video", "audio", "image", "caption", "composition", "data"] },
+              "durationFrames": { "anyOf": [{ "$ref": "#/$defs/nonNegativeBigint" }, { "type": "null" }] },
+              "fps": { "anyOf": [{ "$ref": "#/$defs/rational" }, { "type": "null" }] },
+              "hasAudio": { "type": "boolean" },
+              "hasAlpha": { "type": "boolean" },
+              "variableFrameRate": { "type": "boolean" },
+              "rights": { "enum": ["owned", "licensed", "public-domain", "unknown"] },
+              "validationState": { "enum": ["pending", "valid", "missing", "corrupt", "unsupported"] }
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "projectId",
+        "revisionId",
+        "autosaveIntervalMs",
+        "autosaveRetention",
+        "outputDirectory",
+        "allowImportedExecutableContent",
+        "networkAllowlist"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "autosaveIntervalMs": { "type": "integer", "minimum": 250, "maximum": 600000 },
+        "autosaveRetention": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "outputDirectory": { "$ref": "#/$defs/relativePath" },
+        "allowImportedExecutableContent": { "type": "boolean" },
+        "networkAllowlist": {
+          "type": "array",
+          "items": { "type": "string", "format": "hostname" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "transactionId",
+        "commandId",
+        "idempotencyId",
+        "correlationId",
+        "commandEnvelopeHash",
+        "actor",
+        "capability",
+        "declaredScope",
+        "authorizationId",
+        "validationOnly",
+        "result",
+        "history",
+        "namedVersion",
+        "timestamp",
+        "parentRevisionId",
+        "resultingRevisionId",
+        "beforeHashes",
+        "afterHashes",
+        "affectedEntityIds",
+        "commandSummary",
+        "diffSummary",
+        "warnings",
+        "sourceEdit"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "transactionId": { "$ref": "#/$defs/id" },
+        "commandId": { "$ref": "#/$defs/id" },
+        "idempotencyId": { "$ref": "#/$defs/id" },
+        "correlationId": { "$ref": "#/$defs/id" },
+        "commandEnvelopeHash": { "$ref": "#/$defs/sha256" },
+        "actor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "sessionId"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" },
+            "kind": { "enum": ["user", "codex", "system"] },
+            "sessionId": { "$ref": "#/$defs/id" }
+          }
+        },
+        "capability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "$ref": "#/$defs/id" },
+            "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+          }
+        },
+        "declaredScope": { "enum": ["mutation", "source-edit", "destructive"] },
+        "authorizationId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "validationOnly": { "type": "boolean" },
+        "result": { "const": "committed" },
+        "history": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["action", "contentRevisionId", "undoStack", "redoStack"],
+          "properties": {
+            "action": { "enum": ["commit", "undo", "redo"] },
+            "contentRevisionId": { "$ref": "#/$defs/id" },
+            "undoStack": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+            "redoStack": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+          }
+        },
+        "namedVersion": {
+          "anyOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "name", "revisionId", "createdAt", "actorId", "outputId"],
+              "properties": {
+                "id": { "$ref": "#/$defs/id" },
+                "name": { "enum": ["Draft", "Review", "Approved", "Delivery Candidate", "Delivered"] },
+                "revisionId": { "$ref": "#/$defs/id" },
+                "createdAt": { "$ref": "#/$defs/timestamp" },
+                "actorId": { "$ref": "#/$defs/id" },
+                "outputId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+              }
+            }
+          ]
+        },
+        "timestamp": { "$ref": "#/$defs/timestamp" },
+        "parentRevisionId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "resultingRevisionId": { "$ref": "#/$defs/id" },
+        "beforeHashes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sha256" } },
+        "afterHashes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sha256" } },
+        "affectedEntityIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "commandSummary": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "diffSummary": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "warnings": { "type": "array", "items": { "type": "string", "maxLength": 2000 } },
+        "sourceEdit": {
+          "anyOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "beforeHash", "afterHash", "diffHash"],
+              "properties": {
+                "path": { "$ref": "#/$defs/relativePath" },
+                "beforeHash": { "$ref": "#/$defs/sha256" },
+                "afterHash": { "$ref": "#/$defs/sha256" },
+                "diffHash": { "$ref": "#/$defs/sha256" }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "currentRevisionPointer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "projectId", "revisionId", "revisionHash", "committedAt"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "revisionHash": { "$ref": "#/$defs/sha256" },
+        "committedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "autosaveMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "projectId", "cleanShutdown", "lastOpenedRevisionId", "entries"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "cleanShutdown": { "type": "boolean" },
+        "lastOpenedRevisionId": { "$ref": "#/$defs/id" },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "revisionId", "createdAt", "reason", "valid", "contentHash"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "revisionId": { "$ref": "#/$defs/id" },
+              "createdAt": { "$ref": "#/$defs/timestamp" },
+              "reason": { "enum": ["debounced", "pre-risk", "crash-recovery"] },
+              "valid": { "type": "boolean" },
+              "contentHash": { "$ref": "#/$defs/sha256" }
+            }
+          }
+        }
+      }
+    },
+    "namedVersions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "projectId", "versions"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "revisionId", "createdAt", "actorId", "outputId"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "name": { "enum": ["Draft", "Review", "Approved", "Delivery Candidate", "Delivered"] },
+              "revisionId": { "$ref": "#/$defs/id" },
+              "createdAt": { "$ref": "#/$defs/timestamp" },
+              "actorId": { "$ref": "#/$defs/id" },
+              "outputId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+            }
+          }
+        }
+      }
+    },
+    "approvalState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "projectId", "revisionId", "state", "outputId", "updatedAt", "history"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "projectId": { "$ref": "#/$defs/id" },
+        "revisionId": { "$ref": "#/$defs/id" },
+        "state": { "anyOf": [{ "$ref": "#/$defs/qaState" }, { "type": "null" }] },
+        "outputId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "updatedAt": { "$ref": "#/$defs/timestamp" },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "to", "actorId", "at", "evidenceHashes", "exceptionIds"],
+            "properties": {
+              "from": { "anyOf": [{ "$ref": "#/$defs/qaState" }, { "type": "null" }] },
+              "to": { "$ref": "#/$defs/qaState" },
+              "actorId": { "$ref": "#/$defs/id" },
+              "at": { "$ref": "#/$defs/timestamp" },
+              "evidenceHashes": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/sha256" },
+                "uniqueItems": true
+              },
+              "exceptionIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+            }
+          }
+        }
+      }
+    }
+  }
+}

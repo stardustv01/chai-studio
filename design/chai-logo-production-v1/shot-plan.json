@@ -1,0 +1,234 @@
+{
+  "category": "logo-reveal",
+  "duration_s": 2.4,
+  "fps": 60,
+  "canvas": {
+    "w": 1920,
+    "h": 1080,
+    "aspect": "16:9"
+  },
+  "style": "Intimate, intelligent, and exact. On a deep-midnight field, the authentic Devanagari lockup feels warm without becoming decorative: the ivory shirorekha acts as an editing timeline, the cyan playhead carries precision, and one restrained amber inner gesture carries freshness and creative thought. Apply optical sizing with locally frozen SIL-OFL Noto Sans Devanagari Regular outlines for the full primary wordmark and composition, including the same source's Latin outlines for the English companion; retain SemiBold outlines only for the compact 16–48px symbol. Flat SVG path and mask motion only: no Three.js, glow, particles, bounce, literal steam, or loop. The approved motion logic is references/04-motion-strip.png.",
+  "palette": [
+    "#070A12",
+    "#F5EFE2",
+    "#F2B33F",
+    "#19D9EA"
+  ],
+  "font": "Optically sized Noto Sans Devanagari — Regular SIL-OFL outlines for the primary/composition and Latin companion; SemiBold SIL-OFL outlines for the compact 16–48px symbol",
+  "beats": [
+    11,
+    18,
+    22,
+    37
+  ],
+  "export": "mp4",
+  "asset_needs": [
+    {
+      "role": "production-wordmark",
+      "kind": "svg",
+      "source": "masters/chai-wordmark-color.svg",
+      "treatment": "none"
+    },
+    {
+      "role": "production-compact-symbol",
+      "kind": "svg",
+      "source": "masters/chai-symbol-color.svg",
+      "treatment": "none"
+    }
+  ],
+  "shot_brief": "Centered on a deep-midnight field, the Regular-weight production wordmark begins with its warm-ivory headline drawing as a precise editing timeline from 0-180ms. From 180-360ms, a slender cyan playhead arrives linearly and lands without bounce while the first authentic Devanagari form resolves beneath the line. From 300-620ms, the remaining Noto Regular-derived outline geometry completes as exactly `चाय`; one amber inner pulse traces once and settles, while the restrained Regular-derived outlined `Chai Studio` companion becomes fully legible. From 620ms to 2.4s, the final lockup is absolutely still for inspection. This single 620ms non-looping UI sting is the only dominant motion; reduced motion presents the final state instantly.",
+  "content": {
+    "block": null,
+    "customize": {
+      "build_mode": "hand-authored-svg-path-and-mask-reveal",
+      "catalog_gap": "Do not reuse the catalog `logo-outro` block. Its piece assembly, glow bloom, separate tagline fade, and URL pill conflict with this restrained identity. The approved mark requires its own semantic sequence: timeline, playhead, authentic Devanagari geometry, amber inner pulse, then stillness.",
+      "production_assets": {
+        "wordmark": "masters/chai-wordmark-color.svg",
+        "compact_symbol": "masters/chai-symbol-color.svg"
+      },
+      "source_references": {
+        "approved_concept": "references/03-balanced-hybrid.png",
+        "approved_motion_strip": "references/04-motion-strip.png",
+        "primary_frozen_font": "assets/fonts/NotoSansDevanagari-Regular.ttf",
+        "primary_outline_source": "masters/chai-outline-regular-source.svg",
+        "compact_frozen_font": "assets/fonts/NotoSansDevanagari-SemiBold.ttf",
+        "compact_outline_source": "masters/ch-symbol-outline-source.svg",
+        "license": "assets/fonts/OFL.txt"
+      },
+      "hero_frame": {
+        "background": "#070A12",
+        "asset": "masters/chai-wordmark-color.svg",
+        "placement": "centered horizontally and vertically inside a 1920x1080 stage",
+        "target_width_px": 900,
+        "minimum_safe_margin_px": 160,
+        "final_state": "exactly `चाय` in Noto Sans Devanagari Regular-derived outlines above the Regular-source outlined `Chai Studio` companion, with warm-ivory geometry, one amber inner gesture, and one restrained cyan playhead",
+        "optical_sizing": "Use Regular geometry for this full primary/composition frame. SemiBold is reserved for the separate compact symbol at 16–48px."
+      },
+      "svg_contract": {
+        "required_groups": [
+          "#timeline-trace",
+          "#timeline-ticks",
+          "#devanagari-first",
+          "#devanagari-first-mask-rect",
+          "#devanagari-rest",
+          "#devanagari-rest-mask-rect",
+          "#playhead",
+          "#amber-pulse",
+          "#english-companion"
+        ],
+        "geometry_rule": "The full primary/composition `चाय` geometry must come from assets/fonts/NotoSansDevanagari-Regular.ttf via masters/chai-outline-regular-source.svg; its English `Chai Studio` companion uses Latin outlines from the same Regular source. masters/chai-symbol-color.svg alone retains the SemiBold compact-source geometry for clarity at 16–48px. Never substitute live text or ImageGen letter geometry.",
+        "color_rule": "Use only palette tokens for the mark: ivory #F5EFE2, amber #F2B33F, cyan #19D9EA, and midnight #070A12. Muted violet is excluded from the core mark and proof."
+      },
+      "gsap_choreography": {
+        "timeline_id": "chai-logo-reveal",
+        "paused": true,
+        "registered_on": "window.__timelines",
+        "total_duration_s": 2.4,
+        "seek_safe": true,
+        "tween_method": "Use GSAP fromTo() for every segment with the explicit start and end values below; call tl.seek(0), never tl.play().",
+        "segments": [
+          {
+            "start_s": 0,
+            "duration_s": 0.18,
+            "targets": [
+              "#timeline-trace"
+            ],
+            "primitive": "svg-path-draw",
+            "method": "fromTo",
+            "setup": {
+              "pathLength": 1,
+              "strokeDasharray": 1
+            },
+            "from": {
+              "strokeDashoffset": 1,
+              "autoAlpha": 1
+            },
+            "to": {
+              "strokeDashoffset": 0,
+              "ease": "power2.out"
+            }
+          },
+          {
+            "start_s": 0.11,
+            "duration_s": 0.07,
+            "targets": [
+              "#timeline-ticks"
+            ],
+            "primitive": "mask-reveal",
+            "method": "fromTo",
+            "from": {
+              "autoAlpha": 0
+            },
+            "to": {
+              "autoAlpha": 1,
+              "ease": "power1.out"
+            }
+          },
+          {
+            "start_s": 0.18,
+            "duration_s": 0.18,
+            "targets": [
+              "#playhead"
+            ],
+            "primitive": "slide_top",
+            "method": "fromTo",
+            "from": {
+              "y": -44,
+              "autoAlpha": 0
+            },
+            "to": {
+              "y": 0,
+              "autoAlpha": 1,
+              "ease": "power3.out"
+            }
+          },
+          {
+            "start_s": 0.18,
+            "duration_s": 0.28,
+            "targets": [
+              "#devanagari-first-mask-rect"
+            ],
+            "primitive": "mask-reveal",
+            "method": "fromTo",
+            "from": {
+              "scaleX": 0,
+              "transformOrigin": "left center"
+            },
+            "to": {
+              "scaleX": 1,
+              "ease": "power2.out"
+            }
+          },
+          {
+            "start_s": 0.3,
+            "duration_s": 0.22,
+            "targets": [
+              "#devanagari-rest-mask-rect"
+            ],
+            "primitive": "mask-reveal",
+            "method": "fromTo",
+            "from": {
+              "scaleX": 0,
+              "transformOrigin": "left center"
+            },
+            "to": {
+              "scaleX": 1,
+              "ease": "power2.out"
+            }
+          },
+          {
+            "start_s": 0.3,
+            "duration_s": 0.32,
+            "targets": [
+              "#amber-pulse"
+            ],
+            "primitive": "svg-path-draw",
+            "method": "fromTo",
+            "setup": {
+              "pathLength": 1,
+              "strokeDasharray": 1
+            },
+            "from": {
+              "strokeDashoffset": 1,
+              "autoAlpha": 0
+            },
+            "to": {
+              "strokeDashoffset": 0,
+              "autoAlpha": 1,
+              "ease": "power2.out"
+            }
+          },
+          {
+            "start_s": 0.46,
+            "duration_s": 0.16,
+            "targets": [
+              "#english-companion"
+            ],
+            "primitive": "fade_in",
+            "method": "fromTo",
+            "from": {
+              "y": 8,
+              "autoAlpha": 0
+            },
+            "to": {
+              "y": 0,
+              "autoAlpha": 1,
+              "ease": "power2.out"
+            }
+          }
+        ],
+        "hold": {
+          "start_s": 0.62,
+          "end_s": 2.4,
+          "instruction": "No motion of any kind: no pulse, drift, shimmer, glow, playhead movement, or exit."
+        },
+        "reduced_motion": {
+          "instruction": "Skip every tween and show the exact final SVG state from t=0 for the full 2.4 seconds."
+        }
+      }
+    },
+    "logo": "masters/chai-wordmark-color.svg",
+    "tagline": "",
+    "url": ""
+  }
+}
