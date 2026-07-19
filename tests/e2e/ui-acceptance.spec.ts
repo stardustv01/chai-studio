@@ -540,7 +540,7 @@ test("Inspector reset controls meet the 28 pixel action floor", async ({ page })
         return {
           width: box.width,
           height: box.height,
-          label: control.getAttribute("aria-label"),
+          label: control.getAttribute("aria-label") ?? "Inspector reset",
         };
       }),
     );
