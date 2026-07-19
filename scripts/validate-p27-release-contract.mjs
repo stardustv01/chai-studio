@@ -15,7 +15,31 @@ const checks = [
   [
     "P27.01,P27.03,P27.13",
     "scripts/release-operations.mjs",
-    ["collectReleaseEnvironment", "installLocalRelease", "uninstallLocalRelease", "projectsDeleted: false"],
+    [
+      "collectReleaseEnvironment",
+      "installLocalRelease",
+      "validateReleaseBundle",
+      "bundleIdentity",
+      "installedRuntime",
+      "uninstallLocalRelease",
+      "projectsDeleted: false",
+    ],
+  ],
+  [
+    "P27.02,P27.03",
+    "scripts/release-bundle.mjs",
+    [
+      "createReleaseBundle",
+      "validateReleaseBundle",
+      "selfContainedRuntime",
+      "personal-local-only",
+      "escaping symlink",
+    ],
+  ],
+  [
+    "P27.03",
+    "scripts/runtime-web-server.mjs",
+    ["__CHAI_STUDIO_SESSION__", "content-security-policy", "127.0.0.1", "no-store"],
   ],
   [
     "P27.02",
@@ -30,7 +54,7 @@ const checks = [
   [
     "P27.04",
     "packages/diagnostics/src/release.ts",
-    ["1.0.0-rc.1", "4.0.489", "0.7.58", "playwright-managed:chromium-1228", "localhost-web-server"],
+    ["1.0.0-rc.2", "4.0.489", "0.7.58", "playwright-managed:chromium-1228", "localhost-web-server"],
   ],
   [
     "P27.04",
@@ -157,7 +181,7 @@ for (const file of releasePackageFiles) {
     .then((content) => JSON.parse(content))
     .catch(() => null);
   const valid =
-    manifest?.version === "1.0.0-rc.1" &&
+    manifest?.version === "1.0.0-rc.2" &&
     (file !== "package.json" || manifest.packageManager === "pnpm@11.11.0");
   results.push({
     task: "P27.04",
@@ -166,7 +190,7 @@ for (const file of releasePackageFiles) {
     exists: manifest !== null,
     missingSymbols: valid
       ? []
-      : ['version "1.0.0-rc.1"', ...(file === "package.json" ? ['packageManager "pnpm@11.11.0"'] : [])],
+      : ['version "1.0.0-rc.2"', ...(file === "package.json" ? ['packageManager "pnpm@11.11.0"'] : [])],
   });
 }
 
@@ -192,8 +216,12 @@ const evidenceChecks = [
     "P27.02",
     "evidence/p27/release-manifest.json",
     (value) =>
-      value.version === "1.0.0-rc.1" &&
+      value.version === "1.0.0-rc.2" &&
       value.files?.length >= 700 &&
+      value.runtimeBundle?.selfContainedRuntime === true &&
+      value.runtimeBundle?.fileCount >= 10_000 &&
+      typeof value.runtimeBundle?.bundleIdentity === "string" &&
+      typeof value.sourceCommit === "string" &&
       typeof value.manifestIdentity === "string",
   ],
   [
@@ -211,6 +239,8 @@ const evidenceChecks = [
     "evidence/p27/qualification-report.json",
     (value) =>
       value.passed === true &&
+      value.bundle?.selfContainedRuntime === true &&
+      typeof value.bundle?.bundleIdentity === "string" &&
       value.projectPreservation?.originalStillPresent === true &&
       value.uninstall?.projectsDeleted === false,
   ],

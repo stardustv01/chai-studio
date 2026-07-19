@@ -8,7 +8,7 @@ import {
 describe("P27 release identity", () => {
   it("freezes a localhost-only release candidate without cloud or wrapper dependencies", () => {
     expect(studioReleaseIdentity).toMatchObject({
-      version: "1.0.0-rc.1",
+      version: "1.0.0-rc.2",
       supportClass: "apple-m4-16gb",
       launchModel: "localhost-web-server",
       cloudAccountRequired: false,

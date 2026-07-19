@@ -16,7 +16,7 @@ const areas = [
 const report = {
   schemaVersion: "1.0.0",
   passed: true,
-  releaseCandidate: "1.0.0-rc.1",
+  releaseCandidate: "1.0.0-rc.2",
   attendanceDoesNotImplyApproval: true,
   areas: areas.map(([area, evidence]) => ({ area, passed: true, evidence })),
   corrections: [],

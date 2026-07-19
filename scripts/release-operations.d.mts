@@ -27,7 +27,15 @@ export const collectReleaseEnvironment: (root: string) => Promise<ReleaseEnviron
 export const installLocalRelease: (input: {
   readonly sourceRoot: string;
   readonly prefix: string;
-}) => Promise<Readonly<{ prefix: string; launcher: string; sourceIdentity: string }>>;
+}) => Promise<
+  Readonly<{
+    prefix: string;
+    launcher: string;
+    runtime: string;
+    sourceIdentity: string;
+    bundleIdentity: string;
+  }>
+>;
 export const uninstallLocalRelease: (
   prefix: string,
 ) => Promise<Readonly<{ removedPrefix: string; projectsDeleted: false }>>;

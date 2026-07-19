@@ -1,6 +1,6 @@
 export const studioReleaseIdentity = {
   product: "Chai Studio",
-  version: "1.0.0-rc.1",
+  version: "1.0.0-rc.2",
   channel: "release-candidate",
   apiVersion: "1.0.0",
   schemaVersion: "1.0.0",

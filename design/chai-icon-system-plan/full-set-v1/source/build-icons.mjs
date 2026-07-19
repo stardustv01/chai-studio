@@ -601,7 +601,7 @@ const manifest = {
   liveSizes: [14, 16, 20, 24],
   total: inventory.length,
   phases: Object.fromEntries(['P0', 'P1', 'P2'].map((phase) => [phase, inventory.filter((item) => item.phase === phase).length])),
-  icons: inventory.map(({ body, ...item }) => item)
+  icons: inventory.map((item) => Object.fromEntries(Object.entries(item).filter(([key]) => key !== 'body')))
 };
 fs.writeFileSync(path.join(packageRoot, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 

@@ -110,112 +110,112 @@
   "workspacePackages": [
     {
       "name": "@chai-studio/audio",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/audio",
       "private": true
     },
     {
       "name": "@chai-studio/bridge",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/bridge",
       "private": true
     },
     {
       "name": "@chai-studio/captions",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/captions",
       "private": true
     },
     {
       "name": "@chai-studio/diagnostics",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/diagnostics",
       "private": true
     },
     {
       "name": "@chai-studio/engine-adapters",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/engine-adapters",
       "private": true
     },
     {
       "name": "@chai-studio/media",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/media",
       "private": true
     },
     {
       "name": "@chai-studio/preview",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/preview",
       "private": true
     },
     {
       "name": "@chai-studio/qa",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/qa",
       "private": true
     },
     {
       "name": "@chai-studio/render",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/render",
       "private": true
     },
     {
       "name": "@chai-studio/review",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/review",
       "private": true
     },
     {
       "name": "@chai-studio/schema",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/schema",
       "private": true
     },
     {
       "name": "@chai-studio/security",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/security",
       "private": true
     },
     {
       "name": "@chai-studio/studio-server",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "apps/studio-server",
       "private": true
     },
     {
       "name": "@chai-studio/studio-web",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "apps/studio-web",
       "private": true
     },
     {
       "name": "@chai-studio/timeline",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/timeline",
       "private": true
     },
     {
       "name": "@chai-studio/ui-components",
-      "version": "1.0.0-rc.1",
+      "version": "1.0.0-rc.2",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/ui-components",
       "private": true
@@ -3513,5 +3513,5 @@
     "Review the exact FFmpeg binary and codec configuration before bundling.",
     "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents."
   ],
-  "identityHash": "cc4cd7f5020afb94449f705b220e1f96b8c121409d21e3cd8dce0086b2c69b38"
+  "identityHash": "3be77091b1cfa8bd2f6f06c48377751582c0b8a7b487b85659d2697adfc2fcb6"
 }

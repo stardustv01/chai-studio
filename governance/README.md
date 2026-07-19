@@ -6,8 +6,8 @@ The finished-product scope is Foundation plus Professional Expansion. Cloud coll
 
 Task acceptance requires code or a frozen contract, automated verification, and evidence. Rendering alone never means QA passed, approved, or delivered. A baseline change creates a new identity; old evidence is never silently reinterpreted.
 
-Acceptance records now run from `MILESTONE_0_ACCEPTANCE.md` through the
-replacement local technical record in `P28_TECHNICAL_ACCEPTANCE.md`. P27 approved
-the RC release mechanics, and the current P28 technical gate passes. Final
-Version 1 authority is still withheld pending the informed registry audit and
-explicit owner approval/signing; no technical record may infer either action.
+Accepted implementation records through P26 remain active. Superseded RC1 P27/P28 records are
+preserved under `archive/releases/1.0.0-rc.1/` and have no authority over RC2. Fresh P27 and P28
+technical records will be generated only from the committed, self-contained RC2 bundle. Final
+Version 1 authority remains withheld pending qualification, informed registry audit, explicit owner
+approval and signing; no technical record may infer any of those actions.

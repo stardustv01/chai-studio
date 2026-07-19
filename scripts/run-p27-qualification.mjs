@@ -12,10 +12,13 @@ import {
   uninstallLocalRelease,
   validateProjectBackup,
 } from "./release-operations.mjs";
+import { validateReleaseBundle } from "./release-bundle.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "chai-p27-qualification-"));
 const prefix = path.join(temporaryRoot, "application");
+const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const releaseBundle = path.join(root, "dist/releases", `chai-studio-${packageManifest.version}-darwin-arm64`);
 const project = path.join(temporaryRoot, "Projects", "Qualification.chai");
 const backup = path.join(temporaryRoot, "Backups", "Qualification.backup");
 const restored = path.join(temporaryRoot, "Projects", "Qualification Restored.chai");
@@ -26,7 +29,9 @@ await mkdir(path.join(root, "evidence/p27"), { recursive: true });
 try {
   const environment = await collectReleaseEnvironment(root);
   if (!environment.passed) throw new Error("Qualification doctor failed.");
-  const installation = await installLocalRelease({ sourceRoot: root, prefix });
+  const bundled = await validateReleaseBundle(releaseBundle);
+  if (!bundled.passed) throw new Error("Qualification release bundle integrity failed.");
+  const installation = await installLocalRelease({ sourceRoot: releaseBundle, prefix });
   await mkdir(path.join(project, "revisions"), { recursive: true });
   await mkdir(path.join(project, "deliveries"), { recursive: true });
   await mkdir(path.join(project, ".chai-cache", "render"), { recursive: true });
@@ -79,6 +84,12 @@ try {
     passed: originalStillPresent && cacheExcluded && deliveryPreserved && health.data?.status === "ok",
     environment,
     installation,
+    bundle: {
+      version: bundled.marker.version,
+      sourceCommit: bundled.marker.sourceCommit,
+      bundleIdentity: bundled.actualIdentity,
+      selfContainedRuntime: bundled.marker.selfContainedRuntime,
+    },
     health: health.data,
     backup: {
       contentIdentity: backupManifest.contentIdentity,

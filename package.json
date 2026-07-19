@@ -1,6 +1,6 @@
 {
   "name": "chai-studio",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "private": true,
   "type": "module",
   "bin": {
@@ -96,6 +96,9 @@
     "p26:gate": "node scripts/run-p26-gate.mjs",
     "doctor": "node scripts/chai-studio.mjs doctor",
     "release:manifest": "node scripts/generate-p27-release-manifest.mjs",
+    "release:bundle": "node scripts/create-release-bundle.mjs",
+    "release:bundle:verify": "node scripts/validate-release-bundle.mjs",
+    "release:archive": "node scripts/create-release-archive.mjs",
     "release:qualify": "node scripts/run-p27-qualification.mjs",
     "p27:contract": "node scripts/validate-p27-release-contract.mjs",
     "p27:gate": "node scripts/run-p27-gate.mjs",

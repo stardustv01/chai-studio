@@ -3,11 +3,16 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { canonicalJson, hashTree, sha256File } from "./release-operations.mjs";
+import { releaseBundleMarker, validateReleaseBundle } from "./release-bundle.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, "evidence/p27/release-manifest.json");
 await mkdir(path.dirname(output), { recursive: true });
 const check = process.argv.includes("--check");
+const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const bundlePath = path.join(root, "dist/releases", `chai-studio-${packageManifest.version}-darwin-arm64`);
+const bundle = await validateReleaseBundle(bundlePath);
+if (!bundle.passed) throw new Error("P27 manifest refused an invalid runtime bundle.");
 const exactFiles = [
   "package.json",
   "pnpm-lock.yaml",
@@ -16,6 +21,38 @@ const exactFiles = [
   "governance/licenses/dependency-inventory.json",
   "governance/licenses/release-review.json",
   "evidence/p26/gate-report.json",
+  "scripts/browser-isolation.mjs",
+  "scripts/chai-studio.mjs",
+  "scripts/release-bundle.mjs",
+  "scripts/release-operations.mjs",
+  "scripts/runtime-web-server.mjs",
+  "scripts/create-release-bundle.mjs",
+  "scripts/create-release-archive.mjs",
+  "scripts/validate-release-bundle.mjs",
+  "docs/INSTALLATION.md",
+  "docs/KNOWN_LIMITATIONS_V1.md",
+  "docs/OPERATIONAL_HANDOFF_V1.md",
+  "docs/RELEASE_CANDIDATE_CHECKLIST.md",
+  "docs/RELEASE_DEVELOPER_GUIDE.md",
+  path.relative(root, path.join(bundlePath, releaseBundleMarker)),
+  ...[
+    "apps/studio-server",
+    "apps/studio-web",
+    "packages/audio",
+    "packages/bridge",
+    "packages/captions",
+    "packages/diagnostics",
+    "packages/engine-adapters",
+    "packages/media",
+    "packages/preview",
+    "packages/qa",
+    "packages/render",
+    "packages/review",
+    "packages/schema",
+    "packages/security",
+    "packages/timeline",
+    "packages/ui-components",
+  ].map((directory) => `${directory}/package.json`),
 ];
 const trees = [
   "apps/studio-server/dist",
@@ -51,7 +88,7 @@ const p26 = JSON.parse(await readFile(path.join(root, "evidence/p26/gate-report.
 const payload = {
   schemaVersion: "1.0.0",
   product: "Chai Studio",
-  version: "1.0.0-rc.1",
+  version: packageManifest.version,
   channel: "release-candidate",
   sourceDate: process.env.SOURCE_DATE_EPOCH ?? "2026-07-16T00:00:00.000Z",
   launchModel: "localhost-web-server",
@@ -63,6 +100,14 @@ const payload = {
     reportSha256: await sha256File(path.join(root, "evidence/p26/gate-report.json")),
   },
   licenseInventorySha256: await sha256File(path.join(root, "governance/licenses/dependency-inventory.json")),
+  sourceCommit: bundle.marker.sourceCommit,
+  runtimeBundle: {
+    path: path.relative(root, bundlePath),
+    bundleIdentity: bundle.actualIdentity,
+    fileCount: bundle.entries.length,
+    selfContainedRuntime: bundle.marker.selfContainedRuntime,
+    distributionScope: bundle.marker.distributionScope,
+  },
   files,
   signature: {
     status: "not-required-personal-local",

@@ -4,30 +4,28 @@ macOS-first local professional video studio operated through Codex.
 
 ## Current implementation state
 
-Milestone 0 and phases P03-P27 are accepted. The workspace includes the authoritative editor/review/render/QA system, containment/recovery, professional editing, measured M4/16 GB performance/accessibility, and the `1.0.0-rc.1` local release layer with doctor, install/uninstall preservation, backup/restore/clone/archive, upgrade automation, examples, documentation, qualification, and disaster drills.
+The full editor, authenticated launcher, compositor, render/QA lifecycle, professional editing,
+recovery, and local Codex bridge are implemented. Release candidate `1.0.0-rc.2` is currently in
+clean-build and standalone-package qualification.
 
-The current clean validation surface is 340 unit tests, 20 property/fuzz tests,
-87 standard integration tests, two managed native-composition tests, separate
-real Remotion and HyperFrames runtime tests, 66 isolated-browser fixture E2E
-tests, one first-run E2E test, one authenticated A/V owner-journey E2E test, and
-41 reviewed macOS UI goldens. V8 coverage measured 65.61% statements, 51.56%
-branches, 64.00% functions, and 68.00% lines across 447 passing tests.
-
-The replacement P28 local technical gate passed with identity
-`74db0a34e17928ab946954516cf447e34e061a9c17c2a5a3caf3971284ae8941`.
-Final System Acceptance and Version 1 Signoff remain **blocked** pending informed
-permission for the registry vulnerability audit and explicit owner approval.
-No stable release, signature, delivery authorization, or public-distribution
-authority has been issued. See `governance/P28_TECHNICAL_ACCEPTANCE.md`.
+RC1 reports and owner feedback are historical and live under `archive/`; they are not acceptance
+evidence for RC2. Fresh P27 and P28 technical evidence must be generated from the exact immutable
+RC2 bundle. No stable release, owner approval, signature, final authorization, or public-distribution
+authority has been issued.
 
 ## Local developer loop
 
 ```sh
 corepack prepare pnpm@11.11.0 --activate
 pnpm install --frozen-lockfile
-pnpm release:validate
+pnpm build
+pnpm release:bundle
 pnpm dev
 ```
+
+The release bundle contains its own compiled application and production dependencies. Its launcher
+does not depend on this development checkout. See [docs/INSTALLATION.md](docs/INSTALLATION.md) and
+[docs/RELEASE_DEVELOPER_GUIDE.md](docs/RELEASE_DEVELOPER_GUIDE.md).
 
 The planning authority remains in the parent directory:
 

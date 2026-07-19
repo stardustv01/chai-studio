@@ -12,6 +12,7 @@ import {
   validateBackupEnvironment,
   validateProjectBackup,
 } from "../../scripts/release-operations.mjs";
+import { sealReleaseBundle } from "../../scripts/release-bundle.mjs";
 
 const temporaryRoots: string[] = [];
 afterEach(async () =>
@@ -21,12 +22,19 @@ afterEach(async () =>
 describe("P27 local release operations", () => {
   it("installs an exact marked launcher and uninstalls without touching external projects", async () => {
     const root = await temporaryRoot();
-    const source = path.resolve(".");
+    const source = await releaseFixture(path.join(root, "Extracted release"));
     const prefix = path.join(root, "Application");
     const externalProject = await projectFixture(path.join(root, "Projects", "Preserved.chai"));
     const installed = await installLocalRelease({ sourceRoot: source, prefix });
     expect((await stat(installed.launcher)).mode & 0o111).not.toBe(0);
-    expect(await readFile(installed.launcher, "utf8")).toContain("scripts/chai-studio.mjs");
+    expect(await readFile(installed.launcher, "utf8")).toContain(
+      path.join(prefix, "lib", "chai-studio", "scripts", "chai-studio.mjs"),
+    );
+    expect(installed.bundleIdentity).toMatch(/^[a-f0-9]{64}$/u);
+    await rm(source, { recursive: true, force: true });
+    await expect(
+      readFile(path.join(installed.runtime, "scripts", "chai-studio.mjs"), "utf8"),
+    ).resolves.toContain("standalone release fixture");
     expect(await uninstallLocalRelease(prefix)).toMatchObject({ projectsDeleted: false });
     await expect(readFile(path.join(externalProject, "project.json"), "utf8")).resolves.toContain(
       "release-test",
@@ -36,7 +44,10 @@ describe("P27 local release operations", () => {
   it("refuses uninstall when project data is placed inside the application prefix", async () => {
     const root = await temporaryRoot();
     const prefix = path.join(root, "Application");
-    await installLocalRelease({ sourceRoot: path.resolve("."), prefix });
+    await installLocalRelease({
+      sourceRoot: await releaseFixture(path.join(root, "Extracted release")),
+      prefix,
+    });
     await projectFixture(path.join(prefix, "Unsafe.chai"));
     await expect(uninstallLocalRelease(prefix)).rejects.toThrow(/project is inside/u);
   });
@@ -90,5 +101,26 @@ const projectFixture = async (root: string) => {
   await writeFile(path.join(root, "revisions", "current.json"), '{"id":"r1"}');
   await writeFile(path.join(root, "deliveries", "approved.mov"), "delivery");
   await writeFile(path.join(root, ".chai-cache", "regenerable.bin"), "cache");
+  return root;
+};
+
+const releaseFixture = async (root: string) => {
+  await mkdir(path.join(root, "scripts"), { recursive: true });
+  await writeFile(
+    path.join(root, "scripts", "chai-studio.mjs"),
+    '#!/usr/bin/env node\nprocess.stdout.write("standalone release fixture\\n");\n',
+  );
+  await sealReleaseBundle({
+    root,
+    metadata: {
+      version: "1.0.0-rc.2",
+      sourceCommit: "0123456789abcdef0123456789abcdef01234567",
+      dependencyLockSha256: "a".repeat(64),
+      licenseInventorySha256: "b".repeat(64),
+      platform: "darwin",
+      architecture: "arm64",
+      distributionScope: "personal-local-only",
+    },
+  });
   return root;
 };

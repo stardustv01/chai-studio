@@ -57,7 +57,7 @@ export const collectReleaseEnvironment = async (root) => {
         ? "compatible-unmeasured"
         : "blocked";
   const identity = {
-    studioVersion: "1.0.0-rc.1",
+    studioVersion: "1.0.0-rc.2",
     platform: os.platform(),
     architecture: os.arch(),
     osRelease: os.release(),
@@ -85,29 +85,61 @@ export const collectReleaseEnvironment = async (root) => {
 };
 
 export const installLocalRelease = async ({ sourceRoot, prefix }) => {
+  const resolvedSource = path.resolve(sourceRoot);
+  const resolvedPrefix = path.resolve(prefix);
+  if (resolvedPrefix === resolvedSource || resolvedPrefix.startsWith(`${resolvedSource}${path.sep}`)) {
+    throw new Error("Install prefix must be outside the extracted release bundle.");
+  }
   const markerPath = path.join(prefix, installationMarker);
   if (await exists(prefix)) {
     const existing = await readInstallationMarker(markerPath).catch(() => null);
     if (existing === null) throw new Error("Install prefix exists without a Chai Studio marker.");
+    throw new Error("Chai Studio is already installed at this prefix. Uninstall it before reinstalling.");
   }
-  await mkdir(path.join(prefix, "bin"), { recursive: true });
-  const sourceIdentity = await sha256File(path.join(sourceRoot, "pnpm-lock.yaml"));
+  const { validateReleaseBundle } = await import("./release-bundle.mjs");
+  const bundle = await validateReleaseBundle(resolvedSource);
+  if (!bundle.passed) throw new Error("Release bundle integrity validation failed.");
+  const runtime = path.join(resolvedPrefix, "lib", "chai-studio");
+  try {
+    await mkdir(path.dirname(runtime), { recursive: true });
+    await cp(resolvedSource, runtime, {
+      recursive: true,
+      force: false,
+      errorOnExist: true,
+      verbatimSymlinks: true,
+    });
+    const installedBundle = await validateReleaseBundle(runtime);
+    if (!installedBundle.passed || installedBundle.actualIdentity !== bundle.actualIdentity) {
+      throw new Error("Installed release bytes did not match the source bundle.");
+    }
+  } catch (error) {
+    await rm(resolvedPrefix, { recursive: true, force: true });
+    throw error;
+  }
+  await mkdir(path.join(resolvedPrefix, "bin"), { recursive: true });
   const marker = {
     schemaVersion: "1.0.0",
     product: "Chai Studio",
-    version: "1.0.0-rc.1",
-    sourceRoot: path.resolve(sourceRoot),
-    sourceIdentity,
+    version: bundle.marker.version,
+    sourceCommit: bundle.marker.sourceCommit,
+    bundleIdentity: bundle.actualIdentity,
+    installedRuntime: runtime,
     projectsInsideInstall: false,
   };
-  const launcher = path.join(prefix, "bin", "chai-studio");
+  const launcher = path.join(resolvedPrefix, "bin", "chai-studio");
   await writeFile(
     launcher,
-    `#!/bin/sh\nexec ${shellQuote(process.execPath)} ${shellQuote(path.join(sourceRoot, "scripts/chai-studio.mjs"))} "$@"\n`,
+    `#!/bin/sh\nexec ${shellQuote(process.execPath)} ${shellQuote(path.join(runtime, "scripts/chai-studio.mjs"))} "$@"\n`,
   );
   await chmod(launcher, 0o755);
   await writeFile(markerPath, `${JSON.stringify(marker, null, 2)}\n`);
-  return { prefix: path.resolve(prefix), launcher, sourceIdentity };
+  return {
+    prefix: resolvedPrefix,
+    launcher,
+    runtime,
+    sourceIdentity: bundle.marker.sourceCommit,
+    bundleIdentity: bundle.actualIdentity,
+  };
 };
 
 export const uninstallLocalRelease = async (prefix) => {

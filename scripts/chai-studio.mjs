@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-import { spawn } from "node:child_process";
 import { access, mkdir } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   archiveProject,
   backupProject,
@@ -14,6 +13,7 @@ import {
   uninstallLocalRelease,
   validateProjectBackup,
 } from "./release-operations.mjs";
+import { startRuntimeWebServer } from "./runtime-web-server.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const [command = "help", ...arguments_] = process.argv.slice(2);
@@ -31,7 +31,7 @@ const releaseCommands = new Set([
 ]);
 
 if (!releaseCommands.has(command) && command !== "help") {
-  const { runBridgeCli } = await import("../packages/bridge/dist/cli-runtime.js");
+  const { runBridgeCli } = await importBridgeCli();
   print(await runBridgeCli([command, ...arguments_]));
   process.exit(0);
 }
@@ -45,7 +45,7 @@ switch (command) {
   }
   case "about": {
     const report = await collectReleaseEnvironment(root);
-    print({ product: "Chai Studio", version: "1.0.0-rc.1", ...report });
+    print({ product: "Chai Studio", version: "1.0.0-rc.2", ...report });
     break;
   }
   case "install": {
@@ -94,7 +94,7 @@ switch (command) {
   }
   default:
     process.stdout.write(
-      "Chai Studio 1.0.0-rc.1\nRelease commands: doctor, about, install --prefix PATH, launch [--project PATH] [--starter showcase|empty|launch-film] [--title NAME], backup, validate-backup, restore, clone, archive, uninstall --prefix PATH\nCodex control: run `chai-studio commands` for the executable project, media, preview, render, capture, QA, receipt, annotation, review, job, and source-edit catalog.\n",
+      "Chai Studio 1.0.0-rc.2\nRelease commands: doctor, about, install --prefix PATH, launch [--project PATH] [--starter showcase|empty|launch-film] [--title NAME], backup, validate-backup, restore, clone, archive, uninstall --prefix PATH\nCodex control: run `chai-studio commands` for the executable project, media, preview, render, capture, QA, receipt, annotation, review, job, and source-edit catalog.\n",
     );
 }
 
@@ -126,28 +126,19 @@ async function launch() {
       : { runtimeDirectory: process.env.CHAI_STUDIO_RUNTIME_DIRECTORY }),
   });
   await openOrCreateProject(started, projectRoot, studioOrigin, { starter, title: projectTitle.trim() });
-  const vite = path.join(root, "node_modules/vite/bin/vite.js");
-  const web = spawn(
-    process.execPath,
-    [vite, "preview", "apps/studio-web", "--host", "127.0.0.1", "--port", String(webPort), "--strictPort"],
-    {
-      cwd: root,
-      env: {
-        ...process.env,
-        CHAI_STUDIO_SERVER_ORIGIN: started.report.origins[0],
-        CHAI_STUDIO_SESSION_TOKEN: started.sessionToken,
-      },
-      stdio: "inherit",
-    },
-  );
+  const web = await startRuntimeWebServer({
+    webRoot: path.join(root, "apps/studio-web/dist"),
+    session: { token: started.sessionToken, serverOrigin: started.report.origins[0] },
+    port: webPort,
+  });
   const shutdown = async () => {
-    web.kill("SIGTERM");
+    await web.close();
     await started.close();
   };
   process.once("SIGINT", () => void shutdown().finally(() => process.exit(0)));
   process.once("SIGTERM", () => void shutdown().finally(() => process.exit(0)));
   try {
-    await waitForStudio(studioOrigin, web);
+    await waitForStudio(studioOrigin);
   } catch (error) {
     await shutdown();
     throw error;
@@ -155,11 +146,7 @@ async function launch() {
   process.stdout.write(
     `${JSON.stringify({ status: "ready", studio: studioOrigin, api: started.report.origins[0], projectOpened: true, browserOpened: false })}\n`,
   );
-  await new Promise((resolve, reject) => {
-    web.once("exit", resolve);
-    web.once("error", reject);
-  });
-  await started.close();
+  await new Promise((resolve) => process.once("beforeExit", resolve));
 }
 
 async function openOrCreateProject(started, projectRoot, studioOrigin, createInput) {
@@ -201,10 +188,8 @@ async function openOrCreateProject(started, projectRoot, studioOrigin, createInp
     throw new Error(`Studio preview startup failed with HTTP ${String(previewResponse.status)}.`);
 }
 
-async function waitForStudio(studioOrigin, web) {
+async function waitForStudio(studioOrigin) {
   for (let attempt = 0; attempt < 80; attempt += 1) {
-    if (web.exitCode !== null)
-      throw new Error(`Studio web process exited with code ${String(web.exitCode)}.`);
     try {
       const response = await globalThis.fetch(studioOrigin, { redirect: "error" });
       if (response.ok) return;
@@ -214,6 +199,21 @@ async function waitForStudio(studioOrigin, web) {
     await new Promise((resolve) => globalThis.setTimeout(resolve, 50));
   }
   throw new Error("Studio web interface did not become ready on its fixed loopback origin.");
+}
+
+async function importBridgeCli() {
+  for (const candidate of [
+    path.join(root, "packages/bridge/dist/cli-runtime.js"),
+    path.join(root, "apps/studio-server/node_modules/@chai-studio/bridge/dist/cli-runtime.js"),
+  ]) {
+    try {
+      await access(candidate);
+      return import(pathToFileURL(candidate).href);
+    } catch {
+      // Try the next development or packaged runtime location.
+    }
+  }
+  throw new Error("Chai Studio bridge runtime is missing from this installation.");
 }
 
 function requiredOption(values, name) {
