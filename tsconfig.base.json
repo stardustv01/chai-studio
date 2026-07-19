@@ -25,11 +25,14 @@
     "baseUrl": ".",
     "paths": {
       "@chai-studio/diagnostics": ["packages/diagnostics/src/index.ts"],
+      "@chai-studio/diagnostics/performance": ["packages/diagnostics/src/performance.ts"],
+      "@chai-studio/diagnostics/release": ["packages/diagnostics/src/release.ts"],
       "@chai-studio/schema": ["packages/schema/src/index.ts"],
       "@chai-studio/schema/rational": ["packages/schema/src/rational.ts"],
       "@chai-studio/timeline": ["packages/timeline/src/index.ts"],
       "@chai-studio/timeline/browser": ["packages/timeline/src/browser.ts"],
       "@chai-studio/preview": ["packages/preview/src/index.ts"],
+      "@chai-studio/preview/degradation": ["packages/preview/src/degradation.ts"],
       "@chai-studio/engine-adapters": ["packages/engine-adapters/src/index.ts"],
       "@chai-studio/media": ["packages/media/src/index.ts"],
       "@chai-studio/audio": ["packages/audio/src/index.ts"],
@@ -38,6 +41,8 @@
       "@chai-studio/render": ["packages/render/src/index.ts"],
       "@chai-studio/bridge": ["packages/bridge/src/index.ts"],
       "@chai-studio/qa": ["packages/qa/src/index.ts"],
+      "@chai-studio/review": ["packages/review/src/index.ts"],
+      "@chai-studio/security": ["packages/security/src/index.ts"],
       "@chai-studio/ui-components": ["packages/ui-components/src/index.tsx"]
     }
   }
