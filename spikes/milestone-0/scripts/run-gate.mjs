@@ -21,6 +21,7 @@ const checks = [
   ["hyperframes-render", ["node_modules/.bin/hyperframes", "render", "fixtures/hyperframes", "--output", "evidence/hyperframes-fixture.mp4", "--quality", "draft", "--strict", "--workers", "1"], false],
   ["remotion-still", ["node", "scripts/render-remotion.mjs"], false],
   ["native-preview-sequences", ["node", "scripts/generate-preview-sequences.mjs"], false],
+  ["untrusted-isolation-evidence-generate", ["node", "scripts/run-isolation-spike.mjs"], false],
   ["untrusted-isolation-evidence", ["node", "scripts/validate-isolation-report.mjs"], false],
   ["browser-and-benchmark-evidence", ["node", "scripts/validate-browser-and-benchmark-evidence.mjs"], false],
   ["mixed-fixture-prepare", ["node", "scripts/prepare-mixed-fixture.mjs"], false],

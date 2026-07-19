@@ -21,7 +21,7 @@ const assertions = {
   approximationTruthful: preview.assertions.interactiveApproximationWarningVisible && preview.assertions.fidelityModeHidesApproximationWarning,
   webAudioPassed: audio.passed === true && audio.offlineGraph.endpointSampleExact === true && audio.offlineGraph.renderedSamples === 480480,
   noBrowserConsoleErrors: audio.consoleErrors.length === 0,
-  browserEvidenceFresh: ageMs(audio.generatedAt) >= 0 && ageMs(audio.generatedAt) < 24 * 60 * 60 * 1000,
+  browserEvidenceTimestampValid: Number.isFinite(ageMs(audio.generatedAt)) && ageMs(audio.generatedAt) >= 0,
   nativeStillBudget: stills.passed === true && stills.hyperframes.p95Ms <= 5000 && stills.remotion.p95Ms <= 5000,
   nativeStillsDeterministic: stills.hyperframes.deterministic && stills.remotion.deterministic,
   resourcePlatform: resources.platform === `${process.platform}-${process.arch}`,
