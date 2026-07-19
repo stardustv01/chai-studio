@@ -31,6 +31,7 @@ import {
   type QaState,
 } from "@chai-studio/schema";
 import {
+  createDefaultTimelineClipProperties,
   createStudioTimelineFixture,
   executeTimelineDocumentEdit,
   timelineSnapshotToDocument,
@@ -532,6 +533,11 @@ const seedShowcaseProject = async (rootPath: string): Promise<void> => {
     audioBusId: null,
     name: scene.title.replace("\n", " "),
     metadata: { starter: "chai-showcase-v1", scene: String(index + 1) },
+    properties: createDefaultTimelineClipProperties({
+      engine: "shared",
+      kind: "visual",
+      hasAudio: false,
+    }),
   }));
   const timeline = {
     ...current.timeline,

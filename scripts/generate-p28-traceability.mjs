@@ -190,7 +190,7 @@ const rows = [
 const matrixPayload = {
   schemaVersion: "1.0.0",
   productScope: "Foundation plus Professional Expansion",
-  releaseCandidate: ownerApproved ? "1.0.0" : "1.0.0-rc.2",
+  releaseCandidate: ownerApproved ? "1.0.0" : "1.0.0-rc.3",
   rows: rows.map(([task, status, evidence]) => ({
     task,
     status,

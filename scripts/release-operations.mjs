@@ -57,7 +57,7 @@ export const collectReleaseEnvironment = async (root) => {
         ? "compatible-unmeasured"
         : "blocked";
   const identity = {
-    studioVersion: "1.0.0-rc.2",
+    studioVersion: "1.0.0-rc.3",
     platform: os.platform(),
     architecture: os.arch(),
     osRelease: os.release(),

@@ -110,112 +110,112 @@
   "workspacePackages": [
     {
       "name": "@chai-studio/audio",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/audio",
       "private": true
     },
     {
       "name": "@chai-studio/bridge",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/bridge",
       "private": true
     },
     {
       "name": "@chai-studio/captions",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/captions",
       "private": true
     },
     {
       "name": "@chai-studio/diagnostics",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/diagnostics",
       "private": true
     },
     {
       "name": "@chai-studio/engine-adapters",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/engine-adapters",
       "private": true
     },
     {
       "name": "@chai-studio/media",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/media",
       "private": true
     },
     {
       "name": "@chai-studio/preview",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/preview",
       "private": true
     },
     {
       "name": "@chai-studio/qa",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/qa",
       "private": true
     },
     {
       "name": "@chai-studio/render",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/render",
       "private": true
     },
     {
       "name": "@chai-studio/review",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/review",
       "private": true
     },
     {
       "name": "@chai-studio/schema",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/schema",
       "private": true
     },
     {
       "name": "@chai-studio/security",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/security",
       "private": true
     },
     {
       "name": "@chai-studio/studio-server",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "apps/studio-server",
       "private": true
     },
     {
       "name": "@chai-studio/studio-web",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "apps/studio-web",
       "private": true
     },
     {
       "name": "@chai-studio/timeline",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/timeline",
       "private": true
     },
     {
       "name": "@chai-studio/ui-components",
-      "version": "1.0.0-rc.2",
+      "version": "1.0.0-rc.3",
       "license": "UNPUBLISHED-PERSONAL-BASELINE",
       "source": "packages/ui-components",
       "private": true

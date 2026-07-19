@@ -1253,7 +1253,13 @@ export const DeliveryReceiptPanel = ({ snapshot }: { readonly snapshot: StudioSn
         </Badge>
       </div>
       <section>
-        <h3>Preflight</h3>
+        <h3>New render preflight</h3>
+        <p className="delivery-context-note">
+          Applies to the selected new-render profile: <strong>{delivery.selectedProfile.name}</strong>.
+          {output === null
+            ? " No immutable output is selected."
+            : ` Output QA below is bound to ${output.profile.name}.`}
+        </p>
         {delivery.preflight === null ? (
           <p>No preflight recorded.</p>
         ) : (

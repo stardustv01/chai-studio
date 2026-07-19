@@ -3,6 +3,7 @@ import type { PerformanceMetricName } from "@chai-studio/diagnostics/performance
 export type BrowserPerformanceMetricName = PerformanceMetricName | "long-task" | "react-commit";
 
 export interface PerformanceSample {
+  readonly id: number;
   readonly name: BrowserPerformanceMetricName;
   readonly durationMs: number;
   readonly observedAt: number;
@@ -13,6 +14,7 @@ export class LocalPerformanceMonitor {
   readonly #samples: PerformanceSample[] = [];
   readonly #limit: number;
   #observer: PerformanceObserver | null = null;
+  #nextSampleId = 1;
 
   constructor(limit = 100) {
     this.#limit = limit;
@@ -69,7 +71,14 @@ export class LocalPerformanceMonitor {
     durationMs: number,
     detail: Readonly<Record<string, number | string>> = {},
   ): void {
-    this.#samples.push({ name, durationMs, detail, observedAt: Date.now() });
+    this.#samples.push({
+      id: this.#nextSampleId,
+      name,
+      durationMs,
+      detail,
+      observedAt: Date.now(),
+    });
+    this.#nextSampleId += 1;
     if (this.#samples.length > this.#limit) this.#samples.splice(0, this.#samples.length - this.#limit);
   }
 

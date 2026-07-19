@@ -17,6 +17,7 @@ test("timeline selection, search, track state, and exact range use one command s
 
   await timeline.getByPlaceholder("Clip, asset, engine, warning").fill("hyperframes");
   await expect(timeline.getByText("2 matches", { exact: true })).toBeVisible();
+  await expect(timeline.locator(".editor-clip")).toHaveCount(2);
 
   await timeline.getByRole("button", { name: "Mute MUS" }).click();
   await expect(timeline.getByRole("button", { name: "Unmute MUS" })).toHaveClass(/active/);

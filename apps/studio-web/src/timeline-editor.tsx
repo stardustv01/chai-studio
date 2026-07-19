@@ -961,6 +961,7 @@ export const TimelineEditor = ({
                   {track.clipIds.map((clipId) => {
                     const clip = timeline.clips[clipId];
                     if (clip === undefined) return null;
+                    if (normalizedSearch !== "" && !searchHits.has(clip.id)) return null;
                     const delta = drag?.clip.id === clip.id ? drag.deltaFrames : 0n;
                     const sourceIndex = tracks.findIndex((candidate) => candidate.id === clip.trackId);
                     const displayedSourceIndex =

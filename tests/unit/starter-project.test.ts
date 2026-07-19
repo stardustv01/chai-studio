@@ -59,6 +59,7 @@ describe("Launch Film starter project", () => {
     expect(snapshot.timeline.tracks).toHaveLength(1);
     expect(clips).toHaveLength(3);
     expect(snapshot.assets.assets).toHaveLength(3);
+    expect(clips.every((clip) => clip.properties?.["transform.opacity"]?.value === 100)).toBe(true);
     expect(snapshot.assets.assets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

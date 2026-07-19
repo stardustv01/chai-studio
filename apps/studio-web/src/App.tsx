@@ -1637,7 +1637,7 @@ const DiagnosticsDrawer = ({
           .snapshot()
           .slice(-8)
           .map((sample) => (
-            <div className="performance-row" key={`${sample.name}-${String(sample.observedAt)}`}>
+            <div className="performance-row" key={sample.id}>
               <span>{sample.name}</span>
               <code>{sample.durationMs.toFixed(1)} ms</code>
             </div>

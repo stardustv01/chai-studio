@@ -29,6 +29,12 @@ export const ProfessionalEditBar = ({
   const primaryAssetId = primary?.assetId ?? null;
   const neighbors = primary === undefined ? null : clipNeighbors(timeline, primary);
   const slideUnavailableReason = slideDisabledReason(primary, neighbors);
+  const slipUnavailableReason =
+    primary === undefined
+      ? "Select one clip before slipping source media."
+      : primary.availableSourceRange.end - primary.availableSourceRange.start <= 1n
+        ? "Still and frozen sources have no source handles to slip."
+        : null;
   const frame = masterFrame(BigInt(currentFrame));
   const professionalState = readProfessionalTimelineState(timeline);
   const roll = (delta: -1n | 1n): void => {
@@ -143,8 +149,13 @@ export const ProfessionalEditBar = ({
         </Button>
       </span>
       <span className="professional-edit-group">
+        <span id="timeline-slip-availability" className="visually-hidden">
+          {slipUnavailableReason ?? "Slip is available because the source has reusable handles."}
+        </span>
         <Button
-          disabled={primary === undefined}
+          disabled={slipUnavailableReason !== null}
+          aria-describedby="timeline-slip-availability"
+          title={slipUnavailableReason ?? "Slip the source left one frame."}
           onClick={() => {
             slip(-1n);
           }}
@@ -152,7 +163,9 @@ export const ProfessionalEditBar = ({
           Slip −1
         </Button>
         <Button
-          disabled={primary === undefined}
+          disabled={slipUnavailableReason !== null}
+          aria-describedby="timeline-slip-availability"
+          title={slipUnavailableReason ?? "Slip the source right one frame."}
           onClick={() => {
             slip(1n);
           }}

@@ -54,7 +54,7 @@ const checks = [
   [
     "P27.04",
     "packages/diagnostics/src/release.ts",
-    ["1.0.0-rc.2", "4.0.489", "0.7.58", "playwright-managed:chromium-1228", "localhost-web-server"],
+    ["1.0.0-rc.3", "4.0.489", "0.7.58", "playwright-managed:chromium-1228", "localhost-web-server"],
   ],
   [
     "P27.04",
@@ -181,7 +181,7 @@ for (const file of releasePackageFiles) {
     .then((content) => JSON.parse(content))
     .catch(() => null);
   const valid =
-    manifest?.version === "1.0.0-rc.2" &&
+    manifest?.version === "1.0.0-rc.3" &&
     (file !== "package.json" || manifest.packageManager === "pnpm@11.11.0");
   results.push({
     task: "P27.04",
@@ -190,7 +190,7 @@ for (const file of releasePackageFiles) {
     exists: manifest !== null,
     missingSymbols: valid
       ? []
-      : ['version "1.0.0-rc.2"', ...(file === "package.json" ? ['packageManager "pnpm@11.11.0"'] : [])],
+      : ['version "1.0.0-rc.3"', ...(file === "package.json" ? ['packageManager "pnpm@11.11.0"'] : [])],
   });
 }
 
@@ -216,7 +216,7 @@ const evidenceChecks = [
     "P27.02",
     "evidence/p27/release-manifest.json",
     (value) =>
-      value.version === "1.0.0-rc.2" &&
+      value.version === "1.0.0-rc.3" &&
       value.files?.length >= 700 &&
       value.runtimeBundle?.selfContainedRuntime === true &&
       value.runtimeBundle?.fileCount >= 10_000 &&

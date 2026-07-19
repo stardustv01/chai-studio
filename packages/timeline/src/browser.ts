@@ -55,3 +55,4 @@ export {
   type TimelineSnapshotV1,
   type TrackSnapshot,
 } from "./model.js";
+export { createDefaultTimelineClipProperties, type TimelineClipPropertyKind } from "./properties.js";

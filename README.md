@@ -5,7 +5,7 @@ macOS-first local professional video studio operated through Codex.
 ## Current implementation state
 
 The full editor, authenticated launcher, compositor, render/QA lifecycle, professional editing,
-recovery, and local Codex bridge are implemented. Release candidate `1.0.0-rc.2` is currently in
+recovery, and local Codex bridge are implemented. Release candidate `1.0.0-rc.3` is currently in
 clean-build and standalone-package qualification.
 
 RC1 reports and owner feedback are historical and live under `archive/`; they are not acceptance

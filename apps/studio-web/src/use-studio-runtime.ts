@@ -476,7 +476,10 @@ export const useStudioRuntime = (): StudioRuntime => {
         return;
       }
       try {
-        let preview = state.snapshot.preview;
+        const authoritative = await client.previewSnapshot();
+        let preview = previewTruthFromPayload(latestPreviewRef.current, unwrapPreviewState(authoritative));
+        latestPreviewRef.current = preview;
+        dispatch({ type: "preview-state", payload: authoritative });
         if (preview.playback === "playing") {
           const paused = await client.previewControl("transport", {
             action: "pause",
@@ -495,20 +498,41 @@ export const useStudioRuntime = (): StudioRuntime => {
           range: "Review range",
           "contact-sheet": "Contact sheet",
         };
-        const captureRecord =
-          mode === "exact-fidelity"
-            ? await requestExactFidelityCapture(client, preview, state.snapshot.project?.title ?? "Studio")
-            : await client.request<Readonly<Record<string, unknown>>>("/api/v1/captures", {
+        let captureRecord: Readonly<Record<string, unknown>>;
+        if (mode === "exact-fidelity") {
+          captureRecord = await requestExactFidelityCapture(
+            client,
+            preview,
+            state.snapshot.project?.title ?? "Studio",
+          );
+        } else {
+          const label = `${labels[mode]} · ${includeOverlays ? "review evidence — overlays included" : "clean frame — overlays excluded"}`;
+          let attempt = 0;
+          for (;;) {
+            const imageBase64 = (await captureStudioProgramFrame(includeOverlays)).replace(
+              /^data:image\/png;base64,/u,
+              "",
+            );
+            try {
+              captureRecord = await client.request<Readonly<Record<string, unknown>>>("/api/v1/captures", {
                 method: "POST",
                 body: JSON.stringify({
-                  label: `${labels[mode]} · ${includeOverlays ? "review evidence — overlays included" : "clean frame — overlays excluded"}`,
-                  imageBase64: (await captureStudioProgramFrame(includeOverlays)).replace(
-                    /^data:image\/png;base64,/u,
-                    "",
-                  ),
+                  label,
+                  imageBase64,
                   expectedPreviewStateVersion: preview.stateVersion,
                 }),
               });
+              break;
+            } catch (cause: unknown) {
+              if (!(cause instanceof StaleRevisionError) || attempt > 0) throw cause;
+              attempt += 1;
+              const refreshed = await client.previewSnapshot();
+              preview = previewTruthFromPayload(preview, unwrapPreviewState(refreshed));
+              latestPreviewRef.current = preview;
+              dispatch({ type: "preview-state", payload: refreshed });
+            }
+          }
+        }
         const captureId = typeof captureRecord.id === "string" ? captureRecord.id : "Capture";
         const capturePath =
           typeof captureRecord.relativePath === "string" ? captureRecord.relativePath : "saved in project";
@@ -578,10 +602,23 @@ export const useStudioRuntime = (): StudioRuntime => {
           latestPreviewRef.current = latest;
           const requests = previewControlRequests(command, latest);
           for (const control of requests) {
-            const payload = await client.previewControl(control.endpoint, {
-              ...control.body,
-              expectedStateVersion: latest.stateVersion,
-            });
+            let payload: Readonly<Record<string, unknown>>;
+            try {
+              payload = await client.previewControl(control.endpoint, {
+                ...control.body,
+                expectedStateVersion: latest.stateVersion,
+              });
+            } catch (cause: unknown) {
+              if (!(cause instanceof StaleRevisionError)) throw cause;
+              const refreshed = await client.previewSnapshot();
+              latest = previewTruthFromPayload(latest, unwrapPreviewState(refreshed));
+              latestPreviewRef.current = latest;
+              dispatch({ type: "preview-state", payload: refreshed });
+              payload = await client.previewControl(control.endpoint, {
+                ...control.body,
+                expectedStateVersion: latest.stateVersion,
+              });
+            }
             const projected = previewTruthFromPayload(latest, unwrapPreviewState(payload));
             latest = projected;
             latestPreviewRef.current = latest;
@@ -1793,19 +1830,30 @@ const requestExactFidelityCapture = async (
   if (outputId === null || activationRevisionId === null) {
     throw new Error("Exact capture output identity is incomplete.");
   }
-  const previewStateVersion = await waitForSynchronizedPreview(
+  let previewStateVersion = await waitForSynchronizedPreview(
     client,
     activationRevisionId,
     preview.masterFrame,
   );
-  return client.request<Readonly<Record<string, unknown>>>("/api/v1/captures/from-render", {
-    method: "POST",
-    body: JSON.stringify({
-      outputId,
-      expectedPreviewStateVersion: previewStateVersion,
-      label: "Exact fidelity frame · clean frame · review overlays excluded",
-    }),
-  });
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await client.request<Readonly<Record<string, unknown>>>("/api/v1/captures/from-render", {
+        method: "POST",
+        body: JSON.stringify({
+          outputId,
+          expectedPreviewStateVersion: previewStateVersion,
+          label: "Exact fidelity frame · clean frame · review overlays excluded",
+        }),
+      });
+    } catch (cause: unknown) {
+      if (!(cause instanceof StaleRevisionError) || attempt > 0) throw cause;
+      previewStateVersion = await waitForSynchronizedPreview(
+        client,
+        activationRevisionId,
+        preview.masterFrame,
+      );
+    }
+  }
 };
 
 const waitForRenderOutput = async (

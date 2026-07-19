@@ -28,6 +28,12 @@ test("first authenticated launch opens a real starter and authoritative program 
   });
   await expect(page.locator(".editor-clip")).toHaveCount(3);
   await expect(page.locator(".program-frame figcaption")).toContainText("Rendered frame 0");
+  const starterAsset = page.getByRole("button", { name: /chai-showcase-01-intro\.png/ });
+  await expect(starterAsset).toContainText("image · 150f · valid");
+  await expect(starterAsset).toContainText("Image");
+  await expect(page.getByLabel("Contextual inspector").getByRole("textbox", { name: "Opacity" })).toHaveValue(
+    "100",
+  );
 
   const program = page.getByRole("region", { name: "Program monitor" });
   await program.getByRole("button", { name: "Play program preview" }).click();
@@ -37,6 +43,25 @@ test("first authenticated launch opens a real starter and authoritative program 
   await expect(page.getByRole("img", { name: `Authoritative program frame ${currentFrame}` })).toBeVisible({
     timeout: 20_000,
   });
+
+  const timeline = page.getByRole("region", { name: "Frame-exact timeline editor" });
+  await timeline.getByRole("button", { name: "B Blade" }).click();
+  await timeline.getByRole("button", { name: "Split selected clips at playhead" }).click();
+  await expect(page.locator(".editor-clip")).toHaveCount(4);
+  await timeline.getByRole("button", { name: /Undo Split clip/ }).click();
+  await expect(page.locator(".editor-clip")).toHaveCount(3);
+  await timeline.getByRole("button", { name: "V Select" }).click();
+
+  await page.getByRole("button", { name: "Animation", exact: true }).click();
+  const curve = page.getByLabel("Deterministic keyframe curve editor");
+  await expect(curve.getByLabel("Animated property")).toHaveValue("transform.opacity");
+  await expect(curve.getByRole("button", { name: "Add key" })).toBeEnabled();
+  await curve.getByRole("button", { name: "Add key" }).click();
+  await expect(curve.getByText("1 keys", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Inspect", exact: true }).click();
+  await expect(page.getByText("No review bundle in this revision.")).toBeVisible();
+  await expect(page.getByText("Opening rhythm")).toHaveCount(0);
 
   const truth = await page.evaluate(async () => {
     const session = window.__CHAI_STUDIO_SESSION__;

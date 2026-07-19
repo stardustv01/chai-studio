@@ -5,10 +5,10 @@ Use the supported arm64 Mac with Node 22.17.0, FFmpeg/FFprobe 7.1.1, and the pin
 Verify and unpack the supplied personal-local RC archive. End users do not install pnpm, compile TypeScript, or run Vite:
 
 ```sh
-shasum -a 256 -c chai-studio-1.0.0-rc.2-darwin-arm64.tar.gz.sha256
-tar -xzf chai-studio-1.0.0-rc.2-darwin-arm64.tar.gz
-./chai-studio-1.0.0-rc.2-darwin-arm64/bin/chai-studio doctor
-./chai-studio-1.0.0-rc.2-darwin-arm64/bin/chai-studio install --prefix "$HOME/Applications/Chai Studio Local"
+shasum -a 256 -c chai-studio-1.0.0-rc.3-darwin-arm64.tar.gz.sha256
+tar -xzf chai-studio-1.0.0-rc.3-darwin-arm64.tar.gz
+./chai-studio-1.0.0-rc.3-darwin-arm64/bin/chai-studio doctor
+./chai-studio-1.0.0-rc.3-darwin-arm64/bin/chai-studio install --prefix "$HOME/Applications/Chai Studio Local"
 "$HOME/Applications/Chai Studio Local/bin/chai-studio" launch
 ```
 

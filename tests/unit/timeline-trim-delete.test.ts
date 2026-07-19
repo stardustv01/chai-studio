@@ -30,6 +30,34 @@ describe("blade and exact split commands", () => {
     expect(executeTimelineCommand(split.snapshot, split.inverse).snapshot).toEqual(timeline);
   });
 
+  it("splits a held still while preserving the one-frame source range on both halves", () => {
+    const base = editTimeline();
+    const clipId = stableEntityId("clip-edit-0001");
+    const original = requireClip(base, clipId);
+    const still = {
+      ...base,
+      clips: {
+        ...base.clips,
+        [clipId]: {
+          ...original,
+          sourceRange: createFrameRange(masterFrame(0n), masterFrame(1n)),
+          availableSourceRange: createFrameRange(masterFrame(0n), masterFrame(1n)),
+        },
+      },
+    };
+    const rightId = stableEntityId("clip-edit-still-right-0001");
+    const split = executeTimelineCommand(
+      still,
+      createBladeCommand(still, masterFrame(40n), { [clipId]: rightId }),
+    );
+
+    expect(split.snapshot.clips[clipId]?.range).toEqual({ start: 0n, end: 40n });
+    expect(split.snapshot.clips[rightId]?.range).toEqual({ start: 40n, end: 100n });
+    expect(split.snapshot.clips[clipId]?.sourceRange).toEqual({ start: 0n, end: 1n });
+    expect(split.snapshot.clips[rightId]?.sourceRange).toEqual({ start: 0n, end: 1n });
+    expect(executeTimelineCommand(split.snapshot, split.inverse).snapshot).toEqual(still);
+  });
+
   it("rejects boundary blades and incomplete linked-media splits", () => {
     const timeline = editTimeline();
     expect(() => createBladeCommand(timeline, masterFrame(100n), {})).toThrow(/does not intersect/);

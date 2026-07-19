@@ -23,6 +23,7 @@ import { ChaiIcon } from "./chai-icon.js";
 
 interface SourceInspectionMonitorProps {
   readonly assets: readonly AssetRecord[];
+  readonly selectedAssetId: string | null;
   readonly timeline: TimelineSnapshotV1;
   readonly timelineFrame: string;
   readonly onCapture: (mode: MonitorCaptureMode, includeOverlays: boolean) => void;
@@ -96,32 +97,43 @@ export const SourceInspectionMonitor = ({
   onCapture,
   onCompareToTimeline,
   onTimelineCommand,
+  selectedAssetId,
   timeline,
   timelineFrame,
 }: SourceInspectionMonitorProps) => {
   assertFoundationSourceInspectionBoundary();
+  const allowFixtureFallback = window.__CHAI_STUDIO_SESSION__ === undefined;
+  const initialKind = selectedSourceKind(assets, timeline, selectedAssetId) ?? "video";
   const [source, setSource] = useState<SourceInspectionState>(() => {
-    const initial = sourceDescriptor("video", timeline, assets);
+    const initial = sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback);
     return {
       ...defaultSourceState,
+      sourceKind: initialKind,
       sourceId: initial.sourceId,
+      currentFrame: allowFixtureFallback ? defaultSourceState.currentFrame : "0",
       durationFrames: initial.durationFrames,
       fps: initial.fps,
     };
   });
-  const [sourceKind, setSourceKind] = useState<SourceInspectionState["sourceKind"]>("video");
+  const [sourceKind, setSourceKind] = useState<SourceInspectionState["sourceKind"]>(initialKind);
   const [sourceIn, setSourceIn] = useState<string | null>(
-    () => sourceRangeDefaults(sourceDescriptor("video", timeline, assets).durationFrames).sourceIn,
+    () =>
+      sourceRangeDefaults(
+        sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback).durationFrames,
+      ).sourceIn,
   );
   const [sourceOut, setSourceOut] = useState<string | null>(
-    () => sourceRangeDefaults(sourceDescriptor("video", timeline, assets).durationFrames).sourceOut,
+    () =>
+      sourceRangeDefaults(
+        sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback).durationFrames,
+      ).sourceOut,
   );
   const [targetTrackId, setTargetTrackId] = useState(timeline.trackIds[0] ?? "");
   const [editKind, setEditKind] = useState<"insert" | "overwrite" | "replace">("overwrite");
   const [editStatus, setEditStatus] = useState("Three points ready");
   const descriptor = useMemo(
-    () => sourceDescriptor(sourceKind, timeline, assets),
-    [assets, sourceKind, timeline],
+    () => sourceDescriptor(sourceKind, timeline, assets, selectedAssetId, allowFixtureFallback),
+    [allowFixtureFallback, assets, selectedAssetId, sourceKind, timeline],
   );
   const sourceClient = useMemo(
     () =>
@@ -145,6 +157,10 @@ export const SourceInspectionMonitor = ({
     setSource((current) => applySourceInspectionCommand(current, command));
   };
   useEffect(() => {
+    const selectedKind = selectedSourceKind(assets, timeline, selectedAssetId);
+    if (selectedKind !== null) setSourceKind(selectedKind);
+  }, [assets, selectedAssetId, timeline]);
+  useEffect(() => {
     setSource((current) => {
       if (
         current.sourceId === descriptor.sourceId &&
@@ -158,6 +174,7 @@ export const SourceInspectionMonitor = ({
       const currentFrame = BigInt(current.currentFrame);
       return {
         ...current,
+        sourceKind,
         sourceId: descriptor.sourceId,
         currentFrame: (currentFrame > lastFrame ? (lastFrame < 0n ? 0n : lastFrame) : currentFrame).toString(
           10,
@@ -166,7 +183,12 @@ export const SourceInspectionMonitor = ({
         fps: descriptor.fps,
       };
     });
-  }, [descriptor]);
+  }, [descriptor, sourceKind]);
+  useEffect(() => {
+    const defaults = sourceRangeDefaults(descriptor.durationFrames);
+    setSourceIn(defaults.sourceIn);
+    setSourceOut(defaults.sourceOut);
+  }, [descriptor.durationFrames, descriptor.sourceId]);
   useEffect(() => {
     if (sourceKind !== "video" && sourceKind !== "image") {
       setDecodedFrame({
@@ -174,6 +196,15 @@ export const SourceInspectionMonitor = ({
         url: null,
         contentHash: null,
         message: "Native composition source decoding is available only through its validated render adapter.",
+      });
+      return;
+    }
+    if (source.sourceId.startsWith("source-unavailable-")) {
+      setDecodedFrame({
+        status: "idle",
+        url: null,
+        contentHash: null,
+        message: descriptor.label,
       });
       return;
     }
@@ -224,7 +255,7 @@ export const SourceInspectionMonitor = ({
       controller.abort();
       if (objectUrl !== null) URL.revokeObjectURL(objectUrl);
     };
-  }, [source.currentFrame, source.sourceId, sourceClient, sourceKind]);
+  }, [descriptor.label, source.currentFrame, source.sourceId, sourceClient, sourceKind]);
   const commitSourceEdit = (): void => {
     const selected = timeline.selection.selectedIds
       .map((id) => timeline.clips[id])
@@ -302,7 +333,7 @@ export const SourceInspectionMonitor = ({
               className={sourceKind === kind ? "active" : ""}
               key={kind}
               onClick={() => {
-                const next = sourceDescriptor(kind, timeline, assets);
+                const next = sourceDescriptor(kind, timeline, assets, selectedAssetId, allowFixtureFallback);
                 const marks = sourceRangeDefaults(next.durationFrames);
                 setSourceKind(kind);
                 setSourceIn(marks.sourceIn);
@@ -581,9 +612,27 @@ const sourceDescriptor = (
   kind: SourceInspectionState["sourceKind"],
   timeline: TimelineSnapshotV1,
   assets: readonly AssetRecord[],
+  selectedAssetId: string | null,
+  allowFixtureFallback: boolean,
 ): SourceDescriptor => {
   const fallback = fallbackSourceDescriptors[kind];
   const assetsById = new Map(assets.map((asset) => [asset.id, asset]));
+  const selectedAsset = selectedAssetId === null ? undefined : assetsById.get(selectedAssetId);
+  if (selectedAsset !== undefined && assetMatchesSourceKind(selectedAsset, kind, timeline)) {
+    const duration = BigInt(selectedAsset.durationFrames ?? "1");
+    const fps =
+      selectedAsset.fps ??
+      (selectedAsset.kind === "image" ? { numerator: "1", denominator: "1" } : timeline.fps);
+    return {
+      sourceId: selectedAsset.id,
+      label: selectedAsset.path.split("/").at(-1) ?? selectedAsset.id,
+      durationFrames: (duration > 0n ? duration : 1n).toString(10),
+      fps: { numerator: fps.numerator, denominator: fps.denominator },
+      dimensions: selectedAsset.kind === "image" ? "Image source" : "Native media source",
+      proxy: "Decoded original · content-addressed frame cache",
+      audio: selectedAsset.hasAudio ? "Source audio available" : "Not applicable",
+    };
+  }
   const matchesKind = (clip: ClipSnapshot): boolean => {
     if (kind === "remotion" || kind === "hyperframes") return clip.engine === kind;
     const asset = clip.assetId === null ? undefined : assetsById.get(clip.assetId);
@@ -595,7 +644,19 @@ const sourceDescriptor = (
     .map((id) => timeline.clips[id])
     .filter((clip): clip is ClipSnapshot => clip !== undefined);
   const matchingClip = selectedClips.find(matchesKind) ?? Object.values(timeline.clips).find(matchesKind);
-  if (matchingClip === undefined) return fallback;
+  if (matchingClip === undefined) {
+    return allowFixtureFallback
+      ? fallback
+      : {
+          sourceId: `source-unavailable-${kind}`,
+          label: `No ${kind} source selected`,
+          durationFrames: "1",
+          fps: { numerator: timeline.fps.numerator, denominator: timeline.fps.denominator },
+          dimensions: "Unavailable",
+          proxy: "Select a matching project asset",
+          audio: "Not applicable",
+        };
+  }
   const asset = matchingClip.assetId === null ? undefined : assetsById.get(matchingClip.assetId);
   const sourceDuration =
     asset?.durationFrames === null || asset?.durationFrames === undefined
@@ -616,6 +677,29 @@ const sourceDescriptor = (
         ? "Decoded original · content-addressed frame cache"
         : fallback.proxy,
   };
+};
+
+const selectedSourceKind = (
+  assets: readonly AssetRecord[],
+  timeline: TimelineSnapshotV1,
+  selectedAssetId: string | null,
+): SourceInspectionState["sourceKind"] | null => {
+  if (selectedAssetId === null) return null;
+  const asset = assets.find((candidate) => candidate.id === selectedAssetId);
+  if (asset?.kind === "video" || asset?.kind === "image") return asset.kind;
+  if (asset?.kind !== "composition") return null;
+  const clip = Object.values(timeline.clips).find((candidate) => candidate.assetId === selectedAssetId);
+  return clip?.engine === "remotion" || clip?.engine === "hyperframes" ? clip.engine : null;
+};
+
+const assetMatchesSourceKind = (
+  asset: AssetRecord,
+  kind: SourceInspectionState["sourceKind"],
+  timeline: TimelineSnapshotV1,
+): boolean => {
+  if (kind === "video" || kind === "image") return asset.kind === kind;
+  if (asset.kind !== "composition") return false;
+  return Object.values(timeline.clips).some((clip) => clip.assetId === asset.id && clip.engine === kind);
 };
 
 interface DecodedSourceFrame {

@@ -822,8 +822,16 @@ const applySplit = (timeline: TimelineSnapshotV1, command: SplitClipsCommand): T
       sourceRate: original.sourceRate,
       speed: original.speed,
     });
-    const sourceSplit = mapFrameExact(transform, command.atFrame, "floor");
-    if (!(original.sourceRange.start < sourceSplit && sourceSplit < original.sourceRange.end)) {
+    const staticSource =
+      original.sourceRange.end - original.sourceRange.start === 1n &&
+      original.availableSourceRange.end - original.availableSourceRange.start === 1n;
+    const sourceSplit = staticSource
+      ? original.sourceRange.start
+      : mapFrameExact(transform, command.atFrame, "floor");
+    if (
+      !staticSource &&
+      !(original.sourceRange.start < sourceSplit && sourceSplit < original.sourceRange.end)
+    ) {
       throw commandError(
         "timeline.split.source-boundary",
         `Split of ${original.id} collapses an exact source-side range.`,
@@ -878,7 +886,9 @@ const applySplit = (timeline: TimelineSnapshotV1, command: SplitClipsCommand): T
     const left: ClipSnapshot = {
       ...original,
       range: createFrameRange(original.range.start, command.atFrame),
-      sourceRange: createFrameRange(original.sourceRange.start, sourceSplit),
+      sourceRange: staticSource
+        ? original.sourceRange
+        : createFrameRange(original.sourceRange.start, sourceSplit),
       transitionOutId: null,
       keyframeIds: leftKeyframeIds,
     };
@@ -886,7 +896,9 @@ const applySplit = (timeline: TimelineSnapshotV1, command: SplitClipsCommand): T
       ...original,
       id: mapping.rightClipId,
       range: createFrameRange(command.atFrame, original.range.end),
-      sourceRange: createFrameRange(sourceSplit, original.sourceRange.end),
+      sourceRange: staticSource
+        ? original.sourceRange
+        : createFrameRange(sourceSplit, original.sourceRange.end),
       transitionInId: null,
       keyframeIds: rightKeyframeIds,
     };

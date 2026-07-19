@@ -113,7 +113,7 @@ const releaseFixture = async (root: string) => {
   await sealReleaseBundle({
     root,
     metadata: {
-      version: "1.0.0-rc.2",
+      version: "1.0.0-rc.3",
       sourceCommit: "0123456789abcdef0123456789abcdef01234567",
       dependencyLockSha256: "a".repeat(64),
       licenseInventorySha256: "b".repeat(64),

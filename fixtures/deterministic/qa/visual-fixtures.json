@@ -30,7 +30,7 @@
       "category": "captions",
       "source": "tests/e2e/studio-visual.spec.ts-snapshots/p17-transcript-caption-system-darwin.png",
       "frame": "2411",
-      "normalizedPixelHash": "11a14b06b6b497c3f725822ceaef36e772fdabce0ba7d9b785777733e5652326"
+      "normalizedPixelHash": "54b862069a3948658347f17d350afd18d179906daf7f0d6b0470626686676f6e"
     },
     {
       "id": "straight-alpha-edge",

@@ -6,6 +6,7 @@ import type { AnnotationDocument, AssetRecord, NormalizedRational } from "@chai-
 import { normalizeRational } from "@chai-studio/schema/rational";
 import { Badge, Button, TextField } from "@chai-studio/ui-components";
 import {
+  createDefaultTimelineClipProperties,
   createFrameRange,
   formatTimecode,
   masterFrame,
@@ -1599,24 +1600,26 @@ const sequenceAssets = (snapshot: StudioSnapshot): readonly SequenceAssetView[] 
     if (clip.assetId === null) continue;
     const track = snapshot.timeline.tracks[clip.trackId];
     const label = assetLabel(clip.name);
-    const type =
-      clip.engine === "remotion"
-        ? "R"
-        : clip.engine === "hyperframes"
-          ? "H"
-          : track?.kind === "audio"
-            ? "Audio"
-            : track?.kind === "caption"
-              ? "Caption"
-              : "Video";
     const registered = groups.get(clip.assetId);
+    const type =
+      registered !== undefined
+        ? assetTypeLabel(registered.kind)
+        : clip.engine === "remotion"
+          ? "R"
+          : clip.engine === "hyperframes"
+            ? "H"
+            : track?.kind === "audio"
+              ? "Audio"
+              : track?.kind === "caption"
+                ? "Caption"
+                : "Video";
     const placeholder =
       registered?.validationState === "unsupported" &&
       snapshot.assets.find((asset) => asset.id === clip.assetId)?.path.startsWith("assets/starter/") === true;
     groups.set(clip.assetId, {
       assetId: clip.assetId,
       label: placeholder ? label : (registered?.label ?? label),
-      meta: `${clip.engine === "shared" ? (track?.kind ?? "media") : `${clip.engine} composition`} · ${String(clip.range.end - clip.range.start)}f${registered === undefined ? "" : ` · ${registered.validationState}`}`,
+      meta: `${registered?.kind ?? (clip.engine === "shared" ? (track?.kind ?? "media") : `${clip.engine} composition`)} · ${String(clip.range.end - clip.range.start)}f${registered === undefined ? "" : ` · ${registered.validationState}`}`,
       type,
       engine: clip.engine,
       durationFrames:
@@ -1683,6 +1686,11 @@ const appendAssetToTimeline = (
       transitionOutId: null,
       keyframeIds: [],
       metadata: { source: "project-asset", validationState: asset.validationState },
+      properties: createDefaultTimelineClipProperties({
+        engine,
+        kind: asset.kind === "audio" ? "audio" : "visual",
+        hasAudio: asset.kind === "audio" || asset.kind === "video",
+      }),
     },
   });
 };
@@ -1820,6 +1828,12 @@ const SourceAndTranscript = ({
   <div className="source-transcript">
     <SourceInspectionMonitor
       assets={snapshot.assets}
+      selectedAssetId={
+        snapshot.selection.assetIds[0] ??
+        (snapshot.timeline.selection.primaryId === null
+          ? null
+          : (snapshot.timeline.clips[snapshot.timeline.selection.primaryId]?.assetId ?? null))
+      }
       timeline={snapshot.timeline}
       timelineFrame={snapshot.preview.masterFrame}
       onTimelineCommand={timeline}

@@ -13,6 +13,7 @@ import {
   type TrackSnapshot,
 } from "./model.js";
 import { createFrameRange, masterFrame } from "./range.js";
+import { createDefaultTimelineClipProperties } from "./properties.js";
 import { assertValidTimelineCore } from "./validation.js";
 
 const supportedOperationKinds = new Set([
@@ -158,7 +159,13 @@ export const timelineDocumentToSnapshot = (document: TimelineDocument): Timeline
             .filter((keyframe) => keyframe.ownerEntityId === id)
             .map((keyframe) => keyframe.id),
           metadata: { capability: clip.capability, ...(clip.metadata ?? {}) },
-          ...(clip.properties === undefined ? {} : { properties: clip.properties }),
+          properties:
+            clip.properties ??
+            createDefaultTimelineClipProperties({
+              engine: clip.engine,
+              kind: track.kind === "audio" ? "audio" : "visual",
+              hasAudio: clip.audioBusId !== null,
+            }),
         };
         return [id, value];
       }),

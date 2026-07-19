@@ -23,6 +23,7 @@ export {
   type TrackSnapshot,
   type TransitionSnapshot,
 } from "./model.js";
+export { createDefaultTimelineClipProperties, type TimelineClipPropertyKind } from "./properties.js";
 export {
   addFrames,
   clampFrameToRange,

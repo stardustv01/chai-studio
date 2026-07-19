@@ -25,7 +25,9 @@ const actor = { id: "actor-studio-user", kind: "user" as const, sessionId: "sess
 
 export const ReviewNavigator = ({ snapshot }: { readonly snapshot: StudioSnapshot }) => {
   const [client] = useState(() => studioClient());
-  const [workspace, setWorkspace] = useState(() => fallbackWorkspace(snapshot));
+  const [workspace, setWorkspace] = useState(() =>
+    client.sessionToken === null ? fallbackWorkspace(snapshot) : emptyWorkspace(snapshot),
+  );
   const [status, setStatus] = useState(client.sessionToken === null ? "UI fixture" : "Loading authority");
   const [activeBundleId, setActiveBundleId] = useState<string | null>(null);
   const [issueDraft, setIssueDraft] = useState("");
@@ -33,8 +35,8 @@ export const ReviewNavigator = ({ snapshot }: { readonly snapshot: StudioSnapsho
 
   const refresh = async (): Promise<void> => {
     if (!canPersist) {
-      setWorkspace(fallbackWorkspace(snapshot));
-      setStatus("UI fixture");
+      setWorkspace(client.sessionToken === null ? fallbackWorkspace(snapshot) : emptyWorkspace(snapshot));
+      setStatus(client.sessionToken === null ? "UI fixture" : "Open a project");
       return;
     }
     try {
@@ -44,6 +46,7 @@ export const ReviewNavigator = ({ snapshot }: { readonly snapshot: StudioSnapsho
       setWorkspace(latest);
       setStatus("Revision-bound");
     } catch {
+      setWorkspace(emptyWorkspace(snapshot));
       setStatus("Refresh required");
     }
   };
@@ -489,6 +492,25 @@ const fallbackWorkspace = (snapshot: StudioSnapshot): ReviewWorkspaceSnapshot =>
     auditTrail: [],
   };
 };
+
+const emptyWorkspace = (snapshot: StudioSnapshot): ReviewWorkspaceSnapshot => ({
+  projectId: snapshot.project?.projectId ?? "project-unavailable",
+  revisionId: snapshot.project?.revisionId ?? "revision-unavailable",
+  timelineId: snapshot.timeline.id,
+  durationFrames: snapshot.preview.durationFrames,
+  qaState: null,
+  state: {
+    schemaVersion: "1.0.0",
+    bundles: [],
+    issues: [],
+    comparisons: [],
+    requests: [],
+    actions: [],
+    exceptions: [],
+    alternateTakes: [],
+  },
+  auditTrail: [],
+});
 
 const shortRevision = (revision: string): string =>
   revision.length > 20 ? `${revision.slice(0, 12)}…${revision.slice(-5)}` : revision;
