@@ -16,7 +16,6 @@ spikes/milestone-0/evidence/*.png
 !spikes/milestone-0/evidence/remotion-frame-30-b.png
 spikes/milestone-0/fixtures/hyperframes/snapshots/
 spikes/milestone-0/fixtures/hyperframes/renders/
-spikes/milestone-0/fixtures/hyperframes/vendor/
 spikes/milestone-0/fixtures/remotion/public/
 spikes/milestone-0/fixtures/preview/assets/
 spikes/milestone-0/fixtures/preview/proxy-manifest.json
