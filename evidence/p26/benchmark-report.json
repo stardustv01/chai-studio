@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-18T06:35:29.158Z",
+  "generatedAt": "2026-07-19T18:33:43.388Z",
   "passed": true,
   "localOnly": true,
   "telemetryUploaded": false,
@@ -21,11 +21,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.6282500000000084,
+      "value": 0.6262920000000065,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.091Z",
+      "observedAt": "2026-07-19T18:33:43.326Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -36,11 +36,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.8511249999999961,
+      "value": 0.5965830000000096,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.092Z",
+      "observedAt": "2026-07-19T18:33:43.327Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -51,11 +51,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 5.639999999999986,
+      "value": 5.237374999999986,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.098Z",
+      "observedAt": "2026-07-19T18:33:43.332Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -66,11 +66,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.08458300000000918,
+      "value": 0.050042000000019016,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.098Z",
+      "observedAt": "2026-07-19T18:33:43.332Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -81,11 +81,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.17250000000001364,
+      "value": 0.12666699999999764,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.098Z",
+      "observedAt": "2026-07-19T18:33:43.332Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -96,11 +96,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.15495899999999097,
+      "value": 0.13433299999999804,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.332Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -111,11 +111,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.014167000000014696,
+      "value": 0.01099999999999568,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -130,7 +130,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -141,11 +141,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.04075000000000273,
+      "value": 0.040541999999987866,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -156,11 +156,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.08329200000000014,
+      "value": 0.08408399999999006,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -171,11 +171,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.010250000000013415,
+      "value": 0.009582999999992126,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -186,11 +186,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0014169999999751326,
+      "value": 0.0012499999999988631,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -201,11 +201,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.036000000000001364,
+      "value": 0.03658300000000736,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -216,11 +216,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.07749999999998636,
+      "value": 0.07808400000001825,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -231,11 +231,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.008167000000014468,
+      "value": 0.007916999999991958,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -246,11 +246,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.001125000000001819,
+      "value": 0.001082999999994172,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -261,11 +261,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.12204199999999332,
+      "value": 0.11341600000000085,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -276,11 +276,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.08133300000000077,
+      "value": 0.08016699999998878,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -291,11 +291,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.008499999999997954,
+      "value": 0.008708000000012817,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -306,11 +306,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0010839999999916472,
+      "value": 0.0010420000000124219,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -321,11 +321,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.035959000000019614,
+      "value": 0.03683399999999892,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -336,11 +336,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.08283399999999119,
+      "value": 0.07474999999999454,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -351,11 +351,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.007541000000003351,
+      "value": 0.007708000000008042,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -370,7 +370,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -381,11 +381,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.039292000000017424,
+      "value": 0.034707999999994854,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -396,11 +396,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.07325000000000159,
+      "value": 0.07408300000000168,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -411,11 +411,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.007457999999985532,
+      "value": 0.007332999999988488,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -426,11 +426,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0008750000000077307,
+      "value": 0.0010419999999840002,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-small-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.099Z",
+      "observedAt": "2026-07-19T18:33:43.333Z",
       "localOnly": true,
       "detail": {
         "projectClass": "small",
@@ -441,11 +441,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.39004099999999653,
+      "value": 0.3492919999999913,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.100Z",
+      "observedAt": "2026-07-19T18:33:43.334Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -456,11 +456,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.9245829999999842,
+      "value": 0.8151249999999948,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.101Z",
+      "observedAt": "2026-07-19T18:33:43.335Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -471,11 +471,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.05725000000001046,
+      "value": 0.04862499999998704,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.101Z",
+      "observedAt": "2026-07-19T18:33:43.335Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -486,11 +486,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0037090000000148393,
+      "value": 0.0019159999999942556,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.101Z",
+      "observedAt": "2026-07-19T18:33:43.335Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -501,11 +501,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.34866700000000606,
+      "value": 0.2712499999999807,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.102Z",
+      "observedAt": "2026-07-19T18:33:43.335Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -516,11 +516,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.6595829999999978,
+      "value": 0.5934579999999983,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.102Z",
+      "observedAt": "2026-07-19T18:33:43.336Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -531,11 +531,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.05554199999997422,
+      "value": 0.04662500000000591,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.102Z",
+      "observedAt": "2026-07-19T18:33:43.336Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -546,11 +546,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.002332999999993035,
+      "value": 0.0016249999999899956,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.102Z",
+      "observedAt": "2026-07-19T18:33:43.336Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -561,11 +561,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.2050830000000019,
+      "value": 0.1966250000000116,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.103Z",
+      "observedAt": "2026-07-19T18:33:43.336Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -576,11 +576,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5534590000000037,
+      "value": 0.4839589999999987,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.103Z",
+      "observedAt": "2026-07-19T18:33:43.337Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -591,11 +591,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.04912500000000364,
+      "value": 0.047708000000000084,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.103Z",
+      "observedAt": "2026-07-19T18:33:43.337Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -606,11 +606,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.002375000000000682,
+      "value": 0.0019580000000019027,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.103Z",
+      "observedAt": "2026-07-19T18:33:43.337Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -621,11 +621,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.21045899999998596,
+      "value": 0.19920799999999872,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.103Z",
+      "observedAt": "2026-07-19T18:33:43.337Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -636,11 +636,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5415840000000003,
+      "value": 0.4834590000000105,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.104Z",
+      "observedAt": "2026-07-19T18:33:43.337Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -651,11 +651,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.046833000000020775,
+      "value": 0.04487499999999045,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.104Z",
+      "observedAt": "2026-07-19T18:33:43.338Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -666,11 +666,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0007500000000106866,
+      "value": 0.0005410000000267701,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.104Z",
+      "observedAt": "2026-07-19T18:33:43.338Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -681,11 +681,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.19120800000001736,
+      "value": 0.18308300000001054,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.104Z",
+      "observedAt": "2026-07-19T18:33:43.338Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -696,11 +696,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.4679169999999999,
+      "value": 0.44845799999998803,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
+      "observedAt": "2026-07-19T18:33:43.338Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -711,11 +711,131 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.044375000000002274,
+      "value": 0.04479100000000358,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
+      "observedAt": "2026-07-19T18:33:43.338Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0004590000000064265,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.338Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.1833340000000021,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.338Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.44883299999997917,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.339Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.04345900000001279,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.339Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0003329999999834854,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.339Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.15458300000000236,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.339Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.3978339999999889,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.339Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "medium",
+        "clipCount": 180
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.0478339999999946,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-medium-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.340Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -730,7 +850,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-medium-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
+      "observedAt": "2026-07-19T18:33:43.340Z",
       "localOnly": true,
       "detail": {
         "projectClass": "medium",
@@ -741,131 +861,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.1829580000000135,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.4411660000000097,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.04262499999998681,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0003329999999834854,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.105Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.16341600000001222,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.106Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.3967920000000049,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.106Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.04824999999999591,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.106Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0002920000000017353,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-medium-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.106Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "medium",
-        "clipCount": 180
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.3807920000000138,
+      "value": 0.3623750000000143,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.107Z",
+      "observedAt": "2026-07-19T18:33:43.341Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -876,11 +876,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 2.3075409999999863,
+      "value": 1.7596249999999998,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.110Z",
+      "observedAt": "2026-07-19T18:33:43.343Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -891,11 +891,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.12350000000000705,
+      "value": 0.09470799999999713,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.110Z",
+      "observedAt": "2026-07-19T18:33:43.343Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -906,11 +906,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0015000000000213731,
+      "value": 0.0010410000000149466,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.110Z",
+      "observedAt": "2026-07-19T18:33:43.343Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -921,11 +921,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.3511660000000063,
+      "value": 0.28904200000002334,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.110Z",
+      "observedAt": "2026-07-19T18:33:43.343Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -936,11 +936,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.8479169999999954,
+      "value": 0.8104999999999905,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.111Z",
+      "observedAt": "2026-07-19T18:33:43.344Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -951,11 +951,311 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.09312499999998636,
+      "value": 0.0776249999999834,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.111Z",
+      "observedAt": "2026-07-19T18:33:43.344Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0006249999999852207,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.344Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.26029099999999517,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.344Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.758749999999992,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.345Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.07699999999999818,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.345Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0005419999999958236,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.345Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.2576660000000004,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.345Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.0970410000000186,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.346Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.07795799999999531,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.347Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0005419999999958236,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.347Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.25079099999999244,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.347Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.7292500000000075,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.347Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.08933400000000802,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.348Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0004160000000013042,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.348Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.24491699999998673,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.348Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.8255000000000052,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.349Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.040625000000005684,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.349Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.00045800000000895125,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.349Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.23150000000001114,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.349Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.1187499999999773,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.350Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "long",
+        "clipCount": 360
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.03945799999999622,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-long-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.350Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -970,7 +1270,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-long-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.111Z",
+      "observedAt": "2026-07-19T18:33:43.350Z",
       "localOnly": true,
       "detail": {
         "projectClass": "long",
@@ -981,45 +1281,345 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.2508330000000001,
+      "value": 0.9347499999999798,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.111Z",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.353Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "long",
-        "clipCount": 360
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.7427079999999933,
+      "value": 2.7220419999999876,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.112Z",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.356Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "long",
-        "clipCount": 360
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.0765829999999994,
+      "value": 0.09037499999999454,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.112Z",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.356Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "long",
-        "clipCount": 360
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.001167000000009466,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.356Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.5991659999999968,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.356Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 2.027165999999994,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.358Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.08625000000000682,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.358Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0007500000000106866,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.358Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.5177500000000066,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.359Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.4794159999999863,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.361Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.09595799999999599,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.361Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.00045800000000895125,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.361Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.4817499999999768,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.361Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.4384170000000154,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.363Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.10824999999999818,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.363Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.00037500000001955414,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.363Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.48170899999999506,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.363Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.6253749999999911,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.365Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.08308300000001623,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.365Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.00045800000000895125,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.365Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.5045420000000149,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.365Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.2672919999999976,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.367Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.08920799999998508,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.367Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
       }
     },
     {
@@ -1028,658 +1628,178 @@
       "unit": "milliseconds",
       "value": 0.0003749999999911324,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
+      "fixtureId": "perf-hundreds-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.112Z",
+      "observedAt": "2026-07-19T18:33:43.367Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "long",
-        "clipCount": 360
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.23250000000001592,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.113Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.8148750000000007,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.113Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.07904099999998948,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.113Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.00033400000000938235,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.113Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.23341700000000287,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.114Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.6978750000000105,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.114Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.09049999999999159,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.115Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0002920000000017353,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.115Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.23691700000000537,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.115Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.6937499999999943,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.115Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.03700000000000614,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.115Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0002910000000042601,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.115Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.22912500000001046,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.116Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 1.0426669999999945,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.117Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.04720899999998096,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.117Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.001082999999994172,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-long-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.117Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "long",
-        "clipCount": 360
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.8435830000000237,
+      "value": 0.46820900000000165,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.367Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 1.2418750000000216,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.368Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.08691699999999969,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.369Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0003329999999834854,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-hundreds-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.369Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "hundreds-of-clips",
+        "clipCount": 750
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.3128329999999835,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-webgl-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.120Z",
+      "observedAt": "2026-07-19T18:33:43.370Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 2.959333000000015,
+      "value": 0.2380420000000072,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.123Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.09687500000001137,
+      "value": 0.012791999999990367,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.123Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0013749999999959073,
+      "value": 0.0008750000000077307,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.123Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.6264580000000137,
+      "value": 0.05987500000000523,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.124Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 1.5952090000000112,
+      "value": 0.15558300000000713,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.125Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.7793329999999798,
+      "value": 0.011583000000001675,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.126Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0020000000000095497,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.126Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.9867500000000007,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.127Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 1.5424999999999898,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.129Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.09858300000001918,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.129Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.001209000000017113,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.129Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.49916600000000244,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.129Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 1.428167000000002,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.131Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.091083000000026,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.131Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0005000000000165983,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.131Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.5868329999999844,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.131Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 1.7095000000000198,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.133Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.08991699999998559,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.133Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0009579999999971278,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.133Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.5912919999999815,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.134Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 1.3355420000000038,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.135Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.09795800000000554,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.135Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0007090000000005148,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.135Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.4816250000000082,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.136Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 1.3301669999999888,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.137Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.09941700000001674,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.137Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
@@ -1688,24 +1808,24 @@
       "unit": "milliseconds",
       "value": 0.00041699999999877946,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-hundreds-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.137Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "hundreds-of-clips",
-        "clipCount": 750
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.3774579999999901,
+      "value": 0.05058399999998642,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.139Z",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1716,11 +1836,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.24095800000000622,
+      "value": 0.142832999999996,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.139Z",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1731,11 +1851,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.011333000000007587,
+      "value": 0.010834000000016886,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.139Z",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1746,11 +1866,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0005420000000242453,
+      "value": 0.0002499999999940883,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.139Z",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1761,11 +1881,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.06499999999999773,
+      "value": 0.04999999999998295,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.139Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1776,11 +1896,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.14799999999999613,
+      "value": 0.14008400000000165,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1791,11 +1911,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.010500000000007503,
+      "value": 0.01095900000001393,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1810,7 +1930,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1821,11 +1941,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.049791999999996506,
+      "value": 0.049000000000006594,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1836,11 +1956,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.1381669999999815,
+      "value": 0.13916600000001722,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1851,11 +1971,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.010249999999984993,
+      "value": 0.01054200000001515,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1870,7 +1990,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.371Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1881,11 +2001,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.04895899999999642,
+      "value": 0.04991699999999355,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1896,11 +2016,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.13570899999999142,
+      "value": 0.1386669999999981,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1911,11 +2031,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.010458999999997332,
+      "value": 0.01125000000001819,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1926,11 +2046,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0002910000000042601,
+      "value": 0.0005419999999958236,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1941,11 +2061,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.04916599999998539,
+      "value": 0.04995800000000372,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1956,11 +2076,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.14279099999998834,
+      "value": 0.13829199999997854,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
@@ -1971,255 +2091,15 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.010541000000017675,
+      "value": 0.010792000000009239,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
         "projectClass": "heavy-webgl",
         "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0002910000000042601,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.05212500000001796,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.140Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.13791700000001583,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.011208000000010543,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0006250000000136424,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.049458000000015545,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.13512500000001637,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.010457999999999856,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0003749999999911324,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-webgl-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "heavy-webgl",
-        "clipCount": 90
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.11104100000000017,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.141Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.32020800000000804,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.014667000000002872,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0004590000000064265,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": true,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.08691699999999969,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.22695800000002464,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.01741599999999721,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
       }
     },
     {
@@ -2228,418 +2108,118 @@
       "unit": "milliseconds",
       "value": 0.00041699999999877946,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
+      "fixtureId": "perf-webgl-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
+        "projectClass": "heavy-webgl",
+        "clipCount": 90
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.07820899999998687,
+      "value": 0.1028750000000116,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.24174999999999613,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.016250000000013642,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0007910000000208584,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.09016600000001063,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.142Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.24754200000000992,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.01633300000000304,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0009589999999946031,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.09766700000000128,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.22083299999999895,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.014707999999984622,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.00045800000000895125,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.08083299999998417,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.23279200000001765,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.015542000000010603,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.00041699999999877946,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.08883299999999394,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.143Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.5289999999999964,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.144Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.016291999999992868,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.144Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0006249999999852207,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-captions-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.144Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "captions",
-        "clipCount": 120
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.31220799999999826,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.145Z",
+      "observedAt": "2026-07-19T18:33:43.372Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.8506659999999897,
+      "value": 0.303291999999999,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.146Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.03341699999998582,
+      "value": 0.014875000000017735,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.146Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0004589999999780048,
+      "value": 0.0004160000000013042,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.146Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.21562500000001705,
+      "value": 0.08729099999999335,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.146Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5699159999999779,
+      "value": 0.20891699999998536,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.147Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.03237500000000182,
+      "value": 0.014582999999987578,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.147Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
@@ -2648,24 +2228,324 @@
       "unit": "milliseconds",
       "value": 0.0003749999999911324,
       "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-audio-v1",
+      "fixtureId": "perf-captions-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.147Z",
+      "observedAt": "2026-07-19T18:33:43.373Z",
       "localOnly": true,
       "detail": {
-        "projectClass": "audio",
-        "clipCount": 320
+        "projectClass": "captions",
+        "clipCount": 120
       }
     },
     {
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.2234589999999912,
+      "value": 0.07487500000002001,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.373Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.19954100000001063,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.373Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.014082999999999402,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.373Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0003330000000119071,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.373Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.07529099999999289,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.373Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.19754199999999855,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.013832999999976892,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0002910000000042601,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.07495799999998098,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.19608299999998735,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.013833000000005313,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.00033400000000938235,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.07266599999999812,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.19341700000001083,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.013833000000005313,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0003329999999834854,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.07320799999999394,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.374Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.19845799999998803,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.375Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.013625000000018872,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.375Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0002920000000017353,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-captions-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.375Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "captions",
+        "clipCount": 120
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.25420800000000554,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.147Z",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.375Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2676,11 +2556,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.8693330000000117,
+      "value": 0.8357500000000186,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.148Z",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.376Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2694,8 +2574,8 @@
       "value": 0.03412499999998886,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.148Z",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.376Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2706,11 +2586,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0007919999999899119,
+      "value": 0.00033400000000938235,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.148Z",
+      "cold": true,
+      "observedAt": "2026-07-19T18:33:43.376Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2721,11 +2601,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.21416600000000585,
+      "value": 0.20550000000000068,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.148Z",
+      "observedAt": "2026-07-19T18:33:43.377Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2736,11 +2616,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5198330000000055,
+      "value": 0.5603749999999934,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.377Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2751,11 +2631,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.033084000000002334,
+      "value": 0.03299999999998704,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.377Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2766,11 +2646,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.00041699999999877946,
+      "value": 0.0004160000000013042,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.377Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2781,11 +2661,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.18241599999998925,
+      "value": 0.2004999999999768,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.377Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2796,11 +2676,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5172080000000108,
+      "value": 0.8716249999999945,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.378Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2811,11 +2691,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.03787499999998545,
+      "value": 0.037499999999994316,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.378Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2826,11 +2706,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0003330000000119071,
+      "value": 0.0012909999999806132,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.149Z",
+      "observedAt": "2026-07-19T18:33:43.378Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2841,11 +2721,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.17924999999999613,
+      "value": 0.21233399999999847,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.150Z",
+      "observedAt": "2026-07-19T18:33:43.378Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2856,11 +2736,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5197499999999877,
+      "value": 0.5478339999999946,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.150Z",
+      "observedAt": "2026-07-19T18:33:43.379Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2871,11 +2751,71 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.03404199999999946,
+      "value": 0.03583400000002257,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.150Z",
+      "observedAt": "2026-07-19T18:33:43.379Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0006249999999852207,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.379Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.18574999999998454,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.379Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.5194590000000119,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.380Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.03462500000000546,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.380Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2890,7 +2830,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.150Z",
+      "observedAt": "2026-07-19T18:33:43.380Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2901,11 +2841,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.18237499999997908,
+      "value": 0.1773330000000044,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.150Z",
+      "observedAt": "2026-07-19T18:33:43.380Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2916,11 +2856,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.5230840000000114,
+      "value": 0.4989590000000135,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.151Z",
+      "observedAt": "2026-07-19T18:33:43.381Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2931,11 +2871,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.036458000000010315,
+      "value": 0.035082999999985987,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.151Z",
+      "observedAt": "2026-07-19T18:33:43.381Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2946,11 +2886,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0002920000000017353,
+      "value": 0.00037500000001955414,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-audio-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.151Z",
+      "observedAt": "2026-07-19T18:33:43.381Z",
       "localOnly": true,
       "detail": {
         "projectClass": "audio",
@@ -2961,11 +2901,71 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.23645799999999895,
+      "value": 0.1768340000000137,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.381Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.5019169999999917,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.381Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.03445899999999824,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.381Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0003749999999911324,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-audio-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.381Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "audio",
+        "clipCount": 320
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.22395899999997937,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.152Z",
+      "observedAt": "2026-07-19T18:33:43.382Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -2976,11 +2976,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.6417500000000018,
+      "value": 0.650999999999982,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.383Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -2991,11 +2991,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.02995800000002191,
+      "value": 0.030499999999989313,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.383Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3010,7 +3010,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": true,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.383Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3021,11 +3021,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.16162499999998658,
+      "value": 0.17066700000000878,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.383Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3036,11 +3036,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.4381660000000238,
+      "value": 0.4524579999999787,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.384Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3051,11 +3051,71 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.028750000000002274,
+      "value": 0.029291999999998097,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.384Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0003749999999911324,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.384Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.16583400000001802,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.384Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.438666000000012,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.384Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.02975000000000705,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.384Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3070,7 +3130,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.153Z",
+      "observedAt": "2026-07-19T18:33:43.384Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3081,11 +3141,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.15766600000000608,
+      "value": 0.1652080000000069,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.154Z",
+      "observedAt": "2026-07-19T18:33:43.385Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3096,11 +3156,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.43437500000001705,
+      "value": 0.6873329999999953,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.154Z",
+      "observedAt": "2026-07-19T18:33:43.385Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3111,11 +3171,71 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.030292000000002872,
+      "value": 0.029374999999987494,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.154Z",
+      "observedAt": "2026-07-19T18:33:43.385Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "revision-diff",
+      "unit": "milliseconds",
+      "value": 0.0004589999999780048,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.385Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "schema-validation",
+      "unit": "milliseconds",
+      "value": 0.1478749999999991,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.385Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "derived-index-rebuild",
+      "unit": "milliseconds",
+      "value": 0.42304199999998104,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.386Z",
+      "localOnly": true,
+      "detail": {
+        "projectClass": "mixed-engine-bridges",
+        "clipCount": 240
+      }
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "metric": "timeline-search",
+      "unit": "milliseconds",
+      "value": 0.029208000000011225,
+      "hardwareClassId": "apple-m4-16gb",
+      "fixtureId": "perf-mixed-bridges-v1",
+      "cold": false,
+      "observedAt": "2026-07-19T18:33:43.386Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3130,7 +3250,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.154Z",
+      "observedAt": "2026-07-19T18:33:43.386Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3141,11 +3261,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.15987499999999955,
+      "value": 0.14104199999999878,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.154Z",
+      "observedAt": "2026-07-19T18:33:43.386Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3156,11 +3276,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.829291000000012,
+      "value": 0.3903749999999775,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.155Z",
+      "observedAt": "2026-07-19T18:33:43.386Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3171,131 +3291,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.032250000000004775,
+      "value": 0.029041000000006534,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.155Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.0012499999999988631,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.155Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.16120800000001623,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.155Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.41604200000000446,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.0594159999999988,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "revision-diff",
-      "unit": "milliseconds",
-      "value": 0.00045799999998052954,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "schema-validation",
-      "unit": "milliseconds",
-      "value": 0.13654200000001993,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "derived-index-rebuild",
-      "unit": "milliseconds",
-      "value": 0.3996669999999938,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
-      "localOnly": true,
-      "detail": {
-        "projectClass": "mixed-engine-bridges",
-        "clipCount": 240
-      }
-    },
-    {
-      "schemaVersion": "1.0.0",
-      "metric": "timeline-search",
-      "unit": "milliseconds",
-      "value": 0.027874999999994543,
-      "hardwareClassId": "apple-m4-16gb",
-      "fixtureId": "perf-mixed-bridges-v1",
-      "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
+      "observedAt": "2026-07-19T18:33:43.386Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3310,7 +3310,7 @@
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
+      "observedAt": "2026-07-19T18:33:43.386Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3321,11 +3321,11 @@
       "schemaVersion": "1.0.0",
       "metric": "schema-validation",
       "unit": "milliseconds",
-      "value": 0.1279169999999965,
+      "value": 0.1349170000000015,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.156Z",
+      "observedAt": "2026-07-19T18:33:43.387Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3336,11 +3336,11 @@
       "schemaVersion": "1.0.0",
       "metric": "derived-index-rebuild",
       "unit": "milliseconds",
-      "value": 0.3714999999999975,
+      "value": 0.38091599999998493,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.157Z",
+      "observedAt": "2026-07-19T18:33:43.387Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3351,11 +3351,11 @@
       "schemaVersion": "1.0.0",
       "metric": "timeline-search",
       "unit": "milliseconds",
-      "value": 0.027625000000000455,
+      "value": 0.029416000000026088,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.157Z",
+      "observedAt": "2026-07-19T18:33:43.387Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3366,11 +3366,11 @@
       "schemaVersion": "1.0.0",
       "metric": "revision-diff",
       "unit": "milliseconds",
-      "value": 0.0002920000000017353,
+      "value": 0.0003330000000119071,
       "hardwareClassId": "apple-m4-16gb",
       "fixtureId": "perf-mixed-bridges-v1",
       "cold": false,
-      "observedAt": "2026-07-18T06:35:29.157Z",
+      "observedAt": "2026-07-19T18:33:43.387Z",
       "localOnly": true,
       "detail": {
         "projectClass": "mixed-engine-bridges",
@@ -3447,10 +3447,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.07325000000000159,
-        "p50": 0.08283399999999119,
-        "p95": 0.8511249999999961,
-        "maximum": 0.8511249999999961
+        "minimum": 0.07408300000000168,
+        "p50": 0.08016699999998878,
+        "p95": 0.5965830000000096,
+        "maximum": 0.5965830000000096
       }
     },
     {
@@ -3471,10 +3471,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.3967920000000049,
-        "p50": 0.5415840000000003,
-        "p95": 0.9245829999999842,
-        "maximum": 0.9245829999999842
+        "minimum": 0.3978339999999889,
+        "p50": 0.4834590000000105,
+        "p95": 0.8151249999999948,
+        "maximum": 0.8151249999999948
       }
     },
     {
@@ -3495,10 +3495,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.6937499999999943,
-        "p50": 0.8148750000000007,
-        "p95": 2.3075409999999863,
-        "maximum": 2.3075409999999863
+        "minimum": 0.7292500000000075,
+        "p50": 0.8255000000000052,
+        "p95": 1.7596249999999998,
+        "maximum": 1.7596249999999998
       }
     },
     {
@@ -3519,10 +3519,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 1.3301669999999888,
-        "p50": 1.5424999999999898,
-        "p95": 2.959333000000015,
-        "maximum": 2.959333000000015
+        "minimum": 1.2418750000000216,
+        "p50": 1.4794159999999863,
+        "p95": 2.7220419999999876,
+        "maximum": 2.7220419999999876
       }
     },
     {
@@ -3543,10 +3543,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.13512500000001637,
-        "p50": 0.1381669999999815,
-        "p95": 0.24095800000000622,
-        "maximum": 0.24095800000000622
+        "minimum": 0.13829199999997854,
+        "p50": 0.14008400000000165,
+        "p95": 0.2380420000000072,
+        "maximum": 0.2380420000000072
       }
     },
     {
@@ -3567,10 +3567,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.22083299999999895,
-        "p50": 0.24174999999999613,
-        "p95": 0.5289999999999964,
-        "maximum": 0.5289999999999964
+        "minimum": 0.19341700000001083,
+        "p50": 0.19845799999998803,
+        "p95": 0.303291999999999,
+        "maximum": 0.303291999999999
       }
     },
     {
@@ -3591,10 +3591,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.5172080000000108,
-        "p50": 0.5230840000000114,
-        "p95": 0.8693330000000117,
-        "maximum": 0.8693330000000117
+        "minimum": 0.4989590000000135,
+        "p50": 0.5478339999999946,
+        "p95": 0.8716249999999945,
+        "maximum": 0.8716249999999945
       }
     },
     {
@@ -3615,10 +3615,10 @@
         "metric": "derived-index-rebuild",
         "unit": "milliseconds",
         "sampleCount": 7,
-        "minimum": 0.3714999999999975,
-        "p50": 0.43437500000001705,
-        "p95": 0.829291000000012,
-        "maximum": 0.829291000000012
+        "minimum": 0.38091599999998493,
+        "p50": 0.438666000000012,
+        "p95": 0.6873329999999953,
+        "maximum": 0.6873329999999953
       }
     }
   ]
