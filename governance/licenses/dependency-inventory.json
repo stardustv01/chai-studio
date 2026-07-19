@@ -3513,5 +3513,5 @@
     "Review the exact FFmpeg binary and codec configuration before bundling.",
     "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents."
   ],
-  "identityHash": "3be77091b1cfa8bd2f6f06c48377751582c0b8a7b487b85659d2697adfc2fcb6"
+  "identityHash": "2527509a706efe66f79459c143c6b36680fcc22f149378d0d0fb80b572dad15b"
 }
