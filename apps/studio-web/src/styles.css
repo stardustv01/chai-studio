@@ -1795,8 +1795,8 @@ kbd {
 }
 
 .inspector-field__control > button {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 5px;

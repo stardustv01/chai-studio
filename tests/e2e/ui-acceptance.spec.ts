@@ -530,6 +530,27 @@ test("monitor transport and capture controls meet the 28 pixel action floor", as
   }
 });
 
+test("Inspector reset controls meet the 28 pixel action floor", async ({ page }) => {
+  await page.goto("/?workspace=edit");
+  const boxes = await page
+    .locator('.inspector-field__control > button[aria-label^="Reset "]:visible')
+    .evaluateAll((controls) =>
+      controls.map((control) => {
+        const box = control.getBoundingClientRect();
+        return {
+          width: box.width,
+          height: box.height,
+          label: control.getAttribute("aria-label"),
+        };
+      }),
+    );
+  expect(boxes.length).toBeGreaterThan(0);
+  for (const box of boxes) {
+    expect(box.width, `${box.label} width`).toBeGreaterThanOrEqual(28);
+    expect(box.height, `${box.label} height`).toBeGreaterThanOrEqual(28);
+  }
+});
+
 const expectNoPairwiseOverlap = async (controls: Locator): Promise<void> => {
   const boxes = await controls.evaluateAll((elements) =>
     elements.map((element) => {
