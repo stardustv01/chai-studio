@@ -46,7 +46,7 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     {
       name: "raw-video.mp4",
       mimeType: "video/mp4",
-      buffer: await readFile(path.resolve("spikes/milestone-0/fixtures/remotion/public/raw-video.mp4")),
+      buffer: await readFile(path.resolve("spikes/milestone-0/fixtures/canonical/assets/raw-video.mp4")),
     },
     {
       name: "owner-tone.wav",
