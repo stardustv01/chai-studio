@@ -29,6 +29,8 @@ jobs:
       - name: Install FFmpeg runtime
         run: brew install ffmpeg
       - run: pnpm install --frozen-lockfile
+      - name: Install isolated Playwright Chromium
+        run: pnpm exec playwright install chromium
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm schema:check
@@ -87,6 +89,8 @@ jobs:
       - name: Install FFmpeg runtime
         run: brew install ffmpeg
       - run: pnpm install --frozen-lockfile
+      - name: Install isolated Playwright Chromium
+        run: pnpm exec playwright install chromium
       - run: pnpm build
       - run: pnpm browser:isolation
       - run: pnpm test:e2e
