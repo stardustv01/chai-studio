@@ -30,7 +30,7 @@
       "category": "captions",
       "source": "tests/e2e/studio-visual.spec.ts-snapshots/p17-transcript-caption-system-darwin.png",
       "frame": "2411",
-      "normalizedPixelHash": "b0d9cc8bc2e1210f280e8cef918b0c91be1e16c0bbfc696a993b502134685a88"
+      "normalizedPixelHash": "6af6393790bdabe2a5c9353b460f394500a2ea318f2921899fdf28fea5b6f767"
     },
     {
       "id": "straight-alpha-edge",
@@ -44,21 +44,21 @@
       "category": "shaders",
       "source": "tests/e2e/studio-visual.spec.ts-snapshots/p13-program-monitor-overlays-darwin.png",
       "frame": "3174",
-      "normalizedPixelHash": "fc7be98dcaa4a1c9a6c277c8002e98f84294083daff7ef69a40506f52c298075"
+      "normalizedPixelHash": "71e5bf1f774645e8d321248d090f7c2f2e9c9233242ad02b7e70701e63eb0dec"
     },
     {
       "id": "transform-curve-editor",
       "category": "transforms",
       "source": "tests/e2e/studio-visual.spec.ts-snapshots/p15-keyframe-curve-editor-darwin.png",
       "frame": "2140",
-      "normalizedPixelHash": "6bd6bff09eb564fba35034f4eadd95b3b209cd881719b87770410dffd24d5d00"
+      "normalizedPixelHash": "0aec20a3ecc2c72faf0d41887813c5ba16642518d20e059505a624494dda1e69"
     },
     {
       "id": "difference-comparison",
       "category": "comparisons",
       "source": "tests/e2e/studio-visual.spec.ts-snapshots/p13-program-monitor-difference-darwin.png",
       "frame": "2140",
-      "normalizedPixelHash": "9e3b4ed660c0b16bd8ac5e8bc051a5b03e8e2cbe4509d192e379cbb2f675b611"
+      "normalizedPixelHash": "55e6bc7748c1d5e5837aa9dea89659e4efab369ac37d2659d01c1222a3be7334"
     }
   ],
   "strictPairs": [
