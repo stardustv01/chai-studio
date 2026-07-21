@@ -24,7 +24,7 @@ const payload = {
   schemaVersion: "1.0.0",
   product: "Chai Studio",
   version: "1.0.0",
-  candidate: finalManifest ? "1.0.0" : "1.0.0-rc.3",
+  candidate: finalManifest ? "1.0.0" : "1.0.0-rc.4",
   sourceGateIdentity: p27.identity,
   releaseManifestIdentity: p27Manifest.manifestIdentity,
   finalManifestIdentity: finalManifest?.manifestIdentity ?? null,

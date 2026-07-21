@@ -45,7 +45,7 @@ switch (command) {
   }
   case "about": {
     const report = await collectReleaseEnvironment(root);
-    print({ product: "Chai Studio", version: "1.0.0-rc.3", ...report });
+    print({ product: "Chai Studio", version: "1.0.0-rc.4", ...report });
     break;
   }
   case "install": {
@@ -94,7 +94,7 @@ switch (command) {
   }
   default:
     process.stdout.write(
-      "Chai Studio 1.0.0-rc.3\nRelease commands: doctor, about, install --prefix PATH, launch [--project PATH] [--starter showcase|empty|launch-film] [--title NAME], backup, validate-backup, restore, clone, archive, uninstall --prefix PATH\nCodex control: run `chai-studio commands` for the executable project, media, preview, render, capture, QA, receipt, annotation, review, job, and source-edit catalog.\n",
+      "Chai Studio 1.0.0-rc.4\nRelease commands: doctor, about, install --prefix PATH, launch [--project PATH] [--starter showcase|empty|launch-film] [--title NAME], backup, validate-backup, restore, clone, archive, uninstall --prefix PATH\nCodex control: run `chai-studio commands` for the executable project, media, preview, render, capture, QA, receipt, annotation, review, job, and source-edit catalog.\n",
     );
 }
 

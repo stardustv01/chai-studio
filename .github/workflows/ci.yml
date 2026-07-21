@@ -93,6 +93,7 @@ jobs:
         run: pnpm exec playwright install chromium
       - run: pnpm build
       - run: pnpm browser:isolation
+      - run: pnpm cli:package:check
       - run: pnpm test:e2e
       - run: pnpm test:e2e:first-run
       - run: pnpm test:e2e:authenticated

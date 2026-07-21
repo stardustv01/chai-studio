@@ -2,13 +2,23 @@
 
 Use the supported arm64 Mac with Node 22.17.0, FFmpeg/FFprobe 7.1.1, and the pinned Playwright-managed Chromium downloads. Keep `.chai` projects outside the application prefix.
 
-Verify and unpack the supplied personal-local RC archive. End users do not install pnpm, compile TypeScript, or run Vite:
+After registry publication, the normal install and launch path is:
 
 ```sh
-shasum -a 256 -c chai-studio-1.0.0-rc.3-darwin-arm64.tar.gz.sha256
-tar -xzf chai-studio-1.0.0-rc.3-darwin-arm64.tar.gz
-./chai-studio-1.0.0-rc.3-darwin-arm64/bin/chai-studio doctor
-./chai-studio-1.0.0-rc.3-darwin-arm64/bin/chai-studio install --prefix "$HOME/Applications/Chai Studio Local"
+npx @chai-studio/cli@latest install --launch
+npx @chai-studio/cli@latest doctor
+npx @chai-studio/cli@latest launch
+```
+
+The registry package is only a small verified downloader; it does not contain the application or require pnpm. A global command is optional: `npm install --global @chai-studio/cli` makes the same operations available as `chai-studio install`, `chai-studio doctor`, and `chai-studio launch`.
+
+For an offline personal-local RC, verify and unpack the supplied archive instead. End users still do not install pnpm, compile TypeScript, or run Vite:
+
+```sh
+shasum -a 256 -c chai-studio-1.0.0-rc.4-darwin-arm64.tar.gz.sha256
+tar -xzf chai-studio-1.0.0-rc.4-darwin-arm64.tar.gz
+./chai-studio-1.0.0-rc.4-darwin-arm64/bin/chai-studio doctor
+./chai-studio-1.0.0-rc.4-darwin-arm64/bin/chai-studio install --prefix "$HOME/Applications/Chai Studio Local"
 "$HOME/Applications/Chai Studio Local/bin/chai-studio" launch
 ```
 
@@ -20,4 +30,4 @@ On the first default launch, Chai Studio creates `~/Movies/Chai Studio/Chai Stud
 
 The installed runtime serves the compiled web application directly; Vite and the source checkout are not used. The launcher injects a new session token before React starts. Opening the web URL without that bootstrap shows only a fail-closed “Launch Chai Studio from the CLI” screen; it never exposes the development UI fixture or project actions. The token is not placed in the URL or printed to the terminal.
 
-Uninstall with `chai-studio uninstall --prefix "$HOME/Applications/Chai Studio Local"`. It accepts only an exact Chai installation marker, refuses a prefix containing a `.chai` project, and reports `projectsDeleted: false`. Projects, backups, archives, and approved outputs outside the application prefix are never removed.
+Uninstall a registry installation with `npx @chai-studio/cli@latest uninstall`, or use the exact offline launcher with `uninstall --prefix "$HOME/Applications/Chai Studio Local"`. It accepts only an exact Chai installation marker, refuses a prefix containing a `.chai` project, and reports `projectsDeleted: false`. Projects, backups, archives, and approved outputs outside the application prefix are never removed.

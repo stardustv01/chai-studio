@@ -57,7 +57,7 @@ export const collectReleaseEnvironment = async (root) => {
         ? "compatible-unmeasured"
         : "blocked";
   const identity = {
-    studioVersion: "1.0.0-rc.3",
+    studioVersion: "1.0.0-rc.4",
     platform: os.platform(),
     architecture: os.arch(),
     osRelease: os.release(),
@@ -129,7 +129,7 @@ export const installLocalRelease = async ({ sourceRoot, prefix }) => {
   const launcher = path.join(resolvedPrefix, "bin", "chai-studio");
   await writeFile(
     launcher,
-    `#!/bin/sh\nexec ${shellQuote(process.execPath)} ${shellQuote(path.join(runtime, "scripts/chai-studio.mjs"))} "$@"\n`,
+    `#!/bin/sh\nSCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\nexec ${shellQuote(process.execPath)} "$SCRIPT_DIR/../lib/chai-studio/scripts/chai-studio.mjs" "$@"\n`,
   );
   await chmod(launcher, 0o755);
   await writeFile(markerPath, `${JSON.stringify(marker, null, 2)}\n`);

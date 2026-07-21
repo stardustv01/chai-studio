@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "release": "1.0.0-rc.3",
+  "release": "1.0.0-rc.4",
   "launchModel": "localhost-web-server",
   "desktopWrapperRequired": false,
   "cloudAccountRequired": false,

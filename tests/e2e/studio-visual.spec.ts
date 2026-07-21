@@ -205,7 +205,7 @@ test("P27 release identity matches the reviewed local-only support surface", asy
   await page.getByRole("button", { name: /Launch Film.*Revision 428/ }).click();
   const identity = page.getByRole("region", { name: "Release and environment identity" });
   await identity.scrollIntoViewIfNeeded();
-  await expect(identity).toContainText("1.0.0-rc.3");
+  await expect(identity).toContainText("1.0.0-rc.4");
   await expect(identity).toHaveScreenshot("p27-release-identity.png", componentScreenshotOptions);
 });
 

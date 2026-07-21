@@ -28,7 +28,7 @@ describe("P27 local release operations", () => {
     const installed = await installLocalRelease({ sourceRoot: source, prefix });
     expect((await stat(installed.launcher)).mode & 0o111).not.toBe(0);
     expect(await readFile(installed.launcher, "utf8")).toContain(
-      path.join(prefix, "lib", "chai-studio", "scripts", "chai-studio.mjs"),
+      "$SCRIPT_DIR/../lib/chai-studio/scripts/chai-studio.mjs",
     );
     expect(installed.bundleIdentity).toMatch(/^[a-f0-9]{64}$/u);
     await rm(source, { recursive: true, force: true });
@@ -113,7 +113,7 @@ const releaseFixture = async (root: string) => {
   await sealReleaseBundle({
     root,
     metadata: {
-      version: "1.0.0-rc.3",
+      version: "1.0.0-rc.4",
       sourceCommit: "0123456789abcdef0123456789abcdef01234567",
       dependencyLockSha256: "a".repeat(64),
       licenseInventorySha256: "b".repeat(64),

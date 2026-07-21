@@ -14,9 +14,11 @@ Build the end-user runtime only from a committed candidate:
 CI=true corepack pnpm install --frozen-lockfile
 corepack pnpm build
 corepack pnpm release:bundle
-corepack pnpm release:archive -- dist/releases/chai-studio-1.0.0-rc.3-darwin-arm64
+corepack pnpm release:archive -- dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64
 ```
 
 `release:bundle` uses pnpm's offline production deploy, repairs and validates workspace links, excludes Chai development source/reports/tests, adds the compiled web application and runtime documentation, and seals every file and symlink in `.chai-studio-release.json`. The resulting CLI serves the web build without Vite. `install` copies that complete bundle into the chosen prefix and verifies it again; pointing back to a development checkout is forbidden.
 
 The archive receipt is technical evidence only and keeps `releaseAuthorized: false`. Owner approval, release signing, final-gate binding, and the stable tag happen only after qualification and human review.
+
+The small registry CLI remains `private` and ships with an empty trust store until those gates pass. Validate its exact six-file payload with `pnpm cli:package:check`. After final authorization, create the signed HTTPS download index with `pnpm cli:release-index -- --archive-receipt PATH --archive-url HTTPS_URL --private-key PATH --output PATH`. The generator independently verifies the P27 bundle identity, Version 1 manifest, owner-authorized P28 receipt, final-gate binding, signing-key identity, and archive receipt before producing any publishable record. Publishing the npm package and creating the hosted release remain separate, explicit operator actions.
