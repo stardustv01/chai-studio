@@ -90,6 +90,7 @@ export class HyperframesRenderer {
           "--strict-variables",
           "--strict",
           "--no-best-effort",
+          "--no-browser-gpu",
           "--quiet",
         ],
         { cwd: request.source.projectRoot, signal: request.signal },

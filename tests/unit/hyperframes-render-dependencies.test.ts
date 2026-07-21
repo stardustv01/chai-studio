@@ -111,6 +111,12 @@ describe("P11 HyperFrames render, dependency, and trust contracts", () => {
       codec: "h264",
       cacheNamespace: dependencies.cacheNamespace,
     });
+    expect(runtime.calls.filter((call) => call.startsWith("render:"))).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("--format png-sequence --quality draft --workers 1"),
+        expect.stringContaining("--no-browser-gpu"),
+      ]),
+    );
     expect(encoderCalls).toEqual(["10-20:h264"]);
     expect(progress).toEqual(expect.arrayContaining(["validating:0", "encoding:0", "committing:1"]));
   });

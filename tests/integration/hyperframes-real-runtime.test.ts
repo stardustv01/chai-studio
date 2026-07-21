@@ -63,7 +63,7 @@ describe("P11 real pinned HyperFrames runtime", () => {
     expect(validation.seekable).toBe(true);
     const dependencies = await collectHyperframesDependencies(source, composition.compositionId);
     expect(dependencies.entries.map((entry) => entry.kind)).toEqual(
-      expect.arrayContaining(["html", "script", "adapter", "package", "variables"]),
+      expect.arrayContaining(["html", "script", "font", "adapter", "package", "variables"]),
     );
     const renderer = new HyperframesRenderer(runtime, "/opt/homebrew/bin/ffmpeg");
     const common = {
@@ -76,7 +76,7 @@ describe("P11 real pinned HyperFrames runtime", () => {
         colorContractId: "chai-hyperframes-rgba8-straight-v1",
         colorSpace: "srgb" as const,
         alphaMode: "straight" as const,
-        settingsHash: "hyperframes-png-sequence-draft-strict-v1",
+        settingsHash: "hyperframes-png-sequence-draft-strict-software-v1",
       },
       dependencySet: dependencies,
       signal: new AbortController().signal,

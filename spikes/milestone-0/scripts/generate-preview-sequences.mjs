@@ -6,7 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { renderFrames, selectComposition } from "@remotion/renderer";
-import { isolatedChromiumExecutable } from "../../../scripts/browser-isolation.mjs";
+import {
+  isolatedChromiumExecutable,
+  isolatedEngineExecutable,
+} from "../../../scripts/browser-isolation.mjs";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(directory, "..");
@@ -39,8 +42,32 @@ await renderFrames({
 
 const hyperframes = spawnSync(
   path.join(root, "node_modules", ".bin", "hyperframes"),
-  ["render", "fixtures/hyperframes", "--output", hyperframesTemporary, "--format", "png-sequence", "--quality", "draft", "--strict", "--workers", "1", "--quiet"],
-  {cwd: root, encoding: "utf8", maxBuffer: 20 * 1024 * 1024},
+  [
+    "render",
+    "fixtures/hyperframes",
+    "--output",
+    hyperframesTemporary,
+    "--format",
+    "png-sequence",
+    "--quality",
+    "draft",
+    "--strict",
+    "--no-browser-gpu",
+    "--workers",
+    "1",
+    "--quiet",
+  ],
+  {
+    cwd: root,
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024,
+    env: {
+      ...process.env,
+      HYPERFRAMES_BROWSER_PATH: isolatedEngineExecutable,
+      HYPERFRAMES_NO_TELEMETRY: "1",
+      HYPERFRAMES_SKIP_SKILLS: "1",
+    },
+  },
 );
 if (hyperframes.status !== 0) throw new Error(`HyperFrames PNG sequence failed: ${hyperframes.stdout}\n${hyperframes.stderr}`);
 
