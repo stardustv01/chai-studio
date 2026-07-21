@@ -23,7 +23,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: pnpm
       - run: corepack enable
       - run: corepack prepare pnpm@11.11.0 --activate
       - run: pnpm install --frozen-lockfile
@@ -57,7 +56,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: pnpm
       - run: corepack enable
       - run: corepack prepare pnpm@11.11.0 --activate
       - run: pnpm install --frozen-lockfile
@@ -81,7 +79,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: pnpm
       - run: corepack enable
       - run: corepack prepare pnpm@11.11.0 --activate
       - run: pnpm install --frozen-lockfile
