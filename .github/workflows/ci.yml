@@ -26,6 +26,8 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: corepack prepare pnpm@11.11.0 --activate
+      - name: Install FFmpeg runtime
+        run: brew install ffmpeg
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
@@ -82,6 +84,8 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: corepack prepare pnpm@11.11.0 --activate
+      - name: Install FFmpeg runtime
+        run: brew install ffmpeg
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm browser:isolation
