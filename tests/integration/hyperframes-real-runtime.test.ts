@@ -105,7 +105,12 @@ describe("P11 real pinned HyperFrames runtime", () => {
     const acceptedFrame57 = normalizeRemotionPng(
       await readFile(path.join(root, "spikes/milestone-0/fixtures/preview/assets/hyperframes/frame-57.png")),
     );
-    expect(frame57.normalizedPixelHash).toBe(acceptedFrame57.normalizedPixelHash);
+    const observedFrame57 = normalizeRemotionPng(await readFile(frame57.outputPath));
+    expect(observedFrame57.width).toBe(acceptedFrame57.width);
+    expect(observedFrame57.height).toBe(acceptedFrame57.height);
+    // Exact hashes remain mandatory for repeat renders in one strict environment (frame 54 above).
+    // The reviewed golden crosses macOS rasterizers, so enforce a tight normalized-RMSE budget instead.
+    expect(normalizedRmse(observedFrame57.rgba, acceptedFrame57.rgba)).toBeLessThanOrEqual(0.02);
 
     const progress: string[] = [];
     const outputPath = path.join(outputRoot, "frames-54-59.mp4");
@@ -128,6 +133,18 @@ describe("P11 real pinned HyperFrames runtime", () => {
     expect(progress).toEqual(expect.arrayContaining(["validating", "capturing", "encoding", "committing"]));
   }, 180_000);
 });
+
+const normalizedRmse = (observed: Uint8Array, expected: Uint8Array): number => {
+  if (observed.length !== expected.length || observed.length === 0) {
+    throw new Error("Normalized pixel comparison requires equal, non-empty RGBA buffers.");
+  }
+  let squaredError = 0;
+  for (let index = 0; index < observed.length; index += 1) {
+    const delta = ((observed[index] ?? 0) - (expected[index] ?? 0)) / 255;
+    squaredError += delta * delta;
+  }
+  return Math.sqrt(squaredError / observed.length);
+};
 
 const source: HyperframesSourceDescriptor = {
   sourceId: "source-hyperframes-milestone0-0001",
