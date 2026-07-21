@@ -14,10 +14,12 @@ import {
 export const ProfessionalEditBar = ({
   currentFrame,
   onCommand,
+  onFeedback,
   timeline,
 }: {
   readonly currentFrame: string;
   readonly onCommand: (command: TimelineEditCommand) => void;
+  readonly onFeedback: (message: string) => void;
   readonly timeline: TimelineSnapshotV1;
 }) => {
   const selected = timeline.selection.selectedIds.flatMap((id) => {
@@ -28,15 +30,19 @@ export const ProfessionalEditBar = ({
     timeline.selection.primaryId === null ? undefined : timeline.clips[timeline.selection.primaryId];
   const primaryAssetId = primary?.assetId ?? null;
   const neighbors = primary === undefined ? null : clipNeighbors(timeline, primary);
-  const slideUnavailableReason = slideDisabledReason(primary, neighbors);
-  const slipUnavailableReason =
-    primary === undefined
-      ? "Select one clip before slipping source media."
-      : primary.availableSourceRange.end - primary.availableSourceRange.start <= 1n
-        ? "Still and frozen sources have no source handles to slip."
-        : null;
+  const rollLeftUnavailableReason = rollDisabledReason(primary, neighbors, -1n);
+  const rollRightUnavailableReason = rollDisabledReason(primary, neighbors, 1n);
+  const slideLeftUnavailableReason = slideDisabledReason(primary, neighbors, -1n);
+  const slideRightUnavailableReason = slideDisabledReason(primary, neighbors, 1n);
+  const slipLeftUnavailableReason = slipDisabledReason(primary, -1n);
+  const slipRightUnavailableReason = slipDisabledReason(primary, 1n);
+  const staticPlaybackReason =
+    primary !== undefined && isStaticSourceClip(primary)
+      ? "Still clips already hold one source frame. Change their duration by trimming."
+      : null;
   const frame = masterFrame(BigInt(currentFrame));
   const professionalState = readProfessionalTimelineState(timeline);
+  const compoundUnavailableReason = compoundDisabledReason(selected);
   const roll = (delta: -1n | 1n): void => {
     if (primary === undefined || neighbors?.right === undefined) return;
     onCommand({
@@ -66,7 +72,10 @@ export const ProfessionalEditBar = ({
     });
   };
   const createCompound = (): void => {
-    if (selected.length < 2) return;
+    if (compoundUnavailableReason !== null) {
+      onFeedback(compoundUnavailableReason);
+      return;
+    }
     const ordered = [...selected].sort((left, right) => (left.range.start < right.range.start ? -1 : 1));
     const first = ordered[0];
     const last = ordered.at(-1);
@@ -125,6 +134,7 @@ export const ProfessionalEditBar = ({
         keyframeIds: [],
       },
     });
+    onFeedback(`Created one compound from ${String(ordered.length)} contiguous clips.`);
   };
 
   return (
@@ -132,7 +142,8 @@ export const ProfessionalEditBar = ({
       <strong>PRO</strong>
       <span className="professional-edit-group">
         <Button
-          disabled={primary === undefined || neighbors?.right === undefined}
+          disabled={rollLeftUnavailableReason !== null}
+          title={rollLeftUnavailableReason ?? "Move the shared boundary left one frame."}
           onClick={() => {
             roll(-1n);
           }}
@@ -140,7 +151,8 @@ export const ProfessionalEditBar = ({
           Roll −1
         </Button>
         <Button
-          disabled={primary === undefined || neighbors?.right === undefined}
+          disabled={rollRightUnavailableReason !== null}
+          title={rollRightUnavailableReason ?? "Move the shared boundary right one frame."}
           onClick={() => {
             roll(1n);
           }}
@@ -149,13 +161,9 @@ export const ProfessionalEditBar = ({
         </Button>
       </span>
       <span className="professional-edit-group">
-        <span id="timeline-slip-availability" className="visually-hidden">
-          {slipUnavailableReason ?? "Slip is available because the source has reusable handles."}
-        </span>
         <Button
-          disabled={slipUnavailableReason !== null}
-          aria-describedby="timeline-slip-availability"
-          title={slipUnavailableReason ?? "Slip the source left one frame."}
+          disabled={slipLeftUnavailableReason !== null}
+          title={slipLeftUnavailableReason ?? "Slip the source left one frame."}
           onClick={() => {
             slip(-1n);
           }}
@@ -163,9 +171,8 @@ export const ProfessionalEditBar = ({
           Slip −1
         </Button>
         <Button
-          disabled={slipUnavailableReason !== null}
-          aria-describedby="timeline-slip-availability"
-          title={slipUnavailableReason ?? "Slip the source right one frame."}
+          disabled={slipRightUnavailableReason !== null}
+          title={slipRightUnavailableReason ?? "Slip the source right one frame."}
           onClick={() => {
             slip(1n);
           }}
@@ -174,14 +181,9 @@ export const ProfessionalEditBar = ({
         </Button>
       </span>
       <span className="professional-edit-group">
-        <span id="timeline-slide-availability" className="visually-hidden">
-          {slideUnavailableReason ??
-            "Slide is available because this clip has contiguous neighbors on both sides."}
-        </span>
         <Button
-          disabled={slideUnavailableReason !== null}
-          aria-describedby="timeline-slide-availability"
-          title={slideUnavailableReason ?? "Slide this clip left one frame."}
+          disabled={slideLeftUnavailableReason !== null}
+          title={slideLeftUnavailableReason ?? "Slide this clip left one frame."}
           onClick={() => {
             slide(-1n);
           }}
@@ -189,9 +191,8 @@ export const ProfessionalEditBar = ({
           Slide −1
         </Button>
         <Button
-          disabled={slideUnavailableReason !== null}
-          aria-describedby="timeline-slide-availability"
-          title={slideUnavailableReason ?? "Slide this clip right one frame."}
+          disabled={slideRightUnavailableReason !== null}
+          title={slideRightUnavailableReason ?? "Slide this clip right one frame."}
           onClick={() => {
             slide(1n);
           }}
@@ -202,7 +203,8 @@ export const ProfessionalEditBar = ({
       <label>
         <span>Speed</span>
         <select
-          disabled={primary === undefined}
+          disabled={primary === undefined || staticPlaybackReason !== null}
+          title={staticPlaybackReason ?? "Change constant playback speed while preserving the source range."}
           value={primary === undefined ? "1/1" : `${primary.speed.numerator}/${primary.speed.denominator}`}
           onChange={(event) => {
             if (primary === undefined) return;
@@ -222,7 +224,8 @@ export const ProfessionalEditBar = ({
         </select>
       </label>
       <Button
-        disabled={primary === undefined}
+        disabled={primary === undefined || staticPlaybackReason !== null}
+        title={staticPlaybackReason ?? "Play the selected clip in reverse."}
         onClick={() => {
           if (primary === undefined) return;
           onCommand({
@@ -237,7 +240,8 @@ export const ProfessionalEditBar = ({
         Reverse
       </Button>
       <Button
-        disabled={primary === undefined}
+        disabled={primary === undefined || staticPlaybackReason !== null}
+        title={staticPlaybackReason ?? "Hold the selected source frame across this clip."}
         onClick={() => {
           if (primary === undefined) return;
           const offset = frame < primary.range.start ? 0n : frame - primary.range.start;
@@ -257,7 +261,11 @@ export const ProfessionalEditBar = ({
       >
         Freeze
       </Button>
-      <Button disabled={selected.length < 2} onClick={createCompound}>
+      <Button
+        disabled={compoundUnavailableReason !== null}
+        title={compoundUnavailableReason ?? "Create one compound from contiguous clips on the same track."}
+        onClick={createCompound}
+      >
         Compound
       </Button>
       <Button
@@ -296,6 +304,7 @@ export const ProfessionalEditBar = ({
               ],
             },
           });
+          onFeedback("Speed curve created. Open Animation to edit the time-remap points.");
         }}
       >
         Speed curve
@@ -331,6 +340,7 @@ export const ProfessionalEditBar = ({
               ],
             },
           });
+          onFeedback("Version stack created with the current take and one review alternate.");
         }}
       >
         Version stack
@@ -340,15 +350,16 @@ export const ProfessionalEditBar = ({
         onClick={() => {
           if (primary === undefined) return;
           const inset = primary.range.end - primary.range.start > 8n ? 4n : 0n;
+          const effectRange = createFrameRange(
+            masterFrame(primary.range.start + inset),
+            masterFrame(primary.range.end - inset),
+          );
           onCommand({
             kind: "adjustment.upsert",
             layer: {
               id: stableEntityId(`adjustment-ui-${crypto.randomUUID()}`),
               clipId: primary.id,
-              range: createFrameRange(
-                masterFrame(primary.range.start + inset),
-                masterFrame(primary.range.end - inset),
-              ),
+              range: effectRange,
               effects: [
                 {
                   id: stableEntityId(`effect-ui-${crypto.randomUUID()}`),
@@ -362,6 +373,9 @@ export const ProfessionalEditBar = ({
               ],
             },
           });
+          onFeedback(
+            `Range effect created for frames ${String(effectRange.start)}–${String(effectRange.end)}.`,
+          );
         }}
       >
         Range effect
@@ -373,6 +387,20 @@ export const ProfessionalEditBar = ({
       </span>
     </div>
   );
+};
+
+const compoundDisabledReason = (selected: readonly ClipSnapshot[]): string | null => {
+  if (selected.length < 2) return "Select at least two clips to create a compound.";
+  const ordered = [...selected].sort((left, right) => (left.range.start < right.range.start ? -1 : 1));
+  const first = ordered[0];
+  if (first === undefined) return "Select at least two clips to create a compound.";
+  if (ordered.some((clip) => clip.trackId !== first.trackId)) {
+    return "Compound clips must be on the same track.";
+  }
+  if (ordered.slice(1).some((clip, index) => ordered[index]?.range.end !== clip.range.start)) {
+    return "Compound clips must be contiguous with no gaps or overlaps.";
+  }
+  return null;
 };
 
 const clipNeighbors = (
@@ -387,9 +415,45 @@ const clipNeighbors = (
   return { left: ordered[index - 1], right: ordered[index + 1] };
 };
 
+const rollDisabledReason = (
+  clip: ClipSnapshot | undefined,
+  neighbors: Readonly<{ left: ClipSnapshot | undefined; right: ClipSnapshot | undefined }> | null,
+  direction: -1n | 1n,
+): string | null => {
+  if (clip === undefined) return "Select the left clip at a shared boundary to use Roll.";
+  const right = neighbors?.right;
+  if (right?.range.start !== clip.range.end) {
+    return "Roll requires an adjacent clip immediately to the right.";
+  }
+  if (direction < 0n && clip.range.end - clip.range.start <= 1n)
+    return "The left clip cannot be shortened below one frame.";
+  if (direction > 0n && right.range.end - right.range.start <= 1n)
+    return "The right clip cannot be shortened below one frame.";
+  if (
+    direction < 0n &&
+    !isStaticSourceClip(right) &&
+    right.sourceRange.start <= right.availableSourceRange.start
+  )
+    return "The right clip has no earlier source handle for Roll −1.";
+  if (direction > 0n && !isStaticSourceClip(clip) && clip.sourceRange.end >= clip.availableSourceRange.end)
+    return "The left clip has no later source handle for Roll +1.";
+  return null;
+};
+
+const slipDisabledReason = (clip: ClipSnapshot | undefined, direction: -1n | 1n): string | null => {
+  if (clip === undefined) return "Select one clip before slipping source media.";
+  if (isStaticSourceClip(clip)) return "Still clips have no reusable source handles to slip.";
+  if (direction < 0n && clip.sourceRange.start <= clip.availableSourceRange.start)
+    return "No earlier source frames are available for Slip −1.";
+  if (direction > 0n && clip.sourceRange.end >= clip.availableSourceRange.end)
+    return "No later source frames are available for Slip +1.";
+  return null;
+};
+
 const slideDisabledReason = (
   clip: ClipSnapshot | undefined,
   neighbors: Readonly<{ left: ClipSnapshot | undefined; right: ClipSnapshot | undefined }> | null,
+  direction: -1n | 1n,
 ): string | null => {
   if (clip === undefined) return "Select a clip to use Slide.";
   if (neighbors?.left === undefined || neighbors.right === undefined) {
@@ -398,5 +462,22 @@ const slideDisabledReason = (
   if (neighbors.left.range.end !== clip.range.start || clip.range.end !== neighbors.right.range.start) {
     return "Slide requires both neighboring clips to touch the selected clip without gaps.";
   }
+  if (
+    direction < 0n &&
+    !isStaticSourceClip(neighbors.right) &&
+    neighbors.right.sourceRange.start <= neighbors.right.availableSourceRange.start
+  )
+    return "The right neighbor has no earlier source handle for Slide −1.";
+  if (
+    direction > 0n &&
+    !isStaticSourceClip(neighbors.left) &&
+    neighbors.left.sourceRange.end >= neighbors.left.availableSourceRange.end
+  )
+    return "The left neighbor has no later source handle for Slide +1.";
   return null;
 };
+
+const isStaticSourceClip = (clip: ClipSnapshot): boolean =>
+  clip.metadata.assetKind === "image" ||
+  (clip.sourceRange.end - clip.sourceRange.start === 1n &&
+    clip.availableSourceRange.end - clip.availableSourceRange.start === 1n);

@@ -11,6 +11,7 @@ import {
   createBridgeAuthorization,
   type BridgeAuthorization,
   type BridgeCapability,
+  type CaptureRequest,
 } from "@chai-studio/bridge";
 import { deserializeRational, type JsonValue } from "@chai-studio/schema";
 import type { DeliveryProfile, DeliveryProfileSeed, RenderScope } from "@chai-studio/render";
@@ -28,6 +29,7 @@ import {
   type StudioInstanceLease,
 } from "./instance-policy.js";
 import { AssetApiService } from "./asset-service.js";
+import { CaptureApiService } from "./capture-service.js";
 import { EventReplayGapError, StudioEventHub, formatStudioServerSentEvent } from "./event-hub.js";
 import { StudioInteractionService } from "./interaction-service.js";
 import { StudioJobRegistry } from "./job-registry.js";
@@ -66,6 +68,7 @@ export interface StudioServerOptions {
   readonly previewService?: PreviewSessionService;
   readonly programFrameService?: ProgramFrameService;
   readonly interactionService?: StudioInteractionService;
+  readonly captureService?: CaptureApiService;
   readonly renderService?: RenderApiService;
   readonly reviewService?: ReviewApiService;
   readonly eventHub?: StudioEventHub;
@@ -241,6 +244,7 @@ export const handleStudioRequest = async (
       corsOrigin,
       options.interactionService,
       options.renderService,
+      options.captureService,
     );
     if (interactionRouteHandled) return;
     const reviewRouteHandled = await handleReviewRoute(
@@ -427,6 +431,13 @@ export const createStudioServer = (options: StudioServerOptions = {}): Server =>
       executeRender: createLocalRenderExecutor(projectService),
       compositorMode: "local-full",
     });
+  const captureService =
+    options.captureService ??
+    new CaptureApiService({
+      projects: projectService,
+      interactions: interactionService,
+      renders: renderService,
+    });
   const reviewService = options.reviewService ?? new ReviewApiService({ projects: projectService });
   const eventHub = options.eventHub ?? new StudioEventHub();
   const indexService =
@@ -499,6 +510,7 @@ export const createStudioServer = (options: StudioServerOptions = {}): Server =>
       previewService,
       programFrameService,
       interactionService,
+      captureService,
       reviewService,
       renderService,
       eventHub,
@@ -1097,10 +1109,12 @@ const handleInteractionRoute = async (
   corsOrigin: string | null,
   service: StudioInteractionService | undefined,
   renders: RenderApiService | undefined,
+  captureJobs: CaptureApiService | undefined,
 ): Promise<boolean> => {
   const prefixes = [
     "/api/v1/editor",
     "/api/v1/captures",
+    "/api/v1/capture-jobs",
     "/api/v1/annotations",
     "/api/v1/comparisons",
     "/api/v1/source-edits",
@@ -1117,6 +1131,47 @@ const handleInteractionRoute = async (
     );
   }
   const method = request.method ?? "GET";
+  if (method === "POST" && pathName === "/api/v1/capture-jobs") {
+    if (captureJobs === undefined) {
+      throw apiError(
+        "internal",
+        "server.capture-job-service-unavailable",
+        correlationId,
+        "capture-job",
+        "Exact capture job service is unavailable.",
+        "Restart the local Studio server.",
+      );
+    }
+    const body = await readJsonBody(request, correlationId);
+    writeJson(
+      response,
+      202,
+      apiSuccess(correlationId, await captureJobs.start(captureRequest(body, correlationId))),
+      corsOrigin,
+    );
+    return true;
+  }
+  const captureJobMatch = /^\/api\/v1\/capture-jobs\/([A-Za-z][A-Za-z0-9._:-]{2,127})$/u.exec(pathName);
+  if ((method === "GET" || method === "DELETE") && captureJobMatch !== null) {
+    if (captureJobs === undefined) {
+      throw apiError(
+        "internal",
+        "server.capture-job-service-unavailable",
+        correlationId,
+        "capture-job",
+        "Exact capture job service is unavailable.",
+        "Restart the local Studio server.",
+      );
+    }
+    const id = captureJobMatch[1] ?? "";
+    writeJson(
+      response,
+      200,
+      apiSuccess(correlationId, method === "DELETE" ? captureJobs.cancel(id) : captureJobs.state(id)),
+      corsOrigin,
+    );
+    return true;
+  }
   if (method === "GET" && pathName === "/api/v1/editor/selection") {
     writeJson(response, 200, apiSuccess(correlationId, await service.selection()), corsOrigin);
     return true;
@@ -2227,6 +2282,18 @@ const requireStringArray = (
   });
 };
 
+const requireFrameArray = (
+  value: unknown,
+  field: string,
+  correlationId: string,
+  maximumLength: number,
+): readonly string[] => {
+  if (!Array.isArray(value) || value.length === 0 || value.length > maximumLength) {
+    throw requestError(correlationId, `Request field ${field} must be a non-empty bounded frame array.`);
+  }
+  return value.map((entry, index) => requireFrameString(entry, `${field}[${String(index)}]`, correlationId));
+};
+
 const requireHashArray = (value: unknown, field: string, correlationId: string): readonly string[] => {
   if (
     !Array.isArray(value) ||
@@ -2282,6 +2349,44 @@ const requireDeliveryProfileSeed = (value: unknown, correlationId: string): Deli
 
 const requireRenderScope = (value: unknown, correlationId: string): RenderScope =>
   requireObject(value, "scope", correlationId) as unknown as RenderScope;
+
+const captureRequest = (body: Readonly<Record<string, unknown>>, correlationId: string): CaptureRequest => {
+  const kind = requireEnum(
+    body.kind,
+    ["isolated-selection", "before-effects", "alpha", "range", "contact-sheet"] as const,
+    "kind",
+    correlationId,
+  );
+  const range =
+    body.frameRange === null || body.frameRange === undefined
+      ? null
+      : requireObject(body.frameRange, "frameRange", correlationId);
+  return {
+    kind,
+    mode: "fidelity",
+    frames: requireFrameArray(body.frames, "frames", correlationId, 900),
+    frameRange:
+      range === null
+        ? null
+        : {
+            startFrame: requireFrameString(range.startFrame, "frameRange.startFrame", correlationId),
+            endFrameExclusive: requireFrameString(
+              range.endFrameExclusive,
+              "frameRange.endFrameExclusive",
+              correlationId,
+            ),
+          },
+    isolatedEntityIds: requireStringArray(
+      body.isolatedEntityIds ?? [],
+      "isolatedEntityIds",
+      correlationId,
+      256,
+    ),
+    effectsApplied: kind !== "before-effects",
+    alpha: kind === "alpha",
+    comparisonSide: null,
+  };
+};
 
 const requireMutationContext = (
   value: unknown,
@@ -2566,7 +2671,7 @@ const requestError = (correlationId: string, message: string): ChaiError =>
   );
 
 const interactionErrorPattern =
-  /^(?:Editor selection|Unknown selectable|Selected entity|Capture|Exact capture|Annotation|Unknown annotation|Comparison|Unknown comparison|Unknown capture|Preview capture)/;
+  /^(?:Editor selection|Unknown selectable|Selected entity|Selected-clip capture|Before-effects capture|Review range capture|Range capture|Contact sheet capture|Capture|Exact capture|Annotation|Unknown annotation|Comparison|Unknown comparison|Unknown capture|Preview capture)/;
 const lifecycleConflictPattern =
   /^(?:Render revision conflict|QA revision conflict|Lifecycle revision conflict|Render source revision changed|Render retry requires|QA requires|Approval requires)/;
 const renderErrorPattern =
@@ -2672,7 +2777,9 @@ const bridgeCapabilityForRequest = (method: string, pathName: string): BridgeCap
   }
   if (pathName === "/api/v1/editor/selection") return method === "GET" ? "selection.read" : "selection.write";
   if (pathName === "/api/v1/editor/context") return "context.read";
-  if (pathName.startsWith("/api/v1/captures")) return method === "GET" ? "context.read" : "capture.create";
+  if (pathName.startsWith("/api/v1/captures") || pathName.startsWith("/api/v1/capture-jobs")) {
+    return method === "GET" ? "context.read" : "capture.create";
+  }
   if (pathName.startsWith("/api/v1/annotations") || pathName.startsWith("/api/v1/comparisons")) {
     return method === "GET" ? "annotation.read" : "annotation.write";
   }
@@ -2941,6 +3048,7 @@ export {
   type PreviewSessionStatus,
 } from "./preview-service.js";
 export { ProgramFrameService, type ProgramFramePayload } from "./program-frame-service.js";
+export { CaptureApiService } from "./capture-service.js";
 export { RegenerableStudioIndex, type IndexedAssetRow, type StudioIndexStatus } from "./regenerable-index.js";
 export {
   RenderApiService,

@@ -26,7 +26,11 @@ interface SourceInspectionMonitorProps {
   readonly selectedAssetId: string | null;
   readonly timeline: TimelineSnapshotV1;
   readonly timelineFrame: string;
-  readonly onCapture: (mode: MonitorCaptureMode, includeOverlays: boolean) => void;
+  readonly onCapture: (
+    mode: MonitorCaptureMode,
+    includeOverlays: boolean,
+    source?: SourceInspectionState,
+  ) => void;
   readonly onAddToContext: (source: SourceInspectionState) => void;
   readonly onCompareToTimeline: (source: SourceInspectionState) => void;
   readonly onTimelineCommand: (command: TimelineEditCommand) => void;
@@ -311,7 +315,7 @@ export const SourceInspectionMonitor = ({
       );
       onTimelineCommand(built.command);
       setEditStatus(
-        `${capitalize(editKind)} · derived ${built.resolved.derivedPoint.replace("-", " ")} · source clock unchanged`,
+        `${capitalize(editKind)} submitted to ${target.name} at frame ${timelineFrame} · source ${sourceIn}–${sourceOut} · derived ${built.resolved.derivedPoint.replace("-", " ")} · awaiting saved revision`,
       );
     } catch (error) {
       setEditStatus(error instanceof Error ? error.message : "Source edit failed validation");
@@ -491,7 +495,9 @@ export const SourceInspectionMonitor = ({
             <Button variant="primary" onClick={commitSourceEdit}>
               <ChaiIcon name="render-timeline" size={16} /> Apply three-point edit
             </Button>
-            <p className="source-edit-status">{editStatus}</p>
+            <p className="source-edit-status" role="status" aria-live="polite">
+              {editStatus}
+            </p>
             <h3>Review actions</h3>
             <Button
               onClick={() => {
@@ -515,7 +521,7 @@ export const SourceInspectionMonitor = ({
                   : decodedFrame.message
               }
               onClick={() => {
-                onCapture("interactive-frame", false);
+                onCapture("source-frame", false, source);
               }}
             >
               <ChaiIcon name="capture-exact" size={16} /> Capture source frame

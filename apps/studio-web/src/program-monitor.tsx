@@ -22,7 +22,14 @@ interface ProgramMonitorProps {
   readonly artwork: ReactNode;
   readonly comparisonArtwork?: ReactNode;
   readonly comparison?: boolean;
+  readonly comparisonMode: MonitorComparisonMode;
+  readonly onComparisonModeChange: (mode: MonitorComparisonMode) => void;
   readonly selectedLayerLabel?: string;
+  readonly captureContext: Readonly<{
+    selectedClipCount: number;
+    selectedClipsAreShared: boolean;
+    hasInOutRange: boolean;
+  }>;
   readonly onCommand: (command: ProgramMonitorCommand) => void;
   readonly onCapture: (mode: MonitorCaptureMode, includeOverlays: boolean) => void;
 }
@@ -64,20 +71,20 @@ const captureModes: readonly Readonly<{
   {
     mode: "isolated-clip",
     label: "Selected clip only",
-    hint: "Unavailable · authoritative compositor required",
-    disabled: true,
+    hint: "Exact final-compositor isolation",
+    disabled: false,
   },
   {
     mode: "before-effects",
     label: "Before effects",
-    hint: "Unavailable · authoritative compositor required",
-    disabled: true,
+    hint: "Stored source with shared properties reset",
+    disabled: false,
   },
   {
     mode: "alpha",
     label: "Alpha inspection",
-    hint: "Unavailable · authoritative compositor required",
-    disabled: true,
+    hint: "Exact transparent-background PNG",
+    disabled: false,
   },
   {
     mode: "comparison",
@@ -88,24 +95,27 @@ const captureModes: readonly Readonly<{
   {
     mode: "range",
     label: "Review range",
-    hint: "Unavailable · authoritative compositor required",
-    disabled: true,
+    hint: "Exact PNG sequence for marked I/O range",
+    disabled: false,
   },
   {
     mode: "contact-sheet",
     label: "Contact sheet",
-    hint: "Unavailable · authoritative compositor required",
-    disabled: true,
+    hint: "Six exact samples from marked I/O range",
+    disabled: false,
   },
 ];
 
 export const ProgramMonitor = ({
   authoritativeCaptureAvailable,
   artwork,
+  captureContext,
   comparison = false,
+  comparisonMode,
   comparisonArtwork,
   onCapture,
   onCommand,
+  onComparisonModeChange,
   preview,
   revision,
   selectedLayerLabel = "FutureTitle_v04",
@@ -127,7 +137,6 @@ export const ProgramMonitor = ({
   const [overlayMenuOpen, setOverlayMenuOpen] = useState(false);
   const [captureMenuOpen, setCaptureMenuOpen] = useState(false);
   const [includeOverlays, setIncludeOverlays] = useState(false);
-  const [comparisonMode, setComparisonMode] = useState<MonitorComparisonMode>("split");
   const [comparisonSplit, setComparisonSplit] = useState(50);
   const [fullscreen, setFullscreen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -154,15 +163,29 @@ export const ProgramMonitor = ({
   const availableCaptureModes = useMemo(
     () =>
       captureModes.map((item) =>
-        item.mode === "exact-fidelity" && !authoritativeCaptureAvailable
+        !authoritativeCaptureAvailable && item.mode !== "interactive-frame" && item.mode !== "comparison"
           ? {
               ...item,
               hint: "Unavailable · authoritative compositor required",
               disabled: true,
             }
-          : item,
+          : item.mode === "isolated-clip" && captureContext.selectedClipCount === 0
+            ? { ...item, hint: "Select a timeline clip first", disabled: true }
+            : item.mode === "before-effects" && captureContext.selectedClipCount === 0
+              ? { ...item, hint: "Select a shared timeline clip first", disabled: true }
+              : item.mode === "before-effects" && !captureContext.selectedClipsAreShared
+                ? { ...item, hint: "Native effect bypass is not exact", disabled: true }
+                : (item.mode === "range" || item.mode === "contact-sheet") && !captureContext.hasInOutRange
+                  ? { ...item, hint: "Mark In and Out first", disabled: true }
+                  : item.mode === "comparison" && comparison
+                    ? {
+                        ...item,
+                        hint: "Interactive A/B review evidence · not final-render truth",
+                        disabled: false,
+                      }
+                    : item,
       ),
-    [authoritativeCaptureAvailable],
+    [authoritativeCaptureAvailable, captureContext, comparison],
   );
 
   useEffect(() => {
@@ -319,7 +342,7 @@ export const ProgramMonitor = ({
                 aria-label="Comparison mode"
                 value={comparisonMode}
                 onChange={(event) => {
-                  setComparisonMode(event.target.value as MonitorComparisonMode);
+                  onComparisonModeChange(event.target.value as MonitorComparisonMode);
                 }}
               >
                 <option value="split">Split</option>

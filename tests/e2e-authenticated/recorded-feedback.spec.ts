@@ -100,39 +100,55 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     rights: "owned",
     validationState: "valid",
   });
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const importedAssetRow = leftPanel.getByRole("button", { name: /owner-review\.png/ });
+  await expect(importedAssetRow).toHaveAttribute("draggable", "true");
+  const timelineEditor = page.getByRole("region", { name: "Frame-exact timeline editor" });
+  const revisionBeforeTrack = await page.locator(".project-identity").getAttribute("data-revision-id");
+  await timelineEditor.getByRole("button", { name: "Add track" }).click();
+  await expect
+    .poll(() => page.locator(".project-identity").getAttribute("data-revision-id"))
+    .not.toBe(revisionBeforeTrack);
+  const emptyVideoLane = timelineEditor
+    .locator(".timeline-track")
+    .filter({ hasText: "video", hasNot: page.locator(".editor-clip") })
+    .locator(".timeline-track-lane")
+    .first();
+  await expect(emptyVideoLane).toBeVisible();
   const revisionBeforePlacement = await page.locator(".project-identity").getAttribute("data-revision-id");
-  await page.getByRole("button", { name: "Append to timeline" }).click();
+  await importedAssetRow.dragTo(emptyVideoLane, { targetPosition: { x: 1_000, y: 20 } });
   await expect
     .poll(() => page.locator(".project-identity").getAttribute("data-revision-id"))
     .not.toBe(revisionBeforePlacement);
-  const uploadedFrame = await page.evaluate(async () => {
-    const session = window.__CHAI_STUDIO_SESSION__;
-    if (session === undefined) return null;
-    const response = await fetch(`${session.serverOrigin}/api/v1/projects/current/snapshot`, {
-      headers: { authorization: `Bearer ${session.token}` },
-    });
-    const envelope = (await response.json()) as {
-      readonly data?: {
-        readonly assets?: { readonly assets?: readonly Readonly<Record<string, unknown>>[] };
-        readonly timeline?: {
-          readonly tracks?: readonly {
-            readonly clips?: readonly Readonly<Record<string, unknown>>[];
-          }[];
-        };
-      };
-    };
-    const asset = envelope.data?.assets?.assets?.find(
-      (candidate) => typeof candidate.path === "string" && candidate.path.endsWith("owner-review.png"),
-    );
-    if (typeof asset?.id !== "string") return null;
-    const clip = envelope.data?.timeline?.tracks
-      ?.flatMap((track) => track.clips ?? [])
-      .find((candidate) => candidate.assetId === asset.id);
-    return typeof clip?.startFrame === "string" ? clip.startFrame : null;
-  });
-  expect(uploadedFrame).toMatch(/^(?:0|[1-9][0-9]*)$/u);
-  if (uploadedFrame === null) throw new Error("The uploaded image was not placed on the timeline.");
+  await expect.poll(() => importedAssetStartFrame(page, "owner-review.png")).toMatch(/^(?:0|[1-9][0-9]*)$/u);
+  const draggedFrame = await importedAssetStartFrame(page, "owner-review.png");
+  expect(draggedFrame).toMatch(/^(?:0|[1-9][0-9]*)$/u);
+  const revisionBeforeUndoPlacement = await page
+    .locator(".project-identity")
+    .getAttribute("data-revision-id");
+  await timelineEditor.getByRole("button", { name: /Undo Insert clip/ }).click();
+  await expect
+    .poll(() => page.locator(".project-identity").getAttribute("data-revision-id"))
+    .not.toBe(revisionBeforeUndoPlacement);
+  await expect(timelineEditor.getByRole("button", { name: /owner-review\.png/ })).toHaveCount(0);
+  const revisionBeforeUndoTrack = await page.locator(".project-identity").getAttribute("data-revision-id");
+  await timelineEditor.getByRole("button", { name: /Undo Add track/ }).click();
+  await expect
+    .poll(() => page.locator(".project-identity").getAttribute("data-revision-id"))
+    .not.toBe(revisionBeforeUndoTrack);
 
+  await page.getByRole("button", { name: "Media", exact: true }).click();
+  await page
+    .locator(".media-center")
+    .getByRole("button", { name: /owner-review\.png/ })
+    .click();
+  const revisionBeforeAppend = await page.locator(".project-identity").getAttribute("data-revision-id");
+  await page.getByRole("button", { name: "Append to timeline" }).click();
+  await expect
+    .poll(() => page.locator(".project-identity").getAttribute("data-revision-id"))
+    .not.toBe(revisionBeforeAppend);
+  const uploadedFrame = await importedAssetStartFrame(page, "owner-review.png");
+  if (uploadedFrame === null) throw new Error("The uploaded image was not placed on the timeline.");
   await leftPanel.getByRole("button", { name: /Audio 2/ }).click();
   await page.locator(".media-center").getByLabel("Search footage").fill("owner-tone");
   const uploadedAudio = page.locator(".media-center").getByRole("button", { name: /owner-tone\.wav/ });
@@ -151,6 +167,12 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expectRevisionIdentityAligned(page);
 
+  const timeline = page.getByRole("region", { name: "Frame-exact timeline editor" });
+  await timeline
+    .getByRole("button", { name: /Interview A/ })
+    .first()
+    .click();
+
   const monitor = page.getByRole("region", { name: "Program monitor" });
   const frameLabel = monitor.locator(".monitor-time-authority span");
   const initialFrame = await frameNumber(frameLabel);
@@ -167,9 +189,9 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   ).toBeEnabled();
   await expect(
     monitor.getByRole("menuitem", {
-      name: "Selected clip only Unavailable · authoritative compositor required",
+      name: "Selected clip only Exact final-compositor isolation",
     }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await monitor.getByRole("menuitem", { name: "Current preview frame Fast · visibly approximate" }).click();
   await expect(page.getByText("Interactive frame completed", { exact: true })).toBeVisible();
   const captureCount = await page.evaluate(async () => {
@@ -186,10 +208,14 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   });
   expect(captureCount).toBe(1);
 
-  const timeline = page.getByRole("region", { name: "Frame-exact timeline editor" });
   await timeline.getByRole("button", { name: /Interview A/ }).click();
   const inspector = page.getByLabel("Contextual inspector");
   const opacity = inspector.getByLabel("Opacity", { exact: true });
+  const blendMode = inspector.getByLabel("Blend Mode", { exact: true });
+  await blendMode.selectOption("screen");
+  await expect
+    .poll(() => authoritativeOpacityEvidence(page).then((evidence) => evidence.blendMode))
+    .toBe("screen");
   await opacity.fill("64");
   await opacity.press("Enter");
   await expect(opacity).toHaveValue("64");
@@ -211,6 +237,9 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await timeline.getByRole("button", { name: /Interview A/ }).click();
   await expect(page.getByLabel("Contextual inspector").getByLabel("Opacity", { exact: true })).toHaveValue(
     "64",
+  );
+  await expect(page.getByLabel("Contextual inspector").getByLabel("Blend Mode", { exact: true })).toHaveValue(
+    "screen",
   );
 
   const markedStart = await frameNumber(frameLabel);
@@ -249,7 +278,7 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   ).toEqual({ complete: true, width: 960, height: 540 });
   await expect(sourceMonitor).toContainText("sha256");
   await sourceMonitor.getByRole("button", { name: "Capture source frame" }).click();
-  await expect(page.getByText("Interactive frame completed", { exact: true })).toBeVisible();
+  await expect(page.getByText("Source frame completed", { exact: true })).toBeVisible();
   await sourceMonitor.getByRole("tab", { name: "Video" }).click();
   await sourceMonitor.getByRole("radio", { name: "Insert" }).click();
   const revisionBeforeSourceEdit = await page.locator(".project-identity").getAttribute("data-revision-id");
@@ -316,6 +345,19 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect
     .poll(() => authoritativeOpacityEvidence(page).then((evidence) => evidence.opacityKeyValues))
     .toContain(80);
+  await curve.getByLabel("Tangent mode").selectOption("continuous");
+  await expect(curve.getByRole("status")).toContainText("Continuous tangents applied to 1 key(s).");
+  await curve.getByRole("button", { name: "Copy", exact: true }).click();
+  await expect(curve.getByRole("status")).toContainText("Copied 1 keyframe.");
+  await curve.getByRole("button", { name: "Paste", exact: true }).click();
+  await expect(curve.getByRole("status")).toContainText("Pasted 1 keyframe");
+  await expect(curve.getByText("2 keys", { exact: true })).toBeVisible();
+  await expect(page.getByText("RangeError", { exact: false })).toHaveCount(0);
+  await expect(curve.getByLabel("Tangent mode")).toHaveValue("continuous");
+  await expect
+    .poll(() => authoritativeOpacityEvidence(page).then((evidence) => evidence.opacityKeyValues.length))
+    .toBe(2);
+  await expectRevisionIdentityAligned(page);
 
   await monitor.getByLabel("Current frame").fill(uploadedFrame);
   await monitor.getByLabel("Current frame").press("Enter");
@@ -439,8 +481,45 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     quality: "full",
   });
   expect(exactCapture?.renderOutputId).toMatch(/^output-/u);
+  await timeline
+    .getByRole("button", { name: /owner-review\.png/ })
+    .first()
+    .click();
+  for (const captureMode of [
+    {
+      menuName: "Selected clip only Exact final-compositor isolation",
+      completed: "Isolated clip completed",
+    },
+    {
+      menuName: "Before effects Stored source with shared properties reset",
+      completed: "Before effects completed",
+    },
+    {
+      menuName: "Alpha inspection Exact transparent-background PNG",
+      completed: "Alpha inspection completed",
+    },
+    {
+      menuName: "Review range Exact PNG sequence for marked I/O range",
+      completed: "Review range completed",
+    },
+    {
+      menuName: "Contact sheet Six exact samples from marked I/O range",
+      completed: "Contact sheet completed",
+    },
+  ] as const) {
+    await monitor.getByRole("button", { name: "Open capture modes" }).click();
+    const item = monitor.getByRole("menuitem", { name: captureMode.menuName });
+    await expect(item).toBeEnabled();
+    await item.click();
+    await expect(page.getByText(captureMode.completed, { exact: true })).toBeVisible({
+      timeout: 20_000,
+    });
+  }
   await page.getByRole("button", { name: "Deliver", exact: true }).click();
-  await expect(queue.locator(".output-card")).toHaveCount(2, { timeout: 20_000 });
+  // The queue contains the authored still, the review proxy, and the immutable
+  // still created by Capture exact. The specialized capture modes persist
+  // capture evidence without publishing additional delivery outputs.
+  await expect(queue.locator(".output-card")).toHaveCount(3, { timeout: 20_000 });
   const compareButton = queue.locator(".output-card.active").getByRole("button", {
     name: "Compare",
     exact: true,
@@ -685,7 +764,9 @@ const authenticatedAvEvidence = async (
 
 const authoritativeOpacityEvidence = async (
   page: Page,
-): Promise<Readonly<{ clipOpacity: number | null; opacityKeyValues: readonly number[] }>> =>
+): Promise<
+  Readonly<{ clipOpacity: number | null; blendMode: string | null; opacityKeyValues: readonly number[] }>
+> =>
   page.evaluate(async () => {
     const session = window.__CHAI_STUDIO_SESSION__;
     if (session === undefined) throw new Error("Authenticated Studio session is unavailable.");
@@ -697,11 +778,13 @@ const authoritativeOpacityEvidence = async (
         readonly timeline?: {
           readonly tracks?: readonly {
             readonly clips?: readonly {
+              readonly id?: string;
               readonly name?: string;
               readonly properties?: Readonly<Record<string, { readonly value?: unknown }>>;
             }[];
           }[];
           readonly keyframes?: readonly {
+            readonly ownerEntityId?: string;
             readonly propertyPath?: string;
             readonly value?: unknown;
           }[];
@@ -712,15 +795,47 @@ const authoritativeOpacityEvidence = async (
       ?.flatMap((track) => track.clips ?? [])
       .find((clip) => clip.name === "Interview A");
     const clipOpacity = interview?.properties?.["transform.opacity"]?.value;
+    const blendMode = interview?.properties?.["composite.blendMode"]?.value;
     const opacityKeyValues = (envelope.data?.timeline?.keyframes ?? [])
-      .filter((keyframe) => keyframe.propertyPath === "transform.opacity")
+      .filter(
+        (keyframe) =>
+          keyframe.ownerEntityId === interview?.id && keyframe.propertyPath === "transform.opacity",
+      )
       .map((keyframe) => keyframe.value)
       .filter((value): value is number => typeof value === "number");
     return {
       clipOpacity: typeof clipOpacity === "number" ? clipOpacity : null,
+      blendMode: typeof blendMode === "string" ? blendMode : null,
       opacityKeyValues,
     };
   });
+
+const importedAssetStartFrame = async (page: Page, fileName: string): Promise<string | null> =>
+  page.evaluate(async (requestedFileName) => {
+    const session = window.__CHAI_STUDIO_SESSION__;
+    if (session === undefined) return null;
+    const response = await fetch(`${session.serverOrigin}/api/v1/projects/current/snapshot`, {
+      headers: { authorization: `Bearer ${session.token}` },
+    });
+    const envelope = (await response.json()) as {
+      readonly data?: {
+        readonly assets?: { readonly assets?: readonly Readonly<Record<string, unknown>>[] };
+        readonly timeline?: {
+          readonly tracks?: readonly {
+            readonly clips?: readonly Readonly<Record<string, unknown>>[];
+          }[];
+        };
+      };
+    };
+    const asset = envelope.data?.assets?.assets?.find(
+      (candidate) => typeof candidate.path === "string" && candidate.path.endsWith(requestedFileName),
+    );
+    if (typeof asset?.id !== "string") return null;
+    const clip = envelope.data?.timeline?.tracks
+      ?.flatMap((track) => track.clips ?? [])
+      .find((candidate) => candidate.assetId === asset.id);
+    return typeof clip?.startFrame === "string" ? clip.startFrame : null;
+  }, fileName);
 
 const toneWave = (sampleRate: number, sampleCount: number, frequency: number, amplitude: number): Buffer => {
   const bytes = Buffer.alloc(44 + sampleCount * 2);

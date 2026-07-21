@@ -7,7 +7,7 @@
     "fixtures/goldens/studio-shell.svg": "42813ca3ccbe553ccdcd44860306db9f74777f98ae48e9fe87e2cce46454b74d",
     "tests/e2e/delivery-workspace.spec.ts-snapshots/p21-deliver-authority-darwin.png": "4fd496f7b399d15f425f3850fb287dd5d2803625329d9d7e534698f3ed1cb92a",
     "tests/e2e/qa-delivery-gate.spec.ts-snapshots/p22-qa-delivery-gate-darwin.png": "80aacb1dbd68c2d1cbcf85d8597fb9dde99e05061792eaa5963a2de987e5411c",
-    "tests/e2e/review-workspace.spec.ts-snapshots/p19-review-workspace-darwin.png": "bd3b97be7b6482198bd9a611b4e4030476e6a1df9ffe7ed85c40d16999db7d93",
+    "tests/e2e/review-workspace.spec.ts-snapshots/p19-review-workspace-darwin.png": "d04b2134c58a2b4c994e198d5f537075fd3f6c3ef21a35c7e005c28f66cb00dd",
     "tests/e2e/studio-visual.spec.ts-snapshots/p08-animation-workspace-darwin.png": "9e8f514eff53622f838310551ecce4c995dd7222cfabced4ac775b3ab16b52ef",
     "tests/e2e/studio-visual.spec.ts-snapshots/p08-deliver-workspace-darwin.png": "80aacb1dbd68c2d1cbcf85d8597fb9dde99e05061792eaa5963a2de987e5411c",
     "tests/e2e/studio-visual.spec.ts-snapshots/p08-edit-workspace-darwin.png": "ac4265ad960250474abdeedef671523153ba3a44185c7adb403f7ad9771c0381",

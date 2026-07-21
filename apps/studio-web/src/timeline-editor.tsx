@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
+  type DragEvent as ReactDragEvent,
 } from "react";
 import {
   copyTimelineClips,
@@ -32,6 +33,13 @@ interface TimelineEditorProps {
   readonly onRedo: () => void;
   readonly undoLabel: string | null;
   readonly redoLabel: string | null;
+  readonly onAssetDrop: (drop: TimelineAssetDrop) => string;
+}
+
+interface TimelineAssetDrop {
+  readonly assetId: string;
+  readonly trackId: string;
+  readonly frame: string;
 }
 
 interface DragState {
@@ -61,6 +69,7 @@ const headerWidth = 198;
 export const TimelineEditor = ({
   currentFrame,
   onCommand,
+  onAssetDrop,
   onRedo,
   onSeekFrame,
   onUndo,
@@ -74,6 +83,7 @@ export const TimelineEditor = ({
   const [search, setSearch] = useState("");
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dragMessage, setDragMessage] = useState<string | null>(null);
+  const [externalDropTrackId, setExternalDropTrackId] = useState<string | null>(null);
   const [bladeFrame, setBladeFrame] = useState<bigint | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [renamingClip, setRenamingClip] = useState<ClipSnapshot | null>(null);
@@ -123,6 +133,16 @@ export const TimelineEditor = ({
     return clip !== undefined && clip.range.start < frame && frame < clip.range.end ? [clip] : [];
   });
 
+  useEffect(() => {
+    if (dragMessage === null) return;
+    const timer = window.setTimeout(() => {
+      setDragMessage(null);
+    }, 6_000);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [dragMessage]);
+
   const queueSeek = (targetFrame: ReturnType<typeof masterFrame>, commit: boolean): void => {
     if (commit) {
       if (seekAnimationFrameRef.current !== null) cancelAnimationFrame(seekAnimationFrameRef.current);
@@ -150,6 +170,12 @@ export const TimelineEditor = ({
     const lastFrame = timeline.duration > 0n ? timeline.duration - 1n : 0n;
     return masterFrame(rawFrame < 0n ? 0n : rawFrame > lastFrame ? lastFrame : rawFrame);
   };
+
+  const draggedAssetId = (event: ReactDragEvent<HTMLElement>): string =>
+    event.dataTransfer.getData("application/x-chai-studio-asset-id") ||
+    event.dataTransfer.getData("text/plain");
+  const hasDraggedAsset = (event: ReactDragEvent<HTMLElement>): boolean =>
+    event.dataTransfer.types.includes("application/x-chai-studio-asset-id");
 
   const seekAtPointer = (clientX: number, commit: boolean): void => {
     queueSeek(frameAtTimelinePointer(clientX - playheadPointerOffsetRef.current), commit);
@@ -554,7 +580,10 @@ export const TimelineEditor = ({
           <Button
             variant="ghost"
             disabled={undoLabel === null}
-            onClick={onUndo}
+            onClick={() => {
+              setDragMessage(null);
+              onUndo();
+            }}
             aria-label={undoLabel === null ? "Undo unavailable" : `Undo ${undoLabel}`}
           >
             <ChaiIcon name="undo" size={14} />
@@ -563,7 +592,10 @@ export const TimelineEditor = ({
           <Button
             variant="ghost"
             disabled={redoLabel === null}
-            onClick={onRedo}
+            onClick={() => {
+              setDragMessage(null);
+              onRedo();
+            }}
             aria-label={redoLabel === null ? "Redo unavailable" : `Redo ${redoLabel}`}
           >
             <ChaiIcon name="redo" size={14} />
@@ -682,7 +714,12 @@ export const TimelineEditor = ({
           />
         </div>
       </div>
-      <ProfessionalEditBar timeline={timeline} currentFrame={currentFrame} onCommand={onCommand} />
+      <ProfessionalEditBar
+        timeline={timeline}
+        currentFrame={currentFrame}
+        onCommand={onCommand}
+        onFeedback={setDragMessage}
+      />
       <div className="timeline-statusbar">
         <span>
           <kbd>{tool === "select" ? "V" : "B"}</kbd>{" "}
@@ -867,7 +904,7 @@ export const TimelineEditor = ({
                 : index;
             return (
               <div
-                className={`timeline-track${drag?.targetTrackId === track.id ? (drag.dropReason === null ? " drop-valid" : " drop-invalid") : ""}`}
+                className={`timeline-track${drag?.targetTrackId === track.id ? (drag.dropReason === null ? " drop-valid" : " drop-invalid") : ""}${externalDropTrackId === track.id ? " external-drop-target" : ""}`}
                 style={{ top: `${String((displayIndex + 1) * rowHeight)}px` }}
                 key={track.id}
               >
@@ -942,6 +979,31 @@ export const TimelineEditor = ({
                   aria-label={`${track.name} ${track.kind} track lane`}
                   data-track-id={track.id}
                   style={{ left: `${String(headerWidth)}px`, width: `${String(width)}px` }}
+                  onDragEnter={(event) => {
+                    if (!hasDraggedAsset(event)) return;
+                    event.preventDefault();
+                    setExternalDropTrackId(track.id);
+                  }}
+                  onDragOver={(event) => {
+                    if (!hasDraggedAsset(event)) return;
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "copy";
+                    setExternalDropTrackId(track.id);
+                  }}
+                  onDragLeave={(event) => {
+                    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+                    setExternalDropTrackId((current) => (current === track.id ? null : current));
+                  }}
+                  onDrop={(event) => {
+                    const assetId = draggedAssetId(event);
+                    if (assetId === "") return;
+                    event.preventDefault();
+                    const dropFrame = frameAtTimelinePointer(event.clientX);
+                    setDragMessage(
+                      onAssetDrop({ assetId, trackId: track.id, frame: dropFrame.toString(10) }),
+                    );
+                    setExternalDropTrackId(null);
+                  }}
                   onPointerDown={(event) => {
                     if (event.target === event.currentTarget) startSurfaceScrub(event);
                   }}

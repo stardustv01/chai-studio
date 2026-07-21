@@ -30,6 +30,20 @@ test("Slide explains why a clip without contiguous neighbors cannot move", async
   );
 });
 
+test("compound gating and advanced edit actions explain their result in the timeline", async ({ page }) => {
+  await page.goto("/?workspace=edit");
+  const timeline = page.getByRole("region", { name: "Frame-exact timeline editor" });
+  const pro = timeline.getByLabel("Professional edit controls");
+  const compound = pro.getByRole("button", { name: "Compound" });
+  await expect(compound).toBeDisabled();
+  await expect(compound).toHaveAttribute("title", "Select at least two clips to create a compound.");
+
+  await pro.getByRole("button", { name: "Speed curve" }).click();
+  await expect(timeline.locator(".timeline-action-message")).toContainText("Speed curve created");
+  await pro.getByRole("button", { name: "Version stack" }).click();
+  await expect(timeline.locator(".timeline-action-message")).toContainText("Version stack created");
+});
+
 test("professional source monitor exposes marks, target patching, and three-point commands", async ({
   page,
 }) => {
@@ -39,7 +53,9 @@ test("professional source monitor exposes marks, target patching, and three-poin
   await source.getByRole("button", { name: "Mark O" }).click();
   await source.getByRole("radio", { name: "Overwrite" }).click();
   await source.getByRole("button", { name: "Apply three-point edit" }).click();
-  await expect(source).toContainText(/Overwrite · derived timeline out · source clock unchanged/);
+  await expect(source).toContainText(
+    /Overwrite submitted to V3 at frame 444 · source 364–365 · derived timeline out · awaiting saved revision/,
+  );
   await expect(source).toContainText("timeline remains frame 444");
 });
 

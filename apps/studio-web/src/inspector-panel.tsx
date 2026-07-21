@@ -209,8 +209,10 @@ const InspectorFieldControl = ({
           lastSubmittedDraft.current = null;
         }}
         onChange={(event) => {
+          const next = event.target.value;
           lastSubmittedDraft.current = null;
-          setDraft(event.target.value);
+          setDraft(next);
+          commitDraft(next);
         }}
         onBlur={commit}
         onKeyDown={keyDown}
@@ -231,8 +233,10 @@ const InspectorFieldControl = ({
           lastSubmittedDraft.current = null;
         }}
         onChange={(event) => {
+          const next = event.target.value;
           lastSubmittedDraft.current = null;
-          setDraft(event.target.value);
+          setDraft(next);
+          commitDraft(next);
         }}
         onBlur={commit}
         onKeyDown={keyDown}

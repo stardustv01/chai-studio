@@ -32,6 +32,13 @@ export interface FullTimelineCompositorResult {
   }>[];
 }
 
+export interface FullTimelineCaptureOptions {
+  readonly includeClipIds?: ReadonlySet<string>;
+  readonly propertyMode?: "evaluated" | "defaults";
+  readonly includeCaptions?: boolean;
+  readonly includeAudio?: boolean;
+}
+
 interface PreparedVisualLayer {
   readonly clip: TimelineClip;
   readonly asset: AssetRecord;
@@ -59,13 +66,16 @@ export const renderFullTimeline = async (input: {
   readonly snapshot: ProjectSnapshot;
   readonly profile: DeliveryProfile;
   readonly scope: RenderScope;
+  readonly projectRoot?: string;
   readonly outputDirectory: string;
   readonly signal: AbortSignal;
   readonly report: (progress: number) => void;
   readonly ffmpegPath?: string;
   readonly nativeTrustByAssetId?: ReadonlyMap<string, NativeCompositionTrust>;
+  readonly capture?: FullTimelineCaptureOptions;
 }): Promise<FullTimelineCompositorResult> => {
   const ffmpegPath = input.ffmpegPath ?? process.env.CHAI_STUDIO_FFMPEG ?? "ffmpeg";
+  const projectRoot = input.projectRoot ?? input.projects.openRootPath();
   const range = renderRange(input.snapshot.timeline, input.scope);
   const width = input.profile.width ?? input.snapshot.project.video.width;
   const height = input.profile.height ?? input.snapshot.project.video.height;
@@ -76,7 +86,7 @@ export const renderFullTimeline = async (input: {
     throwIfAborted(input.signal);
     const prepared = await prepareSharedVisualLayers({
       snapshot: input.snapshot,
-      projectRoot: input.projects.openRootPath(),
+      projectRoot,
       range,
       fps,
       temporaryRoot,
@@ -84,8 +94,13 @@ export const renderFullTimeline = async (input: {
       signal: input.signal,
       report: input.report,
       nativeTrustByAssetId: input.nativeTrustByAssetId ?? new Map(),
+      ...(input.capture?.includeClipIds === undefined
+        ? {}
+        : { includeClipIds: input.capture.includeClipIds }),
+      ...(input.scope.kind === "clip" ? { scopeClipId: input.scope.clipId } : {}),
     });
-    const captions = activeCaptions(input.snapshot.timeline, range);
+    const captions =
+      input.capture?.includeCaptions === false ? [] : activeCaptions(input.snapshot.timeline, range);
     const framesDirectory = path.join(temporaryRoot, "program-frames");
     const needsVideoFrames = input.profile.outputKind !== "audio";
     const framePaths: string[] = [];
@@ -104,6 +119,7 @@ export const renderFullTimeline = async (input: {
           width,
           height,
           alpha: input.profile.alpha !== "none",
+          propertyMode: input.capture?.propertyMode ?? "evaluated",
           outputPath,
         });
         framePaths.push(outputPath);
@@ -111,15 +127,18 @@ export const renderFullTimeline = async (input: {
       }
     }
 
-    const audioMix = await prepareAudioMix({
-      snapshot: input.snapshot,
-      projectRoot: input.projects.openRootPath(),
-      range,
-      profile: input.profile,
-      outputPath: path.join(temporaryRoot, "program-audio.wav"),
-      ffmpegPath,
-      signal: input.signal,
-    });
+    const audioMix =
+      input.capture?.includeAudio === false
+        ? null
+        : await prepareAudioMix({
+            snapshot: input.snapshot,
+            projectRoot,
+            range,
+            profile: input.profile,
+            outputPath: path.join(temporaryRoot, "program-audio.wav"),
+            ffmpegPath,
+            signal: input.signal,
+          });
     input.report(0.78);
     const artifacts = await encodeOutput({
       profile: input.profile,
@@ -178,13 +197,20 @@ const prepareSharedVisualLayers = async (input: {
   readonly signal: AbortSignal;
   readonly report: (progress: number) => void;
   readonly nativeTrustByAssetId: ReadonlyMap<string, NativeCompositionTrust>;
+  readonly includeClipIds?: ReadonlySet<string>;
+  readonly scopeClipId?: string;
 }): Promise<readonly PreparedVisualLayer[]> => {
   const assetById = new Map(input.snapshot.assets.assets.map((asset) => [asset.id, asset]));
   const clips = input.snapshot.timeline.tracks
     .filter((track) => track.kind === "video" && !track.hidden && !track.muted)
     .sort((left, right) => left.order - right.order)
     .flatMap((track) => track.clips)
-    .filter((clip) => intersects(clip, input.range));
+    .filter(
+      (clip) =>
+        intersects(clip, input.range) &&
+        (input.includeClipIds === undefined || input.includeClipIds.has(clip.id)) &&
+        (input.scopeClipId === undefined || clip.id === input.scopeClipId),
+    );
   const prepared: PreparedVisualLayer[] = [];
   for (const [index, clip] of clips.entries()) {
     if (clip.assetId === null) throw new Error(`Visual clip ${clip.id} has no registered asset.`);
@@ -300,6 +326,7 @@ const compositeFrame = async (input: {
   readonly width: number;
   readonly height: number;
   readonly alpha: boolean;
+  readonly propertyMode: "evaluated" | "defaults";
   readonly outputPath: string;
 }): Promise<void> => {
   const composites: sharp.OverlayOptions[] = [];
@@ -317,14 +344,16 @@ const compositeFrame = async (input: {
       sourcePath,
       input.width,
       input.height,
-      frameProperties(input.snapshot.timeline, layer.clip, input.masterFrame),
+      frameProperties(input.snapshot.timeline, layer.clip, input.masterFrame, input.propertyMode),
     );
     if (transformed === null) continue;
     composites.push({
       input: transformed.buffer,
       left: transformed.left,
       top: transformed.top,
-      blend: blendMode(frameProperties(input.snapshot.timeline, layer.clip, input.masterFrame).blendMode),
+      blend: blendMode(
+        frameProperties(input.snapshot.timeline, layer.clip, input.masterFrame, input.propertyMode).blendMode,
+      ),
     });
   }
   for (const caption of input.captions) {
@@ -683,15 +712,31 @@ const frameProperties = (
   timeline: TimelineDocument,
   clip: TimelineClip,
   frame: bigint,
+  mode: "evaluated" | "defaults" = "evaluated",
 ): RenderFrameProperties => ({
-  position: vector2(evaluatedProperty(timeline, clip, "transform.position", frame, [0, 0]), [0, 0]),
-  scale: vector2(evaluatedProperty(timeline, clip, "transform.scale", frame, [100, 100]), [100, 100]),
-  rotation: numericValue(evaluatedProperty(timeline, clip, "transform.rotation", frame, 0), 0),
-  anchor: vector2(evaluatedProperty(timeline, clip, "transform.anchor", frame, [50, 50]), [50, 50]),
-  opacity: numericValue(evaluatedProperty(timeline, clip, "transform.opacity", frame, 100), 100),
-  crop: vector4(evaluatedProperty(timeline, clip, "transform.crop", frame, [0, 0, 0, 0]), [0, 0, 0, 0]),
-  blendMode: stringValue(evaluatedProperty(timeline, clip, "composite.blendMode", frame, "normal"), "normal"),
+  position: vector2(captureProperty(timeline, clip, "transform.position", frame, [0, 0], mode), [0, 0]),
+  scale: vector2(captureProperty(timeline, clip, "transform.scale", frame, [100, 100], mode), [100, 100]),
+  rotation: numericValue(captureProperty(timeline, clip, "transform.rotation", frame, 0, mode), 0),
+  anchor: vector2(captureProperty(timeline, clip, "transform.anchor", frame, [50, 50], mode), [50, 50]),
+  opacity: numericValue(captureProperty(timeline, clip, "transform.opacity", frame, 100, mode), 100),
+  crop: vector4(captureProperty(timeline, clip, "transform.crop", frame, [0, 0, 0, 0], mode), [0, 0, 0, 0]),
+  blendMode: stringValue(
+    captureProperty(timeline, clip, "composite.blendMode", frame, "normal", mode),
+    "normal",
+  ),
 });
+
+const captureProperty = (
+  timeline: TimelineDocument,
+  clip: TimelineClip,
+  propertyPath: string,
+  frame: bigint,
+  fallback: TimelinePropertyValue,
+  mode: "evaluated" | "defaults",
+): TimelinePropertyValue =>
+  mode === "defaults"
+    ? (clip.properties?.[propertyPath]?.defaultValue ?? fallback)
+    : evaluatedProperty(timeline, clip, propertyPath, frame, fallback);
 
 const evaluatedProperty = (
   timeline: TimelineDocument,

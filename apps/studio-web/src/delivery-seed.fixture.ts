@@ -105,6 +105,8 @@ export const contractQueue: readonly QueueView[] = [
 export const contractOutputs: readonly OutputView[] = [
   {
     id: "sample-output",
+    jobId: "sample-job-completed",
+    renderRequestId: "sample-request-completed",
     sourceRevisionId: "revision-000427",
     lifecycleState: "qa_warning",
     createdAt: "2026-07-16T08:15:00.000Z",

@@ -3,6 +3,7 @@ import type { PreviewTruth } from "./types.js";
 export type MonitorFitMode = "fit" | "fill";
 export type MonitorCaptureMode =
   | "interactive-frame"
+  | "source-frame"
   | "exact-fidelity"
   | "isolated-clip"
   | "before-effects"

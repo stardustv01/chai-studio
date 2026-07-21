@@ -29,7 +29,7 @@ import {
 import { projectRevisionLabel, type ShellStateId, type WorkspaceId } from "./types.js";
 import { useStudioRuntime, type RecentProjectView } from "./use-studio-runtime.js";
 import type { StudioDataSource } from "./runtime-mode.js";
-import { monitorCommandForShortcut } from "./monitor-contract.js";
+import { monitorCommandForShortcut, type MonitorComparisonMode } from "./monitor-contract.js";
 import { DeliveryWorkspaceProvider } from "./delivery-workspace.js";
 import { ModalDialog } from "./modal-dialog.js";
 import {
@@ -103,6 +103,7 @@ export const App = () => {
   const [accessibility, setAccessibility] = useState<AccessibilityPreferences>(loadAccessibilityPreferences);
   const [requestedDegradation, setRequestedDegradation] = useState<PreviewDegradationLevel>(0);
   const [animationPropertyPath, setAnimationPropertyPath] = useState("transform.opacity");
+  const [comparisonMode, setComparisonMode] = useState<MonitorComparisonMode>("split");
   const [mediaBrowserSelection, setMediaBrowserSelection] = useState("Footage");
   const [welcomeDismissed, setWelcomeDismissed] = useState(loadWelcomeDismissed);
   const [compactSurface, setCompactSurface] = useState<CompactSurface>("main");
@@ -318,6 +319,8 @@ export const App = () => {
   const monitorActions = useMemo<WorkspaceMonitorActions>(
     () => ({
       authoritativeCaptureAvailable: runtime.dataSource === "server",
+      comparisonMode,
+      selectComparisonMode: setComparisonMode,
       command: (command) => {
         void (async () => {
           const preview = await runtime.dispatchMonitorCommand(command);
@@ -333,8 +336,8 @@ export const App = () => {
           });
         })();
       },
-      capture: (mode, includeOverlays) => {
-        void runtime.requestCapture(mode, includeOverlays);
+      capture: (mode, includeOverlays, source) => {
+        void runtime.requestCapture(mode, includeOverlays, source);
       },
       sourceReview: (action, source) => {
         runtime.sourceReviewAction(action, source.sourceId, source.currentFrame);
@@ -357,7 +360,7 @@ export const App = () => {
       relinkAsset: runtime.relinkAsset,
       selectAsset: runtime.selectAsset,
     }),
-    [animationPropertyPath, mediaBrowserSelection, runtime],
+    [animationPropertyPath, comparisonMode, mediaBrowserSelection, runtime],
   );
   if (runtime.dataSource === "unauthenticated") {
     return <AuthenticatedLaunchRequired />;
@@ -1673,34 +1676,57 @@ const ToastRegion = ({
 }) => (
   <div className="toast-region" aria-live="polite" aria-relevant="additions">
     {toasts.map((toast) => (
-      <div className={`studio-toast studio-toast--${toast.tone}`} role="status" key={toast.id}>
-        <ChaiIcon
-          className="toast-marker"
-          name={
-            toast.tone === "danger"
-              ? "status-danger"
-              : toast.tone === "ready"
-                ? "status-ready"
-                : toast.tone === "attention"
-                  ? "status-warning"
-                  : "status-info"
-          }
-          size={14}
-        />
-        <div>
-          <strong>{toast.title}</strong>
-          <p>{toast.detail}</p>
-          {toast.correlationId === null ? null : <code>{toast.correlationId}</code>}
-        </div>
-        <IconButton
-          label="Dismiss notification"
-          onClick={() => {
-            dismiss(toast.id);
-          }}
-        >
-          ×
-        </IconButton>
-      </div>
+      <ToastCard toast={toast} dismiss={dismiss} key={toast.id} />
     ))}
   </div>
 );
+
+const ToastCard = ({
+  dismiss,
+  toast,
+}: {
+  readonly toast: ReturnType<typeof useStudioRuntime>["toasts"][number];
+  readonly dismiss: (id: string) => void;
+}) => {
+  const dismissRef = useRef(dismiss);
+  dismissRef.current = dismiss;
+  useEffect(() => {
+    const timeout = toast.tone === "danger" ? 15_000 : toast.tone === "attention" ? 10_000 : 6_000;
+    const timer = window.setTimeout(() => {
+      dismissRef.current(toast.id);
+    }, timeout);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [toast.id, toast.tone]);
+  return (
+    <div className={`studio-toast studio-toast--${toast.tone}`} role="status">
+      <ChaiIcon
+        className="toast-marker"
+        name={
+          toast.tone === "danger"
+            ? "status-danger"
+            : toast.tone === "ready"
+              ? "status-ready"
+              : toast.tone === "attention"
+                ? "status-warning"
+                : "status-info"
+        }
+        size={14}
+      />
+      <div>
+        <strong>{toast.title}</strong>
+        <p>{toast.detail}</p>
+        {toast.correlationId === null ? null : <code>{toast.correlationId}</code>}
+      </div>
+      <IconButton
+        label="Dismiss notification"
+        onClick={() => {
+          dismiss(toast.id);
+        }}
+      >
+        ×
+      </IconButton>
+    </div>
+  );
+};

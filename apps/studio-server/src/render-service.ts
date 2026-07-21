@@ -1764,7 +1764,7 @@ const clipsForRenderScope = (timeline: RenderTimeline, scope: RenderScope): read
       track.clips.filter((clip) => {
         const start = BigInt(clip.startFrame);
         const end = start + BigInt(clip.durationFrames);
-        return end > range.start && start < range.end;
+        return end > range.start && start < range.end && (scope.kind !== "clip" || clip.id === scope.clipId);
       }),
     );
 };

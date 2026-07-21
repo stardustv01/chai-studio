@@ -24,7 +24,11 @@ type ClipboardKey = Readonly<{
   frame: bigint;
   value: number | string | boolean | readonly number[];
   interpolation: CurvePreset;
+  inTangent: readonly [number, number] | null;
+  outTangent: readonly [number, number] | null;
 }>;
+
+type TangentMode = "auto" | "continuous" | "broken" | "flat";
 
 export const KeyframeCurveEditor = ({
   currentFrame,
@@ -41,6 +45,7 @@ export const KeyframeCurveEditor = ({
   const [graphMode, setGraphMode] = useState<"value" | "speed">("value");
   const [graphZoom, setGraphZoom] = useState(1);
   const [clipboard, setClipboard] = useState<readonly ClipboardKey[]>([]);
+  const [actionStatus, setActionStatus] = useState<string | null>(null);
   const lane = lanes.find((item) => item.propertyPath === propertyPath) ?? null;
   const keys = useMemo(
     () =>
@@ -55,9 +60,11 @@ export const KeyframeCurveEditor = ({
         ),
     [clipId, propertyPath, timeline.keyframes],
   );
-  const numericKeys = keys.filter(
+  const numericKeyCandidates = keys.filter(
     (key): key is typeof key & { readonly value: number } => typeof key.value === "number",
   );
+  const numericKeys = uniqueKeyframesByFrame(numericKeyCandidates);
+  const duplicateFrameCount = numericKeyCandidates.length - numericKeys.length;
   const multiKeys = Object.values(timeline.keyframes).filter(
     (key) => key.ownerEntityId === clipId && selectedProperties.includes(key.propertyPath),
   );
@@ -86,6 +93,17 @@ export const KeyframeCurveEditor = ({
   const property = clip?.properties?.[propertyPath];
   const propertyOptions = Object.entries(clip?.properties ?? {}).filter(([, state]) => state.keyframeable);
   const validFrame = clip !== undefined && current >= clip.range.start && current < clip.range.end;
+  const clipboardOrigin = clipboard[0]?.frame ?? 0n;
+  const pasteStart =
+    clip === undefined || clipboard.length === 0
+      ? null
+      : findAvailableKeyframePasteStart({
+          clipStart: clip.range.start,
+          clipEnd: clip.range.end,
+          preferredStart: current,
+          relativeFrames: clipboard.map((key) => key.frame - clipboardOrigin),
+          occupiedFrames: keys.map((key) => key.frame),
+        });
   const [valueDraft, setValueDraft] = useState(() => String(property?.value ?? ""));
   const [valueError, setValueError] = useState<string | null>(null);
   const interpolation = useMemo(() => {
@@ -98,6 +116,7 @@ export const KeyframeCurveEditor = ({
     setSelectedProperties([propertyPath]);
     setValueDraft(String(exact?.value ?? property?.value ?? ""));
     setValueError(null);
+    setActionStatus(null);
   }, [exact?.value, property?.value, propertyPath]);
 
   const updateInterpolation = (preset: CurvePreset): void => {
@@ -280,26 +299,20 @@ export const KeyframeCurveEditor = ({
           value={tangentMode}
           disabled={multiKeys.length === 0}
           onChange={(event) => {
-            const mode = event.target.value as typeof tangentMode;
-            const tangent =
-              mode === "flat"
-                ? { inTangent: [0.67, 0] as const, outTangent: [0.33, 0] as const }
-                : mode === "broken"
-                  ? { inTangent: [0.75, 0.9] as const, outTangent: [0.25, 0.1] as const }
-                  : mode === "continuous"
-                    ? { inTangent: [0.67, 0.67] as const, outTangent: [0.33, 0.33] as const }
-                    : curveTangentsForPreset("ease-in-out");
+            const mode = event.target.value as TangentMode;
+            const tangent = tangentsForMode(mode);
             onCommand({
               kind: "keyframes.update",
               updates: multiKeys.map((key) => ({
                 keyframeId: key.id,
                 changes: {
                   interpolation: "bezier",
-                  inTangent: "in" in tangent ? tangent.in : tangent.inTangent,
-                  outTangent: "out" in tangent ? tangent.out : tangent.outTangent,
+                  inTangent: tangent.inTangent,
+                  outTangent: tangent.outTangent,
                 },
               })),
             });
+            setActionStatus(`${capitalize(mode)} tangents applied to ${String(multiKeys.length)} key(s).`);
           }}
         >
           <option value="auto">Auto tangents</option>
@@ -332,24 +345,24 @@ export const KeyframeCurveEditor = ({
                 frame: key.frame,
                 value: key.value,
                 interpolation: key.interpolation as CurvePreset,
+                inTangent: key.inTangent,
+                outTangent: key.outTangent,
               })),
             );
+            setActionStatus(`Copied ${String(keys.length)} keyframe${keys.length === 1 ? "" : "s"}.`);
           }}
         >
           Copy
         </Button>
         <Button
-          disabled={clipboard.length === 0 || clipId === null}
+          disabled={clipboard.length === 0 || clipId === null || pasteStart === null}
+          title={
+            pasteStart === null && clipboard.length > 0
+              ? "No collision-free position for these keyframes exists inside the selected clip."
+              : "Paste copied keyframes at the playhead without creating duplicate property/frame keys."
+          }
           onClick={() => {
-            if (clipId === null || clipboard.length === 0) return;
-            const origin = clipboard[0]?.frame ?? 0n;
-            const clip = timeline.clips[clipId];
-            if (clip === undefined) return;
-            const last = clipboard.at(-1)?.frame ?? origin;
-            const span = last - origin;
-            const latestStart = clip.range.end - 1n - span;
-            const pasteStart =
-              current < clip.range.start ? clip.range.start : current > latestStart ? latestStart : current;
+            if (clipId === null || clipboard.length === 0 || pasteStart === null) return;
             onCommand({
               kind: "keyframes.add",
               entries: clipboard.map((key) => ({
@@ -357,17 +370,21 @@ export const KeyframeCurveEditor = ({
                   id: stableEntityId(`keyframe-ui-${crypto.randomUUID()}`),
                   ownerEntityId: clipId,
                   propertyPath,
-                  frame: masterFrame(pasteStart + key.frame - origin),
+                  frame: masterFrame(pasteStart + key.frame - clipboardOrigin),
                   value: key.value,
                   interpolation: key.interpolation,
-                  inTangent: null,
-                  outTangent: null,
+                  inTangent: key.inTangent,
+                  outTangent: key.outTangent,
                   authority: "shared",
                   preserveNativeAnimation: false,
                 },
                 automationLaneId: lane?.id ?? null,
               })),
             });
+            const pasteEnd = pasteStart + (clipboard.at(-1)?.frame ?? clipboardOrigin) - clipboardOrigin;
+            setActionStatus(
+              `Pasted ${String(clipboard.length)} keyframe${clipboard.length === 1 ? "" : "s"} at ${String(pasteStart)}–${String(pasteEnd)}.`,
+            );
           }}
         >
           Paste
@@ -441,6 +458,16 @@ export const KeyframeCurveEditor = ({
           />
         </label>
       </div>
+      {duplicateFrameCount > 0 ? (
+        <p className="curve-action-status curve-action-status--warning" role="alert">
+          {String(duplicateFrameCount)} duplicate property/frame key{duplicateFrameCount === 1 ? "" : "s"}
+          detected. The graph uses the latest key at each frame so Undo or removal remains available.
+        </p>
+      ) : actionStatus === null ? null : (
+        <p className="curve-action-status" role="status" aria-live="polite">
+          {actionStatus}
+        </p>
+      )}
       <svg
         viewBox={`0 0 ${String(900 / graphZoom)} 210`}
         preserveAspectRatio="xMinYMid meet"
@@ -530,26 +557,97 @@ const parseKeyValue = (
   return value === "" ? { ok: false, message: "Keyframe text cannot be empty." } : { ok: true, value };
 };
 
-const tangentModeForKeys = (
+export const tangentModeForKeys = (
   keys: readonly Readonly<{
     inTangent: readonly [number, number] | null;
     outTangent: readonly [number, number] | null;
   }>[],
-): "auto" | "continuous" | "broken" | "flat" => {
+): TangentMode => {
   if (keys.length === 0 || keys.every((key) => key.inTangent === null && key.outTangent === null))
     return "auto";
-  if (keys.every((key) => (key.inTangent?.[1] ?? 0) === 0 && (key.outTangent?.[1] ?? 0) === 0)) return "flat";
   if (
     keys.every(
       (key) =>
         key.inTangent !== null &&
         key.outTangent !== null &&
-        Math.abs(key.inTangent[1] - key.outTangent[1]) < 0.0001,
+        Math.abs(1 - key.inTangent[1]) < 0.0001 &&
+        Math.abs(key.outTangent[1]) < 0.0001,
+    )
+  )
+    return "flat";
+  if (
+    keys.every(
+      (key) =>
+        key.inTangent !== null &&
+        key.outTangent !== null &&
+        Math.abs(tangentSlopeIn(key.inTangent) - tangentSlopeOut(key.outTangent)) < 0.0001,
     )
   )
     return "continuous";
   return "broken";
 };
+
+export const tangentsForMode = (
+  mode: TangentMode,
+): Readonly<{
+  inTangent: readonly [number, number] | null;
+  outTangent: readonly [number, number] | null;
+}> => {
+  if (mode === "auto") return { inTangent: null, outTangent: null };
+  if (mode === "flat") return { inTangent: [0.67, 1], outTangent: [0.33, 0] };
+  if (mode === "continuous") return { inTangent: [0.67, 0.67], outTangent: [0.33, 0.33] };
+  return { inTangent: [0.75, 0.9], outTangent: [0.25, 0.5] };
+};
+
+export const findAvailableKeyframePasteStart = ({
+  clipStart,
+  clipEnd,
+  occupiedFrames,
+  preferredStart,
+  relativeFrames,
+}: Readonly<{
+  clipStart: bigint;
+  clipEnd: bigint;
+  occupiedFrames: readonly bigint[];
+  preferredStart: bigint;
+  relativeFrames: readonly bigint[];
+}>): bigint | null => {
+  if (relativeFrames.length === 0 || clipEnd <= clipStart) return null;
+  const minimumOffset = relativeFrames.reduce((minimum, frame) => (frame < minimum ? frame : minimum));
+  const maximumOffset = relativeFrames.reduce((maximum, frame) => (frame > maximum ? frame : maximum));
+  const earliest = clipStart - minimumOffset;
+  const latest = clipEnd - 1n - maximumOffset;
+  if (latest < earliest) return null;
+  const preferred = preferredStart < earliest ? earliest : preferredStart > latest ? latest : preferredStart;
+  const occupied = new Set(occupiedFrames.map(String));
+  const available = (candidate: bigint): boolean =>
+    relativeFrames.every((offset) => !occupied.has(String(candidate + offset)));
+  if (available(preferred)) return preferred;
+  const maximumDistance = latest - earliest;
+  for (let distance = 1n; distance <= maximumDistance; distance += 1n) {
+    const after = preferred + distance;
+    if (after <= latest && available(after)) return after;
+    const before = preferred - distance;
+    if (before >= earliest && available(before)) return before;
+  }
+  return null;
+};
+
+export function uniqueKeyframesByFrame<T extends Readonly<{ frame: bigint }>>(
+  keys: readonly T[],
+): readonly T[] {
+  const byFrame = new Map<string, T>();
+  keys.forEach((key) => byFrame.set(String(key.frame), key));
+  return [...byFrame.values()].sort((left, right) =>
+    left.frame < right.frame ? -1 : left.frame > right.frame ? 1 : 0,
+  );
+}
+
+const tangentSlopeIn = (tangent: readonly [number, number]): number =>
+  (1 - tangent[1]) / Math.max(0.0001, 1 - tangent[0]);
+const tangentSlopeOut = (tangent: readonly [number, number]): number =>
+  tangent[1] / Math.max(0.0001, tangent[0]);
+const capitalize = (value: string): string => `${value.slice(0, 1).toUpperCase()}${value.slice(1)}`;
 const pointX = (frame: bigint, bounds: ReturnType<typeof curveBounds>): number =>
   28 + (Number(frame - bounds.minFrame) / Math.max(1, Number(bounds.maxFrame - bounds.minFrame))) * 844;
 const pointY = (value: number, bounds: ReturnType<typeof curveBounds>): number =>

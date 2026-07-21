@@ -56,8 +56,12 @@ test("asset and project search controls perform visible filtering", async ({ pag
   await expect(leftPanel.getByRole("button", { name: /interview_nav\.mov/i })).toHaveCount(0);
 
   await leftPanel.getByRole("tab", { name: "Project", exact: true }).click();
-  await expect(leftPanel.getByText("Project browser is not available in this build.")).toBeVisible();
-  await leftPanel.getByRole("button", { name: "Return to Media" }).click();
+  await expect(leftPanel.getByText("Current project", { exact: true })).toBeVisible();
+  await leftPanel.getByLabel("Search project assets").fill("product");
+  await expect(leftPanel.getByRole("button", { name: /product_macro_02\.mov/i })).toBeVisible();
+  await expect(leftPanel.getByRole("button", { name: /interview_nav\.mov/i })).toHaveCount(0);
+  await leftPanel.getByRole("tab", { name: "Transcript", exact: true }).click();
+  await expect(leftPanel.getByText("Linked language", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "Media", exact: true }).click();
   await leftPanel.getByRole("button", { name: /Project root/ }).click();

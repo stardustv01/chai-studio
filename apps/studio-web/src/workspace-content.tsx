@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent as ReactDragEvent } from "react";
 import type { AudioGraphCommand } from "@chai-studio/audio";
 import type { SelectionContextManifest } from "@chai-studio/bridge";
 import type { LanguageCommand } from "@chai-studio/captions";
@@ -14,7 +14,12 @@ import {
   type TrackSnapshot,
   type TimelineEditCommand,
 } from "@chai-studio/timeline/browser";
-import type { MonitorCaptureMode, ProgramMonitorCommand, SourceInspectionState } from "./monitor-contract.js";
+import type {
+  MonitorCaptureMode,
+  MonitorComparisonMode,
+  ProgramMonitorCommand,
+  SourceInspectionState,
+} from "./monitor-contract.js";
 import { ProgramMonitor } from "./program-monitor.js";
 import { SourceInspectionMonitor } from "./source-inspection-monitor.js";
 import { TimelineEditor } from "./timeline-editor.js";
@@ -38,7 +43,13 @@ interface WorkspaceContentProps {
 export interface WorkspaceMonitorActions {
   readonly authoritativeCaptureAvailable: boolean;
   readonly command: (command: ProgramMonitorCommand) => void;
-  readonly capture: (mode: MonitorCaptureMode, includeOverlays: boolean) => void;
+  readonly comparisonMode: MonitorComparisonMode;
+  readonly selectComparisonMode: (mode: MonitorComparisonMode) => void;
+  readonly capture: (
+    mode: MonitorCaptureMode,
+    includeOverlays: boolean,
+    source?: SourceInspectionState,
+  ) => void;
   readonly sourceReview: (
     action: "compare-to-timeline" | "add-to-context",
     source: SourceInspectionState,
@@ -62,6 +73,7 @@ export interface WorkspaceMonitorActions {
 
 export const WorkspaceLeftPanel = ({ monitorActions, workspace, snapshot }: WorkspaceContentProps) => {
   const [assetQuery, setAssetQuery] = useState("");
+  const [projectAssetQuery, setProjectAssetQuery] = useState("");
   const [projectQuery, setProjectQuery] = useState("");
   const [mediaTab, setMediaTab] = useState("Media");
   const [assetCollection, setAssetCollection] = useState("All sequence assets");
@@ -227,6 +239,7 @@ export const WorkspaceLeftPanel = ({ monitorActions, workspace, snapshot }: Work
             {visibleAssets.map((asset) => (
               <AssetRow
                 active={asset.selected}
+                assetId={asset.assetId}
                 label={asset.label}
                 meta={asset.meta}
                 type={asset.type}
@@ -255,19 +268,92 @@ export const WorkspaceLeftPanel = ({ monitorActions, workspace, snapshot }: Work
             ))}
           </ListSection>
         </>
-      ) : (
-        <div className="honest-unavailable-state" role="status">
-          <strong>{mediaTab} browser is not available in this build.</strong>
-          <span>Use the Media tab for sequence assets.</span>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setMediaTab("Media");
+      ) : mediaTab === "Project" ? (
+        <>
+          <div className="panel-callout">
+            <span>Current project</span>
+            <strong>{snapshot.project?.title ?? "No project open"}</strong>
+            <small>
+              {snapshot.project === null
+                ? "Open a project to browse its registered media."
+                : `${String(snapshot.assets.length)} registered assets · ${String(assets.filter((asset) => asset.used).length)} used`}
+            </small>
+          </div>
+          <TextField
+            label="Search project assets"
+            placeholder="Name, type, status"
+            value={projectAssetQuery}
+            onChange={(event) => {
+              setProjectAssetQuery(event.currentTarget.value);
             }}
-          >
-            Return to Media
-          </Button>
-        </div>
+          />
+          <ListSection title="Registered assets">
+            {assets
+              .filter((asset) =>
+                `${asset.label} ${asset.type} ${asset.validationState}`
+                  .toLocaleLowerCase()
+                  .includes(projectAssetQuery.trim().toLocaleLowerCase()),
+              )
+              .map((asset) => (
+                <AssetRow
+                  active={asset.selected}
+                  assetId={asset.assetId}
+                  label={asset.label}
+                  meta={`${asset.used ? "Used" : "Unused"} · ${asset.validationState}`}
+                  type={asset.type}
+                  onSelect={() => {
+                    monitorActions.selectAsset(asset.assetId);
+                    selectAssetInTimeline(snapshot, asset.assetId, monitorActions.timeline);
+                  }}
+                  key={asset.assetId}
+                />
+              ))}
+          </ListSection>
+        </>
+      ) : (
+        <>
+          <div className="panel-callout">
+            <span>Linked language</span>
+            <strong>{String(snapshot.transcripts.length)} transcript documents</strong>
+            <small>{String(snapshot.captionDocuments.length)} caption documents</small>
+          </div>
+          {snapshot.transcripts.length === 0 ? (
+            <div className="honest-unavailable-state" role="status">
+              <strong>No linked transcript</strong>
+              <span>Import validated SRT, VTT, or an internal transcript to begin.</span>
+            </div>
+          ) : (
+            snapshot.transcripts.map((transcript) => (
+              <ListSection
+                title={`${transcript.language} · ${String(transcript.phrases.length)} phrases`}
+                key={transcript.transcriptId}
+              >
+                {transcript.phrases.map((phrase) => (
+                  <ListRow
+                    label={phrase.text}
+                    meta={`${phrase.startFrame}–${phrase.endFrameExclusive}`}
+                    onSelect={() => {
+                      monitorActions.command({ kind: "seek-frame", frame: phrase.startFrame });
+                      monitorActions.timeline({
+                        kind: "range.set",
+                        range: createFrameRange(
+                          masterFrame(BigInt(phrase.startFrame)),
+                          masterFrame(BigInt(phrase.endFrameExclusive)),
+                        ),
+                      });
+                      monitorActions.language({
+                        kind: "language.range.select",
+                        transcriptId: transcript.transcriptId,
+                        phraseId: phrase.id,
+                      });
+                    }}
+                    key={phrase.id}
+                  />
+                ))}
+              </ListSection>
+            ))
+          )}
+        </>
       )}
     </PanelContent>
   );
@@ -288,6 +374,11 @@ export const WorkspaceCenter = ({ monitorActions, workspace, snapshot }: Workspa
   const inspect = workspace === "inspect";
   const animation = workspace === "animation";
   const authenticated = window.__CHAI_STUDIO_SESSION__ !== undefined;
+  const selectedClips = snapshot.timeline.selection.selectedIds.flatMap((id) => {
+    const clip = snapshot.timeline.clips[id];
+    const track = clip === undefined ? undefined : snapshot.timeline.tracks[clip.trackId];
+    return clip === undefined || track?.kind !== "video" ? [] : [clip];
+  });
   const programArtwork = authenticated ? (
     <AuthenticatedProgramArtwork snapshot={snapshot} />
   ) : (
@@ -306,6 +397,12 @@ export const WorkspaceCenter = ({ monitorActions, workspace, snapshot }: Workspa
       preview={snapshot.preview}
       revision={snapshot.project}
       artwork={programArtwork}
+      captureContext={{
+        selectedClipCount: selectedClips.length,
+        selectedClipsAreShared:
+          selectedClips.length > 0 && selectedClips.every((clip) => clip.engine === "shared"),
+        hasInOutRange: snapshot.preview.inOutRange !== null,
+      }}
       comparisonArtwork={
         authenticated ? (
           programArtwork
@@ -314,8 +411,10 @@ export const WorkspaceCenter = ({ monitorActions, workspace, snapshot }: Workspa
         )
       }
       comparison={inspect}
+      comparisonMode={monitorActions.comparisonMode}
       selectedLayerLabel={animation ? "ParticleBridge" : "FutureTitle_v04"}
       onCommand={monitorActions.command}
+      onComparisonModeChange={monitorActions.selectComparisonMode}
       onCapture={monitorActions.capture}
     />
   );
@@ -352,7 +451,9 @@ export const WorkspaceLowerPanel = ({
   if (workspace === "inspect")
     return (
       <ReviewContactSheet
+        comparisonMode={monitorActions.comparisonMode}
         snapshot={snapshot}
+        onComparisonModeChange={monitorActions.selectComparisonMode}
         onSeek={(frame) => {
           monitorActions.command({ kind: "seek-frame", frame });
         }}
@@ -395,6 +496,9 @@ export const WorkspaceLowerPanel = ({
       }}
       undoLabel={monitorActions.timelineUndoLabel}
       redoLabel={monitorActions.timelineRedoLabel}
+      onAssetDrop={({ assetId, frame, trackId }) =>
+        placeAssetAtTimelineFrame(snapshot, assetId, trackId, frame, monitorActions.timeline)
+      }
     />
   );
 };
@@ -604,12 +708,14 @@ const ListRow = ({
 
 const AssetRow = ({
   active = false,
+  assetId,
   label,
   meta,
   type,
   onSelect,
 }: {
   readonly active?: boolean;
+  readonly assetId: string;
   readonly label: string;
   readonly meta: string;
   readonly type: string;
@@ -618,7 +724,14 @@ const AssetRow = ({
   <button
     className={active ? "asset-row asset-row--active" : "asset-row"}
     type="button"
+    draggable
     aria-pressed={active}
+    title="Select this asset or drag it onto a timeline track."
+    onDragStart={(event: ReactDragEvent<HTMLButtonElement>) => {
+      event.dataTransfer.effectAllowed = "copy";
+      event.dataTransfer.setData("application/x-chai-studio-asset-id", assetId);
+      event.dataTransfer.setData("text/plain", assetId);
+    }}
     onClick={onSelect}
   >
     <span className="asset-thumb">
@@ -704,6 +817,31 @@ const AuthenticatedProgramArtwork = ({ snapshot }: { readonly snapshot: StudioSn
   const frameUrl = useRef<string | null>(null);
   const revisionId = snapshot.project?.revisionId ?? null;
   const masterFrame = snapshot.preview.masterFrame;
+  const liveMasterFrame = useRef(masterFrame);
+  const liveRevisionId = useRef(revisionId);
+  liveMasterFrame.current = masterFrame;
+  liveRevisionId.current = revisionId;
+
+  const loadProgramFrame = useCallback(
+    async (requestedFrame: string, requestedRevisionId: string, signal: AbortSignal): Promise<void> => {
+      const payload = await client.programFrame(requestedFrame, requestedRevisionId, signal);
+      const url = URL.createObjectURL(payload.blob);
+      if (signal.aborted) {
+        URL.revokeObjectURL(url);
+        return;
+      }
+      if (frameUrl.current !== null) URL.revokeObjectURL(frameUrl.current);
+      frameUrl.current = url;
+      setFrame({
+        url,
+        masterFrame: payload.frame,
+        revisionId: payload.revisionId,
+        contentHash: payload.contentHash,
+      });
+      setStatus("ready");
+    },
+    [client],
+  );
 
   useEffect(() => {
     if (revisionId === null || snapshot.preview.durationFrames === "0") {
@@ -713,28 +851,44 @@ const AuthenticatedProgramArtwork = ({ snapshot }: { readonly snapshot: StudioSn
     if (snapshot.preview.playback === "playing") return;
     const controller = new AbortController();
     setStatus("loading");
-    void client
-      .programFrame(masterFrame, revisionId, controller.signal)
-      .then((payload) => {
-        const url = URL.createObjectURL(payload.blob);
-        if (frameUrl.current !== null) URL.revokeObjectURL(frameUrl.current);
-        frameUrl.current = url;
-        setFrame({
-          url,
-          masterFrame: payload.frame,
-          revisionId: payload.revisionId,
-          contentHash: payload.contentHash,
-        });
-        setStatus("ready");
-      })
-      .catch((cause: unknown) => {
-        if (cause instanceof DOMException && cause.name === "AbortError") return;
-        setStatus("unavailable");
-      });
+    void loadProgramFrame(masterFrame, revisionId, controller.signal).catch((cause: unknown) => {
+      if (cause instanceof DOMException && cause.name === "AbortError") return;
+      setStatus("unavailable");
+    });
     return () => {
       controller.abort();
     };
-  }, [client, masterFrame, revisionId, snapshot.preview.durationFrames, snapshot.preview.playback]);
+  }, [loadProgramFrame, masterFrame, revisionId, snapshot.preview.durationFrames, snapshot.preview.playback]);
+
+  useEffect(() => {
+    if (
+      snapshot.preview.playback !== "playing" ||
+      revisionId === null ||
+      snapshot.preview.durationFrames === "0"
+    )
+      return;
+    const controller = new AbortController();
+    let requestInFlight = false;
+    const refresh = (): void => {
+      const currentRevisionId = liveRevisionId.current;
+      if (requestInFlight || currentRevisionId === null) return;
+      requestInFlight = true;
+      void loadProgramFrame(liveMasterFrame.current, currentRevisionId, controller.signal)
+        .catch((cause: unknown) => {
+          if (cause instanceof DOMException && cause.name === "AbortError") return;
+          setStatus("unavailable");
+        })
+        .finally(() => {
+          requestInFlight = false;
+        });
+    };
+    refresh();
+    const timer = window.setInterval(refresh, 125);
+    return () => {
+      window.clearInterval(timer);
+      controller.abort();
+    };
+  }, [loadProgramFrame, revisionId, snapshot.preview.durationFrames, snapshot.preview.playback]);
 
   useEffect(
     () => () => {
@@ -850,6 +1004,13 @@ const ContextInspector = ({
   const [scopeKind, setScopeKind] = useState<ChangeScopeKind>("current-frame");
   const [customStart, setCustomStart] = useState(snapshot.preview.masterFrame);
   const [customEnd, setCustomEnd] = useState((BigInt(snapshot.preview.masterFrame) + 1n).toString(10));
+  const captureClips = snapshot.timeline.selection.selectedIds.flatMap((id) => {
+    const clip = snapshot.timeline.clips[id];
+    return clip === undefined ? [] : [clip];
+  });
+  const hasSelectedClip = captureClips.length > 0;
+  const selectedClipsAreShared = hasSelectedClip && captureClips.every((clip) => clip.engine === "shared");
+  const hasMarkedRange = snapshot.timeline.inOutRange !== null;
 
   const refresh = async (): Promise<void> => {
     if (client.sessionToken === null) return;
@@ -979,19 +1140,74 @@ const ContextInspector = ({
           >
             Fidelity frame
           </Button>
-          <Button disabled title="Isolated-clip authoritative capture is not implemented in this build.">
+          <Button
+            disabled={!monitorActions.authoritativeCaptureAvailable || !hasSelectedClip}
+            title={
+              !monitorActions.authoritativeCaptureAvailable
+                ? "Requires the authenticated authoritative timeline compositor."
+                : hasSelectedClip
+                  ? "Render only the selected visual clip through the final compositor."
+                  : "Select a timeline clip first."
+            }
+            onClick={() => {
+              monitorActions.capture("isolated-clip", false);
+            }}
+          >
             Isolate
           </Button>
-          <Button disabled title="Before-effects authoritative capture is not implemented in this build.">
+          <Button
+            disabled={!monitorActions.authoritativeCaptureAvailable || !selectedClipsAreShared}
+            title={
+              !monitorActions.authoritativeCaptureAvailable
+                ? "Requires the authenticated authoritative timeline compositor."
+                : selectedClipsAreShared
+                  ? "Render the selected shared clip with shared properties reset to source defaults."
+                  : "Select at least one shared timeline clip first."
+            }
+            onClick={() => {
+              monitorActions.capture("before-effects", false);
+            }}
+          >
             Before effects
           </Button>
-          <Button disabled title="Alpha authoritative capture is not implemented in this build.">
+          <Button
+            disabled={!monitorActions.authoritativeCaptureAvailable}
+            title="Render an exact transparent-background PNG through the final compositor."
+            onClick={() => {
+              monitorActions.capture("alpha", false);
+            }}
+          >
             Alpha
           </Button>
-          <Button disabled title="A/B authoritative capture is not implemented in this build.">
+          <Button
+            disabled={!monitorActions.authoritativeCaptureAvailable}
+            title="Capture the active Inspect comparison as revision-bound review evidence."
+            onClick={() => {
+              monitorActions.capture("comparison", false);
+            }}
+          >
             A/B
           </Button>
-          <Button disabled title="Contact-sheet authoritative capture is not implemented in this build.">
+          <Button
+            disabled={!monitorActions.authoritativeCaptureAvailable || !hasMarkedRange}
+            title={hasMarkedRange ? "Render every marked review-range frame." : "Mark In and Out first."}
+            onClick={() => {
+              monitorActions.capture("range", false);
+            }}
+          >
+            Review range
+          </Button>
+          <Button
+            disabled={!monitorActions.authoritativeCaptureAvailable || !hasMarkedRange}
+            title={
+              hasMarkedRange
+                ? "Build six exact final-compositor samples from the marked range."
+                : "Mark In and Out first."
+            }
+            onClick={() => {
+              monitorActions.capture("contact-sheet", false);
+            }}
+          >
             Contact sheet
           </Button>
         </div>
@@ -1460,7 +1676,14 @@ const MediaCenter = ({
           <button
             className={asset.selected ? "media-card media-card--active" : "media-card"}
             type="button"
+            draggable
             aria-pressed={asset.selected}
+            title="Select this asset or drag it onto a timeline track in Edit."
+            onDragStart={(event) => {
+              event.dataTransfer.effectAllowed = "copy";
+              event.dataTransfer.setData("application/x-chai-studio-asset-id", asset.assetId);
+              event.dataTransfer.setData("text/plain", asset.assetId);
+            }}
             onClick={() => {
               selectAsset(asset.assetId);
               selectAssetInTimeline(snapshot, asset.assetId, timeline);
@@ -1663,7 +1886,37 @@ const appendAssetToTimeline = (
   const start = Object.values(snapshot.timeline.clips).reduce((end, clip) => {
     return clip.range.end > end ? clip.range.end : end;
   }, masterFrame(0n));
-  const duration = asset.durationFrames > 0n ? asset.durationFrames : 1n;
+  insertAssetClip(snapshot, asset, track, engine, start, onCommand);
+};
+
+const placeAssetAtTimelineFrame = (
+  snapshot: StudioSnapshot,
+  assetId: string,
+  trackId: string,
+  frame: string,
+  onCommand: (command: TimelineEditCommand) => void,
+): string => {
+  const asset = sequenceAssets(snapshot).find((candidate) => candidate.assetId === assetId);
+  if (asset === undefined) return "The dragged asset is no longer available in this project.";
+  const placement = mediaPlacementPlan(snapshot, asset, trackId);
+  if (!placement.allowed || placement.track === null || placement.engine === null) return placement.reason;
+  const start = masterFrame(BigInt(frame));
+  insertAssetClip(snapshot, asset, placement.track, placement.engine, start, onCommand);
+  return `Placed ${asset.label} on ${placement.track.name} at frame ${frame}.`;
+};
+
+const insertAssetClip = (
+  snapshot: StudioSnapshot,
+  asset: SequenceAssetView,
+  track: TrackSnapshot,
+  engine: "shared" | "remotion" | "hyperframes",
+  start: ReturnType<typeof masterFrame>,
+  onCommand: (command: TimelineEditCommand) => void,
+): void => {
+  const timelineDuration =
+    asset.kind === "image" ? (asset.durationFrames > 0n ? asset.durationFrames : 150n) : asset.durationFrames;
+  const duration = timelineDuration > 0n ? timelineDuration : 1n;
+  const sourceDuration = asset.kind === "image" ? 1n : duration;
   const clipId = stableEntityId(`clip-import-${globalThis.crypto.randomUUID()}`);
   const assetId = stableEntityId(asset.assetId);
   onCommand({
@@ -1676,16 +1929,20 @@ const appendAssetToTimeline = (
       engine,
       name: asset.label,
       range: createFrameRange(start, masterFrame(BigInt(start) + duration)),
-      sourceRange: createFrameRange(masterFrame(0n), masterFrame(duration)),
+      sourceRange: createFrameRange(masterFrame(0n), masterFrame(sourceDuration)),
       sourceRate: snapshot.timeline.fps,
       speed: normalizeRational(1n, 1n),
-      availableSourceRange: createFrameRange(masterFrame(0n), masterFrame(duration)),
+      availableSourceRange: createFrameRange(masterFrame(0n), masterFrame(sourceDuration)),
       linkGroupId: null,
       selectionGroupId: null,
       transitionInId: null,
       transitionOutId: null,
       keyframeIds: [],
-      metadata: { source: "project-asset", validationState: asset.validationState },
+      metadata: {
+        source: "project-asset",
+        validationState: asset.validationState,
+        assetKind: asset.kind,
+      },
       properties: createDefaultTimelineClipProperties({
         engine,
         kind: asset.kind === "audio" ? "audio" : "visual",
@@ -1702,7 +1959,11 @@ interface MediaPlacementPlan {
   readonly reason: string;
 }
 
-const mediaPlacementPlan = (snapshot: StudioSnapshot, asset: SequenceAssetView): MediaPlacementPlan => {
+const mediaPlacementPlan = (
+  snapshot: StudioSnapshot,
+  asset: SequenceAssetView,
+  requestedTrackId?: string,
+): MediaPlacementPlan => {
   if (asset.validationState !== "valid") {
     return {
       allowed: false,
@@ -1728,10 +1989,33 @@ const mediaPlacementPlan = (snapshot: StudioSnapshot, asset: SequenceAssetView):
     };
   }
   const trackKind = asset.kind === "audio" ? "audio" : "video";
+  const requestedTrack =
+    requestedTrackId === undefined ? undefined : snapshot.timeline.tracks[stableEntityId(requestedTrackId)];
+  if (requestedTrackId !== undefined && requestedTrack === undefined) {
+    return { allowed: false, track: null, engine: null, reason: "That timeline track no longer exists." };
+  }
+  if (requestedTrack?.locked === true) {
+    return {
+      allowed: false,
+      track: null,
+      engine: null,
+      reason: `Unlock ${requestedTrack.name} before placing media on it.`,
+    };
+  }
+  if (requestedTrack !== undefined && requestedTrack.kind !== trackKind) {
+    return {
+      allowed: false,
+      track: null,
+      engine: null,
+      reason: `${asset.label} requires an unlocked ${trackKind} track.`,
+    };
+  }
   const track =
+    requestedTrack ??
     Object.values(snapshot.timeline.tracks)
       .filter((candidate) => candidate.kind === trackKind && !candidate.locked)
-      .sort((left, right) => left.order - right.order)[0] ?? null;
+      .sort((left, right) => left.order - right.order)[0] ??
+    null;
   if (track === null) {
     return {
       allowed: false,
@@ -1816,7 +2100,11 @@ const SourceAndTranscript = ({
   language,
 }: {
   readonly snapshot: StudioSnapshot;
-  readonly capture: (mode: MonitorCaptureMode, includeOverlays: boolean) => void;
+  readonly capture: (
+    mode: MonitorCaptureMode,
+    includeOverlays: boolean,
+    source?: SourceInspectionState,
+  ) => void;
   readonly sourceReview: (
     action: "compare-to-timeline" | "add-to-context",
     source: SourceInspectionState,

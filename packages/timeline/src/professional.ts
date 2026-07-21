@@ -351,10 +351,14 @@ const rollEdit = (
     if (command.boundary <= left.range.start || command.boundary >= right.range.end) {
       throw professionalError("timeline.roll.range", "Roll boundary must keep both adjacent clips positive.");
     }
-    const leftSourceEnd = mapTimelineFrameToSource(timeline, left, command.boundary, "ceil");
-    const rightSourceStart = mapTimelineFrameToSource(timeline, right, command.boundary, "floor");
-    assertSourceBoundary(left, left.sourceRange.start, leftSourceEnd);
-    assertSourceBoundary(right, rightSourceStart, right.sourceRange.end);
+    const leftSourceEnd = isStaticSourceClip(left)
+      ? left.sourceRange.end
+      : mapTimelineFrameToSource(timeline, left, command.boundary, "ceil");
+    const rightSourceStart = isStaticSourceClip(right)
+      ? right.sourceRange.start
+      : mapTimelineFrameToSource(timeline, right, command.boundary, "floor");
+    if (!isStaticSourceClip(left)) assertSourceBoundary(left, left.sourceRange.start, leftSourceEnd);
+    if (!isStaticSourceClip(right)) assertSourceBoundary(right, rightSourceStart, right.sourceRange.end);
     clips[left.id] = {
       ...left,
       range: createFrameRange(left.range.start, command.boundary),
@@ -428,10 +432,14 @@ const slideEdit = (
     if (start <= left.range.start || end >= right.range.end) {
       throw professionalError("timeline.slide.handles", "Slide edit exceeds an adjacent clip handle.");
     }
-    const leftSourceEnd = mapTimelineFrameToSource(timeline, left, start, "ceil");
-    const rightSourceStart = mapTimelineFrameToSource(timeline, right, end, "floor");
-    assertSourceBoundary(left, left.sourceRange.start, leftSourceEnd);
-    assertSourceBoundary(right, rightSourceStart, right.sourceRange.end);
+    const leftSourceEnd = isStaticSourceClip(left)
+      ? left.sourceRange.end
+      : mapTimelineFrameToSource(timeline, left, start, "ceil");
+    const rightSourceStart = isStaticSourceClip(right)
+      ? right.sourceRange.start
+      : mapTimelineFrameToSource(timeline, right, end, "floor");
+    if (!isStaticSourceClip(left)) assertSourceBoundary(left, left.sourceRange.start, leftSourceEnd);
+    if (!isStaticSourceClip(right)) assertSourceBoundary(right, rightSourceStart, right.sourceRange.end);
     clips[left.id] = {
       ...left,
       range: createFrameRange(left.range.start, start),
@@ -651,6 +659,12 @@ const setPlayback = (
   command: Extract<ProfessionalTimelineCommand, { kind: "clip.playback" }>,
 ): ProfessionalMutation => {
   const clip = requireClip(timeline, command.clipId);
+  if (isStaticSourceClip(clip) && command.mode !== "forward") {
+    throw professionalError(
+      "timeline.playback.static-source",
+      "Still clips already hold one source frame; reverse and freeze playback are not applicable.",
+    );
+  }
   if (command.mode === "freeze") {
     if (
       command.freezeSourceFrame === null ||
@@ -698,6 +712,12 @@ const setConstantSpeed = (
   command: Extract<ProfessionalTimelineCommand, { kind: "clip.speed" }>,
 ): ProfessionalMutation => {
   const clip = requireClip(timeline, command.clipId);
+  if (isStaticSourceClip(clip)) {
+    throw professionalError(
+      "timeline.speed.static-source",
+      "Still clips have no playback speed. Trim the clip to change its timeline duration.",
+    );
+  }
   const speed = deserializeRational(command.speed);
   if (parseBigIntString(speed.numerator) <= 0n)
     throw professionalError(
@@ -1127,6 +1147,9 @@ const compareClipRange = (left: ClipSnapshot, right: ClipSnapshot): number =>
       : left.id.localeCompare(right.id, "en");
 const sameRange = (left: FrameRange, right: FrameRange): boolean =>
   left.start === right.start && left.end === right.end;
+const isStaticSourceClip = (clip: ClipSnapshot): boolean =>
+  clip.metadata.assetKind === "image" ||
+  (frameRangeDuration(clip.sourceRange) === 1n && frameRangeDuration(clip.availableSourceRange) === 1n);
 const rationalParts = (value: NormalizedRational): Readonly<{ numerator: bigint; denominator: bigint }> => {
   const normalized = deserializeRational(value);
   return {

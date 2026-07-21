@@ -102,6 +102,115 @@ describe("full timeline compositor", () => {
       (bytes: Buffer) => bytes.subarray(0, 4).toString("ascii") === "RIFF",
     );
   });
+
+  it("uses property defaults for before-effects capture and excludes captions and audio", async () => {
+    const fixture = await compositorFixture();
+    const outputDirectory = path.join(fixture.root, "renders", "before-effects");
+    await mkdir(outputDirectory, { recursive: true });
+    const visual = fixture.snapshot.timeline.tracks[0]?.clips[0];
+    if (visual === undefined) throw new Error("Visual fixture clip is missing.");
+    const opacity = visual.properties?.["transform.opacity"];
+    if (opacity === undefined) throw new Error("Opacity fixture property is missing.");
+    const snapshot = {
+      ...fixture.snapshot,
+      timeline: {
+        ...fixture.snapshot.timeline,
+        tracks: fixture.snapshot.timeline.tracks.map((track) => ({
+          ...track,
+          clips: track.clips.map((clip) =>
+            clip.id === visual.id
+              ? {
+                  ...clip,
+                  properties: {
+                    ...clip.properties,
+                    "transform.opacity": { ...opacity, value: 10, defaultValue: 100 },
+                  },
+                }
+              : clip,
+          ),
+        })),
+      },
+    };
+
+    const result = await renderFullTimeline({
+      projects: fixture.projects,
+      snapshot,
+      profile: profile("still", { width: 160, height: 90, audioCodec: null, audioSampleRate: null }),
+      scope: { kind: "frame", frame: "1" },
+      outputDirectory,
+      signal: new AbortController().signal,
+      report: () => undefined,
+      capture: {
+        includeClipIds: new Set([visual.id]),
+        propertyMode: "defaults",
+        includeCaptions: false,
+        includeAudio: false,
+      },
+    });
+
+    expect(result).toMatchObject({ visualLayerCount: 1, captionCount: 0, audioMix: null });
+    await expect(readPixel(path.join(outputDirectory, result.primaryRelativePath), 80, 45)).resolves.toEqual([
+      252, 0, 0, 255,
+    ]);
+  });
+
+  it("honors the clip ID in clip-scoped final-compositor renders", async () => {
+    const fixture = await compositorFixture();
+    const outputDirectory = path.join(fixture.root, "renders", "isolated");
+    await mkdir(outputDirectory, { recursive: true });
+    const assetDirectory = path.join(fixture.root, "assets", "test");
+    const blueBytes = Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="2" height="2" fill="#0000ff"/></svg>',
+    );
+    await writeFile(path.join(assetDirectory, "blue.svg"), blueBytes);
+    const red = fixture.snapshot.timeline.tracks[0]?.clips[0];
+    if (red === undefined) throw new Error("Visual fixture clip is missing.");
+    const blue: TimelineClip = { ...red, id: "clip-visual-test-0002", assetId: "asset-visual-test-0002" };
+    const snapshot = {
+      ...fixture.snapshot,
+      timeline: {
+        ...fixture.snapshot.timeline,
+        tracks: fixture.snapshot.timeline.tracks.map((track, index) =>
+          index === 0 ? { ...track, clips: [...track.clips, blue] } : track,
+        ),
+      },
+      assets: {
+        ...fixture.snapshot.assets,
+        assets: [
+          ...fixture.snapshot.assets.assets,
+          {
+            id: "asset-visual-test-0002",
+            path: "assets/test/blue.svg",
+            contentHash: sha256(blueBytes),
+            kind: "image" as const,
+            durationFrames: null,
+            fps: null,
+            hasAudio: false,
+            hasAlpha: false,
+            variableFrameRate: false,
+            rights: "owned" as const,
+            validationState: "valid" as const,
+          },
+        ],
+      },
+    };
+
+    const result = await renderFullTimeline({
+      projects: fixture.projects,
+      snapshot,
+      profile: profile("still", { width: 160, height: 90, audioCodec: null, audioSampleRate: null }),
+      scope: { kind: "clip", clipId: red.id, startFrame: "0", endFrameExclusive: "3" },
+      outputDirectory,
+      signal: new AbortController().signal,
+      report: () => undefined,
+      capture: { includeAudio: false },
+    });
+
+    expect(result.visualLayerCount).toBe(1);
+    await expect(readPixel(path.join(outputDirectory, result.primaryRelativePath), 80, 45)).resolves.toEqual([
+      252, 0, 0, 255,
+    ]);
+  });
 });
 
 const compositorFixture = async () => {

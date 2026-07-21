@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { previewTruthFromPayload } from "../../apps/studio-web/src/use-studio-runtime.js";
+import {
+  previewTruthFromPayload,
+  renderTruthFromPayload,
+} from "../../apps/studio-web/src/use-studio-runtime.js";
 import { defaultStudioSnapshot } from "../../apps/studio-web/src/types.js";
 
 describe("web preview event projection", () => {
@@ -40,5 +43,50 @@ describe("web preview event projection", () => {
         warnings: [{ code: "bad", severity: "panic", message: 4, remedy: null }],
       }).warnings,
     ).toEqual([]);
+  });
+});
+
+describe("web render event projection", () => {
+  it("ignores non-render delivery jobs instead of presenting them as an active render", () => {
+    expect(
+      renderTruthFromPayload(defaultStudioSnapshot.render, {
+        job: {
+          kind: "delivery.publish-receipt",
+          status: "running",
+          progress: 0.5,
+          stage: "Publish receipt",
+        },
+      }),
+    ).toEqual(defaultStudioSnapshot.render);
+  });
+
+  it("prefers the active render in queue projections and clears an empty queue", () => {
+    expect(
+      renderTruthFromPayload(defaultStudioSnapshot.render, [
+        {
+          job: {
+            kind: "render.execute",
+            status: "completed",
+            progress: 1,
+            stage: "Rendered",
+          },
+        },
+        {
+          job: {
+            kind: "render.execute",
+            status: "running",
+            progress: 0.4,
+            stage: "Compositing",
+          },
+        },
+      ]),
+    ).toMatchObject({ status: "rendering", progress: 0.4, stage: "Compositing" });
+
+    expect(
+      renderTruthFromPayload(
+        { ...defaultStudioSnapshot.render, status: "rendering", progress: 0.5, stage: "Compositing" },
+        [],
+      ),
+    ).toMatchObject({ status: "idle", progress: 0, stage: "Ready" });
   });
 });

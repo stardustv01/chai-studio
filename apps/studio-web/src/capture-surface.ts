@@ -1,10 +1,13 @@
-export const captureStudioProgramFrame = async (includeOverlays: boolean): Promise<string> => {
+export const captureStudioProgramFrame = async (
+  includeOverlays: boolean,
+  target: "program" | "source" = "program",
+): Promise<string> => {
   const source = document.querySelector<HTMLElement>(
-    "[data-program-capture-surface], [data-source-capture-surface]",
+    target === "source" ? "[data-source-capture-surface]" : "[data-program-capture-surface]",
   );
-  if (source === null) throw new Error("No visible program or source capture surface is available.");
+  if (source === null) throw new Error(`No visible ${target} capture surface is available.`);
   const bounds = source.getBoundingClientRect();
-  if (bounds.width < 1 || bounds.height < 1) throw new Error("The program capture surface has no size.");
+  if (bounds.width < 1 || bounds.height < 1) throw new Error(`The ${target} capture surface has no size.`);
   const clone = source.cloneNode(true) as HTMLElement;
   inlineComputedStyles(source, clone);
   clone.style.width = `${String(bounds.width)}px`;

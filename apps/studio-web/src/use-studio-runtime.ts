@@ -24,6 +24,7 @@ import {
   previewControlRequests,
   type MonitorCaptureMode,
   type ProgramMonitorCommand,
+  type SourceInspectionState,
 } from "./monitor-contract.js";
 import {
   shellStateIds,
@@ -154,7 +155,11 @@ export interface StudioRuntime extends RuntimeState {
   }) => Promise<boolean>;
   readonly resync: () => Promise<void>;
   readonly capture: () => void;
-  readonly requestCapture: (mode: MonitorCaptureMode, includeOverlays?: boolean) => Promise<void>;
+  readonly requestCapture: (
+    mode: MonitorCaptureMode,
+    includeOverlays?: boolean,
+    source?: SourceInspectionState,
+  ) => Promise<void>;
   readonly importAssets: (files: readonly File[], rights: AssetRecord["rights"]) => Promise<void>;
   readonly inspectAsset: (assetId: string) => Promise<boolean>;
   readonly relinkAsset: (assetId: string, sourcePath: string) => Promise<boolean>;
@@ -446,7 +451,11 @@ export const useStudioRuntime = (): StudioRuntime => {
   );
 
   const requestCapture = useCallback(
-    async (mode: MonitorCaptureMode, includeOverlays = false): Promise<void> => {
+    async (
+      mode: MonitorCaptureMode,
+      includeOverlays = false,
+      source?: SourceInspectionState,
+    ): Promise<void> => {
       const startedAt = performance.now();
       if (client.sessionToken === null) {
         dispatch({
@@ -456,20 +465,6 @@ export const useStudioRuntime = (): StudioRuntime => {
             tone: "attention",
             title: "Preview only — capture unavailable",
             detail: "Launch the authenticated local Studio session before creating capture evidence.",
-            correlationId: null,
-          },
-        });
-        return;
-      }
-      if (mode !== "interactive-frame" && mode !== "exact-fidelity") {
-        dispatch({
-          type: "toast",
-          toast: {
-            id: globalThis.crypto.randomUUID(),
-            tone: "attention",
-            title: "Authoritative capture unavailable",
-            detail:
-              "This capture mode requires the final timeline compositor. No approximate DOM frame was submitted.",
             correlationId: null,
           },
         });
@@ -490,6 +485,7 @@ export const useStudioRuntime = (): StudioRuntime => {
         }
         const labels: Readonly<Record<MonitorCaptureMode, string>> = {
           "interactive-frame": "Interactive frame",
+          "source-frame": "Source frame",
           "exact-fidelity": "Exact fidelity frame",
           "isolated-clip": "Isolated clip",
           "before-effects": "Before effects",
@@ -505,14 +501,40 @@ export const useStudioRuntime = (): StudioRuntime => {
             preview,
             state.snapshot.project?.title ?? "Studio",
           );
+        } else if (
+          mode === "isolated-clip" ||
+          mode === "before-effects" ||
+          mode === "alpha" ||
+          mode === "range" ||
+          mode === "contact-sheet"
+        ) {
+          const selectedClipIds = state.snapshot.timeline.selection.selectedIds.filter((id) => {
+            const clip = state.snapshot.timeline.clips[id];
+            return clip !== undefined && state.snapshot.timeline.tracks[clip.trackId]?.kind === "video";
+          });
+          const manifest = await requestExactCaptureJob(client, {
+            mode,
+            masterFrame: preview.masterFrame,
+            inOutRange: preview.inOutRange,
+            selectedClipIds,
+          });
+          captureRecord = {
+            id: manifest.id,
+            relativePath: Array.isArray(manifest.outputPaths)
+              ? manifest.outputPaths.filter((item): item is string => typeof item === "string").join(", ")
+              : "saved in project",
+          };
         } else {
-          const label = `${labels[mode]} · ${includeOverlays ? "review evidence — overlays included" : "clean frame — overlays excluded"}`;
+          const sourceIdentity =
+            mode === "source-frame" && source !== undefined
+              ? ` · ${source.sourceId} · source frame ${source.currentFrame}`
+              : "";
+          const label = `${labels[mode]}${sourceIdentity} · ${includeOverlays ? "review evidence — overlays included" : "clean frame — overlays excluded"}`;
           let attempt = 0;
           for (;;) {
-            const imageBase64 = (await captureStudioProgramFrame(includeOverlays)).replace(
-              /^data:image\/png;base64,/u,
-              "",
-            );
+            const imageBase64 = (
+              await captureStudioProgramFrame(includeOverlays, mode === "source-frame" ? "source" : "program")
+            ).replace(/^data:image\/png;base64,/u, "");
             try {
               captureRecord = await client.request<Readonly<Record<string, unknown>>>("/api/v1/captures", {
                 method: "POST",
@@ -542,7 +564,7 @@ export const useStudioRuntime = (): StudioRuntime => {
             id: globalThis.crypto.randomUUID(),
             tone: "ready",
             title: `${labels[mode]} completed`,
-            detail: `${mode === "exact-fidelity" ? "Rendered fidelity — review overlays excluded by design." : includeOverlays ? "Review evidence — overlays included." : "Clean preview frame — overlays excluded."} ${captureId} · ${capturePath}`,
+            detail: `${captureCompletionDetail(mode, includeOverlays, source)} ${captureId} · ${capturePath}`,
             correlationId: null,
           },
         });
@@ -565,7 +587,13 @@ export const useStudioRuntime = (): StudioRuntime => {
         });
       }
     },
-    [client, performanceMonitor, state.snapshot.preview, state.snapshot.project?.title],
+    [
+      client,
+      performanceMonitor,
+      state.snapshot.preview,
+      state.snapshot.project?.title,
+      state.snapshot.timeline,
+    ],
   );
 
   const capture = useCallback(() => {
@@ -1635,15 +1663,30 @@ const projectSnapshotFromPayload = (
     return null;
   }
   try {
+    const assets =
+      isRecord(payload.assets) && Array.isArray(payload.assets.assets)
+        ? (payload.assets.assets as unknown as readonly AssetRecord[])
+        : current.assets;
+    const assetKinds = new Map(assets.map((asset) => [asset.id, asset.kind] as const));
     const convertedTimeline = timelineDocumentToSnapshot(
       payload.timeline as unknown as Parameters<typeof timelineDocumentToSnapshot>[0],
     );
+    const convertedClips = Object.fromEntries(
+      Object.entries(convertedTimeline.clips).map(([clipId, clip]) => {
+        const assetKind = clip.assetId === null ? undefined : assetKinds.get(clip.assetId);
+        return [
+          clipId,
+          assetKind === undefined ? clip : { ...clip, metadata: { ...clip.metadata, assetKind } },
+        ];
+      }),
+    ) as typeof convertedTimeline.clips;
+    const assetAwareTimeline = { ...convertedTimeline, clips: convertedClips };
     const explicitRevision =
       typeof payload.revisionNumber === "number" && Number.isSafeInteger(payload.revisionNumber)
         ? payload.revisionNumber
         : null;
     const preservedSelectionIds = current.timeline.selection.selectedIds.filter(
-      (id) => convertedTimeline.clips[id] !== undefined,
+      (id) => assetAwareTimeline.clips[id] !== undefined,
     );
     const selection =
       preservedSelectionIds.length === 0
@@ -1661,12 +1704,8 @@ const projectSnapshotFromPayload = (
                 ? current.timeline.selection.anchorId
                 : (preservedSelectionIds[0] ?? null),
           };
-    const timeline = { ...convertedTimeline, selection };
+    const timeline = { ...assetAwareTimeline, selection };
     const selectedClipIds = selection.selectedIds;
-    const assets =
-      isRecord(payload.assets) && Array.isArray(payload.assets.assets)
-        ? (payload.assets.assets as unknown as readonly AssetRecord[])
-        : current.assets;
     const assetIds = new Set(assets.map((asset) => asset.id));
     const selectedAssetIds = current.selection.assetIds.filter((assetId) => assetIds.has(assetId));
     const audioGraph = isRecord(payload.timeline.audioGraph)
@@ -1717,9 +1756,27 @@ const assetKindForFile = (file: File): AssetRecord["kind"] => {
   return "data";
 };
 
-const renderTruthFromPayload = (current: RenderTruth, payload: unknown): RenderTruth => {
-  const record: unknown = Array.isArray(payload) ? (payload as readonly unknown[]).at(-1) : payload;
+export const renderTruthFromPayload = (current: RenderTruth, payload: unknown): RenderTruth => {
+  const records = Array.isArray(payload) ? (payload as readonly unknown[]) : [payload];
+  const renderRecords = records.filter((candidate) => {
+    if (!isRecord(candidate)) return false;
+    const candidateJob = isRecord(candidate.job) ? candidate.job : candidate;
+    return candidateJob.kind === "render.execute" || candidateJob.kind === "render.qa";
+  });
+  const record: unknown =
+    renderRecords.find((candidate) => {
+      if (!isRecord(candidate)) return false;
+      const candidateJob = isRecord(candidate.job) ? candidate.job : candidate;
+      return candidateJob.status === "running" || candidate.persistedStatus === "running";
+    }) ??
+    renderRecords.find((candidate) => {
+      if (!isRecord(candidate)) return false;
+      const candidateJob = isRecord(candidate.job) ? candidate.job : candidate;
+      return candidateJob.status === "queued" || candidate.persistedStatus === "queued";
+    }) ??
+    renderRecords.at(-1);
   if (record === undefined) {
+    if (!Array.isArray(payload)) return current;
     return {
       status: "idle",
       progress: 0,
@@ -1730,7 +1787,7 @@ const renderTruthFromPayload = (current: RenderTruth, payload: unknown): RenderT
   }
   if (!isRecord(record)) return current;
   const job = isRecord(record.job) ? record.job : record;
-  if (job === record && job.kind !== "render.execute" && job.kind !== "render.qa") return current;
+  if (job.kind !== "render.execute" && job.kind !== "render.qa") return current;
   const statusValue =
     typeof job.status === "string"
       ? job.status
@@ -1746,7 +1803,9 @@ const renderTruthFromPayload = (current: RenderTruth, payload: unknown): RenderT
           ? job.kind === "render.qa"
             ? "qa"
             : "complete"
-          : "failed";
+          : statusValue === "cancelled"
+            ? "idle"
+            : "failed";
   const qaState = typeof record.qaState === "string" ? record.qaState : null;
   const qa: RenderTruth["qa"] =
     qaState === "qa_passed"
@@ -1779,6 +1838,106 @@ const renderTruthFromPayload = (current: RenderTruth, payload: unknown): RenderT
     qa,
     approval: qaState === "approved" || qaState === "delivered" ? "approved" : current.approval,
   };
+};
+
+const requestExactCaptureJob = async (
+  client: StudioApiClient,
+  input: Readonly<{
+    mode: "isolated-clip" | "before-effects" | "alpha" | "range" | "contact-sheet";
+    masterFrame: string;
+    inOutRange: Readonly<{ startFrame: string; endFrameExclusive: string }> | null;
+    selectedClipIds: readonly string[];
+  }>,
+): Promise<Readonly<Record<string, unknown>>> => {
+  const kind = {
+    "isolated-clip": "isolated-selection",
+    "before-effects": "before-effects",
+    alpha: "alpha",
+    range: "range",
+    "contact-sheet": "contact-sheet",
+  }[input.mode];
+  const needsRange = input.mode === "range" || input.mode === "contact-sheet";
+  if (needsRange && input.inOutRange === null) throw new Error("Mark In and Out before this capture.");
+  const frames =
+    input.mode === "range"
+      ? everyFrame(input.inOutRange)
+      : input.mode === "contact-sheet"
+        ? sampledFrames(input.inOutRange, 6)
+        : [input.masterFrame];
+  const started = await client.request<Readonly<Record<string, unknown>>>("/api/v1/capture-jobs", {
+    method: "POST",
+    body: JSON.stringify({
+      kind,
+      frames,
+      frameRange: needsRange ? input.inOutRange : null,
+      isolatedEntityIds:
+        input.mode === "isolated-clip" || input.mode === "before-effects" ? input.selectedClipIds : [],
+    }),
+  });
+  const id = typeof started.id === "string" ? started.id : null;
+  if (id === null) throw new Error("Exact capture job identity is missing.");
+  const deadline = Date.now() + 5 * 60_000;
+  while (Date.now() < deadline) {
+    const state = await client.request<Readonly<Record<string, unknown>>>(`/api/v1/capture-jobs/${id}`, {
+      method: "GET",
+    });
+    if (state.status === "completed" && isRecord(state.manifest)) return state.manifest;
+    if (state.status === "failed") {
+      throw new Error(typeof state.error === "string" ? state.error : "Exact capture job failed.");
+    }
+    if (state.status === "cancelled") throw new Error("Exact capture job was cancelled.");
+    await new Promise<void>((resolve) => {
+      globalThis.setTimeout(resolve, 150);
+    });
+  }
+  throw new Error("Exact capture job timed out.");
+};
+
+const everyFrame = (
+  range: Readonly<{ startFrame: string; endFrameExclusive: string }> | null,
+): readonly string[] => {
+  if (range === null) return [];
+  const start = BigInt(range.startFrame);
+  const end = BigInt(range.endFrameExclusive);
+  if (end - start > 900n) throw new Error("Review range capture is limited to 900 frames.");
+  const result: string[] = [];
+  for (let frame = start; frame < end; frame += 1n) result.push(frame.toString(10));
+  return result;
+};
+
+const sampledFrames = (
+  range: Readonly<{ startFrame: string; endFrameExclusive: string }> | null,
+  targetCount: number,
+): readonly string[] => {
+  if (range === null) return [];
+  const start = BigInt(range.startFrame);
+  const end = BigInt(range.endFrameExclusive);
+  const frameCount = end - start;
+  const count = Math.min(targetCount, Number(frameCount));
+  if (count < 2) throw new Error("Contact sheet range must contain at least two frames.");
+  return Array.from({ length: count }, (_, index) =>
+    (start + (BigInt(index) * (frameCount - 1n)) / BigInt(count - 1)).toString(10),
+  );
+};
+
+const captureCompletionDetail = (
+  mode: MonitorCaptureMode,
+  includeOverlays: boolean,
+  source: SourceInspectionState | undefined,
+): string => {
+  if (mode === "exact-fidelity") return "Rendered fidelity — review overlays excluded by design.";
+  if (mode === "source-frame") {
+    return `Original source evidence${source === undefined ? "" : ` · ${source.sourceId} frame ${source.currentFrame}`}.`;
+  }
+  if (mode === "isolated-clip") return "Final-compositor frame with only the selected visual clip.";
+  if (mode === "before-effects") return "Final-compositor source with shared properties reset to defaults.";
+  if (mode === "alpha") return "Final-compositor PNG with transparent background preserved.";
+  if (mode === "range") return "Final-compositor PNG sequence for the marked I/O range.";
+  if (mode === "contact-sheet") return "Contact sheet built from exact final-compositor samples.";
+  if (mode === "comparison") return "Interactive A/B review evidence — not final-render truth.";
+  return includeOverlays
+    ? "Review evidence — overlays included."
+    : "Clean preview frame — overlays excluded.";
 };
 
 const requestExactFidelityCapture = async (

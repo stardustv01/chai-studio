@@ -69,6 +69,8 @@ export interface QueueView extends JsonRecord {
 
 export interface OutputView extends JsonRecord {
   readonly id: string;
+  readonly jobId: string;
+  readonly renderRequestId: string;
   readonly sourceRevisionId: string;
   readonly lifecycleState: string;
   readonly createdAt: string;
@@ -178,9 +180,13 @@ interface DeliveryContextValue {
   readonly selectedJob: QueueView | null;
   readonly outputs: readonly OutputView[];
   readonly selectedOutput: OutputView | null;
+  readonly currentOutputId: string | null;
   readonly preflight: PreflightView | null;
   readonly receipt: JsonRecord | null;
+  readonly receiptError: string | null;
   readonly qaWorkspace: QaWorkspaceView | null;
+  readonly qaError: string | null;
+  readonly evidenceLoading: boolean;
   readonly diagnostic: string | null;
   readonly selectProfile: (id: string) => void;
   readonly selectJob: (id: string) => void;
@@ -245,11 +251,19 @@ export const DeliveryWorkspaceProvider = ({
   const [qaWorkspace, setQaWorkspace] = useState<QaWorkspaceView | null>(
     source === "server" ? null : contractQaWorkspace,
   );
+  const [receiptError, setReceiptError] = useState<string | null>(null);
+  const [qaError, setQaError] = useState<string | null>(null);
+  const [evidenceLoading, setEvidenceLoading] = useState(false);
   const knownOutputIds = useRef<ReadonlySet<string> | null>(null);
   const [evidenceEpoch, setEvidenceEpoch] = useState(0);
   const [loading, setLoading] = useState(source === "server");
   const [busy, setBusy] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
+  const selectProfile = useCallback((id: string): void => {
+    setSelectedProfileId(id);
+    setPreflight(null);
+    setDiagnostic(null);
+  }, []);
 
   const refresh = useCallback(async (): Promise<void> => {
     if (client.sessionToken === null) return;
@@ -274,11 +288,17 @@ export const DeliveryWorkspaceProvider = ({
       setSelectedProfileId((current) =>
         nextProfiles.some((profile) => profile.id === current) ? current : (nextProfiles[0]?.id ?? ""),
       );
-      setSelectedJobId((current) =>
-        nextQueue.some((item) => item.request.jobId === current)
+      setSelectedJobId((current) => {
+        if (
+          newlyCompletedOutput !== null &&
+          newlyCompletedOutput !== undefined &&
+          nextQueue.some((item) => item.request.jobId === newlyCompletedOutput.jobId)
+        )
+          return newlyCompletedOutput.jobId;
+        return nextQueue.some((item) => item.request.jobId === current)
           ? current
-          : (nextQueue[0]?.request.jobId ?? ""),
-      );
+          : (nextQueue[0]?.request.jobId ?? "");
+      });
       setSelectedOutputId((current) =>
         newlyCompletedOutput !== null && newlyCompletedOutput !== undefined
           ? newlyCompletedOutput.id
@@ -286,7 +306,6 @@ export const DeliveryWorkspaceProvider = ({
             ? current
             : (orderedOutputs[0]?.id ?? ""),
       );
-      setDiagnostic(null);
     } catch (cause) {
       setDiagnostic(messageFor(cause));
     } finally {
@@ -307,6 +326,7 @@ export const DeliveryWorkspaceProvider = ({
     profiles.find((profile) => profile.id === selectedProfileId) ?? profiles[0] ?? contractDefaultProfile;
   const selectedJob = queue.find((item) => item.request.jobId === selectedJobId) ?? queue[0] ?? null;
   const selectedOutput = outputs.find((output) => output.id === selectedOutputId) ?? outputs[0] ?? null;
+  const currentOutputId = outputs[0]?.id ?? null;
   const selectedOutputIdentity = selectedOutput?.id ?? null;
   const selectedOutputLifecycle = selectedOutput?.lifecycleState ?? null;
 
@@ -315,7 +335,10 @@ export const DeliveryWorkspaceProvider = ({
     const controller = new AbortController();
     setReceipt(null);
     setQaWorkspace(null);
-    void Promise.all([
+    setReceiptError(null);
+    setQaError(null);
+    setEvidenceLoading(true);
+    void Promise.allSettled([
       client.request<JsonRecord>(`/api/v1/renders/outputs/${selectedOutputIdentity}/receipt`, {
         method: "GET",
         signal: controller.signal,
@@ -324,26 +347,47 @@ export const DeliveryWorkspaceProvider = ({
         method: "GET",
         signal: controller.signal,
       }),
-    ])
-      .then(([nextReceipt, nextQa]) => {
-        if (controller.signal.aborted || nextQa.outputId !== selectedOutputIdentity) return;
-        setReceipt(nextReceipt);
-        setQaWorkspace(nextQa);
-      })
-      .catch((cause: unknown) => {
-        if (controller.signal.aborted) return;
-        setDiagnostic(messageFor(cause));
-      });
+    ]).then(([receiptResult, qaResult]) => {
+      if (controller.signal.aborted) return;
+      if (receiptResult.status === "fulfilled") setReceipt(receiptResult.value);
+      else setReceiptError(messageFor(receiptResult.reason));
+      if (qaResult.status === "fulfilled" && qaResult.value.outputId === selectedOutputIdentity)
+        setQaWorkspace(qaResult.value);
+      else if (qaResult.status === "rejected") setQaError(messageFor(qaResult.reason));
+      else setQaError("QA evidence returned for a different output identity.");
+      const failures = [receiptResult, qaResult].flatMap((result) =>
+        result.status === "rejected" ? [messageFor(result.reason)] : [],
+      );
+      if (failures.length > 0) setDiagnostic(`Output evidence unavailable: ${failures.join(" ")}`);
+      setEvidenceLoading(false);
+    });
     return () => {
       controller.abort();
     };
   }, [client, evidenceEpoch, selectedOutputIdentity, selectedOutputLifecycle]);
 
-  const selectOutput = useCallback((id: string): void => {
-    setSelectedOutputId(id);
-    setReceipt(null);
-    setQaWorkspace(null);
-  }, []);
+  const selectJob = useCallback(
+    (id: string): void => {
+      setSelectedJobId(id);
+      const matching = outputs.find((output) => output.jobId === id);
+      if (matching !== undefined) setSelectedOutputId(matching.id);
+    },
+    [outputs],
+  );
+
+  const selectOutput = useCallback(
+    (id: string): void => {
+      setSelectedOutputId(id);
+      const matching = outputs.find((output) => output.id === id);
+      if (matching !== undefined && queue.some((item) => item.request.jobId === matching.jobId))
+        setSelectedJobId(matching.jobId);
+      setReceipt(null);
+      setQaWorkspace(null);
+      setReceiptError(null);
+      setQaError(null);
+    },
+    [outputs, queue],
+  );
 
   const loadArtifact = useCallback(
     (outputId: string, index: number, signal?: AbortSignal) => client.renderArtifact(outputId, index, signal),
@@ -473,6 +517,7 @@ export const DeliveryWorkspaceProvider = ({
           }),
         });
         setSelectedProfileId(created.id);
+        setPreflight(null);
       }),
     [client, perform, selectedProfile],
   );
@@ -482,6 +527,10 @@ export const DeliveryWorkspaceProvider = ({
       perform(async () => {
         if (selectedOutput === null || snapshot.project === null)
           throw new Error("Select an output before QA.");
+        if (selectedOutput.id !== currentOutputId)
+          throw new Error(
+            "This output is superseded. QA can run only on the newest immutable output selected by the lifecycle authority.",
+          );
         const revisionId = await authoritativeRevisionId(client, snapshot.project.revisionId);
         await client.request(`/api/v1/renders/outputs/${selectedOutput.id}/qa`, {
           method: "POST",
@@ -491,7 +540,7 @@ export const DeliveryWorkspaceProvider = ({
           }),
         });
       }),
-    [client, perform, selectedOutput, snapshot.project],
+    [client, currentOutputId, perform, selectedOutput, snapshot.project],
   );
 
   const recordChecklist = useCallback(
@@ -560,12 +609,16 @@ export const DeliveryWorkspaceProvider = ({
     selectedJob,
     outputs,
     selectedOutput,
+    currentOutputId,
     preflight,
     receipt,
+    receiptError,
     qaWorkspace,
+    qaError,
+    evidenceLoading,
     diagnostic,
-    selectProfile: setSelectedProfileId,
-    selectJob: setSelectedJobId,
+    selectProfile,
+    selectJob,
     selectOutput,
     loadArtifact,
     refresh,
@@ -721,6 +774,11 @@ export const DeliveryProfilesPanel = () => {
 export const DeliveryQueueCenter = ({ snapshot }: { readonly snapshot: StudioSnapshot }) => {
   const delivery = useDelivery();
   const selectedRange = rangeScope(snapshot);
+  const renderBlocked = delivery.preflight?.executable === false;
+  const blockingFinding = delivery.preflight?.findings.find((finding) => finding.blocking) ?? null;
+  const renderBlockedReason = renderBlocked
+    ? `${blockingFinding?.title ?? "The latest preflight has blocking findings."} ${blockingFinding?.repair ?? "Repair it or choose another profile before rendering."}`
+    : undefined;
   const [viewer, setViewer] = useState<ArtifactViewerState | null>(null);
   const [comparison, setComparison] = useState<ArtifactComparisonState | null>(null);
   const [viewerError, setViewerError] = useState<string | null>(null);
@@ -856,24 +914,31 @@ export const DeliveryQueueCenter = ({ snapshot }: { readonly snapshot: StudioSna
           <Badge>{delivery.queue.filter((item) => item.persistedStatus === "queued").length} queued</Badge>
         </div>
         <div>
-          <Button disabled={delivery.busy} onClick={() => void delivery.enqueue(selectedRange)}>
+          <Button
+            disabled={delivery.busy || renderBlocked}
+            title={renderBlockedReason}
+            onClick={() => void delivery.enqueue(selectedRange)}
+          >
             <ChaiIcon name="render-range" size={16} /> Render range
           </Button>
           <Button
-            disabled={delivery.busy}
+            disabled={delivery.busy || renderBlocked}
+            title={renderBlockedReason}
             onClick={() => void delivery.enqueue({ kind: "frame", frame: snapshot.preview.masterFrame })}
           >
             <ChaiIcon name="render-frame" size={16} /> Render frame
           </Button>
           <Button
             variant="primary"
-            disabled={delivery.busy}
+            disabled={delivery.busy || renderBlocked}
+            title={renderBlockedReason}
             onClick={() => void delivery.enqueue({ kind: "full-timeline" })}
           >
             <ChaiIcon name="render-timeline" size={16} /> Render timeline
           </Button>
           <Button
-            disabled={delivery.busy}
+            disabled={delivery.busy || renderBlocked}
+            title={renderBlockedReason}
             onClick={() =>
               void delivery.enqueue({
                 kind: "named-version",
@@ -901,6 +966,13 @@ export const DeliveryQueueCenter = ({ snapshot }: { readonly snapshot: StudioSna
               ? "No render job is selected."
               : `${delivery.selectedJob.request.jobId} · ${delivery.selectedJob.stage} · ${delivery.selectedJob.activeEngine ?? "no active worker"}`}
           </small>
+        </div>
+      ) : null}
+      {renderBlocked && blockingFinding !== null ? (
+        <div className="delivery-diagnostic" role="alert" aria-live="assertive">
+          <strong>Render blocked by current preflight</strong>
+          <span>{blockingFinding.title}</span>
+          <small>{blockingFinding.repair ?? blockingFinding.detail}</small>
         </div>
       ) : null}
       {viewerError === null ? null : (
@@ -1289,11 +1361,27 @@ export const DeliveryReceiptPanel = ({ snapshot }: { readonly snapshot: StudioSn
       <section className="qa-machine-section">
         <div className="qa-section-title">
           <h3>Machine QA</h3>
-          <Badge tone={latest?.state === "qa_passed" ? "ready" : latest === null ? "neutral" : "attention"}>
-            {latest?.state.replaceAll("_", " ") ?? "Not run"}
+          <Badge
+            tone={
+              latest?.state === "qa_passed"
+                ? "ready"
+                : delivery.qaError !== null || latest !== null
+                  ? "attention"
+                  : "neutral"
+            }
+          >
+            {delivery.evidenceLoading
+              ? "Loading"
+              : delivery.qaError !== null
+                ? "Unavailable"
+                : (latest?.state.replaceAll("_", " ") ?? "Not run")}
           </Badge>
         </div>
-        {latest === null ? (
+        {delivery.evidenceLoading ? (
+          <p>Loading QA evidence for {output?.id ?? "the selected output"}…</p>
+        ) : delivery.qaError !== null ? (
+          <p role="alert">QA evidence could not be loaded: {delivery.qaError}</p>
+        ) : latest === null ? (
           <p>
             Run QA on the immutable output to record structural, audio, visual, caption, and sync evidence.
           </p>
@@ -1325,7 +1413,16 @@ export const DeliveryReceiptPanel = ({ snapshot }: { readonly snapshot: StudioSn
         )}
         <Button
           disabled={
-            delivery.busy || delivery.source !== "server" || output?.lifecycleState !== "rendered_unchecked"
+            delivery.busy ||
+            delivery.evidenceLoading ||
+            delivery.source !== "server" ||
+            output?.lifecycleState !== "rendered_unchecked" ||
+            output.id !== delivery.currentOutputId
+          }
+          title={
+            output !== null && output.id !== delivery.currentOutputId
+              ? "This output is superseded. Select the newest immutable output to run lifecycle QA."
+              : "Run authoritative output QA for the selected immutable output."
           }
           onClick={() => void delivery.runQa()}
         >
@@ -1417,7 +1514,13 @@ export const DeliveryReceiptPanel = ({ snapshot }: { readonly snapshot: StudioSn
         <details>
           <summary>Show immutable receipt JSON</summary>
           <pre className="manifest">
-            {delivery.receipt === null ? "Receipt unavailable" : JSON.stringify(delivery.receipt, null, 2)}
+            {delivery.evidenceLoading
+              ? "Loading immutable receipt…"
+              : delivery.receiptError !== null
+                ? `Receipt unavailable: ${delivery.receiptError}`
+                : delivery.receipt === null
+                  ? "No receipt exists for this output."
+                  : JSON.stringify(delivery.receipt, null, 2)}
           </pre>
         </details>
       </section>

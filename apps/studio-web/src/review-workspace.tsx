@@ -286,15 +286,18 @@ export const ReviewNavigator = ({ snapshot }: { readonly snapshot: StudioSnapsho
 };
 
 export const ReviewContactSheet = ({
+  comparisonMode,
   snapshot,
+  onComparisonModeChange,
   onSeek,
   onSelectRange,
 }: {
   readonly snapshot: StudioSnapshot;
+  readonly comparisonMode: "split" | "wipe" | "onion" | "difference";
+  readonly onComparisonModeChange: (mode: "split" | "wipe" | "onion" | "difference") => void;
   readonly onSeek: (frame: string) => void;
   readonly onSelectRange: (startFrame: string, endFrameExclusive: string) => void;
 }) => {
-  const [comparisonMode, setComparisonMode] = useState<"split" | "wipe" | "difference">("split");
   const [exported, setExported] = useState(false);
   const [rangeAnchor, setRangeAnchor] = useState<bigint | null>(null);
   const frames = useMemo(() => {
@@ -329,17 +332,23 @@ export const ReviewContactSheet = ({
           <span>{shortRevision(manifest.revisionId)} · linked frame navigation</span>
         </div>
         <div className="comparison-mode-strip" aria-label="Comparison modes">
-          {(["split", "wipe", "difference"] as const).map((mode) => (
+          {(["split", "wipe", "onion", "difference"] as const).map((mode) => (
             <button
               className={comparisonMode === mode ? "active" : ""}
               type="button"
               aria-pressed={comparisonMode === mode}
               onClick={() => {
-                setComparisonMode(mode);
+                onComparisonModeChange(mode);
               }}
               key={mode}
             >
-              {mode === "split" ? "Split" : mode === "wipe" ? "Wipe" : "Difference"}
+              {mode === "split"
+                ? "Split"
+                : mode === "wipe"
+                  ? "Wipe"
+                  : mode === "onion"
+                    ? "Onion"
+                    : "Difference"}
             </button>
           ))}
         </div>

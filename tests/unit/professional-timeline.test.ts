@@ -75,6 +75,78 @@ describe("P25 professional trim and source editing", () => {
     expect(result.snapshot.duration).toBe(timeline.duration);
   });
 
+  it("rolls and slides still-image clips without inventing source handles", () => {
+    const timeline = staticProfessionalTimeline();
+    const leftId = id("clip-pro-left-0001");
+    const middleId = id("clip-pro-middle-0001");
+    const rightId = id("clip-pro-right-0001");
+    const rolled = executeTimelineCommand(timeline, {
+      kind: "clips.roll",
+      leftClipId: leftId,
+      rightClipId: middleId,
+      boundary: masterFrame(41n),
+      includeLinked: false,
+    });
+
+    expect(rolled.snapshot.clips[leftId]?.range).toEqual({ start: 0n, end: 41n });
+    expect(rolled.snapshot.clips[middleId]?.range).toEqual({ start: 41n, end: 80n });
+    expect(rolled.snapshot.clips[leftId]?.sourceRange).toEqual({ start: 0n, end: 1n });
+    expect(rolled.snapshot.clips[middleId]?.sourceRange).toEqual({ start: 0n, end: 1n });
+
+    const slid = executeTimelineCommand(timeline, {
+      kind: "clip.slide",
+      clipId: middleId,
+      start: masterFrame(41n),
+      includeLinked: false,
+    });
+    expect(slid.snapshot.clips[middleId]?.range).toEqual({ start: 41n, end: 81n });
+    expect(slid.snapshot.clips[leftId]?.range.end).toBe(41n);
+    expect(slid.snapshot.clips[rightId]?.range.start).toBe(81n);
+    expect(slid.snapshot.clips[leftId]?.sourceRange).toEqual({ start: 0n, end: 1n });
+    expect(slid.snapshot.clips[rightId]?.sourceRange).toEqual({ start: 0n, end: 1n });
+  });
+
+  it("rejects speed, reverse, and freeze operations that are meaningless for a still image", () => {
+    const base = professionalTimeline();
+    const clipId = id("clip-pro-middle-0001");
+    const selected = required(base.clips[clipId]);
+    const timeline = {
+      ...base,
+      clips: {
+        ...base.clips,
+        [clipId]: { ...selected, metadata: { ...selected.metadata, assetKind: "image" } },
+      },
+    };
+
+    expect(() =>
+      executeTimelineCommand(timeline, {
+        kind: "clip.speed",
+        clipId,
+        speed: normalizeRational(2n, 1n),
+        reconcile: "preserve-source-range",
+        audioBehavior: "mute",
+      }),
+    ).toThrow("Still clips have no playback speed");
+    expect(() =>
+      executeTimelineCommand(timeline, {
+        kind: "clip.playback",
+        clipId,
+        mode: "reverse",
+        freezeSourceFrame: null,
+        audioBehavior: "mute",
+      }),
+    ).toThrow("already hold one source frame");
+    expect(() =>
+      executeTimelineCommand(timeline, {
+        kind: "clip.playback",
+        clipId,
+        mode: "freeze",
+        freezeSourceFrame: masterFrame(0n),
+        audioBehavior: "mute",
+      }),
+    ).toThrow("already hold one source frame");
+  });
+
   it("resolves all three-point ranges and builds insert/overwrite/replace commands without moving either clock", () => {
     const timeline = professionalTimeline();
     const sourceClip = {
@@ -377,6 +449,23 @@ const professionalTimeline = (): TimelineSnapshotV1 => {
     trackIds: [trackId],
     tracks: { [trackId]: track },
     clips: Object.fromEntries(clips.map((item) => [item.id, item])),
+  };
+};
+
+const staticProfessionalTimeline = (): TimelineSnapshotV1 => {
+  const timeline = professionalTimeline();
+  return {
+    ...timeline,
+    clips: Object.fromEntries(
+      Object.entries(timeline.clips).map(([clipId, item]) => [
+        clipId,
+        {
+          ...item,
+          sourceRange: createFrameRange(masterFrame(0n), masterFrame(1n)),
+          availableSourceRange: createFrameRange(masterFrame(0n), masterFrame(1n)),
+        },
+      ]),
+    ),
   };
 };
 

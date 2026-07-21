@@ -39,10 +39,15 @@ test("first authenticated launch opens a real starter and authoritative program 
   await program.getByRole("button", { name: "Play program preview" }).click();
   await expect.poll(async () => program.getByLabel("Current frame").inputValue()).not.toBe("0");
   await program.getByRole("button", { name: "Pause program preview" }).click();
-  const currentFrame = await program.getByLabel("Current frame").inputValue();
-  await expect(page.getByRole("img", { name: `Authoritative program frame ${currentFrame}` })).toBeVisible({
-    timeout: 20_000,
-  });
+  await expect
+    .poll(
+      async () => {
+        const currentFrame = await program.getByLabel("Current frame").inputValue();
+        return page.getByRole("img", { name: `Authoritative program frame ${currentFrame}` }).isVisible();
+      },
+      { timeout: 20_000 },
+    )
+    .toBe(true);
 
   const timeline = page.getByRole("region", { name: "Frame-exact timeline editor" });
   await timeline.getByRole("button", { name: "B Blade" }).click();
@@ -84,4 +89,25 @@ test("first authenticated launch opens a real starter and authoritative program 
   expect(truth?.assets?.assets).toEqual(
     expect.arrayContaining([expect.objectContaining({ rights: "owned", validationState: "valid" })]),
   );
+
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const liveProgram = page.getByRole("region", { name: "Program monitor" });
+  const currentFrameInput = liveProgram.getByLabel("Current frame");
+  await currentFrameInput.fill("295");
+  await currentFrameInput.press("Enter");
+  await expect(page.getByRole("img", { name: "Authoritative program frame 295" })).toBeVisible({
+    timeout: 20_000,
+  });
+  await liveProgram.getByRole("button", { name: "Play program preview" }).click();
+  await expect
+    .poll(
+      async () => {
+        const alt = await page.locator(".program-frame img").getAttribute("alt");
+        return Number(alt?.match(/([0-9]+)$/u)?.[1] ?? "0");
+      },
+      { timeout: 20_000 },
+    )
+    .toBeGreaterThanOrEqual(300);
+  await expect(liveProgram.getByRole("button", { name: "Pause program preview" })).toBeVisible();
+  await liveProgram.getByRole("button", { name: "Pause program preview" }).click();
 });

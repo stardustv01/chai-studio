@@ -91,10 +91,22 @@ test("comparison modes preserve both identities and linked monitor state", async
   for (const mode of ["split", "onion", "difference"] as const) {
     await monitor.getByLabel("Comparison mode").selectOption(mode);
     await expect(monitor.locator(".monitor-canvas-shell")).toHaveAttribute("data-comparison-mode", mode);
+    await expect(
+      page.getByRole("button", {
+        name: mode === "split" ? "Split" : mode === "onion" ? "Onion" : "Difference",
+      }),
+    ).toHaveAttribute("aria-pressed", "true");
   }
   await expect(monitor.getByLabel("Comparison split position")).toHaveCount(0);
   await monitor.getByLabel("Comparison mode").selectOption("wipe");
   await expect(monitor.getByLabel("Comparison split position")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Wipe" })).toHaveAttribute("aria-pressed", "true");
+  await monitor.getByRole("button", { name: "Open capture modes" }).click();
+  await expect(
+    monitor.getByRole("menuitem", {
+      name: "A/B comparison Interactive A/B review evidence · not final-render truth",
+    }),
+  ).toBeEnabled();
 });
 
 test("professional source monitor keeps an independent clock while edits enter revision history", async ({
