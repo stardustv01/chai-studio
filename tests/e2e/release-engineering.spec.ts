@@ -5,7 +5,7 @@ test("P27 About diagnostics exposes exact local release and support identity", a
   await page.getByRole("button", { name: /Launch Film.*Revision 428/ }).click();
   const identity = page.getByRole("region", { name: "Release and environment identity" });
   await identity.scrollIntoViewIfNeeded();
-  await expect(identity).toContainText("1.0.0-rc.3");
+  await expect(identity).toContainText("1.0.0-rc.4");
   await expect(identity).toContainText("Remotion 4.0.489");
   await expect(identity).toContainText("HyperFrames 0.7.58");
   await expect(identity).toContainText("playwright-managed:chromium-1228");

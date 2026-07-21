@@ -1,6 +1,6 @@
 {
   "name": "chai-studio",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "private": true,
   "type": "module",
   "bin": {
@@ -39,6 +39,8 @@
     "qa": "pnpm test && pnpm test:coverage && pnpm test:reporting && pnpm p22:visual && pnpm fixture:verify && pnpm schema:check",
     "security:check": "node scripts/security-check.mjs",
     "browser:isolation": "node scripts/validate-browser-isolation.mjs",
+    "cli:package:check": "node scripts/validate-cli-package.mjs",
+    "cli:release-index": "node scripts/generate-cli-release-index.mjs",
     "web:release-boundary": "node scripts/validate-web-release-boundary.mjs",
     "security:audit": "pnpm audit --prod --audit-level high",
     "validate:p03-platform": "node scripts/validate-p03-platform.mjs",

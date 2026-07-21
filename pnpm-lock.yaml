@@ -205,6 +205,8 @@ importers:
         specifier: workspace:*
         version: link:../timeline
 
+  packages/cli: {}
+
   packages/diagnostics: {}
 
   packages/engine-adapters:
