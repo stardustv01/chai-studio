@@ -1,7 +1,31 @@
+@font-face {
+  font-family: "Chai Sans";
+  src: url("/fonts/NotoSansDevanagari-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Chai Sans";
+  src: url("/fonts/NotoSansDevanagari-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Chai Sans";
+  src: url("/fonts/NotoSansDevanagari-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: block;
+}
+
 :root {
   color: #edf4fb;
   background: #080b10;
-  font-family: Inter, "SF Pro Text", system-ui, sans-serif;
+  font-family: "Chai Sans", sans-serif;
   font-synthesis: none;
   --canvas: #080b10;
   --surface: #0d131c;
