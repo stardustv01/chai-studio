@@ -1,0 +1,11 @@
+{
+  "duration": 5.6,
+  "assertions": [
+    { "kind": "appearsBy", "selector": ".brand", "bySec": 0.9 },
+    { "kind": "appearsBy", "selector": "#workspace-card", "bySec": 1.1 },
+    { "kind": "before", "a": "#workspace-card", "b": "#codex-cursor" },
+    { "kind": "staysInFrame", "selector": "#workspace-card" },
+    { "kind": "staysInFrame", "selector": "#codex-cursor" },
+    { "kind": "keepsMoving", "withinSelector": ".stage", "maxStaticSec": 1.4 }
+  ]
+}

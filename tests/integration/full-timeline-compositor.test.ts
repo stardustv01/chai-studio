@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -207,6 +207,81 @@ describe("full timeline compositor", () => {
     });
 
     expect(result.visualLayerCount).toBe(1);
+    await expect(readPixel(path.join(outputDirectory, result.primaryRelativePath), 80, 45)).resolves.toEqual([
+      252, 0, 0, 255,
+    ]);
+  });
+
+  it("rejects registered asset bytes changed after the immutable snapshot was created", async () => {
+    const fixture = await compositorFixture();
+    await writeFile(path.join(fixture.root, "assets", "test", "red.png"), "changed-after-registration");
+
+    await expect(
+      renderFullTimeline({
+        projects: fixture.projects,
+        snapshot: fixture.snapshot,
+        profile: profile("still", { width: 160, height: 90, audioCodec: null, audioSampleRate: null }),
+        scope: { kind: "frame", frame: "0" },
+        outputDirectory: path.join(fixture.root, "renders", "mutated-asset"),
+        signal: new AbortController().signal,
+        report: () => undefined,
+        capture: { includeAudio: false },
+      }),
+    ).rejects.toThrow(/content hash no longer matches/i);
+  });
+
+  it("rejects a registered project asset replaced by an external symlink", async () => {
+    const fixture = await compositorFixture();
+    const registeredPath = path.join(fixture.root, "assets", "test", "red.png");
+    const originalBytes = await readFile(registeredPath);
+    const externalPath = path.join(path.dirname(fixture.root), "outside-red.png");
+    await writeFile(externalPath, originalBytes);
+    await rm(registeredPath);
+    await symlink(externalPath, registeredPath);
+
+    await expect(
+      renderFullTimeline({
+        projects: fixture.projects,
+        snapshot: fixture.snapshot,
+        profile: profile("still", { width: 160, height: 90, audioCodec: null, audioSampleRate: null }),
+        scope: { kind: "frame", frame: "0" },
+        outputDirectory: path.join(fixture.root, "renders", "symlinked-asset"),
+        signal: new AbortController().signal,
+        report: () => undefined,
+        capture: { includeAudio: false },
+      }),
+    ).rejects.toThrow(/regular file.*symlinks are forbidden/i);
+  });
+
+  it("continues to render an exact asset from an explicitly approved external root", async () => {
+    const fixture = await compositorFixture();
+    const externalRoot = path.join(path.dirname(fixture.root), "approved-stock");
+    await mkdir(externalRoot, { recursive: true });
+    const externalBytes = await readFile(path.join(fixture.root, "assets", "test", "red.png"));
+    await writeFile(path.join(externalRoot, "red.png"), externalBytes);
+    const snapshot = {
+      ...fixture.snapshot,
+      assets: {
+        ...fixture.snapshot.assets,
+        assets: fixture.snapshot.assets.assets.map((asset) =>
+          asset.id === "asset-visual-test-0001" ? { ...asset, path: "external/stock/red.png" } : asset,
+        ),
+      },
+    };
+    const outputDirectory = path.join(fixture.root, "renders", "approved-external");
+
+    const result = await renderFullTimeline({
+      projects: fixture.projects,
+      snapshot,
+      profile: profile("still", { width: 160, height: 90, audioCodec: null, audioSampleRate: null }),
+      scope: { kind: "frame", frame: "0" },
+      outputDirectory,
+      signal: new AbortController().signal,
+      report: () => undefined,
+      approvedExternalRoots: [{ id: "stock", path: externalRoot }],
+      capture: { includeAudio: false },
+    });
+
     await expect(readPixel(path.join(outputDirectory, result.primaryRelativePath), 80, 45)).resolves.toEqual([
       252, 0, 0, 255,
     ]);

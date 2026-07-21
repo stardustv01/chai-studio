@@ -50,10 +50,6 @@ export interface WorkspaceMonitorActions {
     includeOverlays: boolean,
     source?: SourceInspectionState,
   ) => void;
-  readonly sourceReview: (
-    action: "compare-to-timeline" | "add-to-context",
-    source: SourceInspectionState,
-  ) => void;
   readonly timeline: (command: TimelineEditCommand) => void;
   readonly audio: (command: AudioGraphCommand) => void;
   readonly language: (command: LanguageCommand) => void;
@@ -404,13 +400,9 @@ export const WorkspaceCenter = ({ monitorActions, workspace, snapshot }: Workspa
         hasInOutRange: snapshot.preview.inOutRange !== null,
       }}
       comparisonArtwork={
-        authenticated ? (
-          programArtwork
-        ) : (
-          <ProgramArtwork animation={false} comparisonVariant snapshot={snapshot} />
-        )
+        authenticated ? undefined : <ProgramArtwork animation={false} comparisonVariant snapshot={snapshot} />
       }
-      comparison={inspect}
+      comparison={inspect && !authenticated}
       comparisonMode={monitorActions.comparisonMode}
       selectedLayerLabel={animation ? "ParticleBridge" : "FutureTitle_v04"}
       onCommand={monitorActions.command}
@@ -470,7 +462,6 @@ export const WorkspaceLowerPanel = ({
       <SourceAndTranscript
         snapshot={snapshot}
         capture={monitorActions.capture}
-        sourceReview={monitorActions.sourceReview}
         seek={monitorActions.command}
         timeline={monitorActions.timeline}
         language={monitorActions.language}
@@ -595,15 +586,37 @@ const PanelContent = ({
       {tabs === undefined ? (
         <strong>{title}</strong>
       ) : (
-        <div className="mini-tabs">
+        <div className="mini-tabs" role="tablist" aria-label={`${title} views`}>
           {tabs.map((tab) => (
             <button
               className={(activeTab ?? tabs[0]) === tab ? "active" : ""}
               type="button"
               role="tab"
               aria-selected={(activeTab ?? tabs[0]) === tab}
+              tabIndex={(activeTab ?? tabs[0]) === tab ? 0 : -1}
               onClick={() => {
                 onTabChange?.(tab);
+              }}
+              onKeyDown={(event) => {
+                const currentIndex = tabs.indexOf(tab);
+                const nextIndex =
+                  event.key === "ArrowRight"
+                    ? (currentIndex + 1) % tabs.length
+                    : event.key === "ArrowLeft"
+                      ? (currentIndex - 1 + tabs.length) % tabs.length
+                      : event.key === "Home"
+                        ? 0
+                        : event.key === "End"
+                          ? tabs.length - 1
+                          : null;
+                if (nextIndex === null) return;
+                const nextTab = tabs[nextIndex];
+                if (nextTab === undefined) return;
+                event.preventDefault();
+                onTabChange?.(nextTab);
+                const tabButtons =
+                  event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role='tab']");
+                tabButtons?.[nextIndex]?.focus();
               }}
               key={tab}
             >
@@ -822,6 +835,14 @@ const AuthenticatedProgramArtwork = ({ snapshot }: { readonly snapshot: StudioSn
   liveMasterFrame.current = masterFrame;
   liveRevisionId.current = revisionId;
 
+  const clearProgramFrame = useCallback((): void => {
+    if (frameUrl.current !== null) {
+      URL.revokeObjectURL(frameUrl.current);
+      frameUrl.current = null;
+    }
+    setFrame(null);
+  }, []);
+
   const loadProgramFrame = useCallback(
     async (requestedFrame: string, requestedRevisionId: string, signal: AbortSignal): Promise<void> => {
       const payload = await client.programFrame(requestedFrame, requestedRevisionId, signal);
@@ -845,20 +866,30 @@ const AuthenticatedProgramArtwork = ({ snapshot }: { readonly snapshot: StudioSn
 
   useEffect(() => {
     if (revisionId === null || snapshot.preview.durationFrames === "0") {
+      clearProgramFrame();
       setStatus("unavailable");
       return;
     }
     if (snapshot.preview.playback === "playing") return;
     const controller = new AbortController();
+    clearProgramFrame();
     setStatus("loading");
     void loadProgramFrame(masterFrame, revisionId, controller.signal).catch((cause: unknown) => {
       if (cause instanceof DOMException && cause.name === "AbortError") return;
+      clearProgramFrame();
       setStatus("unavailable");
     });
     return () => {
       controller.abort();
     };
-  }, [loadProgramFrame, masterFrame, revisionId, snapshot.preview.durationFrames, snapshot.preview.playback]);
+  }, [
+    clearProgramFrame,
+    loadProgramFrame,
+    masterFrame,
+    revisionId,
+    snapshot.preview.durationFrames,
+    snapshot.preview.playback,
+  ]);
 
   useEffect(() => {
     if (
@@ -876,6 +907,7 @@ const AuthenticatedProgramArtwork = ({ snapshot }: { readonly snapshot: StudioSn
       void loadProgramFrame(liveMasterFrame.current, currentRevisionId, controller.signal)
         .catch((cause: unknown) => {
           if (cause instanceof DOMException && cause.name === "AbortError") return;
+          clearProgramFrame();
           setStatus("unavailable");
         })
         .finally(() => {
@@ -888,7 +920,13 @@ const AuthenticatedProgramArtwork = ({ snapshot }: { readonly snapshot: StudioSn
       window.clearInterval(timer);
       controller.abort();
     };
-  }, [loadProgramFrame, revisionId, snapshot.preview.durationFrames, snapshot.preview.playback]);
+  }, [
+    clearProgramFrame,
+    loadProgramFrame,
+    revisionId,
+    snapshot.preview.durationFrames,
+    snapshot.preview.playback,
+  ]);
 
   useEffect(
     () => () => {
@@ -2094,7 +2132,6 @@ const distanceToRange = (frame: bigint, start: bigint, end: bigint): bigint =>
 const SourceAndTranscript = ({
   capture,
   snapshot,
-  sourceReview,
   seek,
   timeline,
   language,
@@ -2104,10 +2141,6 @@ const SourceAndTranscript = ({
     mode: MonitorCaptureMode,
     includeOverlays: boolean,
     source?: SourceInspectionState,
-  ) => void;
-  readonly sourceReview: (
-    action: "compare-to-timeline" | "add-to-context",
-    source: SourceInspectionState,
   ) => void;
   readonly seek: (command: ProgramMonitorCommand) => void;
   readonly timeline: (command: TimelineEditCommand) => void;
@@ -2126,12 +2159,6 @@ const SourceAndTranscript = ({
       timelineFrame={snapshot.preview.masterFrame}
       onTimelineCommand={timeline}
       onCapture={capture}
-      onCompareToTimeline={(source) => {
-        sourceReview("compare-to-timeline", source);
-      }}
-      onAddToContext={(source) => {
-        sourceReview("add-to-context", source);
-      }}
     />
     <TranscriptCaptionPanel
       currentFrame={snapshot.preview.masterFrame}

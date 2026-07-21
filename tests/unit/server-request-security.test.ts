@@ -19,6 +19,15 @@ describe("loopback Studio request security", () => {
     expect(
       authorizeStudioRequest({
         method: "GET",
+        path: "/api/health",
+        headers: { host: "[::1]:4317" },
+        correlationId: createCorrelationId(),
+        policy: policy(),
+      }),
+    ).toEqual({ origin: null, corsOrigin: null, authentication: "public" });
+    expect(
+      authorizeStudioRequest({
+        method: "GET",
         path: "/api/v1/session",
         headers: {
           host: "localhost:4317",

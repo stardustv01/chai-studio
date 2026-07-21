@@ -124,6 +124,27 @@ describe("central executable security policy", () => {
       });
     }).toThrow(/outside the Studio origin/);
     expect(() => {
+      authorizeBrowserCapability(policy, {
+        kind: "navigate",
+        url: "http://127.0.0.1:4317/editor",
+        studioOrigin: "http://127.0.0.1:4317",
+      });
+    }).not.toThrow();
+    expect(() => {
+      authorizeBrowserCapability(policy, {
+        kind: "local-service",
+        url: "http://127.0.0.1:4318/health",
+        studioOrigin: "http://127.0.0.1:4317",
+      });
+    }).toThrow(/local-service/);
+    expect(() => {
+      authorizeBrowserCapability(policy, {
+        kind: "local-service",
+        url: "http://127.0.0.1:4317/health",
+        studioOrigin: "http://127.0.0.1:4317",
+      });
+    }).not.toThrow();
+    expect(() => {
       authorizeBrowserCapability(policy, { kind: "popup", url: "https://example.test" });
     }).toThrow(/denied/);
     expect(() => {
@@ -132,6 +153,14 @@ describe("central executable security policy", () => {
     expect(() => {
       authorizeBrowserCapability(policy, { kind: "clipboard", userGesture: false });
     }).toThrow(/user gesture/);
+    expect(() => {
+      authorizeBrowserCapability(policy, { kind: "clipboard", userGesture: true });
+    }).not.toThrow();
+    const outsideFile = path.join(path.dirname(fixture.source), "outside.txt");
+    await writeFile(outsideFile, "outside");
+    expect(() => {
+      authorizeBrowserCapability(policy, { kind: "file-url", url: pathToFileURL(outsideFile).href });
+    }).toThrow(/outside approved roots/);
   });
 
   it("binds imported worker resources, pools, profiles, caches, and provenance to policy identity", async () => {

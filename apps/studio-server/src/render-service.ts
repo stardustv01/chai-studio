@@ -47,6 +47,8 @@ import {
 import {
   beginAsyncOperation,
   completeAsyncOperation,
+  loadCurrentProjectRevision,
+  loadProjectRevision,
   stringifyCanonicalJson,
   type AcceptedExceptionDocument,
   type CommitActor,
@@ -291,7 +293,46 @@ export interface RenderReceiptView {
   readonly lifecycle: readonly RenderLifecycleEvent[];
   readonly qaReports: readonly QaReceiptRecord[];
   readonly checklist: ReviewChecklist | null;
+  readonly delivery: RenderDeliveryRecord | null;
   readonly currentState: QaState;
+}
+
+export interface RenderDeliveryRecord {
+  readonly schemaVersion: "1.0.0";
+  readonly outputId: string;
+  readonly sourceRevisionId: string;
+  readonly deliveryProfileIdentity: string;
+  readonly evidenceHashes: readonly string[];
+  readonly lifecycleEventHash: string;
+  readonly createdAt: string;
+}
+
+interface LifecycleTransactionRecord {
+  readonly schemaVersion: "1.0.0";
+  readonly id: string;
+  readonly outputId: string;
+  readonly sourceRevisionId: string;
+  readonly resultingRevisionId: string;
+  readonly event: RenderLifecycleEvent;
+  readonly identityHash: string;
+}
+
+interface LifecycleTransitionRequest {
+  readonly outputId: string;
+  readonly to: QaState;
+  readonly actor: CommitActor;
+  readonly expectedRevisionId: string;
+  readonly evidenceHashes: readonly string[];
+  readonly exceptionIds: readonly string[];
+  readonly report: QaReport | null;
+  readonly exceptions: readonly AcceptedExceptionDocument[];
+}
+
+interface DeliverRequest {
+  readonly outputId: string;
+  readonly actor: CommitActor;
+  readonly expectedRevisionId: string;
+  readonly evidenceHashes: readonly string[];
 }
 
 export interface QaReceiptRecord {
@@ -905,7 +946,16 @@ export class RenderApiService {
   }
 
   async outputs(): Promise<readonly RenderOutputRecord[]> {
-    const root = path.join(this.#projects.openRootPath(), "renders");
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#outputsAtRoot(lease.rootPath);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #outputsAtRoot(rootPath: string): Promise<readonly RenderOutputRecord[]> {
+    const root = path.join(rootPath, "renders");
     let names: string[];
     try {
       names = await readdir(root);
@@ -915,27 +965,63 @@ export class RenderApiService {
     }
     const outputs: RenderOutputRecord[] = [];
     for (const name of names.sort()) {
+      let output: RenderOutputRecord;
       try {
-        const parsed: unknown = JSON.parse(await readFile(path.join(root, name, "output.json"), "utf8"));
-        const output = parsed as RenderOutputRecord;
-        const receipt = await this.receipt(output.id);
-        outputs.push({ ...output, lifecycleState: receipt.currentState });
+        output = validateRenderOutput(await readPersistedJson(path.join(root, name, "output.json")), name);
       } catch (cause) {
         if ((cause as NodeJS.ErrnoException).code !== "ENOENT") throw cause;
+        const recovered = await this.#recoverMissingOutput(rootPath, name);
+        if (recovered === null) continue;
+        output = recovered;
       }
+      const receipt = await this.#receiptAtRoot(rootPath, output.id);
+      if (
+        receipt.base.projectId !== output.projectId ||
+        receipt.base.sourceRevisionId !== output.sourceRevisionId ||
+        receipt.base.renderRequestId !== output.renderRequestId ||
+        receipt.base.jobId !== output.jobId ||
+        receipt.base.identityHash !== output.receiptIdentityHash ||
+        receipt.lifecycle[0]?.resultingRevisionId !== output.activationRevisionId ||
+        receipt.base.completedAt !== output.createdAt ||
+        output.lifecycleState !== "rendered_unchecked" ||
+        hashCanonical(receipt.base.deliveryProfile) !== hashCanonical(output.profile) ||
+        hashCanonical(receipt.base.renderScope) !== hashCanonical(output.scope) ||
+        !sameArtifacts(receipt.base.artifacts, output.artifacts)
+      ) {
+        throw new Error(`Persisted render output ${name} does not match its immutable receipt.`);
+      }
+      outputs.push({ ...output, lifecycleState: receipt.currentState });
     }
     return outputs;
   }
 
   async output(outputId: string): Promise<RenderOutputRecord> {
-    const output = (await this.outputs()).find((candidate) => candidate.id === outputId);
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#outputAtRoot(lease.rootPath, outputId);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #outputAtRoot(root: string, outputId: string): Promise<RenderOutputRecord> {
+    const output = (await this.#outputsAtRoot(root)).find((candidate) => candidate.id === outputId);
     if (output === undefined) throw new Error(`Unknown render output ID: ${outputId}.`);
-    const receipt = await this.receipt(outputId);
+    const receipt = await this.#receiptAtRoot(root, outputId);
     return { ...output, lifecycleState: receipt.currentState };
   }
 
   async artifact(outputId: string, index: number): Promise<RenderArtifactPayload> {
-    const output = await this.output(outputId);
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#artifactAtRoot(lease.rootPath, outputId, index);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #artifactAtRoot(root: string, outputId: string, index: number): Promise<RenderArtifactPayload> {
+    const output = await this.#outputAtRoot(root, outputId);
     if (!Number.isSafeInteger(index) || index < 0) throw new Error("Render artifact index is invalid.");
     const artifact = output.artifacts[index];
     if (artifact === undefined) throw new Error("Render artifact index is not present on this output.");
@@ -950,9 +1036,9 @@ export class RenderApiService {
         "Inline artifact viewing currently supports immutable PNG and JPEG still outputs only.",
       );
     }
-    const root = path.resolve(this.#projects.openRootPath());
-    const absolute = path.resolve(root, artifact.relativePath);
-    const relative = path.relative(root, absolute);
+    const resolvedRoot = path.resolve(root);
+    const absolute = path.resolve(resolvedRoot, artifact.relativePath);
+    const relative = path.relative(resolvedRoot, absolute);
     if (relative === "" || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
       throw new Error("Render artifact path escapes the open project.");
     }
@@ -980,6 +1066,7 @@ export class RenderApiService {
     readonly expectedRevisionId: string;
     readonly correlationId: string;
   }): Promise<StudioJobSnapshot> {
+    const expectedRoot = this.#projects.openRootPath();
     const output = await this.output(input.outputId);
     const snapshot = await this.#projects.snapshot();
     if (snapshot.pointer.revisionId !== input.expectedRevisionId) {
@@ -993,157 +1080,184 @@ export class RenderApiService {
     ) {
       throw new Error("QA requires the current rendered_unchecked output identity.");
     }
-    return this.#jobs.enqueue({
-      kind: "render.qa",
-      correlationId: input.correlationId,
-      projectId: output.projectId,
-      revisionId: snapshot.pointer.revisionId,
-      label: `QA · ${output.id}`,
-      task: async ({ signal, report, reportStage }) => {
-        reportStage({ stage: "Validate output artifacts", activeEngine: "shared" });
-        const result = await this.#evaluateQa({
-          output,
-          rootPath: this.#projects.openRootPath(),
-          signal,
-          report,
-        });
-        const qaCreatedAt = this.#timestamp();
-        const measuredAudio =
-          result.audio.measurements.status === "measured" ? result.audio.measurements : null;
-        const fallbackFinding: QaFinding = {
-          schemaVersion: "1.0.0",
-          id: `qa-finding-${randomUUID()}`,
-          ruleId: measuredAudio === null ? "qa.post.structure" : "qa.post.audio",
-          ruleVersion: "1.0.0",
-          category: measuredAudio === null ? "output" : "audio",
-          stage: "post-render",
-          severity:
-            result.state === "qa_failed" ? "error" : result.state === "qa_warning" ? "warning" : "info",
-          blocking: true,
-          status:
-            result.state === "qa_failed" ? "failed" : result.state === "qa_warning" ? "warning" : "passed",
-          title:
-            measuredAudio === null
-              ? "Authoritative output verification"
-              : "Authoritative output and audio verification",
-          detail:
-            result.audio.reasons.length === 0
-              ? measuredAudio === null
-                ? "Artifact identity passes; this delivery profile contains no audio."
-                : "Artifact identity and authoritative audio measurements pass."
-              : result.audio.reasons.join(" "),
-          repairHint:
-            result.state === "qa_failed"
-              ? "Repair the authoritative mix or changed artifact and render again."
-              : null,
-          location: emptyQaLocation(),
-          evidenceHashes: result.evidenceHashes,
-          metrics:
-            measuredAudio === null
-              ? []
-              : [
-                  {
-                    name: "integratedLufs",
-                    value: measuredAudio.integratedLufs,
-                    unit: "LUFS",
-                    comparator: "informational",
-                    threshold: null,
-                  },
-                  {
-                    name: "truePeakDbtp",
-                    value: measuredAudio.truePeakDbtp,
-                    unit: "dBTP",
-                    comparator: "lte",
-                    threshold: 0,
-                  },
-                  {
-                    name: "clippedSamples",
-                    value: measuredAudio.clippedSampleCount,
-                    unit: "samples",
-                    comparator: "eq",
-                    threshold: 0,
-                  },
-                ],
-          environmentFingerprint: null,
-          exceptionId: null,
-        };
-        const findings = result.findings ?? [fallbackFinding];
-        const authoritativeReport = createQaReport({
-          id: `qa-report-${randomUUID()}`,
-          projectId: output.projectId,
-          revisionId: output.sourceRevisionId,
-          outputId: output.id,
-          ruleSetIdentity: qaRuleSetIdentity(),
-          rules: centralizedQaRules().map(({ id, version }) => ({ id, version })),
-          findings,
-          createdAt: qaCreatedAt,
-        });
-        const qaReportWithoutHash = {
-          schemaVersion: "1.0.0" as const,
-          id: `qa-report-${randomUUID()}`,
-          outputId: output.id,
-          sourceRevisionId: output.sourceRevisionId,
-          createdAt: qaCreatedAt,
-          state: authoritativeReport.state,
-          audio: result.audio,
-          primaryArtifactProbe: result.primaryArtifactProbe ?? null,
-          artifactEvidenceHashes: result.evidenceHashes,
-          exceptionIds: result.exceptionIds,
-          authoritativeReport,
-        };
-        const qaReport: QaReceiptRecord = {
-          ...qaReportWithoutHash,
-          reportHash: hashCanonical(qaReportWithoutHash),
-        };
-        await writeJsonAtomic(
-          path.join(
-            this.#projects.openRootPath(),
-            "receipts",
-            "renders",
-            output.id,
-            "qa",
-            `${qaCreatedAt.replace(/[:.]/g, "-")}-${qaReport.id}.json`,
-          ),
-          qaReport,
-        );
-        const checklist = createOutputReviewChecklist(
-          output,
-          snapshot.timeline.durationFrames,
-          output.profile.alpha !== "none",
-        );
-        await writeJsonAtomic(this.#checklistPath(output.id), checklist);
-        reportStage({ stage: "Record QA evidence", activeEngine: "shared" });
-        const event = await this.#transition({
-          outputId: output.id,
-          to: authoritativeReport.state,
-          actor: input.actor,
-          expectedRevisionId: input.expectedRevisionId,
-          evidenceHashes: [...result.evidenceHashes, qaReport.reportHash, authoritativeReport.identityHash],
-          exceptionIds: result.exceptionIds,
-          report: authoritativeReport,
-          exceptions: snapshot.timeline.reviewState?.exceptions ?? [],
-        });
-        return {
-          result: { ...result, state: authoritativeReport.state },
-          report: qaReport,
-          checklist,
-          event,
-        };
-      },
-    });
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      if (lease.rootPath !== expectedRoot) {
+        throw new Error("Project changed while QA was being prepared.");
+      }
+      return this.#jobs.enqueue({
+        kind: "render.qa",
+        correlationId: input.correlationId,
+        projectId: output.projectId,
+        revisionId: snapshot.pointer.revisionId,
+        label: `QA · ${output.id}`,
+        task: async ({ signal, report, reportStage }) => {
+          try {
+            reportStage({ stage: "Validate output artifacts", activeEngine: "shared" });
+            const result = await this.#evaluateQa({
+              output,
+              rootPath: lease.rootPath,
+              signal,
+              report,
+            });
+            const qaCreatedAt = this.#timestamp();
+            const measuredAudio =
+              result.audio.measurements.status === "measured" ? result.audio.measurements : null;
+            const fallbackFinding: QaFinding = {
+              schemaVersion: "1.0.0",
+              id: `qa-finding-${randomUUID()}`,
+              ruleId: measuredAudio === null ? "qa.post.structure" : "qa.post.audio",
+              ruleVersion: "1.0.0",
+              category: measuredAudio === null ? "output" : "audio",
+              stage: "post-render",
+              severity:
+                result.state === "qa_failed" ? "error" : result.state === "qa_warning" ? "warning" : "info",
+              blocking: true,
+              status:
+                result.state === "qa_failed"
+                  ? "failed"
+                  : result.state === "qa_warning"
+                    ? "warning"
+                    : "passed",
+              title:
+                measuredAudio === null
+                  ? "Authoritative output verification"
+                  : "Authoritative output and audio verification",
+              detail:
+                result.audio.reasons.length === 0
+                  ? measuredAudio === null
+                    ? "Artifact identity passes; this delivery profile contains no audio."
+                    : "Artifact identity and authoritative audio measurements pass."
+                  : result.audio.reasons.join(" "),
+              repairHint:
+                result.state === "qa_failed"
+                  ? "Repair the authoritative mix or changed artifact and render again."
+                  : null,
+              location: emptyQaLocation(),
+              evidenceHashes: result.evidenceHashes,
+              metrics:
+                measuredAudio === null
+                  ? []
+                  : [
+                      {
+                        name: "integratedLufs",
+                        value: measuredAudio.integratedLufs,
+                        unit: "LUFS",
+                        comparator: "informational",
+                        threshold: null,
+                      },
+                      {
+                        name: "truePeakDbtp",
+                        value: measuredAudio.truePeakDbtp,
+                        unit: "dBTP",
+                        comparator: "lte",
+                        threshold: 0,
+                      },
+                      {
+                        name: "clippedSamples",
+                        value: measuredAudio.clippedSampleCount,
+                        unit: "samples",
+                        comparator: "eq",
+                        threshold: 0,
+                      },
+                    ],
+              environmentFingerprint: null,
+              exceptionId: null,
+            };
+            const findings = result.findings ?? [fallbackFinding];
+            const authoritativeReport = createQaReport({
+              id: `qa-report-${randomUUID()}`,
+              projectId: output.projectId,
+              revisionId: output.sourceRevisionId,
+              outputId: output.id,
+              ruleSetIdentity: qaRuleSetIdentity(),
+              rules: centralizedQaRules().map(({ id, version }) => ({ id, version })),
+              findings,
+              createdAt: qaCreatedAt,
+            });
+            const qaReportWithoutHash = {
+              schemaVersion: "1.0.0" as const,
+              id: `qa-report-${randomUUID()}`,
+              outputId: output.id,
+              sourceRevisionId: output.sourceRevisionId,
+              createdAt: qaCreatedAt,
+              state: authoritativeReport.state,
+              audio: result.audio,
+              primaryArtifactProbe: result.primaryArtifactProbe ?? null,
+              artifactEvidenceHashes: result.evidenceHashes,
+              exceptionIds: result.exceptionIds,
+              authoritativeReport,
+            };
+            const qaReport: QaReceiptRecord = {
+              ...qaReportWithoutHash,
+              reportHash: hashCanonical(qaReportWithoutHash),
+            };
+            await writeJsonAtomic(
+              path.join(
+                lease.rootPath,
+                "receipts",
+                "renders",
+                output.id,
+                "qa",
+                `${qaCreatedAt.replace(/[:.]/g, "-")}-${qaReport.id}.json`,
+              ),
+              qaReport,
+            );
+            const checklist = createOutputReviewChecklist(
+              output,
+              snapshot.timeline.durationFrames,
+              output.profile.alpha !== "none",
+            );
+            await writeJsonAtomic(this.#checklistPath(output.id, lease.rootPath), checklist);
+            reportStage({ stage: "Record QA evidence", activeEngine: "shared" });
+            const event = await this.#transition({
+              outputId: output.id,
+              to: authoritativeReport.state,
+              actor: input.actor,
+              expectedRevisionId: input.expectedRevisionId,
+              evidenceHashes: [
+                ...result.evidenceHashes,
+                qaReport.reportHash,
+                authoritativeReport.identityHash,
+              ],
+              exceptionIds: result.exceptionIds,
+              report: authoritativeReport,
+              exceptions: snapshot.timeline.reviewState?.exceptions ?? [],
+            });
+            return {
+              result: { ...result, state: authoritativeReport.state },
+              report: qaReport,
+              checklist,
+              event,
+            };
+          } finally {
+            lease.release();
+          }
+        },
+      });
+    } catch (cause) {
+      lease.release();
+      throw cause;
+    }
   }
 
   async qaWorkspace(outputId: string): Promise<QaWorkspaceView> {
-    await this.output(outputId);
-    const reports = await this.#qaReports(outputId);
-    return {
-      outputId,
-      rules: centralizedQaRules(),
-      ruleSetIdentity: qaRuleSetIdentity(),
-      reports,
-      latest: reports.at(-1) ?? null,
-      checklist: await this.#readChecklist(outputId),
-    };
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      await this.#outputAtRoot(lease.rootPath, outputId);
+      const receipt = await this.#receiptAtRoot(lease.rootPath, outputId);
+      const reports = receipt.qaReports;
+      return {
+        outputId,
+        rules: centralizedQaRules(),
+        ruleSetIdentity: qaRuleSetIdentity(),
+        reports,
+        latest: reports.at(-1) ?? null,
+        checklist: receipt.checklist,
+      };
+    } finally {
+      lease.release();
+    }
   }
 
   async recordChecklistItem(input: {
@@ -1153,21 +1267,26 @@ export class RenderApiService {
     readonly reviewerId: string;
     readonly evidenceHashes: readonly string[];
   }): Promise<ReviewChecklist> {
-    const output = await this.output(input.outputId);
-    const checklist = await this.#readChecklist(output.id);
-    if (checklist === null) throw new Error("Run QA before recording visual review evidence.");
-    if (checklist.outputId !== output.id || checklist.revisionId !== output.sourceRevisionId) {
-      throw new Error("Visual review checklist does not match the immutable output identity.");
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      const output = await this.#outputAtRoot(lease.rootPath, input.outputId);
+      const checklist = await this.#readChecklist(output.id, lease.rootPath);
+      if (checklist === null) throw new Error("Run QA before recording visual review evidence.");
+      if (checklist.outputId !== output.id || checklist.revisionId !== output.sourceRevisionId) {
+        throw new Error("Visual review checklist does not match the immutable output identity.");
+      }
+      const updated = recordReviewChecklistItem(checklist, {
+        itemId: input.itemId,
+        status: input.status,
+        reviewerId: input.reviewerId,
+        evidenceHashes: input.evidenceHashes,
+        reviewedAt: this.#timestamp(),
+      });
+      await writeJsonAtomic(this.#checklistPath(output.id, lease.rootPath), updated);
+      return updated;
+    } finally {
+      lease.release();
     }
-    const updated = recordReviewChecklistItem(checklist, {
-      itemId: input.itemId,
-      status: input.status,
-      reviewerId: input.reviewerId,
-      evidenceHashes: input.evidenceHashes,
-      reviewedAt: this.#timestamp(),
-    });
-    await writeJsonAtomic(this.#checklistPath(output.id), updated);
-    return updated;
   }
 
   async approve(input: {
@@ -1177,16 +1296,37 @@ export class RenderApiService {
     readonly evidenceHashes: readonly string[];
     readonly exceptionIds: readonly string[];
   }): Promise<RenderLifecycleEvent> {
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#approveAtRoot(lease.rootPath, input);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #approveAtRoot(
+    root: string,
+    input: {
+      readonly outputId: string;
+      readonly actor: CommitActor;
+      readonly expectedRevisionId: string;
+      readonly evidenceHashes: readonly string[];
+      readonly exceptionIds: readonly string[];
+    },
+  ): Promise<RenderLifecycleEvent> {
     const snapshot = await this.#projects.snapshot();
+    if (snapshot.approvalState.outputId !== input.outputId) {
+      throw new Error("Approval requires the current immutable output identity.");
+    }
     if (snapshot.approvalState.state === "qa_warning" && input.exceptionIds.length === 0) {
       throw new Error("Approving qa_warning requires at least one scoped accepted exception.");
     }
     if (snapshot.approvalState.state !== "qa_passed" && snapshot.approvalState.state !== "qa_warning") {
       throw new Error("Approval requires qa_passed or qa_warning state.");
     }
-    const latest = (await this.#qaReports(input.outputId)).at(-1);
+    const latest = (await this.#receiptAtRoot(root, input.outputId)).qaReports.at(-1);
     if (latest === undefined) throw new Error("Approval requires an immutable QA report.");
-    const checklist = await this.#readChecklist(input.outputId);
+    const checklist = await this.#readChecklist(input.outputId, root);
     if (checklist?.complete !== true) {
       throw new Error(
         "Approval requires every generated visual review checklist item to pass with evidence.",
@@ -1209,12 +1349,16 @@ export class RenderApiService {
     });
   }
 
-  async deliver(input: {
-    readonly outputId: string;
-    readonly actor: CommitActor;
-    readonly expectedRevisionId: string;
-    readonly evidenceHashes: readonly string[];
-  }): Promise<RenderLifecycleEvent> {
+  async deliver(input: DeliverRequest): Promise<RenderLifecycleEvent> {
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#performDelivery(lease.rootPath, input);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #performDelivery(root: string, input: DeliverRequest): Promise<RenderLifecycleEvent> {
     const output = await this.output(input.outputId);
     const snapshot = await this.#projects.snapshot();
     if (snapshot.approvalState.state !== "approved" || snapshot.approvalState.outputId !== output.id) {
@@ -1248,25 +1392,27 @@ export class RenderApiService {
       exceptions: snapshot.timeline.reviewState?.exceptions ?? [],
     });
     await writeJsonAtomic(
-      path.join(this.#projects.openRootPath(), "receipts", "renders", output.id, "delivery.json"),
-      {
-        schemaVersion: "1.0.0",
-        outputId: output.id,
-        sourceRevisionId: output.sourceRevisionId,
-        deliveryProfileIdentity: output.profile.identityHash,
-        evidenceHashes: deliveryEvidence,
-        lifecycleEventHash: event.eventHash,
-        createdAt: event.createdAt,
-      },
+      this.#deliveryPath(root, output.id),
+      deliveryRecordFor(output.id, output.sourceRevisionId, output.profile.identityHash, event),
     );
     return event;
   }
 
   async receipt(outputId: string): Promise<RenderReceiptView> {
-    const root = this.#projects.openRootPath();
-    const base = JSON.parse(
-      await readFile(path.join(root, "receipts", "renders", outputId, "render.json"), "utf8"),
-    ) as RenderReceiptBase;
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#receiptAtRoot(lease.rootPath, outputId);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #receiptAtRoot(root: string, outputId: string): Promise<RenderReceiptView> {
+    await this.#recoverLifecycleTransactions(root, outputId);
+    const base = validateRenderReceiptBase(
+      await readPersistedJson(path.join(root, "receipts", "renders", outputId, "render.json")),
+      outputId,
+    );
     const lifecycleDirectory = path.join(root, "receipts", "renders", outputId, "lifecycle");
     let names: readonly string[];
     try {
@@ -1275,19 +1421,234 @@ export class RenderApiService {
       if ((cause as NodeJS.ErrnoException).code === "ENOENT") names = [];
       else throw cause;
     }
-    const lifecycle = await Promise.all(
-      names.map(
-        async (name) =>
-          JSON.parse(await readFile(path.join(lifecycleDirectory, name), "utf8")) as RenderLifecycleEvent,
+    const unorderedLifecycle = await Promise.all(
+      names.map(async (name) =>
+        validateLifecycleEvent(await readPersistedJson(path.join(lifecycleDirectory, name)), outputId),
       ),
     );
+    const lifecycle = await this.#validateAndOrderLifecycleEvents(root, unorderedLifecycle, base);
+    const currentState = lifecycle.at(-1)?.to ?? base.initialLifecycleState;
+    let delivery = await this.#readDelivery(root, outputId, base);
+    if (currentState === "delivered" && delivery === null) {
+      const deliveredEvent = lifecycle.at(-1);
+      if (deliveredEvent?.to !== "delivered") {
+        throw new Error("Persisted delivery lifecycle is inconsistent.");
+      }
+      delivery = deliveryRecordFor(
+        outputId,
+        base.sourceRevisionId,
+        base.deliveryProfile.identityHash,
+        deliveredEvent,
+      );
+      await writeJsonAtomic(this.#deliveryPath(root, outputId), delivery);
+    }
+    if (delivery !== null && currentState !== "delivered") {
+      throw new Error("Persisted delivery record exists without a delivered lifecycle state.");
+    }
+    if (
+      delivery !== null &&
+      (delivery.lifecycleEventHash !== lifecycle.at(-1)?.eventHash ||
+        delivery.createdAt !== lifecycle.at(-1)?.createdAt ||
+        hashCanonical(delivery.evidenceHashes) !== hashCanonical(lifecycle.at(-1)?.evidenceHashes))
+    ) {
+      throw new Error("Persisted delivery record does not match the delivered lifecycle event.");
+    }
+    const qaReports = bindQaReportsToLifecycle(await this.#qaReports(outputId, root), lifecycle, outputId);
     return {
       base,
       lifecycle,
-      qaReports: await this.#qaReports(outputId),
-      checklist: await this.#readChecklist(outputId),
-      currentState: lifecycle.at(-1)?.to ?? base.initialLifecycleState,
+      qaReports,
+      checklist: await this.#readChecklist(outputId, root),
+      delivery,
+      currentState,
     };
+  }
+
+  async #validateAndOrderLifecycleEvents(
+    root: string,
+    events: readonly RenderLifecycleEvent[],
+    base: RenderReceiptBase,
+  ): Promise<readonly RenderLifecycleEvent[]> {
+    const current = await loadCurrentProjectRevision(root);
+    const sourceRevisions = new Set<string>();
+    const ancestryOrder = new Map<string, number>();
+    let ancestryRevisionId: string | null = current.pointer.revisionId;
+    while (ancestryRevisionId !== null && ancestryOrder.size < 10_000) {
+      if (ancestryOrder.has(ancestryRevisionId)) {
+        throw new Error("Project revision ancestry contains a cycle.");
+      }
+      ancestryOrder.set(ancestryRevisionId, ancestryOrder.size);
+      const revision = await loadProjectRevision(root, ancestryRevisionId);
+      ancestryRevisionId = revision.transaction.parentRevisionId;
+    }
+    if (ancestryOrder.size >= 10_000) {
+      throw new Error("Project revision ancestry exceeds recovery bounds.");
+    }
+    for (const event of events) {
+      if (sourceRevisions.has(event.sourceRevisionId)) {
+        throw new Error(`Persisted lifecycle chain for ${base.outputId} branches from one revision.`);
+      }
+      if (!ancestryOrder.has(event.resultingRevisionId)) {
+        throw new Error(`Persisted lifecycle event ${event.id} is not reachable from current authority.`);
+      }
+      const revision = await loadProjectRevision(root, event.resultingRevisionId);
+      this.#assertLifecycleEventMatchesRevision(event, revision, base);
+      sourceRevisions.add(event.sourceRevisionId);
+    }
+    const ordered = [...events].sort(
+      (left, right) =>
+        (ancestryOrder.get(right.resultingRevisionId) ?? -1) -
+        (ancestryOrder.get(left.resultingRevisionId) ?? -1),
+    );
+    for (let index = 1; index < ordered.length; index += 1) {
+      const prior = ordered[index - 1];
+      const event = ordered[index];
+      if (
+        prior === undefined ||
+        event === undefined ||
+        !(await revisionIsReachable(root, event.sourceRevisionId, prior.resultingRevisionId))
+      ) {
+        throw new Error(`Persisted lifecycle chain for ${base.outputId} contains disconnected events.`);
+      }
+    }
+    validateLifecycleChain(ordered, base);
+    return ordered;
+  }
+
+  #assertLifecycleEventMatchesRevision(
+    event: RenderLifecycleEvent,
+    revision: Awaited<ReturnType<typeof loadProjectRevision>>,
+    base: RenderReceiptBase,
+  ): void {
+    const history = revision.approvalState.history.at(-1);
+    if (
+      event.outputId !== base.outputId ||
+      revision.project.projectId !== base.projectId ||
+      revision.transaction.parentRevisionId !== event.sourceRevisionId ||
+      revision.transaction.resultingRevisionId !== event.resultingRevisionId ||
+      revision.approvalState.outputId !== event.outputId ||
+      revision.approvalState.state !== event.to ||
+      !revision.transaction.affectedEntityIds.includes(event.outputId) ||
+      hashCanonical(revision.transaction.actor) !== hashCanonical(event.actor) ||
+      history?.from !== event.from ||
+      history.to !== event.to ||
+      history.actorId !== event.actor.id ||
+      hashCanonical(history.evidenceHashes) !== hashCanonical(event.evidenceHashes) ||
+      hashCanonical(history.exceptionIds) !== hashCanonical(event.exceptionIds)
+    ) {
+      throw new Error(`Persisted lifecycle event ${event.id} conflicts with immutable revision evidence.`);
+    }
+  }
+
+  async #recoverMissingOutput(root: string, outputId: string): Promise<RenderOutputRecord | null> {
+    try {
+      await readFile(path.join(root, "receipts", "renders", outputId, "render.json"));
+    } catch (cause) {
+      if ((cause as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw cause;
+    }
+    await this.#recoverLifecycleTransactions(root, outputId);
+    const base = validateRenderReceiptBase(
+      await readPersistedJson(path.join(root, "receipts", "renders", outputId, "render.json")),
+      outputId,
+    );
+    const lifecycleDirectory = path.join(root, "receipts", "renders", outputId, "lifecycle");
+    let lifecycleNames: readonly string[];
+    try {
+      lifecycleNames = (await readdir(lifecycleDirectory)).filter((name) => name.endsWith(".json"));
+    } catch (cause) {
+      if ((cause as NodeJS.ErrnoException).code === "ENOENT") lifecycleNames = [];
+      else throw cause;
+    }
+    if (lifecycleNames.length === 0) {
+      const recoveredActivation = await this.#recoverActivationEvent(root, outputId, base);
+      if (!recoveredActivation) return null;
+    }
+    const receipt = await this.#receiptAtRoot(root, outputId);
+    const activation = receipt.lifecycle[0];
+    if (
+      activation?.to !== "rendered_unchecked" ||
+      !activation.evidenceHashes.includes(receipt.base.identityHash)
+    ) {
+      throw new Error(`Cannot recover render output ${outputId} without activation evidence.`);
+    }
+    const revision = await loadProjectRevision(root, activation.resultingRevisionId);
+    if (
+      revision.project.projectId !== receipt.base.projectId ||
+      revision.transaction.parentRevisionId !== receipt.base.sourceRevisionId ||
+      revision.approvalState.outputId !== outputId ||
+      revision.approvalState.state !== "rendered_unchecked"
+    ) {
+      throw new Error(`Cannot recover render output ${outputId} from an unrelated project revision.`);
+    }
+    const output = validateRenderOutput(
+      {
+        schemaVersion: "1.0.0",
+        id: outputId,
+        projectId: receipt.base.projectId,
+        sourceRevisionId: receipt.base.sourceRevisionId,
+        activationRevisionId: activation.resultingRevisionId,
+        renderRequestId: receipt.base.renderRequestId,
+        jobId: receipt.base.jobId,
+        profile: receipt.base.deliveryProfile,
+        scope: receipt.base.renderScope,
+        artifacts: receipt.base.artifacts,
+        receiptIdentityHash: receipt.base.identityHash,
+        lifecycleState: receipt.currentState,
+        createdAt: receipt.base.completedAt,
+      },
+      outputId,
+    );
+    await writeJsonAtomic(path.join(root, "renders", outputId, "output.json"), output);
+    return output;
+  }
+
+  async #recoverActivationEvent(root: string, outputId: string, base: RenderReceiptBase): Promise<boolean> {
+    const current = await loadCurrentProjectRevision(root);
+    let revisionId: string | null = current.pointer.revisionId;
+    const visited = new Set<string>();
+    while (revisionId !== null && visited.size < 10_000) {
+      if (visited.has(revisionId)) throw new Error("Project revision ancestry contains a cycle.");
+      visited.add(revisionId);
+      const revision = await loadProjectRevision(root, revisionId);
+      if (
+        revision.transaction.parentRevisionId === base.sourceRevisionId &&
+        revision.project.projectId === base.projectId &&
+        revision.approvalState.outputId === outputId &&
+        revision.approvalState.state === "rendered_unchecked"
+      ) {
+        const history = revision.approvalState.history.at(-1);
+        if (
+          history?.to !== "rendered_unchecked" ||
+          history.actorId !== revision.transaction.actor.id ||
+          !history.evidenceHashes.includes(base.identityHash)
+        ) {
+          throw new Error(`Committed activation revision for ${outputId} lacks matching evidence.`);
+        }
+        const eventWithoutHash = {
+          schemaVersion: "1.0.0" as const,
+          id: `lifecycle-recovered-${revisionId}`,
+          outputId,
+          from: history.from,
+          to: "rendered_unchecked" as const,
+          actor: revision.transaction.actor,
+          sourceRevisionId: base.sourceRevisionId,
+          resultingRevisionId: revisionId,
+          evidenceHashes: history.evidenceHashes,
+          exceptionIds: history.exceptionIds,
+          createdAt: revision.transaction.timestamp,
+        };
+        const event: RenderLifecycleEvent = {
+          ...eventWithoutHash,
+          eventHash: hashCanonical(eventWithoutHash),
+        };
+        await writeJsonAtomic(this.#lifecycleEventPath(root, outputId, event), event);
+        return true;
+      }
+      revisionId = revision.transaction.parentRevisionId;
+    }
+    if (visited.size >= 10_000) throw new Error("Project revision ancestry exceeds recovery bounds.");
+    return false;
   }
 
   async #enqueueRecord(input: {
@@ -1323,25 +1684,45 @@ export class RenderApiService {
       retryOfRequestId: input.retryOfRequestId,
       createdAt: this.#timestamp(),
     };
-    this.#requests.set(request.id, request);
-    await writeJsonAtomic(this.#requestPath(request.id), request);
-    await new RenderRecoveryJournalStore(this.#projects.openRootPath(), this.#now).begin({
-      requestId: request.id,
-      retryOfRequestId: request.retryOfRequestId,
-      projectId: request.projectId,
-      revisionId: request.revisionId,
-    });
-    const job = this.#jobs.enqueue({
-      id: jobId,
-      kind: "render.execute",
-      correlationId: input.correlationId,
-      projectId: input.projectId,
-      revisionId: input.revisionId,
-      priority: input.priority,
-      label: input.name,
-      task: ({ signal, report, reportStage }) => this.#runRender(request, signal, report, reportStage),
-    });
-    return { request, job };
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      const current = await this.#projects.snapshot();
+      if (
+        current.project.projectId !== input.projectId ||
+        current.pointer.revisionId !== input.revisionId ||
+        current.revisionHash !== input.revisionHash
+      ) {
+        throw new Error("Project changed while the render request was being prepared.");
+      }
+      this.#requests.set(request.id, request);
+      await writeJsonAtomic(this.#requestPath(request.id), request);
+      await new RenderRecoveryJournalStore(lease.rootPath, this.#now).begin({
+        requestId: request.id,
+        retryOfRequestId: request.retryOfRequestId,
+        projectId: request.projectId,
+        revisionId: request.revisionId,
+      });
+      const job = this.#jobs.enqueue({
+        id: jobId,
+        kind: "render.execute",
+        correlationId: input.correlationId,
+        projectId: input.projectId,
+        revisionId: input.revisionId,
+        priority: input.priority,
+        label: input.name,
+        task: async ({ signal, report, reportStage }) => {
+          try {
+            return await this.#runRender(request, signal, report, reportStage);
+          } finally {
+            lease.release();
+          }
+        },
+      });
+      return { request, job };
+    } catch (cause) {
+      lease.release();
+      throw cause;
+    }
   }
 
   async #runRender(
@@ -1593,36 +1974,25 @@ export class RenderApiService {
     return receipt;
   }
 
-  async #transition(input: {
-    readonly outputId: string;
-    readonly to: QaState;
-    readonly actor: CommitActor;
-    readonly expectedRevisionId: string;
-    readonly evidenceHashes: readonly string[];
-    readonly exceptionIds: readonly string[];
-    readonly report: QaReport | null;
-    readonly exceptions: readonly AcceptedExceptionDocument[];
-  }): Promise<RenderLifecycleEvent> {
+  async #transition(input: LifecycleTransitionRequest): Promise<RenderLifecycleEvent> {
+    const lease = this.#projects.acquireOperationLease();
+    try {
+      return await this.#performTransition(lease.rootPath, input);
+    } finally {
+      lease.release();
+    }
+  }
+
+  async #performTransition(root: string, input: LifecycleTransitionRequest): Promise<RenderLifecycleEvent> {
     validateHashes(input.evidenceHashes);
+    await this.#recoverLifecycleTransactions(root, input.outputId);
     const snapshot = await this.#projects.snapshot();
     if (snapshot.pointer.revisionId !== input.expectedRevisionId) {
       throw new Error(
         `Lifecycle revision conflict: expected ${input.expectedRevisionId}, current ${snapshot.pointer.revisionId}.`,
       );
     }
-    const receipt = await this.#projects.transitionQaLifecycle({
-      outputId: input.outputId,
-      to: input.to,
-      actor: input.actor,
-      expectedRevisionId: input.expectedRevisionId,
-      report: input.report,
-      exceptions: input.exceptions,
-      evidenceHashes: input.evidenceHashes,
-      exceptionIds: input.exceptionIds,
-    });
-    if (receipt.status !== "committed" || receipt.resultingRevisionId === null) {
-      throw new Error(receipt.error?.message ?? "Lifecycle transition did not commit.");
-    }
+    const resultingRevisionId = `revision-lifecycle-${randomUUID()}`;
     const eventWithoutHash = {
       schemaVersion: "1.0.0" as const,
       id: `lifecycle-${randomUUID()}`,
@@ -1631,28 +2001,157 @@ export class RenderApiService {
       to: input.to,
       actor: input.actor,
       sourceRevisionId: input.expectedRevisionId,
-      resultingRevisionId: receipt.resultingRevisionId,
+      resultingRevisionId,
       evidenceHashes: input.evidenceHashes,
       exceptionIds: input.exceptionIds,
       createdAt: this.#timestamp(),
     };
-    const event: RenderLifecycleEvent = { ...eventWithoutHash, eventHash: hashCanonical(eventWithoutHash) };
-    await writeJsonAtomic(
-      path.join(
-        this.#projects.openRootPath(),
-        "receipts",
-        "renders",
-        input.outputId,
-        "lifecycle",
-        `${event.createdAt.replace(/[:.]/g, "-")}-${event.id}.json`,
-      ),
+    const event: RenderLifecycleEvent = {
+      ...eventWithoutHash,
+      eventHash: hashCanonical(eventWithoutHash),
+    };
+    const transactionWithoutHash = {
+      schemaVersion: "1.0.0" as const,
+      id: `lifecycle-transaction-${randomUUID()}`,
+      outputId: input.outputId,
+      sourceRevisionId: input.expectedRevisionId,
+      resultingRevisionId,
       event,
-    );
+    };
+    const transaction: LifecycleTransactionRecord = {
+      ...transactionWithoutHash,
+      identityHash: hashCanonical(transactionWithoutHash),
+    };
+    const transactionPath = this.#lifecycleTransactionPath(root, input.outputId, transaction.id);
+    await writeJsonAtomic(transactionPath, transaction);
+    let receipt;
+    try {
+      await this.#checkpoint?.("lifecycle-intent-written");
+      receipt = await this.#projects.transitionQaLifecycle({
+        outputId: input.outputId,
+        to: input.to,
+        actor: input.actor,
+        expectedRevisionId: input.expectedRevisionId,
+        report: input.report,
+        exceptions: input.exceptions,
+        evidenceHashes: input.evidenceHashes,
+        exceptionIds: input.exceptionIds,
+        resultingRevisionId,
+      });
+    } catch (cause) {
+      await this.#cleanupUncommittedLifecycleIntent(
+        root,
+        transactionPath,
+        input.expectedRevisionId,
+        resultingRevisionId,
+      );
+      throw cause;
+    }
+    if (receipt.status !== "committed" || receipt.resultingRevisionId !== resultingRevisionId) {
+      await this.#cleanupUncommittedLifecycleIntent(
+        root,
+        transactionPath,
+        input.expectedRevisionId,
+        resultingRevisionId,
+      );
+      throw new Error(receipt.error?.message ?? "Lifecycle transition did not commit.");
+    }
+    await this.#checkpoint?.("lifecycle-revision-committed");
+    await writeJsonAtomic(this.#lifecycleEventPath(root, input.outputId, event), event);
+    await rm(transactionPath, { force: true });
     return event;
   }
 
-  async #qaReports(outputId: string): Promise<readonly QaReceiptRecord[]> {
-    const directory = path.join(this.#projects.openRootPath(), "receipts", "renders", outputId, "qa");
+  async #cleanupUncommittedLifecycleIntent(
+    root: string,
+    transactionPath: string,
+    sourceRevisionId: string,
+    resultingRevisionId: string,
+  ): Promise<void> {
+    const current = await loadCurrentProjectRevision(root);
+    const committed = await revisionIsReachable(root, current.pointer.revisionId, resultingRevisionId);
+    const sourceReachable = await revisionIsReachable(root, current.pointer.revisionId, sourceRevisionId);
+    if (!committed && sourceReachable) await rm(transactionPath, { force: true });
+  }
+
+  async #recoverLifecycleTransactions(root: string, outputId: string): Promise<void> {
+    const directory = path.join(root, "receipts", "renders", outputId, "transactions");
+    let names: readonly string[];
+    try {
+      names = (await readdir(directory)).filter((name) => name.endsWith(".json")).sort();
+    } catch (cause) {
+      if ((cause as NodeJS.ErrnoException).code === "ENOENT") return;
+      throw cause;
+    }
+    const current = await loadCurrentProjectRevision(root);
+    const base = validateRenderReceiptBase(
+      await readPersistedJson(path.join(root, "receipts", "renders", outputId, "render.json")),
+      outputId,
+    );
+    for (const name of names) {
+      const target = path.join(directory, name);
+      const transaction = validateLifecycleTransaction(await readPersistedJson(target), outputId);
+      const reachable = await revisionIsReachable(
+        root,
+        current.pointer.revisionId,
+        transaction.resultingRevisionId,
+      );
+      if (!reachable) {
+        const sourceReachable = await revisionIsReachable(
+          root,
+          current.pointer.revisionId,
+          transaction.sourceRevisionId,
+        );
+        if (!sourceReachable) {
+          throw new Error(`Persisted lifecycle transaction ${transaction.id} is not reachable.`);
+        }
+        await rm(target, { force: true });
+        continue;
+      }
+      const committed = await loadProjectRevision(root, transaction.resultingRevisionId);
+      this.#assertLifecycleEventMatchesRevision(transaction.event, committed, base);
+      await writeJsonAtomic(this.#lifecycleEventPath(root, outputId, transaction.event), transaction.event);
+      await rm(target, { force: true });
+    }
+  }
+
+  #lifecycleTransactionPath(root: string, outputId: string, transactionId: string): string {
+    return path.join(root, "receipts", "renders", outputId, "transactions", `${transactionId}.json`);
+  }
+
+  #lifecycleEventPath(root: string, outputId: string, event: RenderLifecycleEvent): string {
+    return path.join(
+      root,
+      "receipts",
+      "renders",
+      outputId,
+      "lifecycle",
+      `${event.createdAt.replace(/[:.]/g, "-")}-${event.id}.json`,
+    );
+  }
+
+  #deliveryPath(root: string, outputId: string): string {
+    return path.join(root, "receipts", "renders", outputId, "delivery.json");
+  }
+
+  async #readDelivery(
+    root: string,
+    outputId: string,
+    base: RenderReceiptBase,
+  ): Promise<RenderDeliveryRecord | null> {
+    try {
+      return validateDeliveryRecord(await readPersistedJson(this.#deliveryPath(root, outputId)), base);
+    } catch (cause) {
+      if ((cause as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw cause;
+    }
+  }
+
+  async #qaReports(
+    outputId: string,
+    root: string = this.#projects.openRootPath(),
+  ): Promise<readonly QaReceiptRecord[]> {
+    const directory = path.join(root, "receipts", "renders", outputId, "qa");
     let names: readonly string[];
     try {
       names = (await readdir(directory))
@@ -1663,23 +2162,26 @@ export class RenderApiService {
       throw cause;
     }
     return Promise.all(
-      names.map(
-        async (name) => JSON.parse(await readFile(path.join(directory, name), "utf8")) as QaReceiptRecord,
+      names.map(async (name) =>
+        validateQaReceipt(await readPersistedJson(path.join(directory, name)), outputId),
       ),
     );
   }
 
-  async #readChecklist(outputId: string): Promise<ReviewChecklist | null> {
+  async #readChecklist(
+    outputId: string,
+    root: string = this.#projects.openRootPath(),
+  ): Promise<ReviewChecklist | null> {
     try {
-      return JSON.parse(await readFile(this.#checklistPath(outputId), "utf8")) as ReviewChecklist;
+      return validateReviewChecklist(await readPersistedJson(this.#checklistPath(outputId, root)), outputId);
     } catch (cause) {
       if ((cause as NodeJS.ErrnoException).code === "ENOENT") return null;
       throw cause;
     }
   }
 
-  #checklistPath(outputId: string): string {
-    return path.join(this.#projects.openRootPath(), "receipts", "renders", outputId, "qa", "checklist.json");
+  #checklistPath(outputId: string, root: string = this.#projects.openRootPath()): string {
+    return path.join(root, "receipts", "renders", outputId, "qa", "checklist.json");
   }
 
   #timestamp(): string {
@@ -1704,8 +2206,10 @@ export class RenderApiService {
       throw cause;
     }
     for (const name of names) {
-      const request = JSON.parse(await readFile(path.join(directory, name), "utf8")) as RenderRequestRecord;
-      validatePersistedRequest(request);
+      const request = validatePersistedRequest(
+        await readPersistedJson(path.join(directory, name)),
+        name.slice(0, -5),
+      );
       this.#requests.set(request.id, request);
     }
   }
@@ -1738,8 +2242,8 @@ export class RenderApiService {
       throw cause;
     }
     const records = await Promise.all(
-      names.map(
-        async (name) => JSON.parse(await readFile(path.join(directory, name), "utf8")) as StudioJobSnapshot,
+      names.map(async (name) =>
+        validatePersistedJob(await readPersistedJson(path.join(directory, name)), name.slice(0, -5)),
       ),
     );
     return new Map(records.map((record) => [record.id, record]));
@@ -2029,9 +2533,10 @@ const createOutputReviewChecklist = (
 export const verifyOutputQa: QaEvaluator = async ({ output, rootPath, signal, report }) => {
   report(0.1);
   const evidence: string[] = [];
-  const receipt = JSON.parse(
-    await readFile(path.join(rootPath, "receipts", "renders", output.id, "render.json"), "utf8"),
-  ) as RenderReceiptBase;
+  const receipt = validateRenderReceiptBase(
+    await readPersistedJson(path.join(rootPath, "receipts", "renders", output.id, "render.json")),
+    output.id,
+  );
   const observedHashes = new Map<string, Readonly<{ hash: string; readable: boolean }>>();
   for (const artifact of output.artifacts) {
     if (signal.aborted) throw new DOMException("Render QA cancelled.", "AbortError");
@@ -2325,20 +2830,623 @@ const validatePriority = (value: number): number => {
   return value;
 };
 
-const validatePersistedRequest = (request: RenderRequestRecord): void => {
+// Runtime records arrive from disk. Their static casts describe the value only after these guards pass.
+/* eslint-disable @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unnecessary-type-conversion, @typescript-eslint/no-unnecessary-boolean-literal-compare */
+const validatePersistedRequest = (value: unknown, expectedId?: string): RenderRequestRecord => {
+  const request = requireRecord(value, "Persisted render request") as unknown as RenderRequestRecord;
   const schemaVersion: unknown = (request as unknown as Readonly<Record<string, unknown>>).schemaVersion;
   if (
     schemaVersion !== "1.0.0" ||
-    !/^[A-Za-z][A-Za-z0-9._:-]{2,127}$/.test(request.id) ||
-    !/^[A-Za-z][A-Za-z0-9._:-]{2,127}$/.test(request.jobId) ||
-    request.preflight.identityHash.length !== 64
+    !isStableId(request.id) ||
+    (expectedId !== undefined && request.id !== expectedId) ||
+    !isStableId(request.jobId) ||
+    !isStableId(request.projectId) ||
+    !isStableId(request.revisionId) ||
+    !isHash(request.revisionHash) ||
+    !isTimestamp(request.createdAt) ||
+    !isRecord(request.preflight) ||
+    !isHash(request.preflight.identityHash) ||
+    !Number.isSafeInteger(request.attempt) ||
+    request.attempt < 1 ||
+    (request.retryOfRequestId !== null && !isStableId(request.retryOfRequestId)) ||
+    !isCommitActor(request.actor)
   )
     throw new Error("Persisted render request is invalid.");
   validateDeliveryProfile(request.profile);
   validateRenderScope(request.scope);
   validateRenderName(request.name);
   validatePriority(request.priority);
+  return request;
 };
+
+const validateRenderOutput = (value: unknown, directoryName: string): RenderOutputRecord => {
+  const output = requireRecord(value, "Persisted render output") as unknown as RenderOutputRecord;
+  if (
+    output.schemaVersion !== "1.0.0" ||
+    !isStableId(output.id) ||
+    output.id !== directoryName ||
+    !isStableId(output.projectId) ||
+    !isStableId(output.sourceRevisionId) ||
+    !isStableId(output.activationRevisionId) ||
+    !isStableId(output.renderRequestId) ||
+    !isStableId(output.jobId) ||
+    !isHash(output.receiptIdentityHash) ||
+    !qaStateValues.includes(output.lifecycleState) ||
+    !isTimestamp(output.createdAt) ||
+    !Array.isArray(output.artifacts)
+  ) {
+    throw new Error(`Persisted render output ${directoryName} is invalid.`);
+  }
+  validateDeliveryProfile(output.profile);
+  validateRenderScope(output.scope);
+  validateArtifactRecords(output.artifacts);
+  return output;
+};
+
+const validateRenderReceiptBase = (value: unknown, outputId: string): RenderReceiptBase => {
+  const receipt = requireRecord(value, "Persisted render receipt") as unknown as RenderReceiptBase;
+  if (
+    receipt.schemaVersion !== "1.0.0" ||
+    receipt.receiptVersion !== "1.0.0" ||
+    receipt.outputId !== outputId ||
+    !isStableId(receipt.outputId) ||
+    !isStableId(receipt.projectId) ||
+    !isStableId(receipt.sourceRevisionId) ||
+    !isHash(receipt.sourceRevisionHash) ||
+    !isStableId(receipt.renderRequestId) ||
+    !isStableId(receipt.jobId) ||
+    !isTimestamp(receipt.startedAt) ||
+    !isTimestamp(receipt.completedAt) ||
+    Date.parse(receipt.completedAt) < Date.parse(receipt.startedAt) ||
+    !Array.isArray(receipt.artifacts) ||
+    !Array.isArray(receipt.engines) ||
+    receipt.engines.length === 0 ||
+    receipt.engines.length > 32 ||
+    receipt.engines.some(
+      (engine) =>
+        !isRecord(engine) ||
+        !["remotion", "hyperframes", "shared"].includes(String(engine.engine)) ||
+        !isBoundedString(engine.version, 128) ||
+        !isBoundedString(engine.role, 256),
+    ) ||
+    !isRecord(receipt.environment) ||
+    !["strict", "compatible"].includes(String(receipt.environment.mode)) ||
+    !isHash(receipt.environment.strictEnvironmentFingerprint) ||
+    !isHash(receipt.environment.compatiblePreviewFingerprint) ||
+    !isHash(receipt.environment.strictManifestHash) ||
+    !isBoundedString(receipt.environment.browserIdentity, 512) ||
+    receipt.environment.status !== "recorded" ||
+    !isRecord(receipt.dependencies) ||
+    !isHash(receipt.dependencies.manifestHash) ||
+    !Number.isSafeInteger(receipt.dependencies.entryCount) ||
+    receipt.dependencies.entryCount < 0 ||
+    !isHash(receipt.dependencies.lockfileHash) ||
+    receipt.dependencies.status !== "recorded" ||
+    !isRecord(receipt.security) ||
+    !isHash(receipt.security.policyIdentity) ||
+    !isStringArray(receipt.security.trustClasses, 8) ||
+    receipt.security.trustClasses.some(
+      (item) => !["trusted_authored", "imported_untrusted"].includes(item),
+    ) ||
+    !isStringArray(receipt.security.workerPoolIds, 256) ||
+    receipt.security.workerPoolIds.length === 0 ||
+    !isStringArray(receipt.security.cacheNamespaces, 256) ||
+    receipt.security.cacheNamespaces.length === 0 ||
+    !isHash(receipt.security.environmentIdentity) ||
+    !isHashArray(receipt.security.approvedNetworkHashes, true) ||
+    (receipt.security.isolationEvidenceHash !== null && !isHash(receipt.security.isolationEvidenceHash)) ||
+    !isStringArray(receipt.security.violations, 1_024) ||
+    receipt.security.violations.length > 0 ||
+    !isRecord(receipt.dag) ||
+    !isStableId(receipt.dag.id) ||
+    !Number.isSafeInteger(receipt.dag.nodeCount) ||
+    receipt.dag.nodeCount < 1 ||
+    !isStringArray(receipt.dag.rootIds, 1_024) ||
+    receipt.dag.rootIds.length === 0 ||
+    !isRecord(receipt.dag.range) ||
+    !isRecord(receipt.dag.fps) ||
+    !isUnsignedIntegerString(receipt.dag.range.startFrame) ||
+    !isUnsignedIntegerString(receipt.dag.range.endFrameExclusive) ||
+    BigInt(receipt.dag.range.endFrameExclusive) <= BigInt(receipt.dag.range.startFrame) ||
+    !isPositiveIntegerString(receipt.dag.fps.numerator) ||
+    !isPositiveIntegerString(receipt.dag.fps.denominator) ||
+    !isStringArray(receipt.cacheLineage, 10_000) ||
+    !isStringArray(receipt.warnings, 10_000) ||
+    !isRecord(receipt.preflight) ||
+    receipt.preflight.status !== "passed" ||
+    !isHash(receipt.preflight.planIdentityHash) ||
+    !isStringArray(receipt.preflight.findingCodes, 10_000) ||
+    !isStringArray(receipt.preflight.ruleSetVersions, 1_024) ||
+    !isRecord(receipt.reproduction) ||
+    receipt.reproduction.status !== "recorded" ||
+    !isStringArray(receipt.reproduction.commands, 1_024) ||
+    receipt.initialLifecycleState !== "rendered_unchecked" ||
+    receipt.approval !== null ||
+    receipt.delivered !== false ||
+    !isHash(receipt.identityHash)
+  ) {
+    throw new Error(`Persisted render receipt ${outputId} is invalid.`);
+  }
+  validateDeliveryProfile(receipt.deliveryProfile);
+  validateRenderScope(receipt.renderScope);
+  validateArtifactRecords(receipt.artifacts);
+  validateAudioEvidence(receipt.audio, receipt.artifacts, receipt.deliveryProfile);
+  const { identityHash, ...withoutIdentity } = receipt;
+  if (identityHash !== hashCanonical(withoutIdentity)) {
+    throw new Error(`Persisted render receipt ${outputId} has an invalid identity.`);
+  }
+  return receipt;
+};
+
+const validateLifecycleEvent = (value: unknown, outputId: string): RenderLifecycleEvent => {
+  const event = requireRecord(value, "Persisted lifecycle event") as unknown as RenderLifecycleEvent;
+  if (
+    event.schemaVersion !== "1.0.0" ||
+    !isStableId(event.id) ||
+    event.outputId !== outputId ||
+    (event.from !== null && !qaStateValues.includes(event.from)) ||
+    !qaStateValues.includes(event.to) ||
+    !isCommitActor(event.actor) ||
+    !isStableId(event.sourceRevisionId) ||
+    !isStableId(event.resultingRevisionId) ||
+    !isHashArray(event.evidenceHashes, false) ||
+    !isStringArray(event.exceptionIds, 256) ||
+    !isTimestamp(event.createdAt) ||
+    !isHash(event.eventHash)
+  ) {
+    throw new Error(`Persisted lifecycle event for ${outputId} is invalid.`);
+  }
+  const { eventHash, ...withoutHash } = event;
+  if (eventHash !== hashCanonical(withoutHash)) {
+    throw new Error(`Persisted lifecycle event ${event.id} has an invalid identity.`);
+  }
+  return event;
+};
+
+const validateLifecycleChain = (events: readonly RenderLifecycleEvent[], base: RenderReceiptBase): void => {
+  if (events.length === 0 || events[0]?.to !== "rendered_unchecked") {
+    throw new Error(`Persisted lifecycle chain for ${base.outputId} lacks activation evidence.`);
+  }
+  const allowed = new Set([
+    "rendered_unchecked->qa_failed",
+    "rendered_unchecked->qa_warning",
+    "rendered_unchecked->qa_passed",
+    "qa_warning->approved",
+    "qa_passed->approved",
+    "approved->delivered",
+  ]);
+  for (const [index, event] of events.entries()) {
+    const prior = events[index - 1];
+    if (prior === undefined) {
+      if (event.sourceRevisionId !== base.sourceRevisionId) {
+        throw new Error(`Persisted lifecycle chain for ${base.outputId} has invalid activation source.`);
+      }
+      continue;
+    }
+    const expectedFrom = prior.to;
+    if (event.from !== expectedFrom || !allowed.has(`${event.from ?? "null"}->${event.to}`)) {
+      throw new Error(`Persisted lifecycle chain for ${base.outputId} is discontinuous.`);
+    }
+  }
+};
+
+const bindQaReportsToLifecycle = (
+  reports: readonly QaReceiptRecord[],
+  lifecycle: readonly RenderLifecycleEvent[],
+  outputId: string,
+): readonly QaReceiptRecord[] => {
+  const bound: QaReceiptRecord[] = [];
+  for (const event of lifecycle.filter((candidate) => candidate.to.startsWith("qa_"))) {
+    const matches = reports.filter(
+      (report) =>
+        report.state === event.to &&
+        event.evidenceHashes.includes(report.reportHash) &&
+        event.evidenceHashes.includes(report.authoritativeReport.identityHash),
+    );
+    if (matches.length !== 1) {
+      throw new Error(`Persisted QA lifecycle event for ${outputId} lacks one authoritative report.`);
+    }
+    const report = matches[0];
+    if (report === undefined) throw new Error(`Persisted QA report binding for ${outputId} failed.`);
+    bound.push(report);
+  }
+  return bound;
+};
+
+const validateQaReceipt = (value: unknown, outputId: string): QaReceiptRecord => {
+  const report = requireRecord(value, "Persisted QA receipt") as unknown as QaReceiptRecord;
+  if (
+    report.schemaVersion !== "1.0.0" ||
+    !isStableId(report.id) ||
+    report.outputId !== outputId ||
+    !isStableId(report.sourceRevisionId) ||
+    !isTimestamp(report.createdAt) ||
+    !["qa_failed", "qa_warning", "qa_passed"].includes(report.state) ||
+    !isRecord(report.audio) ||
+    !["not-applicable", "passed", "warning", "failed"].includes(String(report.audio.status)) ||
+    !isStringArray(report.audio.reasons, 1_024) ||
+    !isHashArray(report.artifactEvidenceHashes, true) ||
+    !isStringArray(report.exceptionIds, 256) ||
+    !isHash(report.reportHash) ||
+    !isRecord(report.authoritativeReport)
+  ) {
+    throw new Error(`Persisted QA receipt for ${outputId} is invalid.`);
+  }
+  const authoritative = report.authoritativeReport;
+  if (
+    authoritative.schemaVersion !== "1.0.0" ||
+    authoritative.reportVersion !== "1.0.0" ||
+    !isStableId(authoritative.id) ||
+    !isStableId(authoritative.projectId) ||
+    !isStableId(authoritative.revisionId) ||
+    authoritative.outputId !== outputId ||
+    authoritative.state !== report.state ||
+    !isHash(authoritative.ruleSetIdentity) ||
+    !isHash(authoritative.identityHash) ||
+    !Array.isArray(authoritative.findings) ||
+    authoritative.findings.length > 10_000 ||
+    authoritative.findings.some((finding) => !isQaFinding(finding)) ||
+    !Array.isArray(authoritative.rules) ||
+    authoritative.rules.length > 1_024 ||
+    authoritative.rules.some(
+      (rule) => !isRecord(rule) || !isBoundedString(rule.id, 256) || !isBoundedString(rule.version, 128),
+    ) ||
+    !isStringArray(authoritative.blockingFindingIds, 1_024) ||
+    !isStringArray(authoritative.reviewFindingIds, 1_024) ||
+    !isStringArray(authoritative.exceptionIds, 1_024) ||
+    !isTimestamp(authoritative.createdAt)
+  ) {
+    throw new Error(`Persisted authoritative QA report for ${outputId} is invalid.`);
+  }
+  const { identityHash, ...authoritativeWithoutHash } = authoritative;
+  if (identityHash !== hashCanonical(authoritativeWithoutHash)) {
+    throw new Error(`Persisted authoritative QA report for ${outputId} has an invalid identity.`);
+  }
+  const { reportHash, ...withoutHash } = report;
+  if (reportHash !== hashCanonical(withoutHash)) {
+    throw new Error(`Persisted QA receipt ${report.id} has an invalid identity.`);
+  }
+  const rebuilt = createQaReport({
+    id: authoritative.id,
+    projectId: authoritative.projectId,
+    revisionId: authoritative.revisionId,
+    outputId: authoritative.outputId,
+    ruleSetIdentity: authoritative.ruleSetIdentity,
+    rules: authoritative.rules,
+    findings: authoritative.findings,
+    createdAt: authoritative.createdAt,
+  });
+  if (rebuilt.identityHash !== authoritative.identityHash) {
+    throw new Error(`Persisted authoritative QA report for ${outputId} is internally inconsistent.`);
+  }
+  return report;
+};
+
+const validateReviewChecklist = (value: unknown, outputId: string): ReviewChecklist => {
+  const checklist = requireRecord(value, "Persisted review checklist") as unknown as ReviewChecklist;
+  if (
+    checklist.schemaVersion !== "1.0.0" ||
+    !isStableId(checklist.id) ||
+    checklist.outputId !== outputId ||
+    !isStableId(checklist.revisionId) ||
+    typeof checklist.complete !== "boolean" ||
+    !Array.isArray(checklist.items) ||
+    checklist.items.length > 1_024 ||
+    !isHash(checklist.identityHash)
+  ) {
+    throw new Error(`Persisted review checklist for ${outputId} is invalid.`);
+  }
+  for (const item of checklist.items) {
+    if (
+      !isRecord(item) ||
+      !isStableId(item.id) ||
+      item.required !== true ||
+      !["pending", "passed", "failed"].includes(String(item.status)) ||
+      !isUnsignedIntegerString(item.frame) ||
+      !isStringArray(item.entityIds, 256) ||
+      typeof item.instruction !== "string" ||
+      !isHashArray(item.evidenceHashes, true) ||
+      (item.reviewerId !== null && typeof item.reviewerId !== "string") ||
+      (item.reviewedAt !== null && !isTimestamp(item.reviewedAt))
+    ) {
+      throw new Error(`Persisted review checklist item for ${outputId} is invalid.`);
+    }
+    if (
+      (item.status === "pending" &&
+        (item.reviewerId !== null || item.reviewedAt !== null || item.evidenceHashes.length !== 0)) ||
+      (item.status !== "pending" &&
+        (!isBoundedString(item.reviewerId, 256) ||
+          !isTimestamp(item.reviewedAt) ||
+          item.evidenceHashes.length === 0))
+    ) {
+      throw new Error(`Persisted review checklist item for ${outputId} has invalid review evidence.`);
+    }
+  }
+  if (
+    checklist.complete !==
+    checklist.items.every((item: ReviewChecklist["items"][number]) => item.status === "passed")
+  ) {
+    throw new Error(`Persisted review checklist for ${outputId} has an invalid completion state.`);
+  }
+  const { identityHash, ...withoutHash } = checklist;
+  if (identityHash !== hashCanonical(withoutHash)) {
+    throw new Error(`Persisted review checklist for ${outputId} has an invalid identity.`);
+  }
+  return checklist;
+};
+
+const validateDeliveryRecord = (value: unknown, base: RenderReceiptBase): RenderDeliveryRecord => {
+  const delivery = requireRecord(value, "Persisted delivery record") as unknown as RenderDeliveryRecord;
+  if (
+    delivery.schemaVersion !== "1.0.0" ||
+    delivery.outputId !== base.outputId ||
+    delivery.sourceRevisionId !== base.sourceRevisionId ||
+    delivery.deliveryProfileIdentity !== base.deliveryProfile.identityHash ||
+    !isHashArray(delivery.evidenceHashes, false) ||
+    !isHash(delivery.lifecycleEventHash) ||
+    !isTimestamp(delivery.createdAt)
+  ) {
+    throw new Error(`Persisted delivery record for ${base.outputId} is invalid.`);
+  }
+  return delivery;
+};
+
+const validatePersistedJob = (value: unknown, expectedId: string): StudioJobSnapshot => {
+  const job = requireRecord(value, "Persisted Studio job") as unknown as StudioJobSnapshot;
+  if (
+    job.id !== expectedId ||
+    !isStableId(job.id) ||
+    !jobKindValues.includes(job.kind) ||
+    !jobStatusValues.includes(job.status) ||
+    !Number.isFinite(job.progress) ||
+    job.progress < 0 ||
+    job.progress > 1 ||
+    !Number.isSafeInteger(job.priority) ||
+    job.priority < -100 ||
+    job.priority > 100 ||
+    !Number.isSafeInteger(job.queueOrder) ||
+    job.queueOrder < 1 ||
+    !isBoundedString(job.label, 256) ||
+    !isBoundedString(job.stage, 256) ||
+    (job.activeEngine !== null && !["remotion", "hyperframes", "shared"].includes(job.activeEngine)) ||
+    !Number.isSafeInteger(job.cacheHits) ||
+    job.cacheHits < 0 ||
+    (job.estimateLabel !== null && !isBoundedString(job.estimateLabel, 256)) ||
+    !isBoundedString(job.correlationId, 128) ||
+    !isStableId(job.projectId) ||
+    !isStableId(job.revisionId) ||
+    !isTimestamp(job.createdAt) ||
+    !isTimestamp(job.updatedAt) ||
+    (job.error !== null && !isBoundedString(job.error, 4_096))
+  ) {
+    throw new Error(`Persisted Studio job ${expectedId} is invalid.`);
+  }
+  if (
+    (job.status === "completed" && (job.progress !== 1 || job.error !== null || job.result === null)) ||
+    (job.status === "failed" && job.error === null) ||
+    (job.status === "cancelled" && job.error !== null) ||
+    ((job.status === "queued" || job.status === "running") && job.result !== null) ||
+    Date.parse(job.updatedAt) < Date.parse(job.createdAt)
+  ) {
+    throw new Error(`Persisted Studio job ${expectedId} has an inconsistent state.`);
+  }
+  return job;
+};
+
+const validateLifecycleTransaction = (value: unknown, outputId: string): LifecycleTransactionRecord => {
+  const transaction = requireRecord(
+    value,
+    "Persisted lifecycle transaction",
+  ) as unknown as LifecycleTransactionRecord;
+  if (
+    transaction.schemaVersion !== "1.0.0" ||
+    !isStableId(transaction.id) ||
+    transaction.outputId !== outputId ||
+    !isStableId(transaction.sourceRevisionId) ||
+    !isStableId(transaction.resultingRevisionId) ||
+    !isHash(transaction.identityHash)
+  ) {
+    throw new Error(`Persisted lifecycle transaction for ${outputId} is invalid.`);
+  }
+  const event = validateLifecycleEvent(transaction.event, outputId);
+  if (
+    event.sourceRevisionId !== transaction.sourceRevisionId ||
+    event.resultingRevisionId !== transaction.resultingRevisionId
+  ) {
+    throw new Error(`Persisted lifecycle transaction ${transaction.id} has mismatched event identity.`);
+  }
+  const { identityHash, ...withoutHash } = transaction;
+  if (identityHash !== hashCanonical(withoutHash)) {
+    throw new Error(`Persisted lifecycle transaction ${transaction.id} has an invalid identity.`);
+  }
+  return transaction;
+};
+
+const qaStateValues: readonly QaState[] = [
+  "rendered_unchecked",
+  "qa_failed",
+  "qa_warning",
+  "qa_passed",
+  "approved",
+  "delivered",
+];
+
+const jobKindValues: readonly StudioJobSnapshot["kind"][] = [
+  "asset.inspect",
+  "asset.proxy",
+  "asset.thumbnail",
+  "asset.waveform",
+  "render.execute",
+  "render.qa",
+];
+
+const jobStatusValues: readonly StudioJobSnapshot["status"][] = [
+  "queued",
+  "running",
+  "completed",
+  "failed",
+  "cancelled",
+];
+
+const validateArtifactRecords = (artifacts: readonly RenderArtifactRecord[]): void => {
+  if (
+    artifacts.length === 0 ||
+    artifacts.length > 32 ||
+    artifacts.filter((artifact) => artifact.primary).length !== 1
+  ) {
+    throw new Error("Persisted render artifacts are invalid.");
+  }
+  const paths = new Set<string>();
+  for (const artifact of artifacts) {
+    if (
+      !isRecord(artifact) ||
+      typeof artifact.relativePath !== "string" ||
+      artifact.relativePath.length === 0 ||
+      artifact.relativePath.length > 1_024 ||
+      path.isAbsolute(artifact.relativePath) ||
+      artifact.relativePath.split("/").includes("..") ||
+      !Number.isSafeInteger(artifact.byteLength) ||
+      artifact.byteLength < 0 ||
+      !isHash(artifact.contentHash) ||
+      typeof artifact.primary !== "boolean" ||
+      paths.has(artifact.relativePath)
+    ) {
+      throw new Error("Persisted render artifact record is invalid.");
+    }
+    paths.add(artifact.relativePath);
+  }
+};
+
+const deliveryRecordFor = (
+  outputId: string,
+  sourceRevisionId: string,
+  deliveryProfileIdentity: string,
+  event: RenderLifecycleEvent,
+): RenderDeliveryRecord => ({
+  schemaVersion: "1.0.0",
+  outputId,
+  sourceRevisionId,
+  deliveryProfileIdentity,
+  evidenceHashes: event.evidenceHashes,
+  lifecycleEventHash: event.eventHash,
+  createdAt: event.createdAt,
+});
+
+const sameArtifacts = (
+  left: readonly RenderArtifactRecord[],
+  right: readonly RenderArtifactRecord[],
+): boolean => hashCanonical(left) === hashCanonical(right);
+
+const revisionIsReachable = async (
+  rootPath: string,
+  currentRevisionId: string,
+  targetRevisionId: string,
+): Promise<boolean> => {
+  let revisionId: string | null = currentRevisionId;
+  const visited = new Set<string>();
+  while (revisionId !== null && visited.size < 10_000) {
+    if (revisionId === targetRevisionId) return true;
+    if (visited.has(revisionId)) throw new Error("Project revision ancestry contains a cycle.");
+    visited.add(revisionId);
+    const revision = await loadProjectRevision(rootPath, revisionId);
+    revisionId = revision.transaction.parentRevisionId;
+  }
+  if (visited.size >= 10_000) throw new Error("Project revision ancestry exceeds recovery bounds.");
+  return false;
+};
+
+const readPersistedJson = async (target: string): Promise<unknown> => {
+  const source = await readFile(target, "utf8");
+  try {
+    return JSON.parse(source) as unknown;
+  } catch (cause) {
+    throw new Error(`Persisted JSON ${path.basename(target)} is malformed.`, { cause });
+  }
+};
+
+const requireRecord = (value: unknown, label: string): Readonly<Record<string, unknown>> => {
+  if (!isRecord(value)) throw new Error(`${label} must be an object.`);
+  return value;
+};
+
+const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+
+const isStableId = (value: unknown): value is string =>
+  typeof value === "string" && /^[A-Za-z][A-Za-z0-9._:-]{2,127}$/.test(value);
+
+const isHash = (value: unknown): value is string => typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+
+const isTimestamp = (value: unknown): value is string =>
+  typeof value === "string" && Number.isFinite(Date.parse(value));
+
+const isBoundedString = (value: unknown, maximum: number): value is string =>
+  typeof value === "string" && value.trim().length > 0 && value.length <= maximum;
+
+const isUnsignedIntegerString = (value: unknown): value is string =>
+  typeof value === "string" && /^(0|[1-9][0-9]*)$/.test(value);
+
+const isPositiveIntegerString = (value: unknown): value is string =>
+  typeof value === "string" && /^[1-9][0-9]*$/.test(value);
+
+const isStringArray = (value: unknown, maximum: number): value is readonly string[] =>
+  Array.isArray(value) && value.length <= maximum && value.every((item) => typeof item === "string");
+
+const isHashArray = (value: unknown, allowEmpty: boolean): value is readonly string[] =>
+  Array.isArray(value) && value.length <= 256 && (allowEmpty || value.length > 0) && value.every(isHash);
+
+const isCommitActor = (value: unknown): value is CommitActor =>
+  isRecord(value) &&
+  isStableId(value.id) &&
+  ["user", "codex", "system"].includes(String(value.kind)) &&
+  isStableId(value.sessionId);
+
+const isQaFinding = (value: unknown): value is QaFinding => {
+  if (!isRecord(value) || !isRecord(value.location) || !Array.isArray(value.metrics)) return false;
+  const location = value.location;
+  return (
+    value.schemaVersion === "1.0.0" &&
+    isStableId(value.id) &&
+    isBoundedString(value.ruleId, 256) &&
+    isBoundedString(value.ruleVersion, 128) &&
+    [
+      "schema",
+      "media",
+      "timeline",
+      "capability",
+      "font",
+      "composition",
+      "proxy",
+      "alpha",
+      "audio",
+      "rights",
+      "trust",
+      "disk",
+      "output",
+      "environment",
+      "visual",
+      "caption",
+      "sync",
+      "lifecycle",
+    ].includes(String(value.category)) &&
+    ["pre-render", "post-render", "human-review", "lifecycle"].includes(String(value.stage)) &&
+    ["info", "warning", "error"].includes(String(value.severity)) &&
+    typeof value.blocking === "boolean" &&
+    ["passed", "failed", "warning", "not-applicable", "requires-review"].includes(String(value.status)) &&
+    isBoundedString(value.title, 1_024) &&
+    typeof value.detail === "string" &&
+    value.detail.length <= 16_384 &&
+    (value.repairHint === null || typeof value.repairHint === "string") &&
+    isStringArray(location.entityIds, 1_024) &&
+    (location.artifactPath === null || typeof location.artifactPath === "string") &&
+    (location.frame === null || isUnsignedIntegerString(location.frame)) &&
+    isHashArray(value.evidenceHashes, true) &&
+    value.metrics.length <= 1_024 &&
+    (value.environmentFingerprint === null || isHash(value.environmentFingerprint)) &&
+    (value.exceptionId === null || isStableId(value.exceptionId))
+  );
+};
+/* eslint-enable @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unnecessary-type-conversion, @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
 const validateExecutorPlan = (plan: RenderPlan, request: RenderRequestRecord): void => {
   validateRenderDag(plan.dag);
@@ -2376,9 +3484,11 @@ const validateSecurityEvidence = (security: RenderSecurityEvidence, plan: Render
   if (
     !/^[a-f0-9]{64}$/.test(security.policyIdentity) ||
     !/^[a-f0-9]{64}$/.test(security.environmentIdentity) ||
+    security.environmentIdentity !== plan.environment.strictEnvironmentFingerprint ||
     JSON.stringify([...security.trustClasses].sort()) !== JSON.stringify(planTrust) ||
     security.workerPoolIds.length === 0 ||
     security.cacheNamespaces.length === 0 ||
+    security.violations.length > 0 ||
     security.approvedNetworkHashes.some((hash) => !/^[a-f0-9]{64}$/.test(hash)) ||
     (security.trustClasses.includes("imported_untrusted") &&
       (security.isolationEvidenceHash === null || !/^[a-f0-9]{64}$/.test(security.isolationEvidenceHash)))

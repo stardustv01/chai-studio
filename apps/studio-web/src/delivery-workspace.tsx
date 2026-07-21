@@ -255,10 +255,13 @@ export const DeliveryWorkspaceProvider = ({
   const [qaError, setQaError] = useState<string | null>(null);
   const [evidenceLoading, setEvidenceLoading] = useState(false);
   const knownOutputIds = useRef<ReadonlySet<string> | null>(null);
+  const refreshRequestId = useRef(0);
   const [evidenceEpoch, setEvidenceEpoch] = useState(0);
   const [loading, setLoading] = useState(source === "server");
   const [busy, setBusy] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
+  const projectIdentity =
+    snapshot.project === null ? null : `${snapshot.project.projectId}:${snapshot.project.revisionId}`;
   const selectProfile = useCallback((id: string): void => {
     setSelectedProfileId(id);
     setPreflight(null);
@@ -267,12 +270,14 @@ export const DeliveryWorkspaceProvider = ({
 
   const refresh = useCallback(async (): Promise<void> => {
     if (client.sessionToken === null) return;
+    const requestId = ++refreshRequestId.current;
     try {
       const [nextProfiles, nextQueue, nextOutputs] = await Promise.all([
         client.request<readonly DeliveryProfileView[]>("/api/v1/renders/profiles", { method: "GET" }),
         client.request<readonly QueueView[]>("/api/v1/renders/queue", { method: "GET" }),
         client.request<readonly OutputView[]>("/api/v1/renders/outputs", { method: "GET" }),
       ]);
+      if (requestId !== refreshRequestId.current) return;
       setProfiles(nextProfiles);
       setQueue(nextQueue);
       const orderedOutputs = [...nextOutputs].sort((left, right) =>
@@ -307,11 +312,33 @@ export const DeliveryWorkspaceProvider = ({
             : (orderedOutputs[0]?.id ?? ""),
       );
     } catch (cause) {
+      if (requestId !== refreshRequestId.current) return;
       setDiagnostic(messageFor(cause));
     } finally {
-      setLoading(false);
+      if (requestId === refreshRequestId.current) setLoading(false);
     }
   }, [client]);
+
+  useEffect(() => {
+    if (source !== "server") return;
+    refreshRequestId.current += 1;
+    knownOutputIds.current = null;
+    setProfiles([]);
+    setSelectedProfileId("");
+    setQueue([]);
+    setOutputs([]);
+    setSelectedJobId("");
+    setSelectedOutputId("");
+    setPreflight(null);
+    setReceipt(null);
+    setQaWorkspace(null);
+    setReceiptError(null);
+    setQaError(null);
+    setEvidenceLoading(false);
+    setEvidenceEpoch(0);
+    setDiagnostic(null);
+    setLoading(true);
+  }, [projectIdentity, source]);
 
   useEffect(() => {
     void refresh();
@@ -320,7 +347,7 @@ export const DeliveryWorkspaceProvider = ({
     return () => {
       window.clearInterval(timer);
     };
-  }, [refresh, source]);
+  }, [projectIdentity, refresh, source]);
 
   const selectedProfile =
     profiles.find((profile) => profile.id === selectedProfileId) ?? profiles[0] ?? contractDefaultProfile;
@@ -331,7 +358,15 @@ export const DeliveryWorkspaceProvider = ({
   const selectedOutputLifecycle = selectedOutput?.lifecycleState ?? null;
 
   useEffect(() => {
-    if (client.sessionToken === null || selectedOutputIdentity === null) return;
+    if (client.sessionToken === null) return;
+    if (selectedOutputIdentity === null) {
+      setReceipt(null);
+      setQaWorkspace(null);
+      setReceiptError(null);
+      setQaError(null);
+      setEvidenceLoading(false);
+      return;
+    }
     const controller = new AbortController();
     setReceipt(null);
     setQaWorkspace(null);

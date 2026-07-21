@@ -7,6 +7,8 @@
 
 The corrected P23 gate passed all 18 formal checks in one authoritative run: frozen offline install, P23.01-P23.14 contract audit, live macOS adversarial isolation, exact dependency/license inventory and release workflow, browser isolation, schema drift, lint/format/boundaries, strict compilation, 274 unit tests, 17 property/fuzz tests, 68 integrations including both real native engines, one visual-manifest test, 31 isolated-browser end-to-end tests, 28 macOS UI goldens, production build, and security inspection.
 
+The counts and identities in that acceptance run remain historical. For the current RC4 working candidate, the deterministic inventory contains 410 installed packages with zero unknown licenses and identity `2e03803a3be61b67561fdd7081b763b760a72fffdeeedcffddeeefa9c42f8b00`. Its file SHA-256 is `cae20ecb4b62bde2a034db61022ec83a842194fabaca92effa118e4fc0fb1b76`. The tracked isolation report SHA-256 is `d865895b5ae7094ffaec3dc1898ce073d95ff7f73612c87c54f3873615851583`; a fresh read-only macOS probe must still pass in the protected release job. These refreshed technical identities do not approve public distribution.
+
 ## Task acceptance
 
 | Task          | Result | Acceptance evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                   |

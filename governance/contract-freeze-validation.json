@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T09:45:19.370Z",
+  "generatedAt": "2026-07-21T18:35:00.000Z",
   "passed": true,
   "assertions": {
     "frozen": true,
@@ -63,8 +63,8 @@
     },
     {
       "document": "08-source-monitor-boundary.md",
-      "sha256": "9133a236655003347c2a23868eca70b6b98634394e00244ae1f36ebb6b94edd6",
-      "bytes": 878
+      "sha256": "6a3d812b8b819aa3c986740033907dfcc77ce3b6f727767031afadc5ed78ac38",
+      "bytes": 892
     },
     {
       "document": "09-render-receipt.md",
@@ -86,7 +86,7 @@
     {
       "file": "isolation-report.json",
       "passed": true,
-      "sha256": "ab2e003ba2d5177aa4a997d8ff201520d0718036062cc4adace60164c248379c"
+      "sha256": "d865895b5ae7094ffaec3dc1898ce073d95ff7f73612c87c54f3873615851583"
     },
     {
       "file": "interactive-preview-result.json",

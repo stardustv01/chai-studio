@@ -150,6 +150,9 @@ describe("P19 authoritative review documents", () => {
 
   it("rejects approximate, mismatched, or evidence-free review claims", () => {
     expect(() =>
+      executeReviewDocumentEdit(baseTimeline(), { kind: "review.unknown" }, "revision-review-bad-0000"),
+    ).toThrow(/Review operation is invalid/);
+    expect(() =>
       apply(
         baseTimeline(),
         { kind: "review.bundle.create", bundle: { ...bundle(), selectedEntityIds: [] } },

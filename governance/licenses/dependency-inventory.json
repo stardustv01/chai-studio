@@ -1243,14 +1243,6 @@
     },
     {
       "name": "adm-zip",
-      "version": "0.5.18",
-      "license": "MIT",
-      "source": "https://github.com/cthackers/adm-zip.git",
-      "notice": null,
-      "distributionClass": "installed-development-tree"
-    },
-    {
-      "name": "adm-zip",
       "version": "0.6.0",
       "license": "MIT",
       "source": "https://github.com/cthackers/adm-zip.git",
@@ -3528,5 +3520,5 @@
     "Review the exact FFmpeg binary and codec configuration before bundling.",
     "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents."
   ],
-  "identityHash": "d0877531978785da70826556fc8b4cc4b4e902f6e3fbfabadf94a129c9b7e7aa"
+  "identityHash": "2e03803a3be61b67561fdd7081b763b760a72fffdeeedcffddeeefa9c42f8b00"
 }

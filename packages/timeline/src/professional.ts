@@ -212,6 +212,15 @@ export const readProfessionalTimelineState = (timeline: TimelineSnapshotV1): Pro
       "Professional timeline state has an unsupported schema version.",
     );
   }
+  try {
+    assertProfessionalTimelineStateShape(decoded);
+  } catch (error) {
+    throw professionalError(
+      "timeline.professional-state.invalid",
+      "Professional timeline state does not match its persisted contract.",
+      error,
+    );
+  }
   return decoded as unknown as ProfessionalTimelineState;
 };
 
@@ -1200,6 +1209,287 @@ const decodeCanonical = (value: unknown): unknown => {
   )
     return masterFrame(BigInt(value.$chaiMasterFrame), true);
   return Object.fromEntries(keys.map((key) => [key, decodeCanonical(value[key])]));
+};
+
+const assertProfessionalTimelineStateShape = (state: Readonly<Record<string, unknown>>): void => {
+  assertRegistry(state.compounds, "compounds", assertCompoundShape);
+  assertRegistry(state.takeStacks, "takeStacks", assertTakeStackShape);
+  assertRegistry(state.timeRemaps, "timeRemaps", assertTimeRemapShape);
+  assertRegistry(state.adjustmentLayers, "adjustmentLayers", assertAdjustmentLayerShape);
+  assertRegistry(state.advancedBridges, "advancedBridges", assertAdvancedBridgeShape);
+};
+
+const assertRegistry = (
+  value: unknown,
+  field: string,
+  validate: (value: Readonly<Record<string, unknown>>, key: string) => void,
+): void => {
+  assertShape(isRecord(value), `${field} must be an object registry.`);
+  for (const [key, entry] of Object.entries(value)) {
+    assertShape(isStableId(key), `${field} contains an invalid registry key.`);
+    assertShape(isRecord(entry), `${field}.${key} must be an object.`);
+    validate(entry, key);
+  }
+};
+
+const assertCompoundShape = (value: Readonly<Record<string, unknown>>, key: string): void => {
+  assertMatchingId(value, key);
+  assertId(value.compoundClipId, "compoundClipId");
+  assertId(value.sourceTrackId, "sourceTrackId");
+  assertShape(isNestedSequence(value.nestedSequence), "nestedSequence is invalid.");
+  assertArray(value.childClips, "childClips", isClipShape);
+  assertArray(value.childKeyframes, "childKeyframes", isKeyframeShape);
+  assertArray(value.childAutomation, "childAutomation", isAutomationShape);
+  assertArray(value.childTransitions, "childTransitions", isTransitionShape);
+  assertArray(value.childBridges, "childBridges", isBridgeShape);
+  assertShape(isIdArray(value.dependencyIds), "dependencyIds must contain stable IDs.");
+};
+
+const assertTakeStackShape = (value: Readonly<Record<string, unknown>>, key: string): void => {
+  assertMatchingId(value, key);
+  assertId(value.clipId, "clipId");
+  assertId(value.activeTakeId, "activeTakeId");
+  assertArray(value.takes, "takes", (take) => {
+    if (!isRecord(take) || !isStableId(take.id) || typeof take.label !== "string") return false;
+    if (!isNullableId(take.assetId) || !isNullableId(take.nestedSequenceId)) return false;
+    if (!isStableId(take.reviewRevisionId)) return false;
+    return (take.assetId === null) !== (take.nestedSequenceId === null);
+  });
+  validateTakeStack(value as unknown as ProfessionalTakeStack);
+};
+
+const assertTimeRemapShape = (value: Readonly<Record<string, unknown>>, key: string): void => {
+  assertShape(value.clipId === key && isStableId(value.clipId), "timeRemap clipId must match its key.");
+  assertShape(
+    value.monotonicPolicy === "forward-only" || value.monotonicPolicy === "allow-reverse",
+    "timeRemap monotonicPolicy is invalid.",
+  );
+  assertShape(isAudioBehavior(value.audioBehavior), "timeRemap audioBehavior is invalid.");
+  assertArray(value.points, "points", (point) => {
+    if (!isRecord(point) || !isStableId(point.id)) return false;
+    if (typeof point.timelineFrame !== "bigint" || typeof point.sourceFrame !== "bigint") return false;
+    return point.interpolation === "hold" || point.interpolation === "linear";
+  });
+  assertShape((value.points as readonly unknown[]).length >= 2, "timeRemap requires at least two points.");
+  orderedRemapPoints(value as unknown as TimeRemapDefinition);
+};
+
+const assertAdjustmentLayerShape = (value: Readonly<Record<string, unknown>>, key: string): void => {
+  assertMatchingId(value, key);
+  assertId(value.clipId, "clipId");
+  assertShape(isFrameRange(value.range), "adjustment range is invalid.");
+  assertArray(value.effects, "effects", isProfessionalEffect);
+};
+
+const assertAdvancedBridgeShape = (value: Readonly<Record<string, unknown>>, key: string): void => {
+  assertMatchingId(value, key);
+  assertId(value.fromClipId, "fromClipId");
+  assertId(value.toClipId, "toClipId");
+  assertShape(isFrameRange(value.range), "bridge range is invalid.");
+  assertShape(
+    value.implementation === "shared" ||
+      value.implementation === "shader" ||
+      value.implementation === "custom",
+    "bridge implementation is invalid.",
+  );
+  assertShape(
+    value.owner === "shared" || value.owner === "remotion" || value.owner === "hyperframes",
+    "bridge owner is invalid.",
+  );
+  for (const field of [
+    "outgoingHandleFrames",
+    "incomingHandleFrames",
+    "preRollFrames",
+    "postRollFrames",
+  ] as const) {
+    assertShape(typeof value[field] === "bigint" && value[field] >= 0n, `${field} is invalid.`);
+  }
+  assertShape(
+    value.alpha === "opaque" || value.alpha === "straight" || value.alpha === "premultiplied",
+    "bridge alpha is invalid.",
+  );
+  assertShape(
+    value.audioEnvelope === "none" ||
+      value.audioEnvelope === "linear" ||
+      value.audioEnvelope === "equal-power",
+    "bridge audioEnvelope is invalid.",
+  );
+  assertShape(typeof value.experimental === "boolean", "bridge experimental flag is invalid.");
+  assertShape(
+    value.fallback === null || value.fallback === "crossfade" || value.fallback === "bake",
+    "bridge fallback is invalid.",
+  );
+  assertShape(
+    value.boundaryQa === "pending" || value.boundaryQa === "passed" || value.boundaryQa === "failed",
+    "bridge boundaryQa is invalid.",
+  );
+};
+
+const isNestedSequence = (value: unknown): boolean => {
+  if (!isRecord(value) || !isStableId(value.id) || !isStableId(value.timelineId)) return false;
+  if (typeof value.duration !== "bigint" || value.duration < 0n) return false;
+  return isNormalizedRational(value.rate);
+};
+
+const isClipShape = (value: unknown): boolean => {
+  if (!isRecord(value) || !isStableId(value.id) || !isStableId(value.trackId)) return false;
+  if (!isNullableId(value.assetId) || !isNullableId(value.nestedSequenceId)) return false;
+  if (value.engine !== "shared" && value.engine !== "remotion" && value.engine !== "hyperframes")
+    return false;
+  if (typeof value.name !== "string") return false;
+  if (
+    !isFrameRange(value.range) ||
+    !isFrameRange(value.sourceRange) ||
+    !isFrameRange(value.availableSourceRange)
+  ) {
+    return false;
+  }
+  if (!isNormalizedRational(value.sourceRate) || !isNormalizedRational(value.speed)) return false;
+  if (!isNullableId(value.linkGroupId) || !isNullableId(value.selectionGroupId)) return false;
+  if (!isNullableId(value.transitionInId) || !isNullableId(value.transitionOutId)) return false;
+  if (!isIdArray(value.keyframeIds) || !isStringRecord(value.metadata)) return false;
+  return value.properties === undefined || isRecord(value.properties);
+};
+
+const isKeyframeShape = (value: unknown): boolean => {
+  if (!isRecord(value) || !isStableId(value.id) || !isStableId(value.ownerEntityId)) return false;
+  if (typeof value.propertyPath !== "string" || typeof value.frame !== "bigint") return false;
+  if (!isPropertyValue(value.value)) return false;
+  if (
+    value.interpolation !== "hold" &&
+    value.interpolation !== "linear" &&
+    value.interpolation !== "ease" &&
+    value.interpolation !== "ease-in" &&
+    value.interpolation !== "ease-out" &&
+    value.interpolation !== "ease-in-out" &&
+    value.interpolation !== "bezier" &&
+    value.interpolation !== "spring" &&
+    value.interpolation !== "native"
+  ) {
+    return false;
+  }
+  return (
+    isNullableNumberPair(value.inTangent) &&
+    isNullableNumberPair(value.outTangent) &&
+    (value.authority === "shared" || value.authority === "engine-native") &&
+    typeof value.preserveNativeAnimation === "boolean"
+  );
+};
+
+const isAutomationShape = (value: unknown): boolean =>
+  isRecord(value) &&
+  isStableId(value.id) &&
+  isStableId(value.ownerEntityId) &&
+  typeof value.propertyPath === "string" &&
+  isIdArray(value.keyframeIds) &&
+  (value.authority === "shared" || value.authority === "engine-native");
+
+const isTransitionShape = (value: unknown): boolean =>
+  isRecord(value) &&
+  isStableId(value.id) &&
+  (value.kind === "crossfade" ||
+    value.kind === "dip" ||
+    value.kind === "wipe" ||
+    value.kind === "engine-native") &&
+  isStableId(value.fromClipId) &&
+  isStableId(value.toClipId) &&
+  isFrameRange(value.range) &&
+  (value.authority === "shared" || value.authority === "engine-native");
+
+const isBridgeShape = (value: unknown): boolean =>
+  isRecord(value) &&
+  isStableId(value.id) &&
+  isStableId(value.fromEntityId) &&
+  isStableId(value.toEntityId) &&
+  (value.bridgeKind === "engine-boundary" ||
+    value.bridgeKind === "audio-handoff" ||
+    value.bridgeKind === "baked-handoff") &&
+  isFrameRange(value.range);
+
+const isProfessionalEffect = (value: unknown): boolean => {
+  if (!isRecord(value) || !isStableId(value.id) || typeof value.name !== "string") return false;
+  if (value.ownership !== "common" && value.ownership !== "engine-native") return false;
+  if (
+    value.engine !== null &&
+    value.engine !== "shared" &&
+    value.engine !== "remotion" &&
+    value.engine !== "hyperframes"
+  ) {
+    return false;
+  }
+  if (
+    value.capability !== "native" &&
+    value.capability !== "unified" &&
+    value.capability !== "bake_required" &&
+    value.capability !== "fallback_available"
+  ) {
+    return false;
+  }
+  if (!isRecord(value.parameters)) return false;
+  if (
+    !Object.values(value.parameters).every((parameter) =>
+      ["number", "string", "boolean"].includes(typeof parameter),
+    )
+  ) {
+    return false;
+  }
+  return value.fallback === null || value.fallback === "bake" || value.fallback === "shared";
+};
+
+const isNormalizedRational = (value: unknown): boolean => {
+  try {
+    deserializeRational(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isFrameRange = (value: unknown): boolean =>
+  isRecord(value) &&
+  typeof value.start === "bigint" &&
+  typeof value.end === "bigint" &&
+  value.start >= 0n &&
+  value.end > value.start;
+
+const isPropertyValue = (value: unknown): boolean =>
+  typeof value === "number" ||
+  typeof value === "string" ||
+  typeof value === "boolean" ||
+  (Array.isArray(value) && value.every((entry) => typeof entry === "number"));
+
+const isNullableNumberPair = (value: unknown): boolean =>
+  value === null ||
+  (Array.isArray(value) && value.length === 2 && value.every((entry) => typeof entry === "number"));
+
+const isIdArray = (value: unknown): value is readonly StableEntityId[] =>
+  Array.isArray(value) && value.every(isStableId);
+
+const isStringRecord = (value: unknown): boolean =>
+  isRecord(value) && Object.values(value).every((entry) => typeof entry === "string");
+
+const isNullableId = (value: unknown): value is StableEntityId | null => value === null || isStableId(value);
+
+const isAudioBehavior = (value: unknown): value is ProfessionalAudioBehavior =>
+  value === "mute" || value === "resample" || value === "preserve-pitch";
+
+const isStableId = (value: unknown): value is StableEntityId =>
+  typeof value === "string" && /^[A-Za-z][A-Za-z0-9._:-]{2,127}$/.test(value);
+
+const assertMatchingId = (value: Readonly<Record<string, unknown>>, key: string): void => {
+  assertShape(value.id === key && isStableId(value.id), "registry entry ID must match its key.");
+};
+
+const assertId = (value: unknown, field: string): void => {
+  assertShape(isStableId(value), `${field} must be a stable ID.`);
+};
+
+const assertArray = (value: unknown, field: string, validate: (entry: unknown) => boolean): void => {
+  assertShape(Array.isArray(value) && value.every(validate), `${field} is invalid.`);
+};
+
+const assertShape: (condition: boolean, message: string) => asserts condition = (condition, message) => {
+  if (!condition) throw new Error(message);
 };
 
 const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>

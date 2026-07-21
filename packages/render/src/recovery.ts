@@ -9,7 +9,9 @@ export type ReliabilityFaultPoint =
   | "render-stage"
   | "encode-finalize"
   | "receipt-write"
-  | "approval-transition";
+  | "approval-transition"
+  | "lifecycle-intent-written"
+  | "lifecycle-revision-committed";
 
 export type RenderRecoveryStage =
   | "request-persisted"

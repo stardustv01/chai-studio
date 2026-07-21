@@ -1,4 +1,5 @@
-import { copyFile, mkdtemp, mkdir, readFile, rm } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { chmod, copyFile, mkdtemp, mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -10,7 +11,10 @@ import {
   RenderApiService,
   StudioJobRegistry,
 } from "../../apps/studio-server/src/index.js";
-import { createLocalRenderExecutor } from "../../apps/studio-server/src/local-render-executor.js";
+import {
+  collectLocalRenderRuntimeFacts,
+  createLocalRenderExecutor,
+} from "../../apps/studio-server/src/local-render-executor.js";
 
 const temporaryDirectories: string[] = [];
 
@@ -21,6 +25,79 @@ afterEach(async () => {
 });
 
 describe("production render capability", () => {
+  it("measures FFmpeg and lockfile provenance from the executable and repository bytes", async () => {
+    const facts = await collectLocalRenderRuntimeFacts();
+    const lockfile = await readFile(path.join(process.cwd(), "pnpm-lock.yaml"));
+    expect(facts.ffmpegVersion).toMatch(/^ffmpeg version\s+\S+/u);
+    expect(path.isAbsolute(facts.ffmpegPath)).toBe(true);
+    expect(facts.ffmpegPath).toBe(await realpath(facts.ffmpegPath));
+    expect(facts.ffmpegExecutableHash).toBe(
+      createHash("sha256")
+        .update(await readFile(facts.ffmpegPath))
+        .digest("hex"),
+    );
+    expect(facts.ffmpegConfigurationHash).toMatch(/^[a-f0-9]{64}$/u);
+    expect(facts.lockfilePath).toBe(path.join(process.cwd(), "pnpm-lock.yaml"));
+    expect(facts.lockfileHash).toBe(createHash("sha256").update(lockfile).digest("hex"));
+  });
+
+  it("fails closed when the configured FFmpeg executable is unavailable", async () => {
+    const parent = await mkdtemp(path.join(os.tmpdir(), "chai-runtime-facts-"));
+    temporaryDirectories.push(parent);
+    const lockfilePath = path.join(parent, "pnpm-lock.yaml");
+    await writeFile(lockfilePath, "lockfileVersion: '9.0'\n", "utf8");
+
+    await expect(
+      collectLocalRenderRuntimeFacts({
+        ffmpegPath: path.join(parent, "missing-ffmpeg"),
+        lockfilePath,
+      }),
+    ).rejects.toThrow(/unavailable/u);
+  });
+
+  it("fails closed when an executable cannot prove an FFmpeg version", async () => {
+    const parent = await mkdtemp(path.join(os.tmpdir(), "chai-runtime-facts-"));
+    temporaryDirectories.push(parent);
+    const ffmpegPath = path.join(parent, "invalid-ffmpeg");
+    const lockfilePath = path.join(parent, "pnpm-lock.yaml");
+    await writeFile(ffmpegPath, "#!/bin/sh\nprintf 'not ffmpeg\\n'\n", "utf8");
+    await chmod(ffmpegPath, 0o700);
+    await writeFile(lockfilePath, "lockfileVersion: '9.0'\n", "utf8");
+
+    await expect(collectLocalRenderRuntimeFacts({ ffmpegPath, lockfilePath })).rejects.toThrow(
+      /measurable version/u,
+    );
+  });
+
+  it("resolves a configured FFmpeg token from PATH and records its canonical identity", async () => {
+    const parent = await mkdtemp(path.join(os.tmpdir(), "chai-runtime-facts-"));
+    temporaryDirectories.push(parent);
+    const ffmpegPath = path.join(parent, "chai-fake-ffmpeg");
+    const lockfilePath = path.join(parent, "pnpm-lock.yaml");
+    await writeFile(
+      ffmpegPath,
+      "#!/bin/sh\nprintf 'ffmpeg version 99.0-chai\\nconfiguration: test-only\\n'\n",
+      "utf8",
+    );
+    await chmod(ffmpegPath, 0o700);
+    await writeFile(lockfilePath, "lockfileVersion: '9.0'\n", "utf8");
+    const originalPath = process.env.PATH;
+    process.env.PATH = parent;
+
+    try {
+      const facts = await collectLocalRenderRuntimeFacts({
+        ffmpegPath: "chai-fake-ffmpeg",
+        lockfilePath,
+      });
+      expect(facts).toMatchObject({
+        ffmpegPath: await realpath(ffmpegPath),
+        ffmpegVersion: "ffmpeg version 99.0-chai",
+      });
+    } finally {
+      process.env.PATH = originalPath;
+    }
+  });
+
   it("fails closed instead of publishing a synthetic slate when no authoritative compositor is wired", async () => {
     const parent = await mkdtemp(path.join(os.tmpdir(), "chai-local-render-"));
     temporaryDirectories.push(parent);
@@ -191,12 +268,25 @@ describe("production render capability", () => {
     expect((await readFile(path.join(root, primary.relativePath))).subarray(1, 4).toString("ascii")).toBe(
       "PNG",
     );
-    await expect(renders.receipt(output.id)).resolves.toMatchObject({
+    const receipt = await renders.receipt(output.id);
+    expect(receipt).toMatchObject({
       base: {
         dag: { range: { startFrame: "1", endFrameExclusive: "2" } },
         audio: { status: "not-applicable" },
+        environment: { browserIdentity: "not-applicable:shared-timeline" },
       },
     });
+    expect(receipt.base.dependencies.lockfileHash).toBe(
+      createHash("sha256")
+        .update(await readFile(path.join(process.cwd(), "pnpm-lock.yaml")))
+        .digest("hex"),
+    );
+    expect(receipt.base.security.environmentIdentity).toBe(
+      receipt.base.environment.strictEnvironmentFingerprint,
+    );
+    expect(receipt.base.security.workerPoolIds).toContain(
+      `local-${process.platform}-${process.arch}-shared-timeline-v2`,
+    );
     await renders.queue();
   });
 });

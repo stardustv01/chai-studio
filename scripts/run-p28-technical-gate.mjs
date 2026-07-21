@@ -69,6 +69,11 @@ await runAcceptanceGate({
     ],
   ],
   implementationFiles: [
+    "packages/diagnostics/src/release-identity.json",
+    "scripts/release-approval.mjs",
+    "scripts/release-approval.d.mts",
+    "scripts/release-target.mjs",
+    "scripts/release-target.d.mts",
     "scripts/release-operations.mjs",
     "scripts/release-operations.d.mts",
     "tests/integration/release-operations.test.ts",

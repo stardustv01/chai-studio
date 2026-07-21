@@ -37,6 +37,8 @@ jobs:
       - run: pnpm fixture:render
       - run: pnpm fixture:verify
       - run: pnpm test
+      - run: pnpm test:coverage
+      - run: pnpm test:reporting
       - run: pnpm p22:visual
       - run: pnpm security:check
       - run: pnpm security:audit
@@ -110,5 +112,35 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     needs: [quality, build, end-to-end]
     runs-on: macos-15
+    timeout-minutes: 20
     steps:
-      - run: echo "All required build, test, security, fixture, schema, and browser gates passed."
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.11.0 --activate
+      - name: Install FFmpeg runtime
+        run: brew install ffmpeg
+      - id: install
+        run: pnpm install --frozen-lockfile
+      - id: release_build
+        run: pnpm build
+      - run: pnpm release:tag:check
+      - run: pnpm release:bundle -- --source-manifest evidence/p27/release-manifest.json
+      - run: pnpm release:bundle:verify
+      - id: governance
+        name: Validate frozen governance, current isolation, licenses, and release manifest
+        run: pnpm release:governance:check
+      - id: technical
+        name: Validate P28 technical evidence
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: pnpm p28:technical-contract
+      - name: Validate exact P28 version manifest
+        if: ${{ always() && steps.release_build.outcome == 'success' }}
+        run: node scripts/generate-p28-version-manifest.mjs --check
+      - name: Validate explicit owner-authorized final evidence
+        if: ${{ always() && steps.install.outcome == 'success' }}
+        run: node scripts/validate-p28-final-contract.mjs --require-final-gate

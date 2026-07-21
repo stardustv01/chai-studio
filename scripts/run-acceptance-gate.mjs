@@ -9,6 +9,7 @@ import {
   isolatedEngineExecutable,
   isolatedEngineIdentity,
 } from "./browser-isolation.mjs";
+import { acceptanceGateReportIdentity } from "./release-approval.mjs";
 
 export const runAcceptanceGate = async (config) => {
   const checks = [
@@ -126,23 +127,10 @@ export const runAcceptanceGate = async (config) => {
   const lockfileSha256 = createHash("sha256")
     .update(await readFile(path.join(config.root, "pnpm-lock.yaml")))
     .digest("hex");
-  const identityInput = {
-    phase: config.phase,
-    taskRange: config.taskRange,
-    platform: `${process.platform}-${process.arch}`,
-    node: process.version,
-    lockfileSha256,
-    browserExecutable: isolatedChromiumExecutable,
-    browserIdentity: isolatedChromiumIdentity,
-    engineExecutable: isolatedEngineExecutable,
-    engineIdentity: isolatedEngineIdentity,
-    implementationFiles: fileHashes,
-    checks: results.map(({ name, passed, exitCode }) => ({ name, passed, exitCode })),
-  };
-  const report = {
+  const gatePassed = results.length === checks.length && results.every((result) => result.passed);
+  const reportBody = {
     generatedAt: new Date().toISOString(),
-    identity: createHash("sha256").update(JSON.stringify(identityInput)).digest("hex"),
-    passed: results.length === checks.length && results.every((result) => result.passed),
+    passed: gatePassed,
     phase: config.phase,
     taskRange: config.taskRange,
     environment: {
@@ -159,6 +147,7 @@ export const runAcceptanceGate = async (config) => {
     implementationFiles: fileHashes,
     results,
   };
+  const report = { ...reportBody, identity: acceptanceGateReportIdentity(reportBody) };
   const evidenceDirectory = path.join(config.root, "evidence", config.phase.toLowerCase());
   await mkdir(evidenceDirectory, { recursive: true });
   await writeFile(path.join(evidenceDirectory, "gate-report.json"), `${JSON.stringify(report, null, 2)}\n`);

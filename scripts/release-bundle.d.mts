@@ -18,10 +18,12 @@ export interface ReleaseBundleMarker {
 }
 
 export declare const releaseBundleMarker: string;
+export declare const assertPostFreezeAuthorityChanges: (changedFiles: readonly string[]) => void;
 export declare const createReleaseBundle: (input: {
   readonly sourceRoot: string;
   readonly destination: string;
   readonly allowDirty?: boolean;
+  readonly sourceCommit?: string;
 }) => Promise<ReleaseBundleMarker & { readonly destination: string }>;
 export declare const sealReleaseBundle: (input: {
   readonly root: string;

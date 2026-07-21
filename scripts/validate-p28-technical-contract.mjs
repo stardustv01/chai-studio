@@ -1,8 +1,11 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const packageManifest = await readJson("package.json");
+const target = resolveReleaseTarget({ packageManifest });
 const checks = [
   [
     "P28.01-P28.03",
@@ -105,13 +108,17 @@ results.push({
   missingSymbols: [],
 });
 const receipt = await readJson("evidence/p28/version-1-release-receipt.json");
+const publicReviewStatus = receipt?.publicDistributionReview?.status;
 results.push({
   task: "P28.19-P28.20",
   file: "evidence/p28/version-1-release-receipt.json",
   passed:
-    receipt?.version === "1.0.0" &&
+    receipt?.version === target.version &&
+    receipt?.candidate === target.version &&
+    receipt?.distribution === target.distribution &&
     receipt?.ownerApproval?.status === "pending-explicit-owner-approval" &&
     receipt?.ownerApproval?.inferred === false &&
+    ["pending-public-distribution-review", "approved-public-distribution"].includes(publicReviewStatus) &&
     receipt?.signature === null &&
     receipt?.releaseAuthorized === false,
   exists: receipt !== null,

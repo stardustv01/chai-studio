@@ -2,7 +2,8 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { assertOwnerApproval } from "./release-approval.mjs";
+import { assertOwnerApproval, assertPublicDistributionReview } from "./release-approval.mjs";
+import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const approval = await readFile(path.join(root, "governance/V1_OWNER_APPROVAL.json"), "utf8")
@@ -12,6 +13,29 @@ const approval = await readFile(path.join(root, "governance/V1_OWNER_APPROVAL.js
     throw error;
   });
 const ownerApproved = approval !== null;
+const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const target = resolveReleaseTarget({ packageManifest });
+if (approval && (approval.version !== target.version || approval.distribution !== target.distribution)) {
+  throw new Error("Owner approval does not match the exact release target.");
+}
+const dependencyInventory = JSON.parse(
+  await readFile(path.join(root, "governance/licenses/dependency-inventory.json"), "utf8"),
+);
+const distributionReview = await readFile(
+  path.join(root, "governance/licenses/public-distribution-review.json"),
+  "utf8",
+)
+  .then((content) =>
+    assertPublicDistributionReview(JSON.parse(content), {
+      version: target.version,
+      inventoryIdentity: dependencyInventory.identityHash,
+    }),
+  )
+  .catch((error) => {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  });
+const releaseApproved = ownerApproved && distributionReview !== null;
 const rows = [
   [
     "P28.01",
@@ -178,28 +202,38 @@ const rows = [
   ],
   [
     "P28.19",
-    ownerApproved ? "passed" : "pending-owner-approval",
+    releaseApproved
+      ? "passed"
+      : ownerApproved
+        ? "pending-public-distribution-review"
+        : "pending-owner-approval",
     ["evidence/p28/version-1-release-receipt.json", "docs/KNOWN_LIMITATIONS_V1.md"],
   ],
   [
     "P28.20",
-    ownerApproved ? "passed" : "ready-pending-release",
+    releaseApproved ? "passed" : "ready-pending-release",
     ["docs/OPERATIONAL_HANDOFF_V1.md", "docs/POST_RELEASE_OPERATIONS.md", "docs/MIGRATION_ROLLBACK.md"],
   ],
 ];
 const matrixPayload = {
   schemaVersion: "1.0.0",
   productScope: "Foundation plus Professional Expansion",
-  releaseCandidate: ownerApproved ? "1.0.0" : "1.0.0-rc.4",
+  releaseCandidate: target.version,
+  distribution: target.distribution,
   rows: rows.map(([task, status, evidence]) => ({
     task,
     status,
     evidence,
     waiver: null,
-    blocker: task === "P28.19" && !ownerApproved ? "explicit owner approval and signature required" : null,
+    blocker:
+      task === "P28.19" && !releaseApproved
+        ? ownerApproved
+          ? "explicit public-distribution review required"
+          : "explicit owner approval and signature required"
+        : null,
   })),
   inScopeRequirementCount: 20,
-  implementedTechnicalCount: ownerApproved ? 20 : 18,
+  implementedTechnicalCount: releaseApproved ? 20 : ownerApproved ? 19 : 18,
   unexplainedWaivers: 0,
   unresolvedTechnicalBlockers: 0,
   deferredOutOfScope: [
@@ -228,6 +262,7 @@ console.log(
       identity: matrix.identity,
       rows: matrix.rows.length,
       pendingOwnerApproval: !ownerApproved,
+      pendingPublicDistributionReview: distributionReview === null,
     },
     null,
     2,

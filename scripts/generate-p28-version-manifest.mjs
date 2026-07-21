@@ -2,8 +2,14 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { approvalIdentity, assertOwnerApproval } from "./release-approval.mjs";
+import {
+  approvalIdentity,
+  assertOwnerApproval,
+  assertPublicDistributionReview,
+  publicDistributionReviewIdentity,
+} from "./release-approval.mjs";
 import { canonicalJson, hashTree, sha256File } from "./release-operations.mjs";
+import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, "evidence/p28/version-1-manifest.json");
@@ -12,19 +18,32 @@ const approval = assertOwnerApproval(
   JSON.parse(await readFile(path.join(root, "governance/V1_OWNER_APPROVAL.json"), "utf8")),
 );
 const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
-const releaseSource = await readFile(path.join(root, "packages/diagnostics/src/release.ts"), "utf8");
-if (packageManifest.version !== "1.0.0" || !releaseSource.includes('version: "1.0.0"')) {
-  throw new Error("Version 1 source identity must be finalized before manifest generation.");
+const target = resolveReleaseTarget({ packageManifest });
+if (approval.version !== target.version || approval.distribution !== target.distribution) {
+  throw new Error("Owner approval does not match the exact release target.");
 }
+const dependencyInventory = JSON.parse(
+  await readFile(path.join(root, "governance/licenses/dependency-inventory.json"), "utf8"),
+);
+const distributionReview = assertPublicDistributionReview(
+  JSON.parse(await readFile(path.join(root, "governance/licenses/public-distribution-review.json"), "utf8")),
+  { version: target.version, inventoryIdentity: dependencyInventory.identityHash },
+);
+const distributionReviewIdentity = publicDistributionReviewIdentity(distributionReview, {
+  version: target.version,
+  inventoryIdentity: dependencyInventory.identityHash,
+});
 const exactFiles = [
   "package.json",
   "pnpm-lock.yaml",
   ".node-version",
   "packages/diagnostics/src/release.ts",
+  "packages/diagnostics/src/release-identity.json",
   "governance/V1_OWNER_APPROVAL.json",
   "governance/execution-baseline.json",
   "governance/licenses/dependency-inventory.json",
   "governance/licenses/release-review.json",
+  "governance/licenses/public-distribution-review.json",
   "evidence/p27/release-manifest.json",
   "evidence/p28-tech/gate-report.json",
   "evidence/p28/traceability-matrix.json",
@@ -63,15 +82,24 @@ files.sort((left, right) => left.path.localeCompare(right.path, "en"));
 const payload = {
   schemaVersion: "1.0.0",
   product: "Chai Studio",
-  version: "1.0.0",
-  releaseTag: "v1.0.0",
+  version: target.version,
+  releaseTag: target.releaseTag,
+  distribution: target.distribution,
   supportClass: "apple-m4-16gb",
   launchModel: "localhost-web-server",
   approvalIdentity: approvalIdentity(approval),
   dependencyLockSha256: await sha256File(path.join(root, "pnpm-lock.yaml")),
+  dependencyInventoryIdentity: dependencyInventory.identityHash,
+  dependencyInventorySha256: await sha256File(
+    path.join(root, "governance/licenses/dependency-inventory.json"),
+  ),
+  publicDistributionReviewIdentity: distributionReviewIdentity,
+  publicDistributionReviewSha256: await sha256File(
+    path.join(root, "governance/licenses/public-distribution-review.json"),
+  ),
   files,
   releaseAuthorized: false,
-  authorizationSource: "owner-signed Version 1 receipt",
+  authorizationSource: "owner-signed exact-candidate receipt",
 };
 const manifest = {
   ...payload,
@@ -82,7 +110,7 @@ await mkdir(path.dirname(output), { recursive: true });
 if (check) {
   const existing = await readFile(output, "utf8").catch(() => "");
   if (existing !== serialized) {
-    console.error("Version 1 manifest is missing or stale.");
+    console.error("Release manifest is missing or stale.");
     process.exitCode = 1;
   } else {
     console.log(

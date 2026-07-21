@@ -283,6 +283,11 @@ export const App = () => {
         runtime.setCommandPaletteOpen(false);
         return;
       }
+      if (event.key === "Escape" && statusMenuOpen) {
+        event.preventDefault();
+        setStatusMenuOpen(false);
+        return;
+      }
       const shortcut = shortcutForEvent(event, shortcuts, runtime.workspace);
       if (shortcut === null) return;
       event.preventDefault();
@@ -292,7 +297,7 @@ export const App = () => {
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [executeShortcut, runtime, shortcuts]);
+  }, [executeShortcut, runtime, shortcuts, statusMenuOpen]);
 
   const shellStyle = useMemo(
     () =>
@@ -338,9 +343,6 @@ export const App = () => {
       },
       capture: (mode, includeOverlays, source) => {
         void runtime.requestCapture(mode, includeOverlays, source);
-      },
-      sourceReview: (action, source) => {
-        runtime.sourceReviewAction(action, source.sourceId, source.currentFrame);
       },
       timeline: (command) => void runtime.dispatchTimelineCommand(command),
       audio: (command) => void runtime.dispatchAudioCommand(command),
@@ -416,6 +418,8 @@ export const App = () => {
             <button
               className="truth-status"
               type="button"
+              aria-controls="studio-truth-popover"
+              aria-expanded={statusMenuOpen}
               onClick={() => {
                 setStatusMenuOpen((open) => !open);
               }}
@@ -465,7 +469,12 @@ export const App = () => {
             </Button>
           </div>
           {statusMenuOpen ? (
-            <div className="truth-popover">
+            <div
+              className="truth-popover"
+              id="studio-truth-popover"
+              role="region"
+              aria-label="Persistent production truth"
+            >
               <strong>Persistent production truth</strong>
               <TruthRow
                 label="Server"
@@ -579,6 +588,7 @@ export const App = () => {
 
         <section className="studio-workspace" aria-label={`${workspaceLabels[runtime.workspace]} workspace`}>
           <aside
+            aria-label={`${workspaceLabels[runtime.workspace]} browser panel`}
             className={
               !compactLayout && layout.leftCollapsed
                 ? "studio-panel left-panel collapsed"
@@ -648,6 +658,7 @@ export const App = () => {
             }}
           />
           <aside
+            aria-label={`${workspaceLabels[runtime.workspace]} inspector panel`}
             className={
               !compactLayout && layout.rightCollapsed
                 ? "studio-panel right-panel collapsed"
@@ -1141,7 +1152,16 @@ const ShellStateOverlay = ({
   }
   const content = stateContent[state];
   return (
-    <div className="state-overlay" data-testid={`shell-state-${state}`}>
+    <div
+      className="state-overlay"
+      data-testid={`shell-state-${state}`}
+      role={
+        state === "loading" || state === "reconnecting" || state === "migrating" || state === "recovering"
+          ? "status"
+          : "alert"
+      }
+      aria-label={`${content.title}. ${content.detail}`}
+    >
       <EmptyState
         title={content.title}
         description={content.detail}
@@ -1349,7 +1369,11 @@ const ProjectLauncher = ({
               {busy ? "Working…" : "Create project"}
             </Button>
           </form>
-          {error === null ? null : <p className="project-launcher__error">{error}</p>}
+          {error === null ? null : (
+            <p className="project-launcher__error" role="alert">
+              {error}
+            </p>
+          )}
         </div>
       )}
       <footer>
@@ -1653,7 +1677,7 @@ const DiagnosticsDrawer = ({
       <TruthRow label="Schema / API" value={studioReleaseIdentity.schemaVersion} />
       <TruthRow
         label="Engines"
-        value={`Remotion ${studioReleaseIdentity.engines.remotion} · HyperFrames ${studioReleaseIdentity.engines.hyperframes}`}
+        value={`Remotion ${studioReleaseIdentity.engines.remotion ?? "unverified"} · HyperFrames ${studioReleaseIdentity.engines.hyperframes ?? "unverified"}`}
       />
       <TruthRow label="Adapters" value={studioReleaseIdentity.adapterContractVersion} />
       <TruthRow label="Browser QA" value={studioReleaseIdentity.testedBrowser.identity} />

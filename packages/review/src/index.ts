@@ -264,11 +264,24 @@ const assertReviewOperation = (value: JsonValue | ReviewOperation): ReviewOperat
   if (value === null || Array.isArray(value) || typeof value !== "object")
     throw new Error("Review operation is invalid.");
   const record = value as Readonly<Record<string, JsonValue>>;
-  if (typeof record.kind !== "string" || !record.kind.startsWith("review.")) {
+  if (typeof record.kind !== "string" || !reviewOperationKinds.has(record.kind as ReviewOperation["kind"])) {
     throw new Error("Review operation is invalid.");
   }
   return record as unknown as ReviewOperation;
 };
+
+const reviewOperationKinds: ReadonlySet<ReviewOperation["kind"]> = new Set([
+  "review.bundle.create",
+  "review.bundle.delete",
+  "review.issue.create",
+  "review.issue.transition",
+  "review.comparison.create",
+  "review.request.create",
+  "review.action.record",
+  "review.exception.accept",
+  "review.take.add",
+  "review.take.activate",
+]);
 
 const assertReviewBundle = (bundle: ReviewBundleDocument, timeline: TimelineDocument): void => {
   if (bundle.projectId !== timeline.projectId) throw new Error("Review bundle project identity mismatch.");

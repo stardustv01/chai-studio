@@ -13,7 +13,6 @@
     { "path": "../../packages/bridge" },
     { "path": "../../packages/diagnostics" },
     { "path": "../../packages/preview" },
-    { "path": "../../packages/qa" },
     { "path": "../../packages/schema" },
     { "path": "../../packages/ui-components" },
     { "path": "../../packages/timeline" }

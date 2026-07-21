@@ -1,8 +1,12 @@
 import { mkdtemp, rm } from "node:fs/promises";
+import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  ProjectSessionService,
+  StudioJobRegistry,
+  createStudioServer,
   startStudioServer,
   type ApiErrorEnvelope,
   type ApiSuccessEnvelope,
@@ -11,9 +15,20 @@ import {
 
 const temporaryDirectories: string[] = [];
 const startedServers: StartedStudioServer[] = [];
+const directServers: ReturnType<typeof createStudioServer>[] = [];
 
 afterEach(async () => {
   await Promise.all(startedServers.splice(0).map((started) => started.close()));
+  await Promise.all(
+    directServers.splice(0).map(
+      (server) =>
+        new Promise<void>((resolve) =>
+          server.close(() => {
+            resolve();
+          }),
+        ),
+    ),
+  );
   await Promise.all(
     temporaryDirectories.splice(0).map((directory) => rm(directory, { recursive: true, force: true })),
   );
@@ -66,6 +81,55 @@ describe("project HTTP API", () => {
       error: { code: "server.project-not-open" },
     });
   });
+
+  it("blocks project switching while a Studio job is active", async () => {
+    const parent = await temporaryDirectory();
+    const projects = new ProjectSessionService();
+    const jobs = new StudioJobRegistry();
+    const token = "project-job-session-token-abcdefghijklmnopqrstuvwxyz";
+    let origin = "";
+    const server = createStudioServer({
+      sessionToken: token,
+      allowedOrigins: () => [origin],
+      projectService: projects,
+      jobRegistry: jobs,
+    });
+    directServers.push(server);
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    const port = (server.address() as AddressInfo).port;
+    origin = `http://127.0.0.1:${port.toString()}`;
+    const request = directRequestFor(port, token, origin);
+    expect(
+      (
+        await request("/api/v1/projects/create", {
+          method: "POST",
+          body: JSON.stringify({ targetPath: path.join(parent, "Busy Film.chai"), title: "Busy Film" }),
+        })
+      ).status,
+    ).toBe(201);
+    const snapshot = await projects.snapshot();
+    let finishJob = (): void => undefined;
+    const jobFinished = new Promise<void>((resolve) => {
+      finishJob = resolve;
+    });
+    const job = jobs.enqueue({
+      id: "job-project-switch-0001",
+      kind: "render.execute",
+      correlationId: "correlation-project-switch-0001",
+      projectId: snapshot.project.projectId,
+      revisionId: snapshot.pointer.revisionId,
+      task: async () => jobFinished,
+    });
+    await Promise.resolve();
+    const close = await request("/api/v1/projects/close", { method: "POST" });
+    expect(close.status).toBe(409);
+    expect((await close.json()) as ApiErrorEnvelope).toMatchObject({
+      error: { code: "server.project-state-conflict" },
+    });
+    await expect(projects.snapshot()).resolves.toMatchObject({ project: { title: "Busy Film" } });
+    finishJob();
+    await jobs.wait(job.id);
+  });
 });
 
 const temporaryDirectory = async (): Promise<string> => {
@@ -86,4 +150,15 @@ const requestFor =
       ...init,
       headers,
     });
+  };
+
+const directRequestFor =
+  (port: number, token: string, origin: string) =>
+  (endpoint: string, init: RequestInit = {}): Promise<Response> => {
+    const headers = new Headers(init.headers);
+    headers.set("authorization", `Bearer ${token}`);
+    headers.set("x-chai-csrf-token", token);
+    headers.set("content-type", "application/json");
+    headers.set("origin", origin);
+    return fetch(`http://127.0.0.1:${port.toString()}${endpoint}`, { ...init, headers });
   };

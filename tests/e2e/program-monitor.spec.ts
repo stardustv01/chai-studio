@@ -131,6 +131,8 @@ test("professional source monitor keeps an independent clock while edits enter r
 
   await expect(sourceMonitor.getByRole("button", { name: "Apply three-point edit" })).toBeVisible();
   await expect(sourceMonitor.getByRole("radio", { name: "Insert" })).toBeVisible();
+  await expect(sourceMonitor.getByRole("button", { name: "Compare to timeline frame" })).toBeDisabled();
+  await expect(sourceMonitor.getByRole("button", { name: "Add source to Codex context" })).toBeDisabled();
   await expect(sourceMonitor).toContainText("Source transport never seeks the master timeline");
 
   const sourceIds: string[] = [];

@@ -14,7 +14,6 @@
     "@chai-studio/captions": "workspace:*",
     "@chai-studio/diagnostics": "workspace:*",
     "@chai-studio/preview": "workspace:*",
-    "@chai-studio/qa": "workspace:*",
     "@chai-studio/schema": "workspace:*",
     "@chai-studio/ui-components": "workspace:*",
     "@chai-studio/timeline": "workspace:*",

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
@@ -12,7 +12,7 @@ import {
   RenderRecoveryJournalStore,
   type RenderPlan,
 } from "../../packages/render/src/index.js";
-import { normalizeRational } from "../../packages/schema/src/index.js";
+import { normalizeRational, stringifyCanonicalJson } from "../../packages/schema/src/index.js";
 import { evaluateAudioMeasurements, evaluateStructuralOutput } from "../../packages/qa/src/index.js";
 import {
   ProjectSessionService,
@@ -134,6 +134,33 @@ describe("render HTTP API", () => {
     expect(await restarted.clearCompleted()).toEqual({ removed: 1 });
     expect(await restarted.requests()).toHaveLength(0);
     expect(await restarted.outputs()).toHaveLength(1);
+  });
+
+  it("rejects security evidence bound to a different strict render environment", async () => {
+    const fixture = await serverFixture(async (input) => {
+      const audioContent = "mismatched-environment-audio";
+      await Promise.all([
+        writeFile(path.join(input.outputDirectory, "mismatch.mp4"), "mismatched-environment-output"),
+        writeFile(path.join(input.outputDirectory, "mismatch.wav"), audioContent),
+      ]);
+      return {
+        primaryRelativePath: "mismatch.mp4",
+        additionalRelativePaths: ["mismatch.wav"],
+        engines: [{ engine: "shared" as const, version: "fixture-1", role: "finishing" }],
+        cacheLineage: [],
+        warnings: [],
+        reproductionCommands: ["fixture-mismatched-environment"],
+        audio: audioEvidence(audioContent),
+        plan: fixturePlan(input.request),
+        security: { ...fixtureSecurity(input.request), environmentIdentity: "0".repeat(64) },
+      };
+    });
+    const snapshot = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue(renderBody(snapshot.pointer.revisionId));
+    const failed = await fixture.jobs.wait(queued.job.id);
+    expect(failed).toMatchObject({ status: "failed" });
+    expect(failed.error).toMatch(/security evidence is invalid/i);
+    expect(await fixture.render.outputs()).toEqual([]);
   });
 
   it("queues output, records immutable receipt identity, runs QA, and explicitly approves", async () => {
@@ -419,15 +446,506 @@ describe("render HTTP API", () => {
       lastError: "cancelled",
     });
   });
+
+  it("fails closed when persisted output, receipt, QA, delivery, or job records are malformed", async () => {
+    const fixture = await serverFixture(async (input) => {
+      const audioContent = "persistence-validation-audio";
+      await Promise.all([
+        writeFile(path.join(input.outputDirectory, "validated.mp4"), "validated-output"),
+        writeFile(path.join(input.outputDirectory, "validated.wav"), audioContent),
+      ]);
+      return {
+        primaryRelativePath: "validated.mp4",
+        additionalRelativePaths: ["validated.wav"],
+        engines: [{ engine: "shared", version: "fixture-1", role: "finishing" }],
+        cacheLineage: [],
+        warnings: [],
+        reproductionCommands: ["fixture-persistence-validation"],
+        audio: audioEvidence(audioContent),
+        plan: fixturePlan(input.request),
+        security: fixtureSecurity(input.request),
+      };
+    });
+    const initial = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-persistence-validation-0001",
+    });
+    const completed = await fixture.jobs.wait(queued.job.id);
+    expect(completed.status).toBe("completed");
+    const output = completed.result as RenderOutputRecord;
+    const root = fixture.projects.openRootPath();
+
+    const outputPath = path.join(root, "renders", output.id, "output.json");
+    const outputSource = await readFile(outputPath, "utf8");
+    await writeFile(outputPath, JSON.stringify({ ...JSON.parse(outputSource), id: "output-tampered" }));
+    await expect(fixture.render.outputs()).rejects.toThrow(/persisted render output/i);
+    await writeFile(outputPath, outputSource);
+
+    const alternateProfile = builtInDeliveryProfiles().find((profile) => profile.id !== output.profile.id);
+    if (alternateProfile === undefined) throw new Error("Alternate delivery profile fixture is missing.");
+    await writeFile(
+      outputPath,
+      JSON.stringify({
+        ...JSON.parse(outputSource),
+        activationRevisionId: "revision-tampered-activation-0001",
+        profile: alternateProfile,
+      }),
+    );
+    await expect(fixture.render.outputs()).rejects.toThrow(/does not match its immutable receipt/i);
+    await writeFile(outputPath, outputSource);
+
+    const receiptPath = path.join(root, "receipts", "renders", output.id, "render.json");
+    const receiptSource = await readFile(receiptPath, "utf8");
+    await writeFile(
+      receiptPath,
+      JSON.stringify({ ...JSON.parse(receiptSource), identityHash: "0".repeat(64) }),
+    );
+    await expect(fixture.render.receipt(output.id)).rejects.toThrow(/invalid identity/i);
+    await writeFile(receiptPath, receiptSource);
+
+    const lifecycleDirectory = path.join(root, "receipts", "renders", output.id, "lifecycle");
+    const lifecycleName = (await readdir(lifecycleDirectory)).find((name) => name.endsWith(".json"));
+    if (lifecycleName === undefined) throw new Error("Lifecycle persistence fixture is missing.");
+    const lifecyclePath = path.join(lifecycleDirectory, lifecycleName);
+    const lifecycleSource = await readFile(lifecyclePath, "utf8");
+    const { eventHash: _eventHash, ...tamperedLifecycle } = JSON.parse(lifecycleSource) as Record<
+      string,
+      unknown
+    >;
+    void _eventHash;
+    tamperedLifecycle.actor = {
+      id: "actor-tampered-lifecycle-0001",
+      kind: "user",
+      sessionId: "session-tampered-lifecycle-0001",
+    };
+    await writeFile(
+      lifecyclePath,
+      stringifyCanonicalJson({
+        ...tamperedLifecycle,
+        eventHash: createHash("sha256")
+          .update(stringifyCanonicalJson(tamperedLifecycle), "utf8")
+          .digest("hex"),
+      }),
+    );
+    await expect(fixture.render.receipt(output.id)).rejects.toThrow(/immutable revision evidence/i);
+    await writeFile(lifecyclePath, lifecycleSource);
+
+    await fixture.render.queue();
+    const jobPath = path.join(root, "renders", "queue", "jobs", `${queued.job.id}.json`);
+    const jobSource = await readFile(jobPath, "utf8");
+    await writeFile(jobPath, JSON.stringify({ ...JSON.parse(jobSource), progress: 2 }));
+    const restarted = new RenderApiService({ projects: fixture.projects, jobs: new StudioJobRegistry() });
+    await expect(restarted.queue()).rejects.toThrow(/persisted Studio job/i);
+    await writeFile(jobPath, jobSource);
+
+    let current = await fixture.projects.snapshot();
+    const qaJob = await fixture.render.enqueueQa({
+      outputId: output.id,
+      actor: actor(),
+      expectedRevisionId: current.pointer.revisionId,
+      correlationId: "correlation-persistence-validation-qa",
+    });
+    expect(await fixture.jobs.wait(qaJob.id)).toMatchObject({ status: "completed" });
+    const qaDirectory = path.join(root, "receipts", "renders", output.id, "qa");
+    const qaName = (await readdir(qaDirectory)).find(
+      (name) => name.endsWith(".json") && name !== "checklist.json",
+    );
+    if (qaName === undefined) throw new Error("QA persistence fixture is missing.");
+    const qaPath = path.join(qaDirectory, qaName);
+    const qaSource = await readFile(qaPath, "utf8");
+    await writeFile(qaPath, JSON.stringify({ ...JSON.parse(qaSource), reportHash: "f".repeat(64) }));
+    await expect(fixture.render.qaWorkspace(output.id)).rejects.toThrow(/QA receipt.*invalid identity/i);
+    await writeFile(qaPath, qaSource);
+
+    const checklist = (await fixture.render.qaWorkspace(output.id)).checklist;
+    if (checklist === null) throw new Error("Review checklist fixture is missing.");
+    for (const item of checklist.items) {
+      await fixture.render.recordChecklistItem({
+        outputId: output.id,
+        itemId: item.id,
+        status: "passed",
+        reviewerId: "actor-persistence-validation",
+        evidenceHashes: [createHash("sha256").update(item.id).digest("hex")],
+      });
+    }
+    current = await fixture.projects.snapshot();
+    await fixture.render.approve({
+      outputId: output.id,
+      actor: actor(),
+      expectedRevisionId: current.pointer.revisionId,
+      evidenceHashes: ["a".repeat(64)],
+      exceptionIds: [],
+    });
+    current = await fixture.projects.snapshot();
+    await fixture.render.deliver({
+      outputId: output.id,
+      actor: actor(),
+      expectedRevisionId: current.pointer.revisionId,
+      evidenceHashes: ["d".repeat(64)],
+    });
+    const deliveryPath = path.join(root, "receipts", "renders", output.id, "delivery.json");
+    const deliverySource = await readFile(deliveryPath, "utf8");
+    await writeFile(
+      deliveryPath,
+      JSON.stringify({ ...JSON.parse(deliverySource), lifecycleEventHash: "e".repeat(64) }),
+    );
+    await expect(fixture.render.receipt(output.id)).rejects.toThrow(/does not match.*lifecycle event/i);
+  });
+
+  it("recovers lifecycle evidence after a revision commit is interrupted before event publication", async () => {
+    let inject = true;
+    const fixture = await serverFixture(
+      async (input) => {
+        const audioContent = "journal-recovery-audio";
+        await Promise.all([
+          writeFile(path.join(input.outputDirectory, "recover.mp4"), "recover-output"),
+          writeFile(path.join(input.outputDirectory, "recover.wav"), audioContent),
+        ]);
+        return {
+          primaryRelativePath: "recover.mp4",
+          additionalRelativePaths: ["recover.wav"],
+          engines: [{ engine: "shared", version: "fixture-1", role: "finishing" }],
+          cacheLineage: [],
+          warnings: [],
+          reproductionCommands: ["fixture-journal-recovery"],
+          audio: audioEvidence(audioContent),
+          plan: fixturePlan(input.request),
+          security: fixtureSecurity(input.request),
+        };
+      },
+      {
+        checkpoint: (point) => {
+          if (inject && point === "lifecycle-revision-committed") {
+            inject = false;
+            throw new Error("simulated lifecycle publication interruption");
+          }
+        },
+      },
+    );
+    const initial = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-lifecycle-journal-recovery",
+    });
+    expect(await fixture.jobs.wait(queued.job.id)).toMatchObject({ status: "failed" });
+    const recovery = await new RenderRecoveryJournalStore(fixture.projects.openRootPath()).read(
+      queued.request.id,
+    );
+    const outputId = recovery?.outputId;
+    if (outputId === null || outputId === undefined) throw new Error("Recovery output identity is missing.");
+    expect((await fixture.projects.snapshot()).approvalState).toMatchObject({
+      outputId,
+      state: "rendered_unchecked",
+    });
+
+    const restarted = new RenderApiService({ projects: fixture.projects, jobs: new StudioJobRegistry() });
+    await expect(restarted.outputs()).resolves.toMatchObject([
+      { id: outputId, lifecycleState: "rendered_unchecked" },
+    ]);
+    const recoveredOutput = JSON.parse(
+      await readFile(path.join(fixture.projects.openRootPath(), "renders", outputId, "output.json"), "utf8"),
+    ) as { readonly id: string };
+    expect(recoveredOutput.id).toBe(outputId);
+    await expect(restarted.receipt(outputId)).resolves.toMatchObject({
+      currentState: "rendered_unchecked",
+      lifecycle: [{ outputId, to: "rendered_unchecked" }],
+    });
+    const pending = await readdir(
+      path.join(fixture.projects.openRootPath(), "receipts", "renders", outputId, "transactions"),
+    );
+    expect(pending.filter((name) => name.endsWith(".json"))).toEqual([]);
+  });
+
+  it("keeps a second output receipt readable when activation starts from prior global lifecycle state", async () => {
+    const fixture = await serverFixture(async (input) => {
+      const audioContent = `second-output-audio-${input.outputId}`;
+      await Promise.all([
+        writeFile(path.join(input.outputDirectory, "second.mp4"), `output-${input.outputId}`),
+        writeFile(path.join(input.outputDirectory, "second.wav"), audioContent),
+      ]);
+      return {
+        primaryRelativePath: "second.mp4",
+        additionalRelativePaths: ["second.wav"],
+        engines: [{ engine: "shared", version: "fixture-1", role: "finishing" }],
+        cacheLineage: [],
+        warnings: [],
+        reproductionCommands: ["fixture-second-output"],
+        audio: audioEvidence(audioContent),
+        plan: fixturePlan(input.request),
+        security: fixtureSecurity(input.request),
+      };
+    });
+    const initial = await fixture.projects.snapshot();
+    const first = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-second-output-first",
+    });
+    const firstCompleted = await fixture.jobs.wait(first.job.id);
+    expect(firstCompleted.status).toBe("completed");
+    const current = await fixture.projects.snapshot();
+    const second = await fixture.render.enqueue({
+      ...renderBody(current.pointer.revisionId),
+      correlationId: "correlation-second-output-second",
+    });
+    const secondCompleted = await fixture.jobs.wait(second.job.id);
+    expect(secondCompleted.status).toBe("completed");
+    const secondOutput = secondCompleted.result as RenderOutputRecord;
+    await expect(fixture.render.receipt(secondOutput.id)).resolves.toMatchObject({
+      currentState: "rendered_unchecked",
+      lifecycle: [{ from: "rendered_unchecked", to: "rendered_unchecked" }],
+    });
+    await expect(fixture.render.outputs()).resolves.toHaveLength(2);
+  });
+
+  it.each(["receipt-write", "approval-transition"] as const)(
+    "ignores an incomplete output interrupted at %s when no activation revision committed",
+    async (faultPoint) => {
+      let inject = true;
+      const fixture = await serverFixture(persistenceExecutor(`incomplete-${faultPoint}`), {
+        checkpoint: (point) => {
+          if (inject && point === faultPoint) {
+            inject = false;
+            throw new Error(`simulated ${faultPoint} interruption`);
+          }
+        },
+      });
+      const initial = await fixture.projects.snapshot();
+      const queued = await fixture.render.enqueue({
+        ...renderBody(initial.pointer.revisionId),
+        correlationId: `correlation-incomplete-${faultPoint}`,
+      });
+      expect(await fixture.jobs.wait(queued.job.id)).toMatchObject({ status: "failed" });
+      const recovery = await new RenderRecoveryJournalStore(fixture.projects.openRootPath()).read(
+        queued.request.id,
+      );
+      const outputId = recovery?.outputId;
+      if (outputId === null || outputId === undefined) throw new Error("Incomplete output ID is missing.");
+      expect((await fixture.projects.snapshot()).approvalState.outputId).not.toBe(outputId);
+      const restarted = new RenderApiService({ projects: fixture.projects, jobs: new StudioJobRegistry() });
+      await expect(restarted.outputs()).resolves.toEqual([]);
+      await expect(restarted.receipt(outputId)).rejects.toThrow(/lacks activation evidence/i);
+    },
+  );
+
+  it("cleans an uncommitted lifecycle intent when a concurrent revision advances its source", async () => {
+    const projectRef: { current: ProjectSessionService | null } = { current: null };
+    let advance = true;
+    const fixture = await serverFixture(persistenceExecutor("concurrent-intent"), {
+      checkpoint: async (point) => {
+        if (!advance || point !== "lifecycle-intent-written") return;
+        advance = false;
+        if (projectRef.current === null) throw new Error("Concurrent project fixture is unavailable.");
+        const current = await projectRef.current.snapshot();
+        await projectRef.current.transitionQaLifecycle({
+          outputId: "output-concurrent-authority-0001",
+          to: "rendered_unchecked",
+          actor: actor(),
+          expectedRevisionId: current.pointer.revisionId,
+          report: null,
+          exceptions: [],
+          evidenceHashes: ["c".repeat(64)],
+          exceptionIds: [],
+        });
+      },
+    });
+    projectRef.current = fixture.projects;
+    const projects = fixture.projects;
+    const initial = await projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-concurrent-intent",
+    });
+    expect(await fixture.jobs.wait(queued.job.id)).toMatchObject({ status: "failed" });
+    const recovery = await new RenderRecoveryJournalStore(projects.openRootPath()).read(queued.request.id);
+    const outputId = recovery?.outputId;
+    if (outputId === null || outputId === undefined) throw new Error("Concurrent output ID is missing.");
+    const transactionDirectory = path.join(
+      projects.openRootPath(),
+      "receipts",
+      "renders",
+      outputId,
+      "transactions",
+    );
+    expect((await readdir(transactionDirectory)).filter((name) => name.endsWith(".json"))).toEqual([]);
+    const restarted = new RenderApiService({ projects, jobs: new StudioJobRegistry() });
+    await expect(restarted.outputs()).resolves.toEqual([]);
+  });
+
+  it("orders same-timestamp lifecycle evidence by immutable revision ancestry, not filenames", async () => {
+    const fixture = await serverFixture(persistenceExecutor("ancestry-order"));
+    const initial = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-ancestry-order-render",
+    });
+    const completed = await fixture.jobs.wait(queued.job.id);
+    expect(completed.status).toBe("completed");
+    const output = completed.result as RenderOutputRecord;
+    const current = await fixture.projects.snapshot();
+    const qaJob = await fixture.render.enqueueQa({
+      outputId: output.id,
+      actor: actor(),
+      expectedRevisionId: current.pointer.revisionId,
+      correlationId: "correlation-ancestry-order-qa",
+    });
+    expect(await fixture.jobs.wait(qaJob.id)).toMatchObject({ status: "completed" });
+    const lifecycleDirectory = path.join(
+      fixture.projects.openRootPath(),
+      "receipts",
+      "renders",
+      output.id,
+      "lifecycle",
+    );
+    for (const name of await readdir(lifecycleDirectory)) {
+      const event = JSON.parse(await readFile(path.join(lifecycleDirectory, name), "utf8")) as {
+        readonly to: string;
+      };
+      await rename(
+        path.join(lifecycleDirectory, name),
+        path.join(lifecycleDirectory, event.to === "rendered_unchecked" ? "z-activation.json" : "a-qa.json"),
+      );
+    }
+    await expect(fixture.render.receipt(output.id)).resolves.toMatchObject({
+      lifecycle: [{ to: "rendered_unchecked" }, { to: "qa_passed" }],
+      currentState: "qa_passed",
+    });
+  });
+
+  it("ignores an orphan QA report after a pre-commit crash and binds the successful rerun", async () => {
+    let lifecycleIntentCount = 0;
+    const fixture = await serverFixture(persistenceExecutor("orphan-qa"), {
+      checkpoint: (point) => {
+        if (point === "lifecycle-intent-written") {
+          lifecycleIntentCount += 1;
+          if (lifecycleIntentCount === 2) throw new Error("simulated QA lifecycle pre-commit crash");
+        }
+      },
+    });
+    const initial = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-orphan-qa-render",
+    });
+    const completed = await fixture.jobs.wait(queued.job.id);
+    expect(completed.status).toBe("completed");
+    const output = completed.result as RenderOutputRecord;
+    let current = await fixture.projects.snapshot();
+    const failedQa = await fixture.render.enqueueQa({
+      outputId: output.id,
+      actor: actor(),
+      expectedRevisionId: current.pointer.revisionId,
+      correlationId: "correlation-orphan-qa-failed",
+    });
+    expect(await fixture.jobs.wait(failedQa.id)).toMatchObject({ status: "failed" });
+    await expect(fixture.render.qaWorkspace(output.id)).resolves.toMatchObject({
+      reports: [],
+      latest: null,
+    });
+    current = await fixture.projects.snapshot();
+    const successfulQa = await fixture.render.enqueueQa({
+      outputId: output.id,
+      actor: actor(),
+      expectedRevisionId: current.pointer.revisionId,
+      correlationId: "correlation-orphan-qa-success",
+    });
+    expect(await fixture.jobs.wait(successfulQa.id)).toMatchObject({ status: "completed" });
+    await expect(fixture.render.qaWorkspace(output.id)).resolves.toMatchObject({
+      reports: [{ state: "qa_passed" }],
+      latest: { state: "qa_passed" },
+    });
+  });
+
+  it("rejects any reported render security violation", async () => {
+    const baseExecutor = persistenceExecutor("security-violation");
+    const fixture = await serverFixture(async (input) => {
+      const result = await baseExecutor(input);
+      return { ...result, security: { ...result.security, violations: ["sandbox escape observed"] } };
+    });
+    const initial = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-security-violation",
+    });
+    const failed = await fixture.jobs.wait(queued.job.id);
+    expect(failed.status).toBe("failed");
+    expect(failed.error).toMatch(/security evidence is invalid/i);
+    await expect(fixture.render.outputs()).resolves.toEqual([]);
+  });
+
+  it("holds a project operation lease for queued and running render work", async () => {
+    let releaseRender = (): void => undefined;
+    const blocked = new Promise<void>((resolve) => {
+      releaseRender = resolve;
+    });
+    const fixture = await serverFixture(async (input) => {
+      await blocked;
+      const audioContent = "leased-render-audio";
+      await Promise.all([
+        writeFile(path.join(input.outputDirectory, "leased.mp4"), "leased-output"),
+        writeFile(path.join(input.outputDirectory, "leased.wav"), audioContent),
+      ]);
+      return {
+        primaryRelativePath: "leased.mp4",
+        additionalRelativePaths: ["leased.wav"],
+        engines: [{ engine: "shared", version: "fixture-1", role: "finishing" }],
+        cacheLineage: [],
+        warnings: [],
+        reproductionCommands: ["fixture-operation-lease"],
+        audio: audioEvidence(audioContent),
+        plan: fixturePlan(input.request),
+        security: fixtureSecurity(input.request),
+      };
+    });
+    const initial = await fixture.projects.snapshot();
+    const queued = await fixture.render.enqueue({
+      ...renderBody(initial.pointer.revisionId),
+      correlationId: "correlation-operation-lease-0001",
+    });
+    await expect(fixture.projects.close()).rejects.toThrow(/operation lease/i);
+    releaseRender();
+    expect(await fixture.jobs.wait(queued.job.id)).toMatchObject({ status: "completed" });
+    await expect(fixture.projects.close()).resolves.toMatchObject({ closed: true });
+  });
 });
+
+const persistenceExecutor =
+  (label: string): NonNullable<ConstructorParameters<typeof RenderApiService>[0]["executeRender"]> =>
+  async (input) => {
+    const audioContent = `${label}-audio`;
+    await Promise.all([
+      writeFile(path.join(input.outputDirectory, `${label}.mp4`), `${label}-output`),
+      writeFile(path.join(input.outputDirectory, `${label}.wav`), audioContent),
+    ]);
+    return {
+      primaryRelativePath: `${label}.mp4`,
+      additionalRelativePaths: [`${label}.wav`],
+      engines: [{ engine: "shared", version: "fixture-1", role: "finishing" }],
+      cacheLineage: [],
+      warnings: [],
+      reproductionCommands: [`fixture-${label}`],
+      audio: audioEvidence(audioContent),
+      plan: fixturePlan(input.request),
+      security: fixtureSecurity(input.request),
+    };
+  };
 
 const serverFixture = async (
   executeRender: NonNullable<ConstructorParameters<typeof RenderApiService>[0]["executeRender"]>,
+  options: Readonly<{
+    checkpoint?: NonNullable<ConstructorParameters<typeof RenderApiService>[0]["checkpoint"]>;
+  }> = {},
 ) => {
   const parent = await temporaryDirectory();
   const projects = new ProjectSessionService();
   const jobs = new StudioJobRegistry();
-  const render = new RenderApiService({ projects, jobs, executeRender, evaluateQa: fixtureQaEvaluator });
+  const render = new RenderApiService({
+    projects,
+    jobs,
+    executeRender,
+    evaluateQa: fixtureQaEvaluator,
+    ...(options.checkpoint === undefined ? {} : { checkpoint: options.checkpoint }),
+  });
   const token = "render-api-session-token-abcdefghijklmnopqrstuvwxyz";
   let origins: readonly string[] = [];
   const server = createStudioServer({
@@ -529,14 +1047,19 @@ const fixtureQaEvaluator: QaEvaluator = async ({ output, rootPath, report }) => 
   };
 };
 
-const renderBody = (expectedRevisionId: string) => ({
-  profile: builtInDeliveryProfiles()[0],
-  scope: { kind: "full-timeline" },
-  name: "Render API timeline",
-  priority: 0,
-  actor: actor(),
-  expectedRevisionId,
-});
+const renderBody = (expectedRevisionId: string) => {
+  const profile = builtInDeliveryProfiles()[0];
+  if (profile === undefined) throw new Error("The built-in delivery profile fixture is missing.");
+  return {
+    profile,
+    scope: { kind: "full-timeline" } as const,
+    name: "Render API timeline",
+    priority: 0,
+    actor: actor(),
+    expectedRevisionId,
+    correlationId: "correlation-render-api-default-0001",
+  };
+};
 
 const audioEvidence = (content: string) =>
   renderAudioEvidenceFromMixArtifact(
@@ -661,7 +1184,7 @@ const fixtureSecurity = (request: RenderRequestRecord) => ({
   trustClasses: ["trusted_authored" as const],
   workerPoolIds: ["trusted-worker-fixture-v1"],
   cacheNamespaces: ["trusted-cache-fixture-v1"],
-  environmentIdentity: createHash("sha256").update(`security-environment:${request.id}`).digest("hex"),
+  environmentIdentity: fixturePlan(request).environment.strictEnvironmentFingerprint,
   approvedNetworkHashes: [],
   isolationEvidenceHash: null,
   violations: [],
@@ -669,7 +1192,7 @@ const fixtureSecurity = (request: RenderRequestRecord) => ({
 
 const actor = () => ({
   id: "actor-render-api-0001",
-  kind: "user",
+  kind: "user" as const,
   sessionId: "session-render-api-0001",
 });
 

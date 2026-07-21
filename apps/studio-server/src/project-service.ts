@@ -2,6 +2,7 @@ import path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import sharp from "sharp";
+import { pinnedHyperframesVersion, pinnedRemotionVersion } from "@chai-studio/engine-adapters";
 import { assertQaLifecycleTransition, type QaReport } from "@chai-studio/qa";
 import {
   auditRevisionStorage,
@@ -93,6 +94,11 @@ export interface ProjectSessionEvent {
   readonly payload: unknown;
 }
 
+export interface ProjectOperationLease {
+  readonly rootPath: string;
+  readonly release: () => void;
+}
+
 export interface QaLifecycleTransitionInput {
   readonly outputId: string;
   readonly to: QaState;
@@ -102,6 +108,7 @@ export interface QaLifecycleTransitionInput {
   readonly exceptions: readonly AcceptedExceptionDocument[];
   readonly evidenceHashes: readonly string[];
   readonly exceptionIds: readonly string[];
+  readonly resultingRevisionId?: string;
 }
 
 export class ProjectSessionService {
@@ -110,6 +117,9 @@ export class ProjectSessionService {
   readonly #recent = new Map<string, RecentProjectEntry>();
   readonly #listeners = new Set<(event: ProjectSessionEvent) => void>();
   #openRoot: string | null = null;
+  #sessionTransitionInProgress = false;
+  #sessionTransitionReadReady = false;
+  #operationLeaseCount = 0;
 
   constructor(options: { readonly recentLimit?: number; readonly now?: () => Date } = {}) {
     this.#recentLimit = options.recentLimit ?? 20;
@@ -124,32 +134,39 @@ export class ProjectSessionService {
     readonly title: string;
     readonly starter?: "empty" | "showcase" | "launch-film";
   }): Promise<InitializedProject> {
-    assertNonEmpty(input.targetPath, "targetPath");
-    assertNonEmpty(input.title, "title");
-    const created = await initializeProjectFolder(input.targetPath, {
-      title: input.title.trim(),
-      now: this.#now(),
+    return this.#withSessionTransition(async () => {
+      assertNonEmpty(input.targetPath, "targetPath");
+      assertNonEmpty(input.title, "title");
+      const created = await initializeProjectFolder(input.targetPath, {
+        title: input.title.trim(),
+        now: this.#now(),
+      });
+      if (input.starter === "launch-film") await seedLaunchFilmProject(created.rootPath);
+      if (input.starter === "showcase") await seedShowcaseProject(created.rootPath);
+      await this.#open(created.rootPath);
+      this.#emit({
+        type: "project.created",
+        projectId: created.projectId,
+        revisionId: created.revisionId,
+        correlationId: null,
+        payload: { rootPath: created.rootPath },
+      });
+      return created;
     });
-    if (input.starter === "launch-film") await seedLaunchFilmProject(created.rootPath);
-    if (input.starter === "showcase") await seedShowcaseProject(created.rootPath);
-    await this.open(created.rootPath);
-    this.#emit({
-      type: "project.created",
-      projectId: created.projectId,
-      revisionId: created.revisionId,
-      correlationId: null,
-      payload: { rootPath: created.rootPath },
-    });
-    return created;
   }
 
   async open(rootPath: string): Promise<OpenProjectResult> {
+    return this.#withSessionTransition(() => this.#open(rootPath));
+  }
+
+  async #open(rootPath: string): Promise<OpenProjectResult> {
     assertNonEmpty(rootPath, "rootPath");
     const root = path.resolve(rootPath);
-    if (this.#openRoot !== null && this.#openRoot !== root) await this.close();
+    if (this.#openRoot !== null && this.#openRoot !== root) await this.#close();
     const current = await loadCurrentProjectRevision(root);
     await markProjectOpened(root);
     this.#openRoot = root;
+    this.#sessionTransitionReadReady = true;
     const result = summarizeOpen(root, current);
     this.#recordRecent(result);
     this.#emit({
@@ -163,6 +180,10 @@ export class ProjectSessionService {
   }
 
   async close(): Promise<Readonly<{ closed: boolean; rootPath: string | null }>> {
+    return this.#withSessionTransition(() => this.#close());
+  }
+
+  async #close(): Promise<Readonly<{ closed: boolean; rootPath: string | null }>> {
     const root = this.#openRoot;
     if (root === null) return { closed: false, rootPath: null };
     await markProjectCleanShutdown(root);
@@ -190,6 +211,20 @@ export class ProjectSessionService {
 
   openRootPath(): string {
     return this.#requireOpenRoot();
+  }
+
+  acquireOperationLease(): ProjectOperationLease {
+    const rootPath = this.#requireOpenRoot();
+    this.#operationLeaseCount += 1;
+    let released = false;
+    return {
+      rootPath,
+      release: () => {
+        if (released) return;
+        released = true;
+        this.#operationLeaseCount -= 1;
+      },
+    };
   }
 
   async executeCommand(
@@ -249,7 +284,9 @@ export class ProjectSessionService {
         exceptionIds: input.exceptionIds,
       },
     };
-    return this.#executeCommandUnchecked(command);
+    return this.#executeCommandUnchecked(command, {
+      ...(input.resultingRevisionId === undefined ? {} : { revisionId: input.resultingRevisionId }),
+    });
   }
 
   async #executeCommandUnchecked(
@@ -352,8 +389,30 @@ export class ProjectSessionService {
   }
 
   #requireOpenRoot(): string {
+    if (this.#sessionTransitionInProgress && !this.#sessionTransitionReadReady) {
+      throw new Error("Project session transition is in progress.");
+    }
     if (this.#openRoot === null) throw new Error("No project is open in this Studio session.");
     return this.#openRoot;
+  }
+
+  async #withSessionTransition<Result>(operation: () => Promise<Result>): Promise<Result> {
+    if (this.#sessionTransitionInProgress) {
+      throw new Error("Project session transition is already in progress.");
+    }
+    if (this.#operationLeaseCount > 0) {
+      throw new Error(
+        `Project session transition is blocked while ${String(this.#operationLeaseCount)} operation lease(s) are active.`,
+      );
+    }
+    this.#sessionTransitionInProgress = true;
+    this.#sessionTransitionReadReady = false;
+    try {
+      return await operation();
+    } finally {
+      this.#sessionTransitionInProgress = false;
+      this.#sessionTransitionReadReady = false;
+    }
   }
 
   #recordRecent(project: OpenProjectResult): void {
@@ -455,7 +514,11 @@ const seedLaunchFilmProject = async (rootPath: string): Promise<void> => {
       project: {
         ...current.project,
         activeTimelineId: timeline.timelineId,
-        enginePins: { ...current.project.enginePins, remotion: "4.0.488", hyperframes: "0.7.52" },
+        enginePins: {
+          ...current.project.enginePins,
+          remotion: pinnedRemotionVersion,
+          hyperframes: pinnedHyperframesVersion,
+        },
       },
       timeline,
       assets: { ...current.assets, assets },

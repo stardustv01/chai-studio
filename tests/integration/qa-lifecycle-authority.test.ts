@@ -3,7 +3,9 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { centralizedQaRules, createQaReport, qaRuleSetIdentity } from "../../packages/qa/src/index.js";
+import { StudioJobRegistry } from "../../apps/studio-server/src/job-registry.js";
 import { ProjectSessionService } from "../../apps/studio-server/src/project-service.js";
+import { RenderApiService } from "../../apps/studio-server/src/render-service.js";
 
 const roots: string[] = [];
 
@@ -71,39 +73,83 @@ describe("authoritative QA lifecycle service", () => {
       exceptionIds: [],
     });
     snapshot = await service.snapshot();
+    const nextOutputId = "output-authority-0002";
     await service.transitionQaLifecycle({
-      outputId,
+      outputId: nextOutputId,
+      to: "rendered_unchecked",
+      actor,
+      expectedRevisionId: snapshot.pointer.revisionId,
+      report: null,
+      exceptions: [],
+      evidenceHashes: ["c".repeat(64)],
+      exceptionIds: [],
+    });
+    snapshot = await service.snapshot();
+    const nextReport = createQaReport({
+      id: "qa-report-authority-0002",
+      projectId: snapshot.project.projectId,
+      revisionId: snapshot.pointer.revisionId,
+      outputId: nextOutputId,
+      ruleSetIdentity: qaRuleSetIdentity(),
+      rules: centralizedQaRules().map(({ id, version }) => ({ id, version })),
+      findings: [],
+      createdAt: "2026-07-16T12:01:00.000Z",
+    });
+    await service.transitionQaLifecycle({
+      outputId: nextOutputId,
+      to: "qa_passed",
+      actor,
+      expectedRevisionId: snapshot.pointer.revisionId,
+      report: nextReport,
+      exceptions: [],
+      evidenceHashes: [nextReport.identityHash],
+      exceptionIds: [],
+    });
+    snapshot = await service.snapshot();
+    const renders = new RenderApiService({ projects: service, jobs: new StudioJobRegistry() });
+    await expect(
+      renders.approve({
+        outputId,
+        actor,
+        expectedRevisionId: snapshot.pointer.revisionId,
+        evidenceHashes: [report.identityHash],
+        exceptionIds: [],
+      }),
+    ).rejects.toThrow(/current immutable output identity/i);
+
+    await service.transitionQaLifecycle({
+      outputId: nextOutputId,
       to: "approved",
       actor,
       expectedRevisionId: snapshot.pointer.revisionId,
-      report,
+      report: nextReport,
       exceptions: [],
-      evidenceHashes: [report.identityHash],
+      evidenceHashes: [nextReport.identityHash],
       exceptionIds: [],
     });
     snapshot = await service.snapshot();
     await service.transitionQaLifecycle({
-      outputId,
+      outputId: nextOutputId,
       to: "delivered",
       actor,
       expectedRevisionId: snapshot.pointer.revisionId,
-      report,
+      report: nextReport,
       exceptions: [],
-      evidenceHashes: [report.identityHash],
+      evidenceHashes: [nextReport.identityHash],
       exceptionIds: [],
     });
     snapshot = await service.snapshot();
-    expect(snapshot.approvalState.state).toBe("delivered");
+    expect(snapshot.approvalState).toMatchObject({ state: "delivered", outputId: nextOutputId });
 
     await expect(
       service.transitionQaLifecycle({
-        outputId,
+        outputId: nextOutputId,
         to: "rendered_unchecked",
         actor,
         expectedRevisionId: snapshot.pointer.revisionId,
         report: null,
         exceptions: [],
-        evidenceHashes: ["c".repeat(64)],
+        evidenceHashes: ["d".repeat(64)],
         exceptionIds: [],
       }),
     ).rejects.toThrow(/new immutable output identity/i);

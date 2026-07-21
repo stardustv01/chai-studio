@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const workspace = path.resolve(directory, "..");
 const contractsRoot = path.join(workspace, "governance", "contracts");
+const writeReport = process.argv.includes("--write");
 const index = JSON.parse(await readFile(path.join(contractsRoot, "contract-index.json"), "utf8"));
 const ids = index.contracts.map((contract) => contract.id);
 const idSet = new Set(ids);
@@ -103,9 +104,18 @@ const reportBody = {
   evidenceStatus,
 };
 const report = { generatedAt: await stableGeneratedAt(reportPath, reportBody), ...reportBody };
-await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+const serializedReport = `${JSON.stringify(report, null, 2)}\n`;
+if (!writeReport) {
+  const currentReport = await readFile(reportPath, "utf8").catch(() => "");
+  if (currentReport !== serializedReport) {
+    console.error("Frozen contract validation evidence is missing or stale.");
+    process.exitCode = 1;
+  }
+} else {
+  await writeFile(reportPath, serializedReport);
+}
 console.log(JSON.stringify({ passed: report.passed, assertions, topologicalOrder: order }, null, 2));
-if (!report.passed) process.exit(1);
+if (!report.passed) process.exitCode = 1;
 
 async function stableGeneratedAt(reportPath, reportBody) {
   try {

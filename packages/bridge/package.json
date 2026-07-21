@@ -20,8 +20,6 @@
   "dependencies": {
     "@chai-studio/diagnostics": "workspace:*",
     "@chai-studio/qa": "workspace:*",
-    "@chai-studio/render": "workspace:*",
-    "@chai-studio/schema": "workspace:*",
-    "@chai-studio/timeline": "workspace:*"
+    "@chai-studio/schema": "workspace:*"
   }
 }

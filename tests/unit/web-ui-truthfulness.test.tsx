@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { AudioMixerPanel } from "../../apps/studio-web/src/audio-mixer-panel.js";
+import { AudioMixerPanel, audioMixerSelectionId } from "../../apps/studio-web/src/audio-mixer-panel.js";
 import { BridgeEditorPanel } from "../../apps/studio-web/src/bridge-editor-panel.js";
 import { ProfessionalEditBar } from "../../apps/studio-web/src/professional-edit-bar.js";
 import { defaultStudioSnapshot } from "../../apps/studio-web/src/types.js";
@@ -22,6 +22,16 @@ describe("web UI truthfulness", () => {
     expect(markup).toContain("voiceover_take03.wav");
     expect(markup).toContain("Preview LUFS unavailable");
     expect(markup).toContain("True peak measured after render");
+  });
+
+  it("falls back to a valid audio selection after the graph is replaced", () => {
+    const graph = defaultStudioSnapshot.audioGraph;
+    expect(audioMixerSelectionId(graph, "clip-from-previous-project")).toBe(
+      graph.clips[0]?.id ?? graph.masterBusId,
+    );
+    expect(audioMixerSelectionId({ ...graph, clips: [] }, "clip-from-previous-project")).toBe(
+      graph.masterBusId,
+    );
   });
 
   it("blocks experimental bridge persistence until rendered boundary QA exists", () => {

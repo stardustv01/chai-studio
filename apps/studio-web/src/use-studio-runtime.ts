@@ -81,7 +81,6 @@ type RuntimeAction =
   | Readonly<{ type: "workspace"; workspace: WorkspaceId }>
   | Readonly<{ type: "shell-state"; shellState: ShellStateId }>
   | Readonly<{ type: "connection"; connection: Partial<ConnectionState> }>
-  | Readonly<{ type: "snapshot"; snapshot: StudioSnapshot }>
   | Readonly<{ type: "project-snapshot"; payload: Readonly<Record<string, unknown>> }>
   | Readonly<{ type: "asset-selection"; assetIds: readonly string[] }>
   | Readonly<{
@@ -169,11 +168,6 @@ export interface StudioRuntime extends RuntimeState {
   readonly dispatchAudioCommand: (command: AudioGraphCommand) => Promise<void>;
   readonly dispatchLanguageCommand: (command: LanguageCommand) => Promise<void>;
   readonly moveTimelineHistory: (direction: "undo" | "redo") => Promise<void>;
-  readonly sourceReviewAction: (
-    action: "compare-to-timeline" | "add-to-context",
-    sourceId: string,
-    sourceFrame: string,
-  ) => void;
   readonly render: () => void;
   readonly dismissToast: (id: string) => void;
   readonly setCommandPaletteOpen: (open: boolean) => void;
@@ -676,25 +670,6 @@ export const useStudioRuntime = (): StudioRuntime => {
     [client, performanceMonitor],
   );
 
-  const sourceReviewAction = useCallback(
-    (action: "compare-to-timeline" | "add-to-context", sourceId: string, sourceFrame: string) => {
-      dispatch({
-        type: "toast",
-        toast: {
-          id: globalThis.crypto.randomUUID(),
-          tone: "info",
-          title: action === "compare-to-timeline" ? "Source comparison opened" : "Source context requested",
-          detail:
-            action === "compare-to-timeline"
-              ? `${sourceId} frame ${sourceFrame} is linked for review only; the master clock did not move.`
-              : `${sourceId} frame ${sourceFrame} will be added to revision-bound Codex context after server confirmation.`,
-          correlationId: null,
-        },
-      });
-    },
-    [],
-  );
-
   const dispatchTimelineCommand = useCallback(
     (command: TimelineEditCommand): Promise<void> =>
       enqueueTimelineMutation(async (): Promise<void> => {
@@ -833,134 +808,178 @@ export const useStudioRuntime = (): StudioRuntime => {
   );
 
   const dispatchAudioCommand = useCallback(
-    async (command: AudioGraphCommand): Promise<void> => {
-      let result: ReturnType<typeof executeAudioGraphCommand>;
-      try {
-        result = executeAudioGraphCommand(state.snapshot.audioGraph, command);
-      } catch (cause: unknown) {
-        dispatch({
-          type: "toast",
-          toast: {
-            id: globalThis.crypto.randomUUID(),
-            tone: "danger",
-            title: "Audio edit blocked",
-            detail:
-              cause instanceof Error ? cause.message : "The authoritative audio graph rejected this edit.",
-            correlationId: null,
-          },
-        });
-        return;
-      }
+    (command: AudioGraphCommand): Promise<void> => {
+      const execute = (snapshot: StudioSnapshot): ReturnType<typeof executeAudioGraphCommand> | null => {
+        try {
+          return executeAudioGraphCommand(snapshot.audioGraph, command);
+        } catch (cause: unknown) {
+          dispatch({
+            type: "toast",
+            toast: {
+              id: globalThis.crypto.randomUUID(),
+              tone: "danger",
+              title: "Audio edit blocked",
+              detail:
+                cause instanceof Error ? cause.message : "The authoritative audio graph rejected this edit.",
+              correlationId: null,
+            },
+          });
+          return null;
+        }
+      };
       if (client.sessionToken === null) {
-        dispatch({ type: "audio-local", audioGraph: result.graph });
-        return;
+        const result = execute(state.snapshot);
+        if (result !== null) dispatch({ type: "audio-local", audioGraph: result.graph });
+        return Promise.resolve();
       }
-      const project = state.snapshot.project;
-      if (project === null) return;
-      const nonce = globalThis.crypto.randomUUID();
-      try {
-        await client.command(
-          "/api/v1/commands",
-          {
-            schemaVersion: "1.0.0",
-            commandId: `command-audio-${nonce}`,
-            idempotencyId: `idempotency-audio-${nonce}`,
-            actor: { id: "actor-studio-user", kind: "user", sessionId: "session-studio-desktop" },
-            projectId: project.projectId,
-            correlationId: `correlation-audio-${nonce}`,
-            issuedAt: new Date().toISOString(),
-            capability: { name: "audio-edit", version: "1.0.0" },
-            payloadVersion: "1.0.0",
-            affectedEntityIds: result.affectedEntityIds,
-            declaredScope: "mutation",
-            validationOnly: false,
-            baseRevisionId: project.revisionId,
-            authorizationId: null,
-            kind: "audio.edit",
-            payload: { operation: timelineCommandToJson(command) },
-          },
-          project.revisionId,
-        );
-        await resync();
-      } catch (cause: unknown) {
-        handleRuntimeError(cause, dispatch);
-      }
+      return enqueueTimelineMutation(async (): Promise<void> => {
+        let commandSnapshot = state.snapshot;
+        try {
+          const authoritative = await client.projectSnapshot();
+          commandSnapshot = projectSnapshotFromPayload(commandSnapshot, authoritative) ?? commandSnapshot;
+          for (let attempt = 0; attempt < 2; attempt += 1) {
+            const project = commandSnapshot.project;
+            if (project === null) return;
+            const result = execute(commandSnapshot);
+            if (result === null) return;
+            const nonce = globalThis.crypto.randomUUID();
+            try {
+              await client.command(
+                "/api/v1/commands",
+                {
+                  schemaVersion: "1.0.0",
+                  commandId: `command-audio-${nonce}`,
+                  idempotencyId: `idempotency-audio-${nonce}`,
+                  actor: { id: "actor-studio-user", kind: "user", sessionId: "session-studio-desktop" },
+                  projectId: project.projectId,
+                  correlationId: `correlation-audio-${nonce}`,
+                  issuedAt: new Date().toISOString(),
+                  capability: { name: "audio-edit", version: "1.0.0" },
+                  payloadVersion: "1.0.0",
+                  affectedEntityIds: result.affectedEntityIds,
+                  declaredScope: "mutation",
+                  validationOnly: false,
+                  baseRevisionId: project.revisionId,
+                  authorizationId: null,
+                  kind: "audio.edit",
+                  payload: { operation: timelineCommandToJson(command) },
+                },
+                project.revisionId,
+              );
+              await resync();
+              return;
+            } catch (cause: unknown) {
+              if (!(cause instanceof StaleRevisionError) || attempt > 0) throw cause;
+              const authoritativeRetry = await client.projectSnapshot();
+              const refreshed = projectSnapshotFromPayload(commandSnapshot, authoritativeRetry);
+              if (refreshed === null) throw cause;
+              commandSnapshot = refreshed;
+            }
+          }
+        } catch (cause: unknown) {
+          handleRuntimeError(cause, dispatch);
+        }
+      });
     },
-    [client, resync, state.snapshot.audioGraph, state.snapshot.project],
+    [client, enqueueTimelineMutation, resync, state.snapshot],
   );
 
   const dispatchLanguageCommand = useCallback(
-    async (command: LanguageCommand): Promise<void> => {
-      const project = state.snapshot.project;
-      if (project === null) return;
-      const languageTimeline: TimelineDocument = {
-        schemaVersion: "1.0.0",
-        projectId: project.projectId,
-        revisionId: project.revisionId,
-        timelineId: state.snapshot.timeline.id,
-        fps: state.snapshot.preview.timelineFps as TimelineDocument["fps"],
-        durationFrames: state.snapshot.preview.durationFrames as TimelineDocument["durationFrames"],
-        tracks: [],
-        audioBusIds: [],
-        approvalReferenceIds: [],
-        audioGraph: state.snapshot.audioGraph,
-        transcripts: state.snapshot.transcripts,
-        captionDocuments: state.snapshot.captionDocuments,
+    (command: LanguageCommand): Promise<void> => {
+      const execute = (snapshot: StudioSnapshot): ReturnType<typeof executeLanguageCommand> | null => {
+        const project = snapshot.project;
+        if (project === null) return null;
+        const languageTimeline: TimelineDocument = {
+          schemaVersion: "1.0.0",
+          projectId: project.projectId,
+          revisionId: project.revisionId,
+          timelineId: snapshot.timeline.id,
+          fps: snapshot.preview.timelineFps as TimelineDocument["fps"],
+          durationFrames: snapshot.preview.durationFrames as TimelineDocument["durationFrames"],
+          tracks: [],
+          audioBusIds: [],
+          approvalReferenceIds: [],
+          audioGraph: snapshot.audioGraph,
+          transcripts: snapshot.transcripts,
+          captionDocuments: snapshot.captionDocuments,
+        };
+        try {
+          return executeLanguageCommand(languageTimeline, command);
+        } catch (cause: unknown) {
+          dispatch({
+            type: "toast",
+            toast: {
+              id: globalThis.crypto.randomUUID(),
+              tone: "danger",
+              title: "Transcript or caption edit blocked",
+              detail: cause instanceof Error ? cause.message : "Language authority rejected this edit.",
+              correlationId: null,
+            },
+          });
+          return null;
+        }
       };
-      let commandResult: ReturnType<typeof executeLanguageCommand>;
-      try {
-        commandResult = executeLanguageCommand(languageTimeline, command);
-      } catch (cause: unknown) {
-        dispatch({
-          type: "toast",
-          toast: {
-            id: globalThis.crypto.randomUUID(),
-            tone: "danger",
-            title: "Transcript or caption edit blocked",
-            detail: cause instanceof Error ? cause.message : "Language authority rejected this edit.",
-            correlationId: null,
-          },
-        });
-        return;
-      }
       if (client.sessionToken === null) {
-        dispatch({
-          type: "language-local",
-          transcripts: commandResult.timeline.transcripts ?? [],
-          captionDocuments: commandResult.timeline.captionDocuments ?? [],
-        });
-        return;
+        const result = execute(state.snapshot);
+        if (result !== null) {
+          dispatch({
+            type: "language-local",
+            transcripts: result.timeline.transcripts ?? [],
+            captionDocuments: result.timeline.captionDocuments ?? [],
+          });
+        }
+        return Promise.resolve();
       }
-      const nonce = globalThis.crypto.randomUUID();
-      try {
-        await client.command(
-          "/api/v1/commands",
-          {
-            schemaVersion: "1.0.0",
-            commandId: `command-language-${nonce}`,
-            idempotencyId: `idempotency-language-${nonce}`,
-            actor: { id: "actor-studio-user", kind: "user", sessionId: "session-studio-desktop" },
-            projectId: project.projectId,
-            correlationId: `correlation-language-${nonce}`,
-            issuedAt: new Date().toISOString(),
-            capability: { name: "language-edit", version: "1.0.0" },
-            payloadVersion: "1.0.0",
-            affectedEntityIds: commandResult.affectedEntityIds,
-            declaredScope: "mutation",
-            validationOnly: false,
-            baseRevisionId: project.revisionId,
-            authorizationId: null,
-            kind: "language.edit",
-            payload: { operation: timelineCommandToJson(command) },
-          },
-          project.revisionId,
-        );
-        await resync();
-      } catch (cause: unknown) {
-        handleRuntimeError(cause, dispatch);
-      }
+      return enqueueTimelineMutation(async (): Promise<void> => {
+        let commandSnapshot = state.snapshot;
+        try {
+          const authoritative = await client.projectSnapshot();
+          commandSnapshot = projectSnapshotFromPayload(commandSnapshot, authoritative) ?? commandSnapshot;
+          for (let attempt = 0; attempt < 2; attempt += 1) {
+            const project = commandSnapshot.project;
+            if (project === null) return;
+            const result = execute(commandSnapshot);
+            if (result === null) return;
+            const nonce = globalThis.crypto.randomUUID();
+            try {
+              await client.command(
+                "/api/v1/commands",
+                {
+                  schemaVersion: "1.0.0",
+                  commandId: `command-language-${nonce}`,
+                  idempotencyId: `idempotency-language-${nonce}`,
+                  actor: { id: "actor-studio-user", kind: "user", sessionId: "session-studio-desktop" },
+                  projectId: project.projectId,
+                  correlationId: `correlation-language-${nonce}`,
+                  issuedAt: new Date().toISOString(),
+                  capability: { name: "language-edit", version: "1.0.0" },
+                  payloadVersion: "1.0.0",
+                  affectedEntityIds: result.affectedEntityIds,
+                  declaredScope: "mutation",
+                  validationOnly: false,
+                  baseRevisionId: project.revisionId,
+                  authorizationId: null,
+                  kind: "language.edit",
+                  payload: { operation: timelineCommandToJson(command) },
+                },
+                project.revisionId,
+              );
+              await resync();
+              return;
+            } catch (cause: unknown) {
+              if (!(cause instanceof StaleRevisionError) || attempt > 0) throw cause;
+              const authoritativeRetry = await client.projectSnapshot();
+              const refreshed = projectSnapshotFromPayload(commandSnapshot, authoritativeRetry);
+              if (refreshed === null) throw cause;
+              commandSnapshot = refreshed;
+            }
+          }
+        } catch (cause: unknown) {
+          handleRuntimeError(cause, dispatch);
+        }
+      });
     },
-    [client, resync, state.snapshot],
+    [client, enqueueTimelineMutation, resync, state.snapshot],
   );
 
   const moveTimelineHistory = useCallback(
@@ -1212,7 +1231,6 @@ export const useStudioRuntime = (): StudioRuntime => {
     dispatchAudioCommand,
     dispatchLanguageCommand,
     moveTimelineHistory,
-    sourceReviewAction,
     render,
     refreshReliability,
     prepareSupportBundlePreview,
@@ -1268,8 +1286,6 @@ const runtimeReducer = (state: RuntimeState, action: RuntimeAction): RuntimeStat
       return { ...state, shellState: action.shellState };
     case "connection":
       return { ...state, connection: { ...state.connection, ...action.connection } };
-    case "snapshot":
-      return { ...state, snapshot: action.snapshot };
     case "project-snapshot": {
       const projected = projectSnapshotFromPayload(state.snapshot, action.payload);
       return projected === null ? state : { ...state, snapshot: projected };

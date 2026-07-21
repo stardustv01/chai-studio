@@ -154,7 +154,7 @@ const assertLoopbackHost = (hostHeader: string | undefined, correlationId: strin
   } catch {
     hostname = "";
   }
-  if (hostname !== "127.0.0.1" && hostname !== "::1" && hostname !== "localhost") {
+  if (hostname !== "127.0.0.1" && hostname !== "::1" && hostname !== "[::1]" && hostname !== "localhost") {
     throw securityError(
       "server.host-forbidden",
       correlationId,

@@ -1,4 +1,4 @@
-import type { StudioDiagnostic, StudioSnapshot } from "./types.js";
+import type { StudioDiagnostic } from "./types.js";
 
 export interface ApiSuccessEnvelope<T> {
   readonly apiVersion: string;
@@ -175,10 +175,6 @@ export class StudioApiClient {
       signal: signal ?? null,
       body: JSON.stringify(body),
     });
-  }
-
-  renderRequests(signal?: AbortSignal): Promise<Readonly<Record<string, unknown>>> {
-    return this.request("/api/v1/renders/requests", { method: "GET", signal: signal ?? null });
   }
 
   renderQueue(signal?: AbortSignal): Promise<readonly unknown[]> {
@@ -405,8 +401,13 @@ export class StudioApiClient {
       headers.set("x-chai-csrf-token", this.sessionToken);
     }
     const response = await this.#fetcher(`${this.baseUrl}${path}`, { ...init, headers });
-    const payload = (await response.json()) as ApiEnvelope<T>;
-    if (!isApiEnvelope(payload)) {
+    let payload: unknown;
+    try {
+      payload = await response.json();
+    } catch {
+      throw protocolError(correlationId, `The Studio server returned invalid JSON for ${path}.`);
+    }
+    if (!isApiEnvelope<T>(payload)) {
       throw protocolError(correlationId, `The Studio server returned an invalid envelope for ${path}.`);
     }
     if (!payload.ok) {
@@ -430,25 +431,37 @@ export class StudioApiClient {
   }
 }
 
-export const mergeServerSnapshot = (
-  current: StudioSnapshot,
-  patch: Partial<StudioSnapshot>,
-): StudioSnapshot => ({
-  ...current,
-  ...patch,
-  project: Object.hasOwn(patch, "project") ? (patch.project ?? null) : current.project,
-  preview: patch.preview ?? current.preview,
-  render: patch.render ?? current.render,
-  selection: patch.selection ?? current.selection,
-  assets: patch.assets ?? current.assets,
-  timeline: patch.timeline ?? current.timeline,
-});
-
 const isApiEnvelope = <T>(value: unknown): value is ApiEnvelope<T> => {
-  if (typeof value !== "object" || value === null) return false;
-  const candidate = value as Partial<ApiEnvelope<T>>;
-  return typeof candidate.ok === "boolean" && typeof candidate.correlationId === "string";
+  const correlationId = isRecord(value) ? value.correlationId : null;
+  if (
+    !isRecord(value) ||
+    typeof value.apiVersion !== "string" ||
+    typeof correlationId !== "string" ||
+    !correlationIdPattern.test(correlationId)
+  ) {
+    return false;
+  }
+  if (value.ok === true) return Object.hasOwn(value, "data");
+  if (value.ok !== false || !isRecord(value.error)) return false;
+  const error = value.error;
+  return (
+    typeof error.category === "string" &&
+    typeof error.code === "string" &&
+    error.code.trim().length > 0 &&
+    typeof error.stage === "string" &&
+    error.stage.trim().length > 0 &&
+    (error.entityId === null || typeof error.entityId === "string") &&
+    typeof error.retryable === "boolean" &&
+    typeof error.message === "string" &&
+    (error.repairHint === null || typeof error.repairHint === "string") &&
+    (error.details === null || isRecord(error.details))
+  );
 };
+
+const correlationIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
+
+const isRecord = (value: unknown): value is Readonly<Record<string, unknown>> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 const missingSessionTokenError = (correlationId: string): StudioApiError =>
   new StudioApiError({

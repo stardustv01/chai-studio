@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(directory, "..");
+const checkOnly = process.argv.includes("--check");
 const fixtureRoot = path.join(root, "fixtures", "untrusted");
 const sandboxProfile = "(version 1)(allow default)(deny network*)";
 const environment = { PATH: process.env.PATH ?? "/usr/bin:/bin", LANG: "C", TZ: "UTC", CHAI_ALLOWED: "yes" };
@@ -77,6 +78,8 @@ const report = {
     output: { status: output.status, signal: output.signal, errorCode: output.error?.code },
   },
 };
-await writeFile(path.join(root, "evidence", "isolation-report.json"), `${JSON.stringify(report, null, 2)}\n`);
+if (!checkOnly) {
+  await writeFile(path.join(root, "evidence", "isolation-report.json"), `${JSON.stringify(report, null, 2)}\n`);
+}
 console.log(JSON.stringify({ passed: report.passed, assertions }, null, 2));
 if (!report.passed) process.exit(1);

@@ -70,6 +70,7 @@ describe("native composition manifest runtime", () => {
       fps: { numerator: "30", denominator: "1" },
       durationFrames: "60",
     });
+    expect(result.browserVersion).toMatch(/^[0-9]+(?:\.[0-9]+){1,3}$/u);
     const bytes = await readFile(path.join(outputDirectory, "frame-00000001.png"));
     const pixels = normalizeRemotionPng(bytes);
     expect(pixels).toMatchObject({ width: 640, height: 360 });
@@ -125,6 +126,7 @@ describe("native composition manifest runtime", () => {
       fps: { numerator: "30", denominator: "1" },
       durationFrames: "60",
     });
+    expect(result.browserVersion).toMatch(/^[0-9]+(?:\.[0-9]+){1,3}$/u);
     const bytes = await readFile(path.join(outputDirectory, "frame-00000001.png"));
     const pixels = normalizeRemotionPng(bytes);
     expect(pixels).toMatchObject({ width: 640, height: 360 });

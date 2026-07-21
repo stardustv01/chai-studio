@@ -78,6 +78,8 @@ describe("P24 resumable recovery and fault injection", () => {
       "encode-finalize",
       "receipt-write",
       "approval-transition",
+      "lifecycle-intent-written",
+      "lifecycle-revision-committed",
     ];
     const injector = new ReliabilityFaultInjector();
     for (const point of points) injector.arm(point);

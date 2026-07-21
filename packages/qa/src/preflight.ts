@@ -18,6 +18,17 @@ const deliveryCodeToRule = new Map<string, string>([
   ["delivery.proxy.preview-only", "qa.pre.proxy"],
   ["delivery.disk.insufficient", "qa.pre.disk"],
   ["delivery.scope.outside-timeline", "qa.pre.timeline"],
+  ["security.trust.unclassified", "qa.pre.trust"],
+  ["security.imported-execution.disabled", "qa.pre.trust"],
+  ["security.network.hash-required", "qa.pre.trust"],
+  ["render.compositor.unavailable", "qa.pre.composition"],
+  ["render.compositor.range-empty", "qa.pre.timeline"],
+  ["render.compositor.native-time-remap-unavailable", "qa.pre.capability"],
+  ["render.compositor.imported-worker-unavailable", "qa.pre.trust"],
+  ["render.compositor.property-unavailable", "qa.pre.capability"],
+  ["render.compositor.audio-source-missing", "qa.pre.audio"],
+  ["render.compositor.video-codec-unavailable", "qa.pre.capability"],
+  ["render.compositor.audio-codec-unavailable", "qa.pre.capability"],
 ]);
 
 export const createPreRenderQaReport = (input: {
@@ -31,7 +42,9 @@ export const createPreRenderQaReport = (input: {
 }): QaReport => {
   const rules = centralizedQaRules().filter((rule) => rule.stage === "pre-render");
   const findings = rules.map((rule): QaFinding => {
-    const matched = input.findings.filter((finding) => deliveryCodeToRule.get(finding.code) === rule.id);
+    const matched = input.findings.filter(
+      (finding) => (deliveryCodeToRule.get(finding.code) ?? "qa.pre.schema") === rule.id,
+    );
     const failed = matched.find((finding) => finding.blocking || finding.severity === "error");
     const warning = matched.find((finding) => finding.severity === "warning");
     const observed = failed ?? warning;

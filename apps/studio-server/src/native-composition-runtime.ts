@@ -1,8 +1,10 @@
+import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { access, copyFile, readFile, readdir, realpath } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import {
   collectHyperframesDependencies,
@@ -34,8 +36,11 @@ export interface NativeCompositionInspection {
   readonly dependencyGraphHash: string;
   readonly adapterVersion: string;
   readonly browserIdentity: string;
+  readonly browserVersion: string;
   readonly browserExecutableHash: string;
 }
+
+const execFileAsync = promisify(execFile);
 
 export interface NativeCompositionManifestInspection {
   readonly engine: "remotion" | "hyperframes";
@@ -113,44 +118,6 @@ export const validateNativeCompositionManifest = async (input: {
   };
 };
 
-export const inspectNativeComposition = async (input: {
-  readonly projectRoot: string;
-  readonly manifestPath: string;
-  readonly expectedEngine?: "remotion" | "hyperframes";
-  readonly trustClass: NativeCompositionTrust;
-  readonly signal: AbortSignal;
-}): Promise<NativeCompositionInspection> => {
-  const prepared = await prepareNativeComposition(input);
-  try {
-    if (prepared.engine === "remotion") {
-      const dependencies = await collectRemotionDependencies(
-        prepared.source,
-        prepared.composition.compositionId,
-      );
-      return inspectionFrom(
-        prepared.composition,
-        dependencies.dependencyGraphHash,
-        "remotion",
-        prepared.browserIdentity,
-        prepared.browserExecutableHash,
-      );
-    }
-    const dependencies = await collectHyperframesDependencies(
-      prepared.source,
-      prepared.composition.compositionId,
-    );
-    return inspectionFrom(
-      prepared.composition,
-      dependencies.dependencyGraphHash,
-      "hyperframes",
-      prepared.browserIdentity,
-      prepared.browserExecutableHash,
-    );
-  } finally {
-    await prepared.dispose();
-  }
-};
-
 export const renderNativeCompositionLayer = async (input: {
   readonly projectRoot: string;
   readonly manifestPath: string;
@@ -216,6 +183,7 @@ export const renderNativeCompositionLayer = async (input: {
         dependencies.dependencyGraphHash,
         "remotion",
         prepared.browserIdentity,
+        prepared.browserVersion,
         prepared.browserExecutableHash,
       );
     }
@@ -290,6 +258,7 @@ export const renderNativeCompositionLayer = async (input: {
       dependencies.dependencyGraphHash,
       "hyperframes",
       prepared.browserIdentity,
+      prepared.browserVersion,
       prepared.browserExecutableHash,
     );
   } finally {
@@ -306,6 +275,7 @@ type PreparedNative =
       serveUrl: string;
       browserExecutable: string;
       browserIdentity: string;
+      browserVersion: string;
       browserExecutableHash: string;
       dispose: () => Promise<void>;
     }>
@@ -316,6 +286,7 @@ type PreparedNative =
       runtime: HyperframesCliRuntime;
       browserExecutable: string;
       browserIdentity: string;
+      browserVersion: string;
       browserExecutableHash: string;
       dispose: () => Promise<void>;
     }>;
@@ -366,6 +337,7 @@ const prepareNativeComposition = async (input: {
       serveUrl: discovery.serveUrl,
       browserExecutable: browser.executable,
       browserIdentity: browser.identity,
+      browserVersion: browser.version,
       browserExecutableHash: browser.executableHash,
       dispose: () => runtime.dispose(),
     };
@@ -388,6 +360,7 @@ const prepareNativeComposition = async (input: {
     runtime,
     browserExecutable: browser.executable,
     browserIdentity: browser.identity,
+    browserVersion: browser.version,
     browserExecutableHash: browser.executableHash,
     dispose: () => Promise.resolve(),
   };
@@ -503,7 +476,7 @@ const loadManifest = async (
 };
 
 const managedHeadlessShell = async (): Promise<
-  Readonly<{ executable: string; identity: string; executableHash: string }>
+  Readonly<{ executable: string; identity: string; version: string; executableHash: string }>
 > => {
   const cacheRoots = [
     process.env.PLAYWRIGHT_BROWSERS_PATH,
@@ -544,9 +517,21 @@ const managedHeadlessShell = async (): Promise<
         ) {
           throw new Error("Native rendering refused a non-Playwright browser executable.");
         }
+        const { stdout } = await execFileAsync(canonicalCandidate, ["--version"], {
+          encoding: "utf8",
+          timeout: 5_000,
+          maxBuffer: 1_048_576,
+        });
+        const version = /(?:Chrome(?: for Testing)?|Chromium)\s+([0-9]+(?:\.[0-9]+){1,3})/u.exec(
+          stdout.trim(),
+        )?.[1];
+        if (version === undefined) {
+          throw new Error("Managed Chromium did not report a measurable browser version.");
+        }
         return {
           executable: canonicalCandidate,
           identity: `playwright-managed:${build}`,
+          version,
           executableHash: await sha256File(canonicalCandidate),
         };
       }
@@ -585,6 +570,7 @@ const inspectionFrom = (
   dependencyGraphHash: string,
   engine: NativeCompositionInspection["engine"],
   browserIdentity: string,
+  browserVersion: string,
   browserExecutableHash: string,
 ): NativeCompositionInspection => ({
   engine,
@@ -596,6 +582,7 @@ const inspectionFrom = (
   dependencyGraphHash,
   adapterVersion: engine === "remotion" ? pinnedRemotionVersion : pinnedHyperframesVersion,
   browserIdentity,
+  browserVersion,
   browserExecutableHash,
 });
 

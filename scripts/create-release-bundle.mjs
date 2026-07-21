@@ -7,6 +7,20 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const version = packageManifest.version;
 const requestedOutput = option(process.argv.slice(2), "--output");
+const sourceManifestPath = option(process.argv.slice(2), "--source-manifest");
+const sourceManifest = sourceManifestPath
+  ? JSON.parse(await readFile(path.resolve(root, sourceManifestPath), "utf8"))
+  : null;
+if (
+  sourceManifest !== null &&
+  (sourceManifest.schemaVersion !== "1.0.0" ||
+    sourceManifest.product !== "Chai Studio" ||
+    sourceManifest.version !== version ||
+    sourceManifest.channel !== "release-candidate" ||
+    typeof sourceManifest.sourceCommit !== "string")
+) {
+  throw new Error("Release bundle source manifest does not identify this exact release candidate.");
+}
 const destination = path.resolve(
   requestedOutput ?? path.join(root, "dist/releases", `chai-studio-${version}-darwin-arm64`),
 );
@@ -14,6 +28,7 @@ const created = await createReleaseBundle({
   sourceRoot: root,
   destination,
   allowDirty: process.argv.includes("--allow-dirty"),
+  sourceCommit: sourceManifest?.sourceCommit,
 });
 const validation = await validateReleaseBundle(destination);
 if (!validation.passed) throw new Error("Created release bundle failed its own integrity validation.");

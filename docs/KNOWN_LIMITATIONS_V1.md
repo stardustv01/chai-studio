@@ -6,4 +6,4 @@
 - Interactive preview is not fidelity authority and may visibly degrade under load. Exact capture and render output remain authoritative.
 - Authenticated Program monitor compositing is frame-exact while paused or seeking. During real-time playback, the UI may retain the latest completed compositor frame and explicitly shows both that frame and the advancing transport frame.
 - Cross-environment output reproduction is blocked when environment fingerprints differ, although a hash-valid project backup may still be restored for inspection and repair.
-- Final Version 1 release authority remains pending until the owner explicitly approves and signs the prepared receipt.
+- Public `1.0.0-rc.4` authority remains pending until the exact dependency inventory receives public-distribution review and the owner explicitly approves and signs the prepared receipt.

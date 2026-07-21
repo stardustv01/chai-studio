@@ -36,6 +36,8 @@ export const assertQaLifecycleTransition = (input: {
       throw new Error(
         "Rendered output invalidation requires a new immutable output identity and no QA report.",
       );
+  } else if (input.outputId !== input.currentOutputId) {
+    throw new Error("QA lifecycle transition requires the current immutable output identity.");
   } else if (input.to.startsWith("qa_")) {
     if (input.report?.outputId !== input.outputId || input.report.state !== input.to)
       throw new Error("QA transition requires the matching immutable QA report.");

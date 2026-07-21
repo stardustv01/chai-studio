@@ -71,7 +71,11 @@ const assertIdentifier = (value: string): void => {
 
 const parseNonNegativeFrame = (value: string, field: string): bigint => {
   if (!/^(?:0|[1-9][0-9]{0,77})$/.test(value)) throw new Error(`Finishing ${field} is invalid.`);
-  return BigInt(value);
+  const frame = BigInt(value);
+  if (frame > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw new Error(`Finishing ${field} exceeds the safe JavaScript frame range.`);
+  }
+  return frame;
 };
 
 const parsePositiveFrame = (value: string, field: string): bigint => {
