@@ -30,8 +30,7 @@ for (const entry of packageEntries) {
   const internalDependencies = Object.keys(declared).filter((name) => name.startsWith("@chai-studio/"));
   graph.set(entry.manifest.name, internalDependencies);
 
-  const sourceDirectory = path.join(entry.directory, "src");
-  for (const file of await sourceFiles(sourceDirectory)) {
+  for (const file of await sourceFiles(entry.directory)) {
     const source = await readFile(file, "utf8");
     for (const specifier of importsIn(source)) {
       if (specifier.startsWith("@chai-studio/")) {
@@ -56,9 +55,9 @@ for (const entry of packageEntries) {
     }
   }
 
-  const tsconfig = JSON.parse(await readFile(path.join(entry.directory, "tsconfig.json"), "utf8"));
+  const tsconfig = await readJsonIfPresent(path.join(entry.directory, "tsconfig.json"));
   const referencedNames = new Set(
-    (tsconfig.references ?? [])
+    (tsconfig?.references ?? [])
       .map((reference) => path.resolve(entry.directory, reference.path))
       .map((directory) => byDirectory.get(directory)?.manifest.name)
       .filter(Boolean),
@@ -96,14 +95,46 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 if (!report.passed) process.exitCode = 1;
 
-async function sourceFiles(directory) {
+async function sourceFiles(packageDirectory) {
+  const sourceDirectory = path.join(packageDirectory, "src");
+  const sourceEntries = await directoryEntries(sourceDirectory);
+  if (sourceEntries !== undefined) return sourceFilesIn(sourceDirectory, sourceEntries);
+
   const files = [];
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const target = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...(await sourceFiles(target)));
-    else if (/\.(?:ts|tsx)$/.test(entry.name)) files.push(target);
+  for (const fallback of ["bin", "lib"]) {
+    const directory = path.join(packageDirectory, fallback);
+    const entries = await directoryEntries(directory);
+    if (entries !== undefined) files.push(...(await sourceFilesIn(directory, entries)));
   }
   return files;
+}
+
+async function sourceFilesIn(directory, entries = undefined) {
+  const files = [];
+  for (const entry of entries ?? (await readdir(directory, { withFileTypes: true }))) {
+    const target = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...(await sourceFilesIn(target)));
+    else if (/\.(?:[cm]?[jt]sx?)$/.test(entry.name)) files.push(target);
+  }
+  return files;
+}
+
+async function directoryEntries(directory) {
+  try {
+    return await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    if (error?.code === "ENOENT") return undefined;
+    throw error;
+  }
+}
+
+async function readJsonIfPresent(file) {
+  try {
+    return JSON.parse(await readFile(file, "utf8"));
+  } catch (error) {
+    if (error?.code === "ENOENT") return undefined;
+    throw error;
+  }
 }
 
 function importsIn(source) {
