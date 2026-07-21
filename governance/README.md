@@ -6,8 +6,10 @@ The finished-product scope is Foundation plus Professional Expansion. Cloud coll
 
 Task acceptance requires code or a frozen contract, automated verification, and evidence. Rendering alone never means QA passed, approved, or delivered. A baseline change creates a new identity; old evidence is never silently reinterpreted.
 
+The current planning baseline identity is `cd8f58b77928fa7fd439865a436bca66c433fb8d356030d8ffecf559b84fad42`. It re-identifies the security policy document's P23 verification status without changing the task graph, application scope, or release authority.
+
 Accepted implementation records through P26 remain active. Superseded RC1 P27/P28 records are
-preserved under `archive/releases/1.0.0-rc.1/` and have no authority over RC2. Fresh P27 and P28
-technical records will be generated only from the committed, self-contained RC2 bundle. Final
+preserved under `archive/releases/1.0.0-rc.1/` and have no authority over RC4. Fresh P27 and P28
+technical records will be generated only from the committed, self-contained RC4 bundle. Final
 Version 1 authority remains withheld pending qualification, informed registry audit, explicit owner
 approval and signing; no technical record may infer any of those actions.

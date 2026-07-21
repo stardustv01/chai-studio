@@ -47,6 +47,8 @@
     "clean-cache": "node scripts/clean-cache.mjs",
     "commit:validate": "pnpm lint && pnpm typecheck && pnpm qa",
     "release:validate": "pnpm commit:validate && pnpm build && pnpm security:check && pnpm browser:isolation && pnpm test:e2e && pnpm test:e2e:first-run && pnpm test:e2e:authenticated",
+    "release:governance:check": "node scripts/validate-task-graph.mjs --check && node scripts/validate-contract-index.mjs --check && node scripts/generate-p23-license-inventory.mjs --check && node scripts/validate-p23-release-review.mjs && node spikes/milestone-0/scripts/run-isolation-spike.mjs --check && node scripts/generate-p27-release-manifest.mjs --check",
+    "release:tag:check": "node scripts/validate-release-tag.mjs",
     "p03:gate": "node scripts/run-p03-gate.mjs",
     "p04:gate": "node scripts/run-p04-gate.mjs",
     "p05:gate": "node scripts/run-p05-gate.mjs",

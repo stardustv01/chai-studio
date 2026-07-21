@@ -6,6 +6,8 @@
     "publishing": "unsupported"
   },
   "unknownLicenseDecision": "blocked-pending-review",
+  "publicDistributionApprovalRecord": "governance/licenses/public-distribution-review.json",
+  "publicDistributionApprovalTemplate": "governance/templates/PUBLIC_DISTRIBUTION_REVIEW.example.json",
   "triggers": [
     {
       "id": "public-distribution",

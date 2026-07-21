@@ -18,10 +18,11 @@ export const AudioMixerPanel = ({
   readonly onCommand: (command: AudioGraphCommand) => void;
 }) => {
   const [selectedId, setSelectedId] = useState(graph.clips[0]?.id ?? graph.masterBusId);
-  const selectedClip = graph.clips.find((clip) => clip.id === selectedId) ?? graph.clips[0];
+  const effectiveSelectedId = audioMixerSelectionId(graph, selectedId);
+  const selectedClip = graph.clips.find((clip) => clip.id === effectiveSelectedId) ?? graph.clips[0];
   const frame = BigInt(currentFrame);
   const evaluated = useMemo(() => evaluateAudioGraphAtFrame(graph, frame), [frame, graph]);
-  const descriptor = createAudioInspectorDescriptor(graph, selectedId);
+  const descriptor = createAudioInspectorDescriptor(graph, effectiveSelectedId);
   const duckingRule = graph.duckingRules[0];
   const crossfade = graph.crossfades[0];
   const sequenceEndFrame = graph.clips.reduce(
@@ -51,7 +52,7 @@ export const AudioMixerPanel = ({
             <span>End {sequenceEndFrame.toString(10)}f</span>
           </div>
           {graph.clips.map((clip, index) => {
-            const active = clip.id === selectedId;
+            const active = clip.id === effectiveSelectedId;
             const source = graph.sources.find((item) => item.id === clip.sourceId);
             return (
               <button
@@ -302,6 +303,16 @@ export const AudioMixerPanel = ({
       </footer>
     </section>
   );
+};
+
+export const audioMixerSelectionId = (graph: AudioGraphDocument, selectedId: string): string => {
+  if (
+    graph.clips.some((clip) => clip.id === selectedId) ||
+    graph.buses.some((bus) => bus.id === selectedId)
+  ) {
+    return selectedId;
+  }
+  return graph.clips[0]?.id ?? graph.masterBusId;
 };
 
 const AudioNumberField = ({

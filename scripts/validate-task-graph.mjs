@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const workspace = path.resolve(directory, "..");
 const planningRoot = path.resolve(workspace, "..");
+const writeReport = process.argv.includes("--write");
 const graph = JSON.parse(
   await readFile(path.join(planningRoot, "CHAI_STUDIO_FINAL_TASK_GRAPH.json"), "utf8"),
 );
@@ -65,9 +66,18 @@ const reportBody = {
   computedTopologicalOrderCount: topologicalOrder.length,
 };
 const report = { generatedAt: await stableGeneratedAt(reportPath, reportBody), ...reportBody };
-await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+const serializedReport = `${JSON.stringify(report, null, 2)}\n`;
+if (!writeReport) {
+  const currentReport = await readFile(reportPath, "utf8").catch(() => "");
+  if (currentReport !== serializedReport) {
+    console.error("Task graph validation evidence is missing or stale.");
+    process.exitCode = 1;
+  }
+} else {
+  await writeFile(reportPath, serializedReport);
+}
 console.log(JSON.stringify({ passed: report.passed, assertions }, null, 2));
-if (!report.passed) process.exit(1);
+if (!report.passed) process.exitCode = 1;
 
 async function stableGeneratedAt(reportPath, reportBody) {
   try {

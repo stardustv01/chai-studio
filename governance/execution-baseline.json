@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-07-15T08:26:24.742Z",
+  "capturedAt": "2026-07-21T18:33:37.000Z",
   "authority": "User-approved Chai Studio planning baseline; implementation changes require change control and a new baseline identity.",
   "scope": "Foundation plus Professional Expansion for a personal macOS-first local application",
   "artifacts": [
@@ -71,8 +71,8 @@
     },
     {
       "relativePath": "SECURITY_POLICY_CONTRACT.md",
-      "bytes": 1516,
-      "sha256": "933b7dfe7f1591a6bf1a28ae0b56b003247c15a6291a979dba7db878fe56024d"
+      "bytes": 1574,
+      "sha256": "7998d0e8200ed66b7d23c0ac8adf53a520467c2f4d5562cd571e38b0937a0481"
     },
     {
       "relativePath": "ui-samples/index.html",
@@ -105,5 +105,5 @@
       "sha256": "b02cacc52411da28f75a362cbaecbb42942f98bcd3652751d6168692e2575e3a"
     }
   ],
-  "identity": "b46733c9afa777c353d3114895f1503e6abedde3849593b73755e2e09aa353d1"
+  "identity": "cd8f58b77928fa7fd439865a436bca66c433fb8d356030d8ffecf559b84fad42"
 }

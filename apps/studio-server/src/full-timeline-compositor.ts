@@ -1,9 +1,10 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { copyFile, mkdir, rm } from "node:fs/promises";
+import { copyFile, lstat, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { createDefaultAudioGraph, sampleBoundaryForFrame, type DecodedAudioBlock } from "@chai-studio/audio";
 import { renderOfflineAudioMix, type OfflineAudioMixArtifact } from "@chai-studio/audio/offline";
+import { authorizeAssetPath, sha256File, type ApprovedExternalAssetRoot } from "@chai-studio/media";
 import type { AssetRecord, AudioGraphDocument, TimelineClip, TimelineDocument } from "@chai-studio/schema";
 import type { DeliveryProfile, RenderScope } from "@chai-studio/render";
 import sharp from "sharp";
@@ -72,6 +73,7 @@ export const renderFullTimeline = async (input: {
   readonly report: (progress: number) => void;
   readonly ffmpegPath?: string;
   readonly nativeTrustByAssetId?: ReadonlyMap<string, NativeCompositionTrust>;
+  readonly approvedExternalRoots?: readonly ApprovedExternalAssetRoot[];
   readonly capture?: FullTimelineCaptureOptions;
 }): Promise<FullTimelineCompositorResult> => {
   const ffmpegPath = input.ffmpegPath ?? process.env.CHAI_STUDIO_FFMPEG ?? "ffmpeg";
@@ -94,6 +96,7 @@ export const renderFullTimeline = async (input: {
       signal: input.signal,
       report: input.report,
       nativeTrustByAssetId: input.nativeTrustByAssetId ?? new Map(),
+      approvedExternalRoots: input.approvedExternalRoots ?? [],
       ...(input.capture?.includeClipIds === undefined
         ? {}
         : { includeClipIds: input.capture.includeClipIds }),
@@ -138,6 +141,7 @@ export const renderFullTimeline = async (input: {
             outputPath: path.join(temporaryRoot, "program-audio.wav"),
             ffmpegPath,
             signal: input.signal,
+            approvedExternalRoots: input.approvedExternalRoots ?? [],
           });
     input.report(0.78);
     const artifacts = await encodeOutput({
@@ -197,6 +201,7 @@ const prepareSharedVisualLayers = async (input: {
   readonly signal: AbortSignal;
   readonly report: (progress: number) => void;
   readonly nativeTrustByAssetId: ReadonlyMap<string, NativeCompositionTrust>;
+  readonly approvedExternalRoots: readonly ApprovedExternalAssetRoot[];
   readonly includeClipIds?: ReadonlySet<string>;
   readonly scopeClipId?: string;
 }): Promise<readonly PreparedVisualLayer[]> => {
@@ -216,7 +221,7 @@ const prepareSharedVisualLayers = async (input: {
     if (clip.assetId === null) throw new Error(`Visual clip ${clip.id} has no registered asset.`);
     const asset = assetById.get(clip.assetId);
     if (asset?.validationState !== "valid") throw new Error(`Visual clip ${clip.id} is not validated.`);
-    const sourcePath = resolveProjectAsset(input.projectRoot, asset.path);
+    const sourcePath = await resolveVerifiedAsset(input.projectRoot, asset, input.approvedExternalRoots);
     const timelineStart = maximum(BigInt(clip.startFrame), input.range.start);
     const timelineEnd = minimum(BigInt(clip.startFrame) + BigInt(clip.durationFrames), input.range.end);
     if (clip.engine !== "shared") {
@@ -465,6 +470,7 @@ const prepareAudioMix = async (input: {
   readonly outputPath: string;
   readonly ffmpegPath: string;
   readonly signal: AbortSignal;
+  readonly approvedExternalRoots: readonly ApprovedExternalAssetRoot[];
 }): Promise<OfflineAudioMixArtifact | null> => {
   if (input.profile.audioCodec === null && input.profile.outputKind !== "audio") return null;
   const graph = deriveAudioGraph(input.snapshot);
@@ -474,8 +480,23 @@ const prepareAudioMix = async (input: {
   if (active.length === 0) {
     throw new Error("The delivery profile requests audio but the immutable timeline has no audible source.");
   }
+  const assetById = new Map(input.snapshot.assets.assets.map((asset) => [asset.id, asset]));
   const sourcePathById = new Map(
-    graph.sources.map((source) => [source.id, resolveProjectAsset(input.projectRoot, source.originalPath)]),
+    await Promise.all(
+      graph.sources.map(async (source) => {
+        const asset = assetById.get(source.assetId);
+        if (asset?.validationState !== "valid") {
+          throw new Error(`Audio source ${source.id} has no valid registered asset.`);
+        }
+        if (source.originalPath !== asset.path || source.contentHash !== asset.contentHash) {
+          throw new Error(`Audio source ${source.id} does not match its registered asset identity.`);
+        }
+        return [
+          source.id,
+          await resolveVerifiedAsset(input.projectRoot, asset, input.approvedExternalRoots),
+        ] as const;
+      }),
+    ),
   );
   return renderOfflineAudioMix({
     graph,
@@ -970,16 +991,49 @@ const blendMode = (value: string): sharp.Blend => {
   return aliases[value] ?? "over";
 };
 
-const resolveProjectAsset = (root: string, registryPath: string): string => {
-  const resolvedRoot = path.resolve(root);
-  const candidate = path.resolve(resolvedRoot, registryPath);
-  if (
-    (candidate !== resolvedRoot && !candidate.startsWith(`${resolvedRoot}${path.sep}`)) ||
-    registryPath.startsWith("external/")
-  ) {
-    throw new Error("Timeline compositor cannot resolve an asset outside the project root.");
+const resolveVerifiedAsset = async (
+  projectRoot: string,
+  asset: AssetRecord,
+  approvedExternalRoots: readonly ApprovedExternalAssetRoot[],
+): Promise<string> => {
+  const candidatePath = registryCandidatePath(projectRoot, asset.path, approvedExternalRoots);
+  const candidate = await lstat(candidatePath).catch((cause: unknown) => {
+    throw new Error(`Registered asset ${asset.id} is unavailable.`, { cause });
+  });
+  if (!candidate.isFile()) {
+    throw new Error(`Registered asset ${asset.id} must remain a regular file; symlinks are forbidden.`);
   }
-  return candidate;
+  const authorized = await authorizeAssetPath({
+    projectRoot,
+    candidatePath,
+    approvedExternalRoots,
+  });
+  if (authorized.registryPath !== asset.path) {
+    throw new Error(`Registered asset ${asset.id} no longer resolves to its immutable registry path.`);
+  }
+  const observedHash = await sha256File(authorized.canonicalPath);
+  if (observedHash !== asset.contentHash) {
+    throw new Error(`Registered asset ${asset.id} content hash no longer matches its immutable identity.`);
+  }
+  return authorized.canonicalPath;
+};
+
+const registryCandidatePath = (
+  projectRoot: string,
+  registryPath: string,
+  approvedExternalRoots: readonly ApprovedExternalAssetRoot[],
+): string => {
+  const segments = registryPath.split("/");
+  if (segments.some((segment) => segment.length === 0 || segment === "." || segment === "..")) {
+    throw new Error("Timeline compositor asset registry path is invalid.");
+  }
+  if (segments[0] !== "external") return path.join(projectRoot, ...segments);
+  const rootId = segments[1];
+  const externalRoot = approvedExternalRoots.find((candidate) => candidate.id === rootId);
+  if (externalRoot === undefined || segments.length < 3) {
+    throw new Error(`Timeline compositor external asset root is not approved: ${rootId ?? "missing"}.`);
+  }
+  return path.join(externalRoot.path, ...segments.slice(2));
 };
 
 const intersects = (clip: TimelineClip, range: Readonly<{ start: bigint; end: bigint }>): boolean => {

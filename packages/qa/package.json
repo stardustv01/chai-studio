@@ -14,7 +14,6 @@
     "dist"
   ],
   "dependencies": {
-    "@chai-studio/diagnostics": "workspace:*",
     "@chai-studio/schema": "workspace:*"
   }
 }

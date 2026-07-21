@@ -188,6 +188,41 @@ describe("P25 professional trim and source editing", () => {
 });
 
 describe("P25 nested, versions, playback, retiming, effects, and bridges", () => {
+  it("rejects malformed persisted professional state before editor panels can dereference it", () => {
+    const timeline = professionalTimeline();
+    expect(() =>
+      readProfessionalTimelineState({
+        ...timeline,
+        professionalMetadata: {
+          ["chai-studio.professional-state.v1"]: JSON.stringify({ schemaVersion: "1.0.0" }),
+        },
+      }),
+    ).toThrow(/does not match its persisted contract/);
+
+    expect(() =>
+      readProfessionalTimelineState({
+        ...timeline,
+        professionalMetadata: {
+          ["chai-studio.professional-state.v1"]: JSON.stringify({
+            schemaVersion: "1.0.0",
+            compounds: {},
+            takeStacks: {
+              "take-stack-pro-bad-0001": {
+                id: "take-stack-pro-bad-0001",
+                clipId: "clip-pro-middle-0001",
+                activeTakeId: "take-pro-missing-0001",
+                takes: [{}],
+              },
+            },
+            timeRemaps: {},
+            adjustmentLayers: {},
+            advancedBridges: {},
+          }),
+        },
+      }),
+    ).toThrow(/does not match its persisted contract/);
+  });
+
   it("creates and flattens a rational nested clip while preserving child dependencies", () => {
     const timeline = professionalTimeline();
     const left = required(timeline.clips[id("clip-pro-left-0001")]);

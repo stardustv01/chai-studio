@@ -2,13 +2,21 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { approvalIdentity, assertOwnerApproval, verifySignedReleaseReceipt } from "./release-approval.mjs";
+import {
+  approvalIdentity,
+  assertOwnerApproval,
+  assertPublicDistributionReview,
+  publicDistributionReviewIdentity,
+  verifyAcceptanceGateReportIdentity,
+  verifyManifestDocumentIdentity,
+  verifySignedReleaseReceipt,
+} from "./release-approval.mjs";
+import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const requireFinalGate = process.argv.includes("--require-final-gate");
 const results = [];
 const packageManifest = await readJson("package.json");
-const releaseSource = await readText("packages/diagnostics/src/release.ts");
 const approval = await readJson("governance/V1_OWNER_APPROVAL.json");
 const manifest = await readJson("evidence/p28/version-1-manifest.json");
 const traceability = await readJson("evidence/p28/traceability-matrix.json");
@@ -16,6 +24,16 @@ const receipt = await readJson("evidence/p28/version-1-release-receipt.json");
 const technicalGate = await readJson("evidence/p28-tech/gate-report.json");
 const finalGate = await readJson("evidence/p28/gate-report.json");
 const publicKey = await readText("evidence/p28/version-1-release-public-key.pem");
+const dependencyInventory = await readJson("governance/licenses/dependency-inventory.json");
+const distributionReview = await readJson("governance/licenses/public-distribution-review.json");
+const dependencyInventoryText = await readText("governance/licenses/dependency-inventory.json");
+const distributionReviewText = await readText("governance/licenses/public-distribution-review.json");
+let target = null;
+try {
+  target = resolveReleaseTarget({ packageManifest });
+} catch {
+  // Captured as a failed contract result below.
+}
 
 let validatedApproval = null;
 try {
@@ -27,12 +45,35 @@ const expectedApprovalIdentity = validatedApproval ? approvalIdentity(validatedA
 results.push(result("explicit-owner-approval", validatedApproval !== null));
 results.push(
   result(
-    "stable-source-identity",
-    packageManifest?.version === "1.0.0" &&
-      releaseSource.includes('version: "1.0.0"') &&
-      releaseSource.includes('channel: "stable"'),
+    "owner-approval-target",
+    validatedApproval !== null &&
+      validatedApproval.version === target?.version &&
+      validatedApproval.distribution === target?.distribution,
   ),
 );
+let validatedDistributionReview = null;
+try {
+  validatedDistributionReview = assertPublicDistributionReview(distributionReview, {
+    version: target?.version,
+    inventoryIdentity: dependencyInventory?.identityHash,
+  });
+} catch {
+  // Captured as a failed contract result below.
+}
+results.push(result("public-distribution-review", validatedDistributionReview !== null));
+const expectedDistributionReviewIdentity = validatedDistributionReview
+  ? publicDistributionReviewIdentity(validatedDistributionReview, {
+      version: target?.version,
+      inventoryIdentity: dependencyInventory?.identityHash,
+    })
+  : null;
+const expectedDependencyInventorySha256 = dependencyInventoryText
+  ? createHash("sha256").update(dependencyInventoryText).digest("hex")
+  : null;
+const expectedDistributionReviewSha256 = distributionReviewText
+  ? createHash("sha256").update(distributionReviewText).digest("hex")
+  : null;
+results.push(result("exact-source-identity", target !== null));
 results.push(
   result(
     "complete-traceability",
@@ -45,30 +86,44 @@ results.push(
 results.push(
   result(
     "immutable-version-manifest",
-    manifest?.version === "1.0.0" &&
-      manifest?.releaseTag === "v1.0.0" &&
+    manifest?.version === target?.version &&
+      manifest?.releaseTag === target?.releaseTag &&
+      manifest?.distribution === target?.distribution &&
       manifest?.releaseAuthorized === false &&
       manifest?.approvalIdentity === expectedApprovalIdentity &&
-      typeof manifest?.manifestIdentity === "string" &&
-      manifest.manifestIdentity.length === 64,
+      manifest?.dependencyInventoryIdentity === dependencyInventory?.identityHash &&
+      manifest?.dependencyInventorySha256 === expectedDependencyInventorySha256 &&
+      manifest?.publicDistributionReviewIdentity === expectedDistributionReviewIdentity &&
+      manifest?.publicDistributionReviewSha256 === expectedDistributionReviewSha256 &&
+      verifyManifestDocumentIdentity(manifest ?? {}),
   ),
 );
 results.push(
   result(
     "passing-technical-gate",
-    technicalGate?.passed === true && receipt?.technicalGateIdentity === technicalGate?.identity,
+    technicalGate?.passed === true &&
+      verifyAcceptanceGateReportIdentity(technicalGate) &&
+      receipt?.technicalGateIdentity === technicalGate?.identity,
   ),
 );
 results.push(
   result(
     "receipt-authority-chain",
-    receipt?.version === "1.0.0" &&
-      receipt?.candidate === "1.0.0" &&
+    receipt?.version === target?.version &&
+      receipt?.candidate === target?.version &&
+      receipt?.distribution === target?.distribution &&
       receipt?.releaseAuthorized === true &&
       receipt?.releaseTagAuthorized === true &&
       receipt?.ownerApproval?.status === "explicitly-approved" &&
       receipt?.ownerApproval?.inferred === false &&
+      receipt?.publicDistributionReview?.status === "approved-public-distribution" &&
       receipt?.ownerApproval?.approvalSha256 === expectedApprovalIdentity &&
+      receipt?.dependencyInventoryIdentity === dependencyInventory?.identityHash &&
+      receipt?.dependencyInventorySha256 === expectedDependencyInventorySha256 &&
+      receipt?.publicDistributionReviewIdentity === expectedDistributionReviewIdentity &&
+      receipt?.publicDistributionReviewSha256 === expectedDistributionReviewSha256 &&
+      receipt?.publicDistributionReview?.inventoryIdentity === dependencyInventory?.identityHash &&
+      receipt?.publicDistributionReview?.reviewIdentity === expectedDistributionReviewIdentity &&
       receipt?.finalManifestIdentity === manifest?.manifestIdentity &&
       receipt?.traceabilityIdentity === traceability?.identity &&
       receipt?.dependencyLockSha256 === manifest?.dependencyLockSha256,
@@ -86,6 +141,7 @@ results.push(
 const finalGateBound =
   finalGate?.passed === true &&
   finalGate?.phase === "P28" &&
+  verifyAcceptanceGateReportIdentity(finalGate ?? {}) &&
   receipt?.finalGateIdentity === finalGate?.identity;
 results.push(
   result(

@@ -28,6 +28,7 @@ for (const entry of packageEntries) {
     ...entry.manifest.peerDependencies,
   };
   const internalDependencies = Object.keys(declared).filter((name) => name.startsWith("@chai-studio/"));
+  const importedInternalDependencies = new Set();
   graph.set(entry.manifest.name, internalDependencies);
 
   for (const file of await sourceFiles(entry.directory)) {
@@ -35,6 +36,7 @@ for (const entry of packageEntries) {
     for (const specifier of importsIn(source)) {
       if (specifier.startsWith("@chai-studio/")) {
         const dependencyName = packageNameForSpecifier(specifier);
+        if (dependencyName !== entry.manifest.name) importedInternalDependencies.add(dependencyName);
         const dependencyEntry = byName.get(dependencyName);
         const subpath = specifier.slice(dependencyName.length);
         if (
@@ -55,6 +57,12 @@ for (const entry of packageEntries) {
     }
   }
 
+  for (const dependency of internalDependencies) {
+    if (!importedInternalDependencies.has(dependency)) {
+      problems.push(`${entry.manifest.name}: unused internal dependency ${dependency}`);
+    }
+  }
+
   const tsconfig = await readJsonIfPresent(path.join(entry.directory, "tsconfig.json"));
   const referencedNames = new Set(
     (tsconfig?.references ?? [])
@@ -65,6 +73,10 @@ for (const entry of packageEntries) {
   for (const dependency of internalDependencies) {
     if (!referencedNames.has(dependency))
       problems.push(`${entry.manifest.name}: missing TS reference for ${dependency}`);
+  }
+  for (const reference of referencedNames) {
+    if (!internalDependencies.includes(reference))
+      problems.push(`${entry.manifest.name}: undeclared or unused TS reference for ${reference}`);
   }
 }
 

@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  acquireProjectMutationLock,
   createProjectAutosave,
   createDebouncedAutosaveController,
   initializeProjectFolder,
@@ -89,6 +90,31 @@ describe("autosave and crash recovery", () => {
     expect(restored.project.title).toBe("Recovered title");
     expect(restored.transaction.commandSummary).toBe("Restore autosave");
     expect((await loadCurrentProjectRevision(root)).pointer.revisionId).toBe("revision-autosave-0002");
+  });
+
+  it("uses the project mutation lock for the complete restore transaction", async () => {
+    const root = await initializedProject();
+    const current = await loadCurrentProjectRevision(root);
+    const saved = await createProjectAutosave(root, {
+      autosaveId: "autosave-locked-0001",
+      reason: "crash-recovery",
+      documents: content(current, "Locked recovery title"),
+      now: new Date("2026-07-15T00:01:00Z"),
+    });
+    const competing = await acquireProjectMutationLock(root, {
+      ownerId: "actor-competing-0001",
+      sessionId: "session-competing-0001",
+      ttlMs: 15_000,
+    });
+    await expect(
+      restoreProjectAutosave(root, saved.id, {
+        actor: { id: "actor-autosave-0001", kind: "user", sessionId: "session-autosave-0001" },
+        revisionId: "revision-autosave-0002",
+        now: new Date("2026-07-15T00:01:31Z"),
+      }),
+    ).rejects.toMatchObject({ code: "project.lock.held" });
+    expect((await loadCurrentProjectRevision(root)).pointer.revisionId).toBe("revision-autosave-0001");
+    await competing.release();
   });
 
   it("suppresses the recovery prompt after a verified clean shutdown", async () => {

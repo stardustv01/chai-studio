@@ -385,7 +385,6 @@ export const foundationSourceInspectionActions = [
   "capture",
 ] as const;
 
-export type FoundationSourceInspectionAction = (typeof foundationSourceInspectionActions)[number];
 export const forbiddenFoundationSourceActions = [
   "mark-in",
   "mark-out",

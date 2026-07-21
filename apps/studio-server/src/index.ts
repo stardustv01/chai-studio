@@ -204,6 +204,7 @@ export const handleStudioRequest = async (
       correlationId,
       corsOrigin,
       options.projectService,
+      options.jobRegistry,
     );
     if (projectRouteHandled) return;
     const commandRouteHandled = await handleCommandRoute(
@@ -323,67 +324,83 @@ export const handleStudioRequest = async (
                 error.message,
                 "Open or create a project before using the current-project endpoint.",
               )
-            : error instanceof Error && error.message === "No preview session is loaded."
+            : error instanceof Error && error.message.startsWith("Project session transition is")
               ? apiError(
-                  "preview",
-                  "server.preview-not-loaded",
+                  "schema",
+                  "server.project-state-conflict",
                   correlationId,
-                  "preview-session",
+                  "project-session",
                   error.message,
-                  "Load the current project into a preview session before controlling preview.",
+                  "Wait for the current project open, create, or close transition to finish, then retry.",
                 )
-              : error instanceof Error && error.message.startsWith("Preview state conflict:")
+              : error instanceof Error && error.message === "No preview session is loaded."
                 ? apiError(
                     "preview",
-                    "server.preview-state-conflict",
+                    "server.preview-not-loaded",
                     correlationId,
                     "preview-session",
                     error.message,
-                    "Refresh preview state and retry against its current stateVersion.",
+                    "Load the current project into a preview session before controlling preview.",
                   )
-                : error instanceof Error && /^(?:Preview|Cannot play)/.test(error.message)
-                  ? requestError(correlationId, error.message)
-                  : error instanceof Error && error.message.startsWith("Editor selection conflict:")
-                    ? apiError(
-                        "timeline",
-                        "server.selection-state-conflict",
-                        correlationId,
-                        "editor-selection",
-                        error.message,
-                        "Refresh editor selection and retry against its current stateVersion.",
-                      )
-                    : error instanceof Error && interactionErrorPattern.test(error.message)
-                      ? requestError(correlationId, error.message)
-                      : error instanceof Error && lifecycleConflictPattern.test(error.message)
-                        ? apiError(
-                            "render",
-                            "server.render-state-conflict",
-                            correlationId,
-                            "render-lifecycle",
-                            error.message,
-                            "Refresh project, job, output, and lifecycle state before retrying.",
-                          )
-                        : error instanceof Error && renderErrorPattern.test(error.message)
-                          ? requestError(correlationId, error.message)
-                          : error instanceof Error && error.message === "Studio event sequence is invalid."
+                : error instanceof Error && error.message.startsWith("Preview state conflict:")
+                  ? apiError(
+                      "preview",
+                      "server.preview-state-conflict",
+                      correlationId,
+                      "preview-session",
+                      error.message,
+                      "Refresh preview state and retry against its current stateVersion.",
+                    )
+                  : error instanceof Error && /^(?:Preview|Cannot play)/.test(error.message)
+                    ? requestError(correlationId, error.message)
+                    : error instanceof Error && error.message.startsWith("Editor selection conflict:")
+                      ? apiError(
+                          "timeline",
+                          "server.selection-state-conflict",
+                          correlationId,
+                          "editor-selection",
+                          error.message,
+                          "Refresh editor selection and retry against its current stateVersion.",
+                        )
+                      : error instanceof Error && interactionErrorPattern.test(error.message)
+                        ? requestError(correlationId, error.message)
+                        : error instanceof Error && lifecycleConflictPattern.test(error.message)
+                          ? apiError(
+                              "render",
+                              "server.render-state-conflict",
+                              correlationId,
+                              "render-lifecycle",
+                              error.message,
+                              "Refresh project, job, output, and lifecycle state before retrying.",
+                            )
+                          : error instanceof Error && renderErrorPattern.test(error.message)
                             ? requestError(correlationId, error.message)
-                            : error instanceof Error &&
-                                (assetUploadErrorPattern.test(error.message) ||
-                                  assetSourceFrameErrorPattern.test(error.message) ||
-                                  programFrameErrorPattern.test(error.message))
+                            : error instanceof Error && error.message === "Studio event sequence is invalid."
                               ? requestError(correlationId, error.message)
-                              : error instanceof Error && indexErrorPattern.test(error.message)
+                              : error instanceof Error &&
+                                  (assetUploadErrorPattern.test(error.message) ||
+                                    assetSourceFrameErrorPattern.test(error.message) ||
+                                    programFrameErrorPattern.test(error.message))
                                 ? requestError(correlationId, error.message)
-                                : error instanceof Error && error.message.startsWith("Runtime ")
+                                : error instanceof Error && indexErrorPattern.test(error.message)
                                   ? requestError(correlationId, error.message)
-                                  : apiError(
-                                      "internal",
-                                      "server.request-failed",
-                                      correlationId,
-                                      "request",
-                                      "Studio request failed unexpectedly.",
-                                      "Retry once and inspect the correlated local log.",
-                                    );
+                                  : error instanceof Error && error.message.startsWith("Runtime ")
+                                    ? requestError(correlationId, error.message)
+                                    : apiError(
+                                        "internal",
+                                        "server.request-failed",
+                                        correlationId,
+                                        "request",
+                                        "Studio request failed unexpectedly.",
+                                        "Retry once and inspect the correlated local log.",
+                                      );
+    if (chaiError.code === "server.request-failed") {
+      logger.write("error", "environment", "request.failed", correlationId, {
+        method: request.method ?? "UNKNOWN",
+        path: pathName,
+        message: error instanceof Error ? error.message : "Unknown request failure.",
+      });
+    }
     const statusCode =
       chaiError.code === "server.route-not-found"
         ? 404
@@ -1756,6 +1773,7 @@ const handleProjectRoute = async (
   correlationId: string,
   corsOrigin: string | null,
   service: ProjectSessionService | undefined,
+  jobs: StudioJobRegistry | undefined,
 ): Promise<boolean> => {
   if (!pathName.startsWith("/api/v1/projects")) return false;
   if (service === undefined) {
@@ -1774,6 +1792,7 @@ const handleProjectRoute = async (
   switch (route) {
     case "POST /api/v1/projects/create": {
       const body = await readJsonBody(request, correlationId);
+      assertProjectSessionIdle(jobs, correlationId);
       data = await service.create({
         targetPath: requireBodyString(body, "targetPath", correlationId),
         title: requireBodyString(body, "title", correlationId),
@@ -1789,10 +1808,12 @@ const handleProjectRoute = async (
     }
     case "POST /api/v1/projects/open": {
       const body = await readJsonBody(request, correlationId);
+      assertProjectSessionIdle(jobs, correlationId);
       data = await service.open(requireBodyString(body, "rootPath", correlationId));
       break;
     }
     case "POST /api/v1/projects/close":
+      assertProjectSessionIdle(jobs, correlationId);
       data = await service.close();
       break;
     case "GET /api/v1/projects/recent":
@@ -1818,6 +1839,19 @@ const handleProjectRoute = async (
   }
   writeJson(response, statusCode, apiSuccess(correlationId, data), corsOrigin);
   return true;
+};
+
+const assertProjectSessionIdle = (jobs: StudioJobRegistry | undefined, correlationId: string): void => {
+  const active = jobs?.list().filter((job) => job.status === "queued" || job.status === "running") ?? [];
+  if (active.length === 0) return;
+  throw apiError(
+    "render",
+    "server.project-state-conflict",
+    correlationId,
+    "project-session",
+    `Project switching is blocked while ${String(active.length)} Studio job(s) are active.`,
+    "Wait for active jobs to finish or cancel them explicitly before changing projects.",
+  );
 };
 
 const handleCommandRoute = async (

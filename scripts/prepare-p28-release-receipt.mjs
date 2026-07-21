@@ -2,7 +2,14 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { approvalIdentity, assertOwnerApproval } from "./release-approval.mjs";
+import {
+  approvalIdentity,
+  assertOwnerApproval,
+  assertPublicDistributionReview,
+  publicDistributionReviewIdentity,
+  verifyManifestDocumentIdentity,
+} from "./release-approval.mjs";
+import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const p27 = JSON.parse(await readFile(path.join(root, "evidence/p27/gate-report.json"), "utf8"));
@@ -20,11 +27,53 @@ const traceability = JSON.parse(
 const technicalGate = await readFile(path.join(root, "evidence/p28-tech/gate-report.json"), "utf8")
   .then((content) => JSON.parse(content))
   .catch(() => null);
+const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const target = resolveReleaseTarget({ packageManifest });
+if (approval && (approval.version !== target.version || approval.distribution !== target.distribution)) {
+  throw new Error("Owner approval does not match the exact release target.");
+}
+const dependencyInventoryBytes = await readFile(
+  path.join(root, "governance/licenses/dependency-inventory.json"),
+);
+const dependencyInventory = JSON.parse(dependencyInventoryBytes.toString("utf8"));
+const distributionReviewBytes = await readFile(
+  path.join(root, "governance/licenses/public-distribution-review.json"),
+).catch((error) => {
+  if (error?.code === "ENOENT") return null;
+  throw error;
+});
+const distributionReview = distributionReviewBytes
+  ? assertPublicDistributionReview(JSON.parse(distributionReviewBytes.toString("utf8")), {
+      version: target.version,
+      inventoryIdentity: dependencyInventory.identityHash,
+    })
+  : null;
+const distributionReviewIdentity = distributionReview
+  ? publicDistributionReviewIdentity(distributionReview, {
+      version: target.version,
+      inventoryIdentity: dependencyInventory.identityHash,
+    })
+  : null;
+const dependencyInventorySha256 = createHash("sha256").update(dependencyInventoryBytes).digest("hex");
+const distributionReviewSha256 = distributionReviewBytes
+  ? createHash("sha256").update(distributionReviewBytes).digest("hex")
+  : null;
+if (
+  finalManifest !== null &&
+  (!verifyManifestDocumentIdentity(finalManifest) ||
+    finalManifest.dependencyInventoryIdentity !== dependencyInventory.identityHash ||
+    finalManifest.dependencyInventorySha256 !== dependencyInventorySha256 ||
+    finalManifest.publicDistributionReviewIdentity !== distributionReviewIdentity ||
+    finalManifest.publicDistributionReviewSha256 !== distributionReviewSha256)
+) {
+  throw new Error("Final manifest does not match the exact dependency and distribution-review evidence.");
+}
 const payload = {
   schemaVersion: "1.0.0",
   product: "Chai Studio",
-  version: "1.0.0",
-  candidate: finalManifest ? "1.0.0" : "1.0.0-rc.4",
+  version: target.version,
+  candidate: target.version,
+  distribution: target.distribution,
   sourceGateIdentity: p27.identity,
   releaseManifestIdentity: p27Manifest.manifestIdentity,
   finalManifestIdentity: finalManifest?.manifestIdentity ?? null,
@@ -32,6 +81,10 @@ const payload = {
   technicalGateIdentity: technicalGate?.identity ?? null,
   technicalGatePassed: technicalGate?.passed === true,
   dependencyLockSha256: finalManifest?.dependencyLockSha256 ?? p27Manifest.dependencyLockSha256,
+  dependencyInventoryIdentity: dependencyInventory.identityHash,
+  dependencyInventorySha256,
+  publicDistributionReviewIdentity: distributionReviewIdentity,
+  publicDistributionReviewSha256: distributionReviewSha256,
   supportClass: "apple-m4-16gb",
   environmentFingerprint: "bdb45e80a3ead9eb4ab04b4e79d16fc81738e4add1b763f8e17cd3db9d02313a",
   knownLimitations: "docs/KNOWN_LIMITATIONS_V1.md",
@@ -44,6 +97,15 @@ const payload = {
         approvalSha256: approvalIdentity(approval),
       }
     : { status: "pending-explicit-owner-approval", inferred: false, evidence: null },
+  publicDistributionReview:
+    distributionReview === null
+      ? { status: "pending-public-distribution-review", evidence: null }
+      : {
+          status: "approved-public-distribution",
+          evidence: "governance/licenses/public-distribution-review.json",
+          inventoryIdentity: distributionReview.inventoryIdentity,
+          reviewIdentity: distributionReviewIdentity,
+        },
   finalGateIdentity: null,
   signature: null,
   releaseAuthorized: false,

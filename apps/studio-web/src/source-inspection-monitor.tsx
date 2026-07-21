@@ -31,8 +31,6 @@ interface SourceInspectionMonitorProps {
     includeOverlays: boolean,
     source?: SourceInspectionState,
   ) => void;
-  readonly onAddToContext: (source: SourceInspectionState) => void;
-  readonly onCompareToTimeline: (source: SourceInspectionState) => void;
   readonly onTimelineCommand: (command: TimelineEditCommand) => void;
 }
 
@@ -97,9 +95,7 @@ const fallbackSourceDescriptors: Readonly<Record<SourceInspectionState["sourceKi
 
 export const SourceInspectionMonitor = ({
   assets,
-  onAddToContext,
   onCapture,
-  onCompareToTimeline,
   onTimelineCommand,
   selectedAssetId,
   timeline,
@@ -500,16 +496,14 @@ export const SourceInspectionMonitor = ({
             </p>
             <h3>Review actions</h3>
             <Button
-              onClick={() => {
-                onCompareToTimeline(source);
-              }}
+              disabled
+              title="Source-to-timeline comparison is unavailable until two distinct revision-bound captures are selected."
             >
               <ChaiIcon name="capture-ab" size={16} /> Compare to timeline frame
             </Button>
             <Button
-              onClick={() => {
-                onAddToContext(source);
-              }}
+              disabled
+              title="Adding a decoded source frame to Codex context is not implemented in this build."
             >
               <ChaiIcon name="review-bundle" size={16} /> Add source to Codex context
             </Button>

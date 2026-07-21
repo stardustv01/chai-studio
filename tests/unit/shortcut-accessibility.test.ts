@@ -84,4 +84,23 @@ describe("P26 shortcut customization and accessibility persistence", () => {
       }),
     ).toEqual(defaultAccessibilityPreferences());
   });
+
+  it("fails soft when browser preference storage is unavailable", () => {
+    const unavailable = {
+      getItem: (): string | null => {
+        throw new DOMException("Storage denied", "SecurityError");
+      },
+      setItem: (): void => {
+        throw new DOMException("Quota exceeded", "QuotaExceededError");
+      },
+    };
+    expect(loadAccessibilityPreferences(unavailable)).toEqual(defaultAccessibilityPreferences());
+    expect(loadShortcutProfile(unavailable)).toEqual(defaultShortcutProfile());
+    expect(() => {
+      saveAccessibilityPreferences(defaultAccessibilityPreferences(), unavailable);
+    }).not.toThrow();
+    expect(() => {
+      saveShortcutProfile(defaultShortcutProfile(), unavailable);
+    }).not.toThrow();
+  });
 });

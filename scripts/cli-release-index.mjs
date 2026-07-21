@@ -24,9 +24,26 @@ export const buildCliReleaseIndex = ({
   assertManifestIdentity(finalManifest, "manifestIdentity", "Version 1 manifest");
   if (
     releaseReceipt.releaseManifestIdentity !== p27Manifest.manifestIdentity ||
-    releaseReceipt.finalManifestIdentity !== finalManifest.manifestIdentity
+    releaseReceipt.finalManifestIdentity !== finalManifest.manifestIdentity ||
+    releaseReceipt.dependencyInventoryIdentity !== finalManifest.dependencyInventoryIdentity ||
+    releaseReceipt.dependencyInventorySha256 !== finalManifest.dependencyInventorySha256 ||
+    releaseReceipt.dependencyInventorySha256 !== p27Manifest.licenseInventorySha256 ||
+    releaseReceipt.publicDistributionReviewIdentity !== finalManifest.publicDistributionReviewIdentity ||
+    releaseReceipt.publicDistributionReviewSha256 !== finalManifest.publicDistributionReviewSha256 ||
+    releaseReceipt.publicDistributionReview?.inventoryIdentity !==
+      finalManifest.dependencyInventoryIdentity ||
+    releaseReceipt.publicDistributionReview?.reviewIdentity !== finalManifest.publicDistributionReviewIdentity
   ) {
     throw new Error("The release authority chain does not match the supplied manifests.");
+  }
+  if (
+    releaseReceipt.version !== archiveReceipt?.version ||
+    releaseReceipt.candidate !== archiveReceipt?.version ||
+    releaseReceipt.distribution !== "public" ||
+    finalManifest.version !== archiveReceipt?.version ||
+    p27Manifest.version !== archiveReceipt?.version
+  ) {
+    throw new Error("Release authority does not match the exact public archive candidate.");
   }
   if (
     archiveReceipt?.schemaVersion !== "1.0.0" ||

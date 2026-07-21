@@ -9,8 +9,8 @@ recovery, and local Codex bridge are implemented. Release candidate `1.0.0-rc.4`
 clean-build and standalone-package qualification.
 
 RC1 reports and owner feedback are historical and live under `archive/`; they are not acceptance
-evidence for RC2. Fresh P27 and P28 technical evidence must be generated from the exact immutable
-RC2 bundle. No stable release, owner approval, signature, final authorization, or public-distribution
+evidence for RC4. Fresh P27 and P28 technical evidence must be generated from the exact immutable
+RC4 bundle. No stable release, owner approval, signature, final authorization, or public-distribution
 authority has been issued.
 
 ## Local developer loop

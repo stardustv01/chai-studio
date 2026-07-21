@@ -12,27 +12,47 @@ describe("CLI release index generation", () => {
     });
     const sourceCommit = "a".repeat(40);
     const bundleIdentity = "b".repeat(64);
+    const dependencyInventoryIdentity = "d".repeat(64);
+    const dependencyInventorySha256 = "e".repeat(64);
+    const publicDistributionReviewIdentity = "f".repeat(64);
+    const publicDistributionReviewSha256 = "1".repeat(64);
     const p27Manifest = identified({
       schemaVersion: "1.0.0",
       product: "Chai Studio",
       version: "1.0.0-rc.4",
       sourceCommit,
+      licenseInventorySha256: dependencyInventorySha256,
       runtimeBundle: { bundleIdentity },
     });
     const finalManifest = identified({
       schemaVersion: "1.0.0",
       product: "Chai Studio",
-      version: "1.0.0",
+      version: "1.0.0-rc.4",
+      dependencyInventoryIdentity,
+      dependencyInventorySha256,
+      publicDistributionReviewIdentity,
+      publicDistributionReviewSha256,
       releaseAuthorized: false,
     });
     const unsignedReceipt = {
       schemaVersion: "1.0.0",
       product: "Chai Studio",
-      version: "1.0.0",
+      version: "1.0.0-rc.4",
+      candidate: "1.0.0-rc.4",
+      distribution: "public",
       releaseManifestIdentity: p27Manifest.manifestIdentity,
       finalManifestIdentity: finalManifest.manifestIdentity,
       finalGateIdentity: "f".repeat(64),
       ownerApproval: { status: "explicitly-approved", inferred: false },
+      dependencyInventoryIdentity,
+      dependencyInventorySha256,
+      publicDistributionReviewIdentity,
+      publicDistributionReviewSha256,
+      publicDistributionReview: {
+        status: "approved-public-distribution",
+        inventoryIdentity: dependencyInventoryIdentity,
+        reviewIdentity: publicDistributionReviewIdentity,
+      },
       releaseAuthorized: true,
       releaseTagAuthorized: true,
       signature: null,
@@ -63,7 +83,8 @@ describe("CLI release index generation", () => {
       releaseReceipt,
       publicKeyPem: publicKey,
       privateKeyPem: privateKey,
-      archiveUrl: "https://github.com/stardustv01/chai-studio/releases/download/v1.0.0/chai-studio.tar.gz",
+      archiveUrl:
+        "https://github.com/stardustv01/chai-studio/releases/download/v1.0.0-rc.4/chai-studio.tar.gz",
       keyId: "chai-studio-v1",
     });
     expect(index).toMatchObject({ latest: "1.0.0-rc.4", releases: [{ publishable: true }] });
@@ -71,6 +92,34 @@ describe("CLI release index generation", () => {
     expect(release).toBeDefined();
     if (release === undefined) throw new Error("Expected one signed release record.");
     expect(verifyReleaseRecord(release, publicKey)).toBe(true);
+    const contradictoryUnsignedReceipt = {
+      ...unsignedReceipt,
+      publicDistributionReviewIdentity: "2".repeat(64),
+      publicDistributionReview: {
+        ...unsignedReceipt.publicDistributionReview,
+        reviewIdentity: "2".repeat(64),
+      },
+    };
+    const contradictoryReceipt = {
+      ...contradictoryUnsignedReceipt,
+      signature: {
+        algorithm: "Ed25519",
+        publicKeySha256: createHash("sha256").update(publicKey).digest("hex"),
+        value: sign(null, unsignedReceiptBytes(contradictoryUnsignedReceipt), privateKey).toString("base64"),
+      },
+    };
+    expect(() =>
+      buildCliReleaseIndex({
+        archiveReceipt,
+        p27Manifest,
+        finalManifest,
+        releaseReceipt: contradictoryReceipt,
+        publicKeyPem: publicKey,
+        privateKeyPem: privateKey,
+        archiveUrl: "https://example.test/chai.tar.gz",
+        keyId: "chai-studio-v1",
+      }),
+    ).toThrow(/authority chain/iu);
     expect(() =>
       buildCliReleaseIndex({
         archiveReceipt: { ...archiveReceipt, sha256: "d".repeat(64) },
@@ -83,6 +132,18 @@ describe("CLI release index generation", () => {
         keyId: "chai-studio-v1",
       }),
     ).toThrow(/owner-authorized|final gate/u);
+    expect(() =>
+      buildCliReleaseIndex({
+        archiveReceipt,
+        p27Manifest,
+        finalManifest,
+        releaseReceipt: { ...releaseReceipt, version: "1.0.0" },
+        publicKeyPem: publicKey,
+        privateKeyPem: privateKey,
+        archiveUrl: "https://example.test/chai.tar.gz",
+        keyId: "chai-studio-v1",
+      }),
+    ).toThrow(/owner-authorized|exact public archive candidate/u);
   });
 });
 

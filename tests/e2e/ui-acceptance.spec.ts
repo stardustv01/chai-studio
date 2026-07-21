@@ -299,6 +299,26 @@ test("primary workspace controls are fully reachable at the declared minimum vie
   }
 });
 
+test("Deliver receipt remains vertically reachable at the declared minimum viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1180, height: 720 });
+  await page.goto("/?workspace=deliver");
+
+  const receipt = page.getByLabel("QA and render receipt");
+  await expect(receipt).toBeVisible();
+  const overflow = await receipt.evaluate((element) => ({
+    clientHeight: element.clientHeight,
+    overflowY: getComputedStyle(element).overflowY,
+    scrollHeight: element.scrollHeight,
+  }));
+  expect(overflow.overflowY).toBe("auto");
+  expect(overflow.scrollHeight).toBeGreaterThan(overflow.clientHeight);
+
+  await receipt.evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+  });
+  await expectFullyInsideClippingAncestors(receipt.getByText("Show immutable receipt JSON", { exact: true }));
+});
+
 test("modal focus, interactive Space, compact navigation, and separator keys are accessible", async ({
   page,
 }) => {

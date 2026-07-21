@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { ProjectSessionService } from "../../apps/studio-server/src/index.js";
+import { pinnedHyperframesVersion, pinnedRemotionVersion } from "../../packages/engine-adapters/src/index.js";
 import { timelineDocumentToSnapshot } from "../../packages/timeline/src/index.js";
 
 const temporaryDirectories: string[] = [];
@@ -33,6 +34,10 @@ describe("Launch Film starter project", () => {
     expect(clips.length).toBeGreaterThan(0);
     expect(snapshot.assets.assets.length).toBeGreaterThan(0);
     expect(new Set(clips.map((clip) => clip.id)).size).toBe(clips.length);
+    expect(snapshot.project.enginePins).toMatchObject({
+      remotion: pinnedRemotionVersion,
+      hyperframes: pinnedHyperframesVersion,
+    });
 
     await service.close();
     await service.open(path.join(parent, "Launch Film.chai"));

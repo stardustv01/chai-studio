@@ -4,6 +4,7 @@ import path from "node:path";
 import { ChaiError, createCorrelationId } from "@chai-studio/diagnostics";
 import { sha256CanonicalJson, stringifyCanonicalJson } from "./canonical-json.js";
 import { assertProjectDocument, type AutosaveMetadataDocument } from "./project-documents.js";
+import { acquireProjectMutationLock } from "./project-lock.js";
 import {
   commitProjectRevision,
   loadCurrentProjectRevision,
@@ -207,37 +208,49 @@ export const restoreProjectAutosave = async (
   options: RestoreAutosaveOptions,
 ): Promise<RevisionCommitResult> => {
   const root = path.resolve(rootPath);
-  const scan = await scanAutosaveRecovery(root);
-  const candidate = scan.candidates.find((item) => item.id === autosaveId);
-  if (candidate === undefined || !candidate.valid || candidate.documents === null) {
-    throw autosaveError("autosave.restore.invalid", "Autosave is missing, corrupt, or semantically invalid.");
-  }
-  const current = await loadCurrentProjectRevision(root);
-  if (candidate.baseRevisionId !== current.pointer.revisionId) {
-    throw autosaveError(
-      "autosave.restore.stale",
-      `Autosave is based on ${candidate.baseRevisionId}, but current revision is ${current.pointer.revisionId}.`,
-    );
-  }
   const now = options.now ?? new Date();
-  return commitProjectRevision(root, {
-    baseRevisionId: current.pointer.revisionId,
-    ...(options.revisionId === undefined ? {} : { revisionId: options.revisionId }),
-    commandId: `${autosaveId}:restore`,
-    idempotencyId: `${autosaveId}:restore`,
-    correlationId: `${autosaveId}:recovery`,
-    actor: options.actor,
-    capability: { name: "autosave-recovery", version: "1.0.0" },
-    declaredScope: "mutation",
-    authorizationId: null,
-    validationOnly: false,
-    commandSummary: "Restore autosave",
-    diffSummary: `Restored hash-verified autosave ${autosaveId}.`,
-    affectedEntityIds: [current.project.projectId],
-    warnings: ["Restored after an unclean shutdown or explicit recovery request."],
-    documents: candidate.documents,
-    now,
+  const lock = await acquireProjectMutationLock(root, {
+    ownerId: options.actor.id,
+    sessionId: options.actor.sessionId,
   });
+  try {
+    const scan = await scanAutosaveRecovery(root);
+    const candidate = scan.candidates.find((item) => item.id === autosaveId);
+    if (candidate === undefined || !candidate.valid || candidate.documents === null) {
+      throw autosaveError(
+        "autosave.restore.invalid",
+        "Autosave is missing, corrupt, or semantically invalid.",
+      );
+    }
+    const current = await loadCurrentProjectRevision(root);
+    if (candidate.baseRevisionId !== current.pointer.revisionId) {
+      throw autosaveError(
+        "autosave.restore.stale",
+        `Autosave is based on ${candidate.baseRevisionId}, but current revision is ${current.pointer.revisionId}.`,
+      );
+    }
+    await lock.heartbeat();
+    return await commitProjectRevision(root, {
+      baseRevisionId: current.pointer.revisionId,
+      ...(options.revisionId === undefined ? {} : { revisionId: options.revisionId }),
+      commandId: `${autosaveId}:restore`,
+      idempotencyId: `${autosaveId}:restore`,
+      correlationId: `${autosaveId}:recovery`,
+      actor: options.actor,
+      capability: { name: "autosave-recovery", version: "1.0.0" },
+      declaredScope: "mutation",
+      authorizationId: null,
+      validationOnly: false,
+      commandSummary: "Restore autosave",
+      diffSummary: `Restored hash-verified autosave ${autosaveId}.`,
+      affectedEntityIds: [current.project.projectId],
+      warnings: ["Restored after an unclean shutdown or explicit recovery request."],
+      documents: candidate.documents,
+      now,
+    });
+  } finally {
+    await lock.release();
+  }
 };
 
 export const readAutosaveMetadata = async (rootPath: string): Promise<AutosaveMetadataDocument> =>

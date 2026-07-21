@@ -140,9 +140,6 @@ importers:
       '@chai-studio/preview':
         specifier: workspace:*
         version: link:../../packages/preview
-      '@chai-studio/qa':
-        specifier: workspace:*
-        version: link:../../packages/qa
       '@chai-studio/schema':
         specifier: workspace:*
         version: link:../../packages/schema
@@ -186,24 +183,15 @@ importers:
       '@chai-studio/qa':
         specifier: workspace:*
         version: link:../qa
-      '@chai-studio/render':
-        specifier: workspace:*
-        version: link:../render
       '@chai-studio/schema':
         specifier: workspace:*
         version: link:../schema
-      '@chai-studio/timeline':
-        specifier: workspace:*
-        version: link:../timeline
 
   packages/captions:
     dependencies:
       '@chai-studio/schema':
         specifier: workspace:*
         version: link:../schema
-      '@chai-studio/timeline':
-        specifier: workspace:*
-        version: link:../timeline
 
   packages/cli: {}
 
@@ -211,9 +199,6 @@ importers:
 
   packages/engine-adapters:
     dependencies:
-      '@chai-studio/diagnostics':
-        specifier: workspace:*
-        version: link:../diagnostics
       '@chai-studio/schema':
         specifier: workspace:*
         version: link:../schema
@@ -253,48 +238,24 @@ importers:
       '@chai-studio/audio':
         specifier: workspace:*
         version: link:../audio
-      '@chai-studio/diagnostics':
-        specifier: workspace:*
-        version: link:../diagnostics
       '@chai-studio/engine-adapters':
         specifier: workspace:*
         version: link:../engine-adapters
-      '@chai-studio/media':
-        specifier: workspace:*
-        version: link:../media
-      '@chai-studio/timeline':
-        specifier: workspace:*
-        version: link:../timeline
 
   packages/qa:
     dependencies:
-      '@chai-studio/diagnostics':
-        specifier: workspace:*
-        version: link:../diagnostics
       '@chai-studio/schema':
         specifier: workspace:*
         version: link:../schema
 
   packages/render:
     dependencies:
-      '@chai-studio/audio':
-        specifier: workspace:*
-        version: link:../audio
-      '@chai-studio/diagnostics':
-        specifier: workspace:*
-        version: link:../diagnostics
       '@chai-studio/engine-adapters':
         specifier: workspace:*
         version: link:../engine-adapters
-      '@chai-studio/media':
-        specifier: workspace:*
-        version: link:../media
       '@chai-studio/schema':
         specifier: workspace:*
         version: link:../schema
-      '@chai-studio/timeline':
-        specifier: workspace:*
-        version: link:../timeline
 
   packages/review:
     dependencies:

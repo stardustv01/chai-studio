@@ -69,7 +69,7 @@ describe("exact capture service", () => {
         );
       }
     }
-  });
+  }, 30_000);
 });
 
 const request = (

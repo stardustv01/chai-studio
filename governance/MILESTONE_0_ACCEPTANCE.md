@@ -3,7 +3,9 @@
 **Decision:** APPROVED for production implementation  
 **Decision time:** 2026-07-15T09:04:01Z  
 **Supported baseline:** personal-use macOS, Apple Silicon, strict pinned environment  
-**Planning baseline identity:** `b46733c9afa777c353d3114895f1503e6abedde3849593b73755e2e09aa353d1`
+**Current planning baseline identity:** `cd8f58b77928fa7fd439865a436bca66c433fb8d356030d8ffecf559b84fad42`
+
+The planning baseline was re-identified on 2026-07-21 after the security policy status was updated to record the already accepted P23 personal-macOS verification and continuing public-distribution block. The task graph, scope, policy rules, and owner release authority did not change.
 
 The refreshed Milestone 0 gate passed all 16 checks. The core suite passed 29/29 tests, the contract index passed every freeze assertion, and the full 379-task graph has no missing dependency, duplicate ID, ambiguous declared order, or cycle. Production implementation may proceed from P03.
 

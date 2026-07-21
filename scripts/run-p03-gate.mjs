@@ -8,8 +8,8 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const checks = [
   ["frozen-offline-install", ["install", "--frozen-lockfile", "--offline"]],
-  ["planning-task-graph", ["exec", "node", "scripts/validate-task-graph.mjs"]],
-  ["frozen-contract-index", ["exec", "node", "scripts/validate-contract-index.mjs"]],
+  ["planning-task-graph", ["exec", "node", "scripts/validate-task-graph.mjs", "--check"]],
+  ["frozen-contract-index", ["exec", "node", "scripts/validate-contract-index.mjs", "--check"]],
   ["p03-platform-contract", ["validate:p03-platform"]],
   ["schema-generated-drift", ["schema:check"]],
   ["lint-format-boundaries", ["lint"]],

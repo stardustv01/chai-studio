@@ -1,8 +1,11 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const packageManifest = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const target = resolveReleaseTarget({ packageManifest });
 const areas = [
   ["Edit", ["timeline-editor.spec.ts", "professional-editing.spec.ts"]],
   ["Inspect", ["contextual-inspector.spec.ts", "program-monitor.spec.ts"]],
@@ -16,7 +19,8 @@ const areas = [
 const report = {
   schemaVersion: "1.0.0",
   passed: true,
-  releaseCandidate: "1.0.0-rc.4",
+  releaseCandidate: target.version,
+  distribution: target.distribution,
   attendanceDoesNotImplyApproval: true,
   areas: areas.map(([area, evidence]) => ({ area, passed: true, evidence })),
   corrections: [],

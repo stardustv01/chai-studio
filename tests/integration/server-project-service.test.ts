@@ -56,6 +56,18 @@ describe("project session service", () => {
     await expect(service.snapshot()).rejects.toThrow(/No project is open/);
     expect(await service.open(rootPath)).toMatchObject({ projectId: created.projectId });
   });
+
+  it("rejects project reads while a session transition is in progress", async () => {
+    const parent = await temporaryDirectory();
+    const service = new ProjectSessionService();
+    const creating = service.create({
+      targetPath: path.join(parent, "Transition Film.chai"),
+      title: "Transition Film",
+    });
+    await expect(service.snapshot()).rejects.toThrow(/transition is in progress/);
+    await creating;
+    await expect(service.snapshot()).resolves.toMatchObject({ project: { title: "Transition Film" } });
+  });
 });
 
 const temporaryDirectory = async (): Promise<string> => {

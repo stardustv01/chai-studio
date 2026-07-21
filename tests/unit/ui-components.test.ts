@@ -14,7 +14,8 @@ import type { ReactElement } from "react";
 
 describe("production UI primitives", () => {
   it("exports a machine-readable dark-theme token system", () => {
-    expect(designTokens.color.canvas).toBe("#080b10");
+    expect(designTokens.color.canvas).toBe("#06070b");
+    expect(designTokens.color.surfaceSoft).toBe("#0e1622");
     expect(designTokens.color.focus).toBeTruthy();
     expect(designTokens.motion.standard).toMatch(/ms$/);
   });

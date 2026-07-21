@@ -37,6 +37,25 @@ describe("Studio web API client", () => {
     });
   });
 
+  it("fails closed on invalid JSON and malformed success or error envelopes", async () => {
+    const clientFor = (response: Response) =>
+      new StudioApiClient({
+        fetcher: () => Promise.resolve(response),
+        correlationId: () => correlationId,
+      });
+    await expect(
+      clientFor(new Response("not-json", { headers: { "content-type": "application/json" } })).health(),
+    ).rejects.toMatchObject({ diagnostic: { code: "client.api-envelope-invalid" } });
+    await expect(
+      clientFor(Response.json({ apiVersion: "2026-07-15", ok: true, correlationId })).health(),
+    ).rejects.toMatchObject({ diagnostic: { code: "client.api-envelope-invalid" } });
+    await expect(
+      clientFor(
+        Response.json({ apiVersion: "2026-07-15", ok: false, correlationId, error: { code: "broken" } }),
+      ).health(),
+    ).rejects.toMatchObject({ diagnostic: { code: "client.api-envelope-invalid" } });
+  });
+
   it("classifies stale revision responses for mandatory resync", async () => {
     const fetcher: StudioFetcher = () =>
       Promise.resolve(

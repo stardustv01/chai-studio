@@ -75,7 +75,7 @@ export const subscribeToStudioEvents = async (options: StudioEventSubscriberOpti
   }
 };
 
-async function* readSseMessages(
+export async function* readSseMessages(
   stream: ReadableStream<Uint8Array>,
   signal: AbortSignal,
 ): AsyncGenerator<ParsedSseMessage> {
@@ -86,7 +86,8 @@ async function* readSseMessages(
     while (!signal.aborted) {
       const result = await reader.read();
       if (result.done) break;
-      buffer += decoder.decode(result.value, { stream: true }).replaceAll("\r\n", "\n");
+      buffer += decoder.decode(result.value, { stream: true });
+      buffer = buffer.replaceAll("\r\n", "\n");
       let boundary = buffer.indexOf("\n\n");
       while (boundary !== -1) {
         const message = parseSseMessage(buffer.slice(0, boundary));
@@ -95,6 +96,10 @@ async function* readSseMessages(
         boundary = buffer.indexOf("\n\n");
       }
     }
+    buffer += decoder.decode();
+    buffer = buffer.replaceAll("\r\n", "\n");
+    const finalMessage = parseSseMessage(buffer);
+    if (!signal.aborted && finalMessage !== null) yield finalMessage;
   } finally {
     reader.releaseLock();
   }

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=900, height=600">
+    <title>Chai Studio — Codex-operated edit bay</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      :root {
+        --ink: #030711;
+        --cream: #f5efe2;
+        --cyan: #19d9ea;
+        --gold: #ffb83e;
+        --panel: #07111f;
+        --line: #34445f;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 900px;
+        height: 600px;
+        margin: 0;
+        overflow: hidden;
+        background: var(--ink);
+      }
+
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 900px;
+        height: 600px;
+        overflow: hidden;
+      }
+
+      .stage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .background-wrap,
+      .background-image,
+      .shade,
+      .ambient-glow,
+      .grain,
+      .content {
+        position: absolute;
+        inset: 0;
+      }
+
+      .background-wrap {
+        overflow: hidden;
+      }
+
+      .background-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        will-change: transform;
+      }
+
+      .shade {
+        background:
+          linear-gradient(90deg, rgba(3, 7, 17, 0.98) 0%, rgba(3, 7, 17, 0.91) 25%, transparent 57%),
+          linear-gradient(180deg, rgba(2, 5, 12, 0.15), transparent 45%, rgba(2, 5, 12, 0.42));
+      }
+
+      .ambient-glow {
+        left: 315px;
+        top: 34px;
+        width: 560px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(25, 217, 234, 0.14),
+          rgba(87, 65, 255, 0.06) 46%,
+          transparent 72%
+        );
+        transform-origin: 58% 52%;
+        will-change: transform, opacity;
+      }
+
+      .grain {
+        opacity: 0.16;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.14'/%3E%3C/svg%3E");
+        mix-blend-mode: soft-light;
+        pointer-events: none;
+      }
+
+      .brand {
+        position: absolute;
+        left: 34px;
+        top: 23px;
+        width: 168px;
+        height: auto;
+        will-change: transform, opacity;
+      }
+
+      .copy {
+        position: absolute;
+        left: 35px;
+        top: 191px;
+        width: 235px;
+        color: var(--cream);
+      }
+
+      .copy-rule {
+        width: 225px;
+        height: 2px;
+        background: var(--cyan);
+        transform-origin: 0 50%;
+        will-change: transform;
+      }
+
+      .kicker {
+        margin-top: 20px;
+        color: var(--cyan);
+        font-size: 14px;
+        line-height: 1;
+        font-weight: 750;
+        letter-spacing: 2.1px;
+        white-space: nowrap;
+      }
+
+      .promise {
+        margin-top: 27px;
+        display: grid;
+        gap: 7px;
+      }
+
+      .promise-line {
+        display: block;
+        width: max-content;
+        max-width: 235px;
+        font-size: 31px;
+        line-height: 1.04;
+        font-weight: 760;
+        letter-spacing: -0.9px;
+        will-change: transform, opacity;
+      }
+
+      #promise-verified {
+        color: var(--gold);
+      }
+
+      .engine-pill {
+        position: absolute;
+        left: 35px;
+        bottom: 68px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 34px;
+        padding: 0 15px;
+        border: 1px solid var(--line);
+        border-radius: 17px;
+        background: rgba(7, 17, 31, 0.92);
+        color: #d5dbe8;
+        font-size: 12px;
+        line-height: 1;
+        font-weight: 650;
+        letter-spacing: 0.65px;
+        white-space: nowrap;
+        will-change: transform, opacity;
+      }
+
+      .engine-pill::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--cyan);
+        box-shadow: 0 0 12px rgba(25, 217, 234, 0.9);
+      }
+
+      .workspace-motion {
+        position: absolute;
+        left: 295px;
+        top: 107px;
+        width: 575px;
+        height: 359px;
+        transform-origin: 52% 48%;
+        will-change: transform, opacity;
+      }
+
+      .workspace-card {
+        position: relative;
+        width: 575px;
+        height: 359px;
+        overflow: hidden;
+        border: 1.5px solid rgba(25, 217, 234, 0.72);
+        border-radius: 13px;
+        background: #07101c;
+        box-shadow:
+          0 28px 70px rgba(0, 0, 0, 0.75),
+          0 0 0 1px rgba(127, 104, 255, 0.22);
+      }
+
+      .workspace-card img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+      }
+
+      .workspace-sheen {
+        position: absolute;
+        top: -70px;
+        left: -170px;
+        width: 120px;
+        height: 520px;
+        background: linear-gradient(105deg, transparent 8%, rgba(25, 217, 234, 0.2) 48%, transparent 88%);
+        transform: rotate(7deg);
+        opacity: 0;
+        pointer-events: none;
+        will-change: transform, opacity;
+      }
+
+      .target-outline {
+        position: absolute;
+        left: 488px;
+        top: 401px;
+        width: 111px;
+        height: 29px;
+        border: 2px solid var(--cyan);
+        border-radius: 7px;
+        background: rgba(25, 217, 234, 0.08);
+        opacity: 0;
+        transform-origin: 50% 50%;
+        pointer-events: none;
+        will-change: transform, opacity;
+      }
+
+      .ripple {
+        position: absolute;
+        left: 543px;
+        top: 416px;
+        width: 36px;
+        height: 36px;
+        margin-left: -18px;
+        margin-top: -18px;
+        border: 2px solid var(--cyan);
+        border-radius: 50%;
+        opacity: 0;
+        transform-origin: 50% 50%;
+        pointer-events: none;
+        will-change: transform, opacity;
+      }
+
+      #codex-cursor {
+        position: absolute;
+        left: 774px;
+        top: 119px;
+        display: grid;
+        grid-template-columns: 35px auto;
+        align-items: start;
+        gap: 5px;
+        pointer-events: none;
+        transform-origin: 5px 5px;
+        z-index: 20;
+        will-change: transform, opacity;
+      }
+
+      .cursor-icon {
+        width: 42px;
+        height: 52px;
+        overflow: visible;
+        filter: drop-shadow(0 0 6px rgba(25, 217, 234, 0.9));
+      }
+
+      .cursor-label {
+        margin-top: 32px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 29px;
+        padding: 0 11px;
+        border: 1.5px solid var(--cyan);
+        border-radius: 15px;
+        background: #07111f;
+        color: var(--cream);
+        font-size: 12px;
+        line-height: 1;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      .cursor-label::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--cyan);
+      }
+
+      .verification-chip {
+        position: absolute;
+        right: 34px;
+        bottom: 54px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 42px;
+        padding: 0 17px 0 12px;
+        border: 1.5px solid rgba(255, 184, 62, 0.82);
+        border-radius: 21px;
+        background: rgba(8, 15, 27, 0.96);
+        color: var(--cream);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        transform-origin: 88% 50%;
+        will-change: transform, opacity;
+      }
+
+      .verification-mark {
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid var(--gold);
+        background: #17100a;
+        color: #ffcb73;
+        font-size: 16px;
+        font-weight: 900;
+      }
+
+      .loop-curtain {
+        position: absolute;
+        inset: 0;
+        z-index: 100;
+        background: var(--ink);
+        pointer-events: none;
+        will-change: opacity;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-t3l8" id="root" data-composition-id="chai-devpost-gif" data-start="0" data-duration="5.6" data-width="900" data-height="600">
+      <main data-hf-id="hf-kt2s" id="stage" class="stage clip" data-start="0" data-duration="5.6" data-track-index="1">
+        <div data-hf-id="hf-0wvi" class="background-wrap" aria-hidden="true">
+          <img data-hf-id="hf-hz6n" class="background-image" src="assets/timeline-background.png" data-layout-allow-overflow="" alt="">
+        </div>
+        <div data-hf-id="hf-bgzs" class="shade" aria-hidden="true"></div>
+        <div data-hf-id="hf-s57f" class="ambient-glow" aria-hidden="true"></div>
+        <div data-hf-id="hf-ub7q" class="grain" aria-hidden="true"></div>
+
+        <div data-hf-id="hf-mcm7" class="content">
+          <img data-hf-id="hf-jntj" class="brand" src="assets/chai-lockup-color.svg" alt="Chai Studio">
+
+          <section data-hf-id="hf-yrhw" class="copy" aria-label="Chai Studio promise">
+            <div data-hf-id="hf-3nb6" class="copy-rule"></div>
+            <div data-hf-id="hf-2uwb" class="kicker">CODEX-OPERATED EDIT BAY</div>
+            <div data-hf-id="hf-cqsr" class="promise">
+              <span data-hf-id="hf-nyp7" id="promise-timeline" class="promise-line">One timeline.</span>
+              <span data-hf-id="hf-11ay" id="promise-engines" class="promise-line">Two native engines.</span>
+              <span data-hf-id="hf-2xq3" id="promise-verified" class="promise-line">Verified delivery.</span>
+            </div>
+          </section>
+
+          <div data-hf-id="hf-f567" class="engine-pill">REMOTION • HYPERFRAMES</div>
+
+          <div data-hf-id="hf-mitm" class="workspace-motion" id="workspace-motion">
+            <figure data-hf-id="hf-yzyb" class="workspace-card" id="workspace-card">
+              <img data-hf-id="hf-rs1d" src="assets/edit-workspace.png" alt="Chai Studio Edit workspace">
+              <div data-hf-id="hf-atbx" class="workspace-sheen" data-layout-allow-overflow="" aria-hidden="true"></div>
+            </figure>
+          </div>
+
+          <div data-hf-id="hf-dlnb" class="target-outline" data-layout-allow-overlap="" aria-hidden="true"></div>
+          <div data-hf-id="hf-yzph" class="ripple ripple-1" data-layout-allow-overlap="" aria-hidden="true"></div>
+          <div data-hf-id="hf-y400" class="ripple ripple-2" data-layout-allow-overlap="" aria-hidden="true"></div>
+
+          <div data-hf-id="hf-ljf9" id="codex-cursor" data-layout-allow-overlap="" aria-label="Codex cursor">
+            <svg data-hf-id="hf-4rpb" class="cursor-icon" viewBox="0 0 42 52" xmlns="http://www.w3.org/2000/svg">
+              <path data-hf-id="hf-6cho" d="M4 3 L4 44 L14 34 L22 50 L31 46 L23 30 L38 30 Z" fill="#F5EFE2" stroke="#19D9EA" stroke-width="2.4" stroke-linejoin="round" />
+            </svg>
+            <span data-hf-id="hf-xy0l" class="cursor-label">CODEX</span>
+          </div>
+
+          <div data-hf-id="hf-gh0e" class="verification-chip" id="verification-chip">
+            <span data-hf-id="hf-dfsf" class="verification-mark">✓</span>
+            <span data-hf-id="hf-birr">DELIVERY VERIFIED</span>
+          </div>
+        </div>
+
+        <div data-hf-id="hf-l4si" class="loop-curtain" aria-hidden="true"></div>
+      </main>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      const tl = gsap.timeline({ paused: true });
+      const cursor = document.querySelector("#codex-cursor");
+      const targetOutline = document.querySelector(".target-outline");
+      const ripples = gsap.utils.toArray(".ripple");
+
+      tl.fromTo(".loop-curtain", { opacity: 1 }, { opacity: 0, duration: 0.38, ease: "power2.out" }, 0.08);
+      tl.fromTo(".background-image", { scale: 1 }, { scale: 1.028, duration: 5.35, ease: "none" }, 0.12);
+      tl.fromTo(
+        ".ambient-glow",
+        { opacity: 0, scale: 0.9 },
+        { opacity: 0.32, scale: 1, duration: 0.9, ease: "power2.out" },
+        0.18,
+      );
+      tl.to(
+        ".ambient-glow",
+        {
+          duration: 4.2,
+          ease: "none",
+          onUpdate() {
+            const phase = (tl.time() - 1.08) / 4.2;
+            const wave = Math.sin(Math.max(0, phase) * Math.PI * 2);
+            gsap.set(".ambient-glow", { opacity: 0.3 + wave * 0.025, scale: 1 + wave * 0.012 });
+          },
+        },
+        1.08,
+      );
+
+      tl.fromTo(
+        ".brand",
+        { opacity: 0, y: -12 },
+        { opacity: 1, y: 0, duration: 0.62, ease: "power3.out" },
+        0.22,
+      );
+      tl.fromTo(".copy-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "expo.out" }, 0.36);
+      tl.fromTo(
+        ".kicker",
+        { opacity: 0, x: -16 },
+        { opacity: 1, x: 0, duration: 0.48, ease: "power2.out" },
+        0.52,
+      );
+
+      tl.fromTo(
+        "#workspace-motion",
+        { opacity: 0, scale: 0.94, y: 22 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.78, ease: "power3.out" },
+        0.33,
+      );
+      tl.fromTo(
+        ".workspace-sheen",
+        { opacity: 0, x: 0 },
+        { opacity: 0.42, x: 760, duration: 1.12, ease: "none" },
+        0.58,
+      );
+      tl.to(".workspace-sheen", { opacity: 0, duration: 0.22, ease: "power1.in" }, 1.71);
+
+      tl.fromTo(
+        "#promise-timeline",
+        { opacity: 0, x: -22 },
+        { opacity: 1, x: 0, duration: 0.46, ease: "power3.out" },
+        0.78,
+      );
+      tl.fromTo(
+        "#promise-engines",
+        { opacity: 0, x: -22 },
+        { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" },
+        1.02,
+      );
+      tl.fromTo(
+        "#promise-verified",
+        { opacity: 0, x: -22, color: "#F5EFE2" },
+        { opacity: 1, x: 0, color: "#F5EFE2", duration: 0.54, ease: "power2.out" },
+        1.26,
+      );
+      tl.fromTo(
+        ".engine-pill",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.44, ease: "sine.out" },
+        1.18,
+      );
+
+      tl.fromTo(
+        cursor,
+        { opacity: 0, x: 0, y: 0 },
+        { opacity: 1, x: 0, y: 0, duration: 0.26, ease: "power1.out" },
+        1.5,
+      );
+      tl.to(cursor, { x: -231, y: 297, duration: 0.92, ease: "power2.inOut" }, 1.76);
+      tl.fromTo(
+        targetOutline,
+        { opacity: 0, scale: 0.82 },
+        { opacity: 1, scale: 1, duration: 0.25, ease: "power3.out" },
+        2.5,
+      );
+      tl.to(cursor, { scale: 0.84, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1 }, 2.8);
+      tl.to(targetOutline, { scale: 0.96, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1 }, 2.8);
+      tl.set(ripples, { opacity: 1, scale: 0 }, 2.82);
+      tl.to(
+        ripples,
+        {
+          opacity: 0,
+          scale: 3.8,
+          duration: 0.72,
+          ease: "power3.out",
+          stagger: 0.09,
+          immediateRender: false,
+        },
+        2.82,
+      );
+
+      tl.to("#promise-verified", { color: "#FFB83E", duration: 0.42, ease: "power1.out" }, 2.96);
+      tl.fromTo(
+        "#verification-chip",
+        { opacity: 0, scale: 0.72, x: 14 },
+        { opacity: 1, scale: 1, x: 0, duration: 0.58, ease: "power3.out" },
+        3.12,
+      );
+      tl.to(targetOutline, { opacity: 0, scale: 1.18, duration: 0.52, ease: "power2.out" }, 3.4);
+      tl.to(cursor, { opacity: 0, y: 282, duration: 0.36, ease: "power2.in" }, 3.82);
+
+      tl.to(".loop-curtain", { opacity: 1, duration: 0.42, ease: "power2.in" }, 5.16);
+
+      window.__timelines["chai-devpost-gif"] = tl;
+    </script>
+  </body>
+</html>

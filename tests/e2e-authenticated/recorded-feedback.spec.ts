@@ -261,6 +261,8 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     .getByRole("button", { name: "Media", exact: true })
     .click();
   const sourceMonitor = page.getByRole("region", { name: "Professional source monitor" });
+  await expect(sourceMonitor.getByRole("button", { name: "Compare to timeline frame" })).toBeDisabled();
+  await expect(sourceMonitor.getByRole("button", { name: "Add source to Codex context" })).toBeDisabled();
   await page.locator(".media-center").getByLabel("Search footage").fill("owner-review");
   await page
     .locator(".media-center")
@@ -329,6 +331,8 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     .first()
     .click();
   await page.getByRole("button", { name: "Inspect", exact: true }).click();
+  await expect(monitor.getByLabel("Comparison mode")).toHaveCount(0);
+  await expect(monitor.getByText("A · comparison source", { exact: false })).toHaveCount(0);
   await page.getByLabel("Apply requested change to").selectOption("marked-range");
   const manifest = page.locator(".manifest");
   await expect(manifest).toContainText('"scopeKind": "marked-range"');
@@ -358,6 +362,18 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     .poll(() => authoritativeOpacityEvidence(page).then((evidence) => evidence.opacityKeyValues.length))
     .toBe(2);
   await expectRevisionIdentityAligned(page);
+
+  await page.getByRole("tab", { name: "Audio mix" }).click();
+  const mixer = page.getByRole("region", { name: "Authoritative audio mixer" });
+  const rapidGain = mixer.locator(".mixer-strip input[type='range']").first();
+  const rapidGainLabel = await rapidGain.getAttribute("aria-label");
+  if (rapidGainLabel === null) throw new Error("The authenticated audio bus gain label is unavailable.");
+  const rapidBusName = rapidGainLabel.replace(/ gain$/u, "");
+  await rapidGain.fill("-9");
+  await rapidGain.fill("-8");
+  await expect.poll(() => authoritativeAudioBusGain(page, rapidBusName)).toBe(-8);
+  await expect(page.getByTestId("shell-state-conflict")).toHaveCount(0);
+  await page.getByRole("tab", { name: "Keyframes" }).click();
 
   await monitor.getByLabel("Current frame").fill(uploadedFrame);
   await monitor.getByLabel("Current frame").press("Enter");
@@ -541,6 +557,24 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect(comparisonDialog).toHaveCount(0);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expectRevisionIdentityAligned(page);
+
+  await page.locator(".project-identity").click();
+  await page.getByRole("button", { name: "Switch project" }).click();
+  const resetLauncher = page.getByRole("dialog", { name: "Open or create a Chai Studio project" });
+  await resetLauncher.getByLabel("Project title").fill("Evidence Reset");
+  await resetLauncher
+    .getByLabel("Absolute target path")
+    .fill(path.join(os.tmpdir(), "chai-studio-authenticated-e2e", "Evidence Reset.chai"));
+  await resetLauncher.getByLabel("Starter").selectOption("empty");
+  await resetLauncher.getByRole("button", { name: "Create project" }).click();
+  await expect(resetLauncher).toHaveCount(0);
+  await page.getByRole("button", { name: "Deliver", exact: true }).click();
+  const resetReceipt = page.getByLabel("QA and render receipt");
+  await expect(resetReceipt).toContainText("No output");
+  await expect(resetReceipt).toContainText("No preflight recorded.");
+  await expect(resetReceipt).toContainText("Not run");
+  await expect(resetReceipt).not.toContainText("qa passed");
+  await expect(resetReceipt).not.toContainText("Artifact bytes and ffprobe version");
 });
 
 const expectRevisionIdentityAligned = async (page: Page): Promise<void> => {
@@ -857,6 +891,27 @@ const toneWave = (sampleRate: number, sampleCount: number, frequency: number, am
   }
   return bytes;
 };
+
+const authoritativeAudioBusGain = async (page: Page, busName: string): Promise<number | null> =>
+  page.evaluate(async (requestedBusName) => {
+    const session = window.__CHAI_STUDIO_SESSION__;
+    if (session === undefined) return null;
+    const response = await fetch(`${session.serverOrigin}/api/v1/projects/current/snapshot`, {
+      headers: { authorization: `Bearer ${session.token}` },
+    });
+    const envelope = (await response.json()) as {
+      readonly data?: {
+        readonly timeline?: {
+          readonly audioGraph?: {
+            readonly buses?: readonly Readonly<{ readonly name?: string; readonly gainDb?: number }>[];
+          };
+        };
+      };
+    };
+    return (
+      envelope.data?.timeline?.audioGraph?.buses?.find((bus) => bus.name === requestedBusName)?.gainDb ?? null
+    );
+  }, busName);
 
 const frameNumber = async (locator: Locator): Promise<number> => {
   const text = await locator.textContent();

@@ -24,9 +24,9 @@ export const defaultAccessibilityPreferences = (): AccessibilityPreferences => (
 export const loadAccessibilityPreferences = (
   storage: AccessibilityStorage = localStorage,
 ): AccessibilityPreferences => {
-  const serialized = storage.getItem(accessibilityStorageKey);
-  if (serialized === null) return defaultAccessibilityPreferences();
   try {
+    const serialized = storage.getItem(accessibilityStorageKey);
+    if (serialized === null) return defaultAccessibilityPreferences();
     return parseAccessibilityPreferences(JSON.parse(serialized));
   } catch {
     return defaultAccessibilityPreferences();
@@ -38,7 +38,11 @@ export const saveAccessibilityPreferences = (
   storage: AccessibilityStorage = localStorage,
 ): void => {
   const validated = parseAccessibilityPreferences(preferences);
-  storage.setItem(accessibilityStorageKey, JSON.stringify(validated));
+  try {
+    storage.setItem(accessibilityStorageKey, JSON.stringify(validated));
+  } catch {
+    // Preferences remain active in memory when hardened or quota-limited storage is unavailable.
+  }
 };
 
 export const applyAccessibilityPreferences = (

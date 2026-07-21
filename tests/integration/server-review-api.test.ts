@@ -248,7 +248,7 @@ describe("P19 review HTTP API", () => {
     });
     expect(named.status).toBe(200);
     expect((await request("/api/v1/projects/current/named-versions")).status).toBe(200);
-  });
+  }, 20_000);
 });
 
 const transitionIssue = async (

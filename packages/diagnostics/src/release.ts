@@ -1,26 +1,25 @@
-export const studioReleaseIdentity = {
-  product: "Chai Studio",
-  version: "1.0.0-rc.4",
-  channel: "release-candidate",
-  apiVersion: "1.0.0",
-  schemaVersion: "1.0.0",
-  adapterContractVersion: "1.0.0",
-  compositorVersion: "render-dag-v1",
-  engines: {
-    remotion: "4.0.489",
-    hyperframes: "0.7.58",
-  },
-  testedBrowser: {
-    identity: "playwright-managed:chromium-1228",
-    engineIdentity: "playwright-managed:chromium_headless_shell-1228",
-  },
-  supportClass: "apple-m4-16gb",
-  launchModel: "localhost-web-server",
-  cloudAccountRequired: false,
-  desktopWrapperRequired: false,
-} as const;
+import releaseIdentity from "./release-identity.json" with { type: "json" };
 
-export type StudioReleaseIdentity = typeof studioReleaseIdentity;
+export interface StudioReleaseIdentity {
+  readonly product: "Chai Studio";
+  readonly version: "1.0.0" | `1.0.0-rc.${number}`;
+  readonly channel: "release-candidate" | "stable";
+  readonly apiVersion: string;
+  readonly schemaVersion: string;
+  readonly adapterContractVersion: string;
+  readonly compositorVersion: string;
+  readonly engines: Readonly<Record<string, string>>;
+  readonly testedBrowser: {
+    readonly identity: string;
+    readonly engineIdentity: string;
+  };
+  readonly supportClass: string;
+  readonly launchModel: string;
+  readonly cloudAccountRequired: boolean;
+  readonly desktopWrapperRequired: boolean;
+}
+
+export const studioReleaseIdentity = releaseIdentity as StudioReleaseIdentity;
 
 export const releaseEnvironmentFingerprint = (input: {
   readonly platform: string;

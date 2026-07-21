@@ -19,6 +19,25 @@ corepack pnpm release:archive -- dist/releases/chai-studio-1.0.0-rc.4-darwin-arm
 
 `release:bundle` uses pnpm's offline production deploy, repairs and validates workspace links, excludes Chai development source/reports/tests, adds the compiled web application and runtime documentation, and seals every file and symlink in `.chai-studio-release.json`. The resulting CLI serves the web build without Vite. `install` copies that complete bundle into the chosen prefix and verifies it again; pointing back to a development checkout is forbidden.
 
-The archive receipt is technical evidence only and keeps `releaseAuthorized: false`. Owner approval, release signing, final-gate binding, and the stable tag happen only after qualification and human review.
+The archive receipt is technical evidence only and keeps `releaseAuthorized: false`. Owner approval, public-distribution review, release signing, final-gate binding, and the exact candidate tag happen only after qualification and human review.
 
-The small registry CLI remains `private` and ships with an empty trust store until those gates pass. Validate its exact six-file payload with `pnpm cli:package:check`. After final authorization, create the signed HTTPS download index with `pnpm cli:release-index -- --archive-receipt PATH --archive-url HTTPS_URL --private-key PATH --output PATH`. The generator independently verifies the P27 bundle identity, Version 1 manifest, owner-authorized P28 receipt, final-gate binding, signing-key identity, and archive receipt before producing any publishable record. Publishing the npm package and creating the hosted release remain separate, explicit operator actions.
+The protected tag/workflow-dispatch job is fail-closed. It rebuilds and verifies the self-contained runtime from the P27 manifest's frozen source commit, checks the frozen planning and contract identities without rewriting them, runs a fresh macOS isolation probe in read-only mode, validates the exact dependency inventory and P27 manifest, and then invokes both P28 technical and final-contract validators. A later evidence/authority commit may reference that frozen source only when every intervening tracked change is under generated evidence or one of the two exact human-authority record paths; any application, dependency, script, documentation, or policy change rejects the historical source identity. The final validator requires an already bound final-gate identity; CI never creates approval, review, signature, or authorization records.
+
+The job also requires a Git tag ref exactly equal to `v${package.version}` and checks the P28 version manifest after the production build. Release identity comes from the tracked typed diagnostics identity JSON, not source-text matching. Dependency inventory identity and bytes plus public-distribution-review identity and bytes are bound through the final manifest, preapproval receipt, signed receipt, final validator, and CLI publication index. P28 gate-report identities are recomputed from their full pass state and check outcomes; a failed, mutated, empty, or merely relabeled report is rejected.
+
+`validate-task-graph.mjs` and `validate-contract-index.mjs` are read-only by default (`--check` is accepted for explicit CI intent). Only an approved evidence refresh may pass `--write`; running either validator normally never repairs or conceals drift.
+
+The owner approval must name the exact source version and distribution scope. For RC4 the required statement is `I explicitly approve and authorize Chai Studio 1.0.0-rc.4 for public release.` This statement belongs in `governance/V1_OWNER_APPROVAL.json`; choosing a target in conversation does not create that authorization record. Public distribution also requires `governance/licenses/public-distribution-review.json`, bound to the exact dependency inventory identity. Start from the templates in `governance/templates`, but never treat a template as approval.
+
+After the immutable P27/P28 evidence is current, the signing sequence is:
+
+```sh
+corepack pnpm p28:sign
+corepack pnpm p28:gate
+corepack pnpm p28:bind-gate
+node scripts/validate-p28-final-contract.mjs --require-final-gate
+```
+
+`p28:sign` creates `~/.config/chai-studio/release-signing-ed25519.pem` with mode `0600` only after every pre-signing check passes. Never commit, upload, or paste this private key. Back it up in encrypted owner-controlled storage. Its public key is written to `evidence/p28/version-1-release-public-key.pem` and may be committed.
+
+The small registry CLI remains `private` and ships with an empty trust store until those gates pass. Validate its exact six-file payload with `pnpm cli:package:check`. After final authorization, create the signed HTTPS download index with `pnpm cli:release-index -- --archive-receipt PATH --archive-url HTTPS_URL --private-key ~/.config/chai-studio/release-signing-ed25519.pem --output PATH`. The generator independently verifies that P27, P28, the receipt, and archive all name the same exact public candidate before producing a publishable record. Adding the public key to the CLI trust store, making the registry package publishable, creating the GitHub release, tagging, and publishing npm remain separate explicit owner actions.

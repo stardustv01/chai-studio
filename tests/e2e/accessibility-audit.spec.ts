@@ -9,6 +9,8 @@ test("all workspace surfaces expose named controls and unique document identitie
   for (const workspace of workspaceNames) {
     await page.getByRole("button", { name: workspace, exact: true }).click();
     await expect(page.locator(".studio-app")).toHaveAttribute("data-workspace", workspace.toLowerCase());
+    await expect(page.getByRole("complementary", { name: `${workspace} browser panel` })).toBeVisible();
+    await expect(page.getByRole("complementary", { name: `${workspace} inspector panel` })).toBeVisible();
     const audit = await page.evaluate(() => {
       const visible = (element: Element): element is HTMLElement => {
         if (!(element instanceof HTMLElement) || element.getClientRects().length === 0) return false;
@@ -69,6 +71,42 @@ test("all workspace surfaces expose named controls and unique document identitie
       [],
     );
   }
+});
+
+test("production truth and panel tabs expose complete keyboard semantics", async ({ page }) => {
+  await page.goto("/?workspace=edit");
+
+  const truthTrigger = page.locator(".truth-status");
+  await expect(truthTrigger).toHaveAttribute("aria-expanded", "false");
+  await truthTrigger.click();
+  await expect(truthTrigger).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByRole("region", { name: "Persistent production truth" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("region", { name: "Persistent production truth" })).toHaveCount(0);
+  await expect(truthTrigger).toHaveAttribute("aria-expanded", "false");
+  await expect(truthTrigger).toBeFocused();
+
+  const tabs = page.getByRole("tablist", { name: "Media views" });
+  const mediaTab = tabs.getByRole("tab", { name: "Media", exact: true });
+  const projectTab = tabs.getByRole("tab", { name: "Project", exact: true });
+  const transcriptTab = tabs.getByRole("tab", { name: "Transcript", exact: true });
+  await expect(mediaTab).toHaveAttribute("tabindex", "0");
+  await expect(projectTab).toHaveAttribute("tabindex", "-1");
+  await mediaTab.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(projectTab).toBeFocused();
+  await expect(projectTab).toHaveAttribute("aria-selected", "true");
+  await page.keyboard.press("End");
+  await expect(transcriptTab).toBeFocused();
+  await expect(transcriptTab).toHaveAttribute("aria-selected", "true");
+});
+
+test("non-happy shell states announce status and blocking failures", async ({ page }) => {
+  await page.goto("/?workspace=edit&state=loading");
+  await expect(page.getByTestId("shell-state-loading")).toHaveAttribute("role", "status");
+
+  await page.goto("/?workspace=edit&state=offline");
+  await expect(page.getByTestId("shell-state-offline")).toHaveAttribute("role", "alert");
 });
 
 test("high-contrast mode preserves strong core text contrast", async ({ page }) => {

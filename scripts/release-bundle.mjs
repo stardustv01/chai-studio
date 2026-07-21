@@ -39,7 +39,12 @@ const runtimeDocuments = [
   "governance/licenses/release-review.json",
 ];
 
-export const createReleaseBundle = async ({ sourceRoot, destination, allowDirty = false }) => {
+export const createReleaseBundle = async ({
+  sourceRoot,
+  destination,
+  allowDirty = false,
+  sourceCommit: requestedSourceCommit,
+}) => {
   const root = path.resolve(sourceRoot);
   const output = path.resolve(destination);
   const packageManifest = await readJson(path.join(root, "package.json"));
@@ -47,7 +52,14 @@ export const createReleaseBundle = async ({ sourceRoot, destination, allowDirty 
   if (!/^1\.0\.0-rc\.\d+$/u.test(version ?? "")) {
     throw new Error("Release bundle requires a normalized 1.0.0 release-candidate version.");
   }
-  const sourceCommit = await git(root, ["rev-parse", "HEAD"]);
+  const headCommit = await git(root, ["rev-parse", "HEAD"]);
+  const sourceCommit = requestedSourceCommit ?? headCommit;
+  if (!/^[a-f0-9]{40}$/u.test(sourceCommit)) {
+    throw new Error("Release bundle source commit must be an exact full Git commit identity.");
+  }
+  if (sourceCommit !== headCommit) {
+    await assertEvidenceOnlyCommitRange(root, sourceCommit, headCommit);
+  }
   const sourceState = await git(root, ["status", "--porcelain", "--untracked-files=all"]);
   const sourceChanges = sourceState
     .split("\n")
@@ -264,6 +276,27 @@ const git = async (root, arguments_) => {
   return stdout.trim();
 };
 
+const assertEvidenceOnlyCommitRange = async (root, sourceCommit, headCommit) => {
+  try {
+    await execFileAsync("git", ["merge-base", "--is-ancestor", sourceCommit, headCommit], { cwd: root });
+  } catch {
+    throw new Error("Release bundle source commit must be an ancestor of the checked-out candidate.");
+  }
+  const changedFiles = (await git(root, ["diff", "--name-only", `${sourceCommit}..${headCommit}`]))
+    .split("\n")
+    .filter(Boolean);
+  assertPostFreezeAuthorityChanges(changedFiles);
+};
+
+export const assertPostFreezeAuthorityChanges = (changedFiles) => {
+  const sourceChanges = changedFiles.filter((file) => !isPostFreezeAuthorityPath(file));
+  if (sourceChanges.length > 0) {
+    throw new Error(
+      `Release bundle refused a historical source commit with post-freeze source changes: ${sourceChanges.join(", ")}`,
+    );
+  }
+};
+
 const requireFile = async (file) => {
   const metadata = await lstat(file).catch(() => null);
   if (metadata === null || !metadata.isFile()) throw new Error(`Required release file is missing: ${file}`);
@@ -281,6 +314,10 @@ const isGeneratedReleasePath = (file) =>
   ["dist/", "evidence/", "playwright-report/", "reports/", "test-results/"].some((prefix) =>
     file.startsWith(prefix),
   );
+const isPostFreezeAuthorityPath = (file) =>
+  isGeneratedReleasePath(file) ||
+  file === "governance/V1_OWNER_APPROVAL.json" ||
+  file === "governance/licenses/public-distribution-review.json";
 const canonicalJson = (value) => JSON.stringify(sortValue(value));
 const sortValue = (value) => {
   if (Array.isArray(value)) return value.map(sortValue);

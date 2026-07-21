@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": "Chai Studio",
+  "version": "1.0.0-rc.4",
+  "trigger": "public-distribution",
+  "decision": "approved-public-distribution",
+  "reviewer": "REVIEWER_NAME",
+  "reviewedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "inventoryIdentity": "DEPENDENCY_INVENTORY_IDENTITY_HASH",
+  "noticesAndObligations": ["DOCUMENTED_NOTICE_OR_OBLIGATION"],
+  "reReviewCondition": "REVIEW_AGAIN_WHEN_DEPENDENCIES_OR_DISTRIBUTION_CHANGE"
+}

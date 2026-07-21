@@ -1,11 +1,18 @@
+import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
+import { constants as fsConstants } from "node:fs";
+import { access, readFile, realpath } from "node:fs/promises";
 import os from "node:os";
+import path from "node:path";
+import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
 import {
   buildRenderEnvironmentIdentity,
   createRenderPlan,
   mergeRenderDependencies,
   type RenderPlan,
 } from "@chai-studio/render";
+import { sha256File } from "@chai-studio/media";
 import { normalizeRational } from "@chai-studio/schema";
 import { renderFullTimeline, type FullTimelineCompositorResult } from "./full-timeline-compositor.js";
 import type { ProjectSessionService } from "./project-service.js";
@@ -17,6 +24,66 @@ import {
 } from "./render-service.js";
 
 const compositorVersion = "chai-full-timeline-compositor-v2";
+const execFileAsync = promisify(execFile);
+const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+
+export interface LocalRenderRuntimeFacts {
+  readonly ffmpegPath: string;
+  readonly ffmpegVersion: string;
+  readonly ffmpegExecutableHash: string;
+  readonly ffmpegConfigurationHash: string;
+  readonly lockfilePath: string;
+  readonly lockfileHash: string;
+}
+
+export const collectLocalRenderRuntimeFacts = async (input?: {
+  readonly ffmpegPath?: string;
+  readonly lockfilePath?: string;
+}): Promise<LocalRenderRuntimeFacts> => {
+  const configuredFfmpegPath = input?.ffmpegPath ?? process.env.CHAI_STUDIO_FFMPEG ?? "ffmpeg";
+  const ffmpegPath = await resolveExecutable(configuredFfmpegPath);
+  const lockfilePath = await realpath(input?.lockfilePath ?? path.join(repositoryRoot, "pnpm-lock.yaml"));
+  const [{ stdout }, lockfile, ffmpegExecutableHash] = await Promise.all([
+    execFileAsync(ffmpegPath, ["-version"], {
+      encoding: "utf8",
+      timeout: 5_000,
+      maxBuffer: 1_048_576,
+    }),
+    readFile(lockfilePath),
+    sha256File(ffmpegPath),
+  ]);
+  const ffmpegVersion = stdout.split(/\r?\n/u)[0]?.trim();
+  if (ffmpegVersion === undefined || !/^ffmpeg version\s+\S+/u.test(ffmpegVersion)) {
+    throw new Error("The configured FFmpeg executable did not report a measurable version.");
+  }
+  return {
+    ffmpegPath,
+    ffmpegVersion,
+    ffmpegExecutableHash,
+    ffmpegConfigurationHash: createHash("sha256").update(stdout, "utf8").digest("hex"),
+    lockfilePath,
+    lockfileHash: createHash("sha256").update(lockfile).digest("hex"),
+  };
+};
+
+const resolveExecutable = async (configuredPath: string): Promise<string> => {
+  const candidates =
+    path.isAbsolute(configuredPath) || configuredPath.includes(path.sep)
+      ? [path.resolve(configuredPath)]
+      : (process.env.PATH ?? "")
+          .split(path.delimiter)
+          .filter(Boolean)
+          .map((directory) => path.join(directory, configuredPath));
+  for (const candidate of candidates) {
+    try {
+      await access(candidate, fsConstants.X_OK);
+      return await realpath(candidate);
+    } catch {
+      // Keep searching PATH. The final error names only the configured token.
+    }
+  }
+  throw new Error(`The configured FFmpeg executable is unavailable: ${configuredPath}`);
+};
 
 /**
  * Exact immutable timeline compositor for shared media, shared properties,
@@ -31,12 +98,14 @@ export const createLocalRenderExecutor =
       throw new Error("The full timeline compositor received a stale project revision.");
     }
     const fps = input.request.profile.fps ?? snapshot.timeline.fps;
+    const runtimeFacts = await collectLocalRenderRuntimeFacts();
     const rendered = await renderFullTimeline({
       projects,
       snapshot,
       profile: input.request.profile,
       scope: input.request.scope,
       outputDirectory: input.outputDirectory,
+      ffmpegPath: runtimeFacts.ffmpegPath,
       signal: input.signal,
       report: input.report,
       nativeTrustByAssetId: new Map(
@@ -46,6 +115,17 @@ export const createLocalRenderExecutor =
         ]),
       ),
     });
+    const plan = renderPlan(
+      input.request,
+      snapshot.timeline.timelineId,
+      rendered.range,
+      fps,
+      rendered.visualLayerCount,
+      rendered.captionCount,
+      rendered.audioMix !== null,
+      rendered.nativeLayers,
+      runtimeFacts,
+    );
     return {
       primaryRelativePath: rendered.primaryRelativePath,
       additionalRelativePaths: rendered.additionalRelativePaths,
@@ -76,17 +156,12 @@ export const createLocalRenderExecutor =
               reason: "delivery-profile-declares-no-audio",
             }
           : renderAudioEvidenceFromMixArtifact(rendered.audioMix, snapshot.project.audio.channelLayout),
-      plan: renderPlan(
+      plan,
+      security: securityEvidence(
         input.request,
-        snapshot.timeline.timelineId,
-        rendered.range,
-        fps,
-        rendered.visualLayerCount,
-        rendered.captionCount,
-        rendered.audioMix !== null,
         rendered.nativeLayers,
+        plan.environment.strictEnvironmentFingerprint,
       ),
-      security: securityEvidence(input.request, rendered.nativeLayers),
     };
   };
 
@@ -99,6 +174,7 @@ const renderPlan = (
   captionCount: number,
   hasAudio: boolean,
   nativeLayers: FullTimelineCompositorResult["nativeLayers"],
+  runtimeFacts: LocalRenderRuntimeFacts,
 ): RenderPlan => {
   const digest = (value: string): string => createHash("sha256").update(value, "utf8").digest("hex");
   const dependencyManifest = mergeRenderDependencies([
@@ -131,6 +207,32 @@ const renderPlan = (
         adapterVersion: layer.inspection.adapterVersion,
       },
     })),
+    [
+      {
+        category: "lockfile",
+        id: "pnpm-lock.yaml",
+        contentHash: runtimeFacts.lockfileHash,
+        source: "measured-repository-lockfile",
+        requiredBy: ["node-full-timeline"],
+        portability: "strict",
+        metadata: {},
+      },
+    ],
+    [
+      {
+        category: "environment",
+        id: "ffmpeg-executable",
+        contentHash: runtimeFacts.ffmpegExecutableHash,
+        source: "measured-canonical-ffmpeg-executable",
+        requiredBy: ["node-full-timeline"],
+        portability: "strict",
+        metadata: {
+          executableName: path.basename(runtimeFacts.ffmpegPath),
+          version: runtimeFacts.ffmpegVersion,
+          configurationHash: runtimeFacts.ffmpegConfigurationHash,
+        },
+      },
+    ],
   ]);
   const rendererVersions = {
     shared: compositorVersion,
@@ -144,32 +246,37 @@ const renderPlan = (
   const browserHashes = [
     ...new Set(nativeLayers.map((layer) => layer.inspection.browserExecutableHash)),
   ].sort();
+  const [singleBrowserHash] = browserHashes;
+  const browserExecutableHash =
+    browserHashes.length < 2
+      ? (singleBrowserHash ?? digest(JSON.stringify([])))
+      : digest(JSON.stringify(browserHashes));
+  const browserMajor = measuredBrowserMajor(nativeLayers);
   const environment = buildRenderEnvironmentIdentity(
     {
       schemaVersion: "1.0.0",
       os: process.platform,
       architecture: process.arch,
       osVersion: os.release(),
-      gpu: "none",
+      gpu:
+        nativeLayers.length === 0
+          ? "not-applicable:no-native-browser"
+          : "unknown:native-browser-gpu-not-measured",
       nodeVersion: process.version,
-      browserExecutableHash:
-        browserHashes.length === 0
-          ? digest("no-browser-shared-timeline")
-          : browserHashes.length === 1
-            ? (browserHashes[0] ?? digest("missing-browser-hash"))
-            : digest(browserHashes.join(":")),
-      browserIdentity: browserIdentities.length === 0 ? "none:shared-timeline" : browserIdentities.join("+"),
+      browserExecutableHash,
+      browserIdentity:
+        browserIdentities.length === 0 ? "not-applicable:shared-timeline" : browserIdentities.join("+"),
       rendererVersions,
-      ffmpegVersion: process.env.CHAI_STUDIO_FFMPEG_VERSION ?? "local-system-ffmpeg",
+      ffmpegVersion: `${runtimeFacts.ffmpegVersion}; executable-sha256=${runtimeFacts.ffmpegExecutableHash}; configuration-sha256=${runtimeFacts.ffmpegConfigurationHash}`,
       locale: Intl.DateTimeFormat().resolvedOptions().locale,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       colorContractId: "chai-studio-shared-timeline-v2",
-      lockfileHash: digest("chai-studio-lockfile-v1"),
+      lockfileHash: runtimeFacts.lockfileHash,
     },
     {
       schemaVersion: "1.0.0",
       architecture: process.arch,
-      browserMajor: "none",
+      browserMajor,
       rendererVersions,
       colorContractId: "chai-studio-shared-timeline-v2",
     },
@@ -203,7 +310,7 @@ const renderPlan = (
           expectedOutputs: [],
           cachePolicy: "strict" as const,
           trustClass: "trusted-authored" as const,
-          resources: { cpu: 2, memoryMiB: 1024, gpu: "none" as const, browser: true },
+          resources: { cpu: 2, memoryMiB: 1024, gpu: "shared" as const, browser: true },
           retryPolicy: { maxAttempts: 1, resumable: true, retryableStages: [] },
         })),
         {
@@ -256,27 +363,36 @@ const renderPlan = (
 const securityEvidence = (
   request: RenderRequestRecord,
   nativeLayers: FullTimelineCompositorResult["nativeLayers"],
+  strictEnvironmentFingerprint: string,
 ): RenderSecurityEvidence => {
   const digest = (value: string): string => createHash("sha256").update(value, "utf8").digest("hex");
   const nativeEngines = [...new Set(nativeLayers.map((layer) => layer.inspection.engine))].sort();
-  const browserHashes = [
-    ...new Set(nativeLayers.map((layer) => layer.inspection.browserExecutableHash)),
-  ].sort();
   return {
     schemaVersion: "1.0.0",
     policyIdentity: digest(request.preflight.security.policyIdentities.slice().sort().join(":")),
     trustClasses: request.preflight.security.trustClasses,
     workerPoolIds: [
-      "local-macos-shared-timeline-v2",
-      ...nativeEngines.map((engine) => `local-macos-${engine}-managed-browser-v1`),
+      `local-${process.platform}-${process.arch}-shared-timeline-v2`,
+      ...nativeEngines.map(
+        (engine) => `local-${process.platform}-${process.arch}-${engine}-managed-browser-v1`,
+      ),
     ],
     cacheNamespaces: [
       "local-shared-timeline-cache-v2",
       ...nativeEngines.map((engine) => `local-${engine}-native-cache-v1`),
     ],
-    environmentIdentity: digest([request.id, request.revisionHash, ...browserHashes].join(":")),
+    environmentIdentity: strictEnvironmentFingerprint,
     approvedNetworkHashes: [],
     isolationEvidenceHash: request.preflight.security.isolationEvidenceHash,
     violations: [],
   };
+};
+
+const measuredBrowserMajor = (nativeLayers: FullTimelineCompositorResult["nativeLayers"]): string => {
+  const majors = [
+    ...new Set(
+      nativeLayers.map((layer) => layer.inspection.browserVersion.split(".")[0] ?? "").filter(Boolean),
+    ),
+  ].sort();
+  return majors.length === 0 ? "not-applicable" : majors.join("+");
 };

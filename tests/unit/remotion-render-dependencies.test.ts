@@ -224,6 +224,24 @@ describe("P10 Remotion render, dependency, diagnostic, and finishing contracts",
     expect(first.sourceCode).toContain("OffthreadVideo");
     expect(first.sourceCode).toContain("Img");
     expect(first.sourceCode).not.toContain("ChaiProjectDocument");
+
+    expect(() =>
+      generateRemotionFinishingComposition({
+        ...input,
+        durationFrames: (BigInt(Number.MAX_SAFE_INTEGER) + 1n).toString(),
+      }),
+    ).toThrow(/safe JavaScript frame range/);
+    expect(() =>
+      generateRemotionFinishingComposition({
+        ...input,
+        layers: [
+          {
+            ...input.layers[0],
+            startFrame: (BigInt(Number.MAX_SAFE_INTEGER) + 1n).toString(),
+          },
+        ],
+      }),
+    ).toThrow(/safe JavaScript frame range/);
   });
 });
 

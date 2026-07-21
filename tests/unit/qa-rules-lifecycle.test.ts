@@ -107,6 +107,49 @@ describe("centralized QA rules and exclusive lifecycle", () => {
     });
   });
 
+  it.each([
+    "delivery.dependencies.missing",
+    "delivery.capability.unsupported",
+    "delivery.rights.unresolved",
+    "delivery.originals.missing",
+    "delivery.proxy.preview-only",
+    "delivery.disk.insufficient",
+    "delivery.scope.outside-timeline",
+    "security.trust.unclassified",
+    "security.imported-execution.disabled",
+    "security.network.hash-required",
+    "render.compositor.unavailable",
+    "render.compositor.range-empty",
+    "render.compositor.native-time-remap-unavailable",
+    "render.compositor.imported-worker-unavailable",
+    "render.compositor.property-unavailable",
+    "render.compositor.audio-source-missing",
+    "render.compositor.video-codec-unavailable",
+    "render.compositor.audio-codec-unavailable",
+    "future.blocking-finding",
+  ])("fails closed for blocking pre-render finding %s", (code) => {
+    const report = createPreRenderQaReport({
+      id: `qa-preflight-${code}`,
+      projectId: "project-qa-0001",
+      revisionId: "revision-qa-0001",
+      createdAt: "2026-07-16T10:30:00.000Z",
+      findings: [
+        {
+          code,
+          severity: "error",
+          blocking: true,
+          title: "Blocking preflight finding",
+          detail: "The render must not execute.",
+          repair: "Resolve the blocking finding.",
+        },
+      ],
+      evidenceHashes: ["d".repeat(64)],
+      environmentFingerprint: null,
+    });
+    expect(report.state).toBe("qa_failed");
+    expect(report.findings).toContainEqual(expect.objectContaining({ status: "failed", blocking: true }));
+  });
+
   it("blocks lifecycle bypass and requires matching QA evidence", () => {
     expect(() => {
       assertQaLifecycleTransition({
@@ -144,6 +187,32 @@ describe("centralized QA rules and exclusive lifecycle", () => {
         now: "2026-07-16T10:30:00.000Z",
       });
     }).not.toThrow();
+
+    expect(() => {
+      assertQaLifecycleTransition({
+        from: "rendered_unchecked",
+        currentOutputId: "output-qa-0002",
+        to: "qa_passed",
+        outputId: "output-qa-0001",
+        report,
+        exceptions: [],
+        evidenceHashes: [report.identityHash],
+        now: "2026-07-16T10:30:00.000Z",
+      });
+    }).toThrow(/current immutable output identity/i);
+
+    expect(() => {
+      assertQaLifecycleTransition({
+        from: "qa_passed",
+        currentOutputId: "output-qa-0002",
+        to: "approved",
+        outputId: "output-qa-0001",
+        report,
+        exceptions: [],
+        evidenceHashes: [report.identityHash],
+        now: "2026-07-16T10:30:00.000Z",
+      });
+    }).toThrow(/current immutable output identity/i);
   });
 
   it("applies an exception only to its active output, code, entity, and frame scope", () => {

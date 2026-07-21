@@ -1,10 +1,11 @@
 {
   "schemaVersion": "1.0.0",
   "product": "Chai Studio",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.4",
+  "distribution": "public",
   "approved": true,
   "inferred": false,
   "owner": "OWNER_NAME",
   "approvedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
-  "statement": "I explicitly approve and authorize the Version 1 release of Chai Studio."
+  "statement": "I explicitly approve and authorize Chai Studio 1.0.0-rc.4 for public release."
 }

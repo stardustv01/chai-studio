@@ -14,11 +14,7 @@
     "dist"
   ],
   "dependencies": {
-    "@chai-studio/audio": "workspace:*",
-    "@chai-studio/diagnostics": "workspace:*",
     "@chai-studio/engine-adapters": "workspace:*",
-    "@chai-studio/media": "workspace:*",
-    "@chai-studio/schema": "workspace:*",
-    "@chai-studio/timeline": "workspace:*"
+    "@chai-studio/schema": "workspace:*"
   }
 }

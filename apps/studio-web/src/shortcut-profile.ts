@@ -103,9 +103,9 @@ export const importShortcutProfile = (serialized: string): ShortcutProfile => {
 };
 
 export const loadShortcutProfile = (storage: ShortcutStorage = localStorage): ShortcutProfile => {
-  const serialized = storage.getItem(shortcutProfileStorageKey);
-  if (serialized === null) return defaultShortcutProfile();
   try {
+    const serialized = storage.getItem(shortcutProfileStorageKey);
+    if (serialized === null) return defaultShortcutProfile();
     return importShortcutProfile(serialized);
   } catch {
     return defaultShortcutProfile();
@@ -116,7 +116,12 @@ export const saveShortcutProfile = (
   profile: ShortcutProfile,
   storage: ShortcutStorage = localStorage,
 ): void => {
-  storage.setItem(shortcutProfileStorageKey, exportShortcutProfile(profile));
+  const serialized = exportShortcutProfile(profile);
+  try {
+    storage.setItem(shortcutProfileStorageKey, serialized);
+  } catch {
+    // The validated profile remains active for this session when persistence is unavailable.
+  }
 };
 
 const assertShortcutProfile = (
