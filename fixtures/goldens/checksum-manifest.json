@@ -2,7 +2,7 @@
   "version": 1,
   "algorithm": "sha256",
   "files": {
-    "fixtures/deterministic/qa/visual-fixtures.json": "c902467fe19c08916b876dc657a249be3c48683e6dc13321aa6718aad9612533",
+    "fixtures/deterministic/qa/visual-fixtures.json": "04acadd45e541e851632fc0bb00b443bf7cb7f75ef69715680249f9f6b2b0d6b",
     "fixtures/deterministic/studio-shell.json": "04cfb67a3687f115e28aa0adeb3e8a9c7e0d019aab861095afce11851db4dbe0",
     "fixtures/goldens/studio-shell.svg": "42813ca3ccbe553ccdcd44860306db9f74777f98ae48e9fe87e2cce46454b74d",
     "tests/e2e/delivery-workspace.spec.ts-snapshots/p21-deliver-authority-darwin.png": "803b7e9479b651a73e05e2c91cc8f3b093d409bf182c4ffcbb68620e416d9f0f",
