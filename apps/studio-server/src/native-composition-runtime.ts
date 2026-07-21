@@ -260,6 +260,7 @@ export const renderNativeCompositionLayer = async (input: {
         "--strict-variables",
         "--strict",
         "--no-best-effort",
+        "--no-browser-gpu",
         "--quiet",
       ],
       { cwd: prepared.source.projectRoot, signal: input.signal },

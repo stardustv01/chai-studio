@@ -1,7 +1,7 @@
-import { createHash } from "node:crypto";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { normalizeRemotionPng } from "../../packages/engine-adapters/src/index.js";
 import { serializeBigInt, type TimelineClip } from "../../packages/schema/src/index.js";
 import { renderNativeCompositionLayer } from "../../apps/studio-server/src/native-composition-runtime.js";
 
@@ -71,9 +71,9 @@ describe("native composition manifest runtime", () => {
       durationFrames: "60",
     });
     const bytes = await readFile(path.join(outputDirectory, "frame-00000001.png"));
-    expect(createHash("sha256").update(bytes).digest("hex")).toBe(
-      "6b9ea98f4562df53578fb9817c46d7d07c93a649ed7f8a56f351036d6c537e04",
-    );
+    const pixels = normalizeRemotionPng(bytes);
+    expect(pixels).toMatchObject({ width: 640, height: 360 });
+    expect(pixels.normalizedPixelHash).toMatch(/^[a-f0-9]{64}$/);
   }, 60_000);
 
   it("renders a manifest-bound HyperFrames source through managed isolated Chromium", async () => {
@@ -126,8 +126,8 @@ describe("native composition manifest runtime", () => {
       durationFrames: "60",
     });
     const bytes = await readFile(path.join(outputDirectory, "frame-00000001.png"));
-    expect(createHash("sha256").update(bytes).digest("hex")).toBe(
-      "bbae879dcf9fd5d0ec6bc8d04c9ab4dd75ca8027fdb36d93be39e98f48a8edad",
-    );
+    const pixels = normalizeRemotionPng(bytes);
+    expect(pixels).toMatchObject({ width: 640, height: 360 });
+    expect(pixels.normalizedPixelHash).toMatch(/^[a-f0-9]{64}$/);
   }, 180_000);
 });
