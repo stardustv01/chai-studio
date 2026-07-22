@@ -5,18 +5,22 @@ the compiled Chai-owned server and browser payload so `npx` can launch the edito
 repository. Node-side third-party runtime libraries are exact npm dependencies; FFmpeg remains a
 system tool, and Playwright downloads its managed Chromium only after an explicit install command.
 
-The package is configured for public npm access. Publication is still a separate release action and
-must use an exact validated candidate with owner approval and provenance. Third-party packages must
-be obtained from their original registries under their own terms. FFmpeg/FFprobe must be provided by
-the user's system and are checked by `chai-studio doctor`.
+The package is distributed through public npm. Every release is published from an exact validated
+candidate with owner approval and provenance. Third-party packages are obtained from their original
+registries under their own terms. FFmpeg/FFprobe must be provided by the user's system and are
+checked by `chai-studio doctor`.
 
-Planned public usage:
+Public usage:
 
 ```sh
 npx @chai-studio/cli@latest install --launch
 npx @chai-studio/cli@latest doctor
 npx @chai-studio/cli@latest launch
 ```
+
+`install --launch` installs the managed Chromium runtime, verifies the host, and starts Chai Studio
+on localhost. Keep the command running and open the URL it prints; the CLI does not take over an
+existing browser session.
 
 Users who prefer a persistent global command may install the same package with
 `npm install --global @chai-studio/cli` and then use `chai-studio` directly.

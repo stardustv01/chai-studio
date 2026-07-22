@@ -1801,12 +1801,12 @@
     {
       "path": "evidence/p27/release-manifest.json",
       "bytes": 197912,
-      "sha256": "81f4083638ddf2208a56327b9ed4e299d4c4989639b0239bd03d8796c780589c"
+      "sha256": "7c7fb2fbe827e654c8bb16d545418ba899660e1862cadb80804c101400c33728"
     },
     {
       "path": "evidence/p28-tech/gate-report.json",
-      "bytes": 62200,
-      "sha256": "c641c4049d7ea8fc98cf162a37bdf0cf3508eb97658134eba8bc97d17c9fc066"
+      "bytes": 62425,
+      "sha256": "a897e04fa3747387bdc24a336407754943a846edd4950146c2aea88b71b27c29"
     },
     {
       "path": "evidence/p28/traceability-matrix.json",
@@ -2575,8 +2575,8 @@
     },
     {
       "path": "packages/cli/README.md",
-      "bytes": 1368,
-      "sha256": "1ef73ef7e26bf26d0dcd97cf70605fe70ad979d6842d17ad5e90aeeec9f9002b"
+      "bytes": 1550,
+      "sha256": "e6f61f3ffe73a8582b446435f410077f83379aa68f83414610469815fc1885fc"
     },
     {
       "path": "packages/cli/runtime/.chai-studio-registry-runtime.json",
@@ -6866,5 +6866,5 @@
   ],
   "releaseAuthorized": false,
   "authorizationSource": "owner-signed exact-candidate receipt",
-  "manifestIdentity": "b8a406018ca9cbc27cb43906eb263deaf8b86c68b42173cc2347f91519be4d01"
+  "manifestIdentity": "dc3f9178b72a4a8702396bb3507f66bd6bbf3d79517d09aeffc8309e3dfc23cf"
 }

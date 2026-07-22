@@ -88,23 +88,23 @@
     "desktopWrapperRequired": false
   },
   "installation": {
-    "prefix": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-jxmvg4/application",
-    "launcher": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-jxmvg4/application/bin/chai-studio",
-    "runtime": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-jxmvg4/application/lib/chai-studio",
-    "sourceIdentity": "0f1bbf461bdf88e6a75420fb5499e8d77c0eb83e",
-    "bundleIdentity": "fc89384643d2105d1fbd2115c8ca854fe2c78094bdce93c071a2fc71167d1637"
+    "prefix": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-A1LVWL/application",
+    "launcher": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-A1LVWL/application/bin/chai-studio",
+    "runtime": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-A1LVWL/application/lib/chai-studio",
+    "sourceIdentity": "d6affe85afb1e25ec96ab2b8927c733c6ad4f206",
+    "bundleIdentity": "359508d0c1807d39259aa9043c762b493b2dfcae38dc62828805b3f5a1a74e6d"
   },
   "bundle": {
     "version": "1.0.0-rc.4",
-    "sourceCommit": "0f1bbf461bdf88e6a75420fb5499e8d77c0eb83e",
-    "bundleIdentity": "fc89384643d2105d1fbd2115c8ca854fe2c78094bdce93c071a2fc71167d1637",
+    "sourceCommit": "d6affe85afb1e25ec96ab2b8927c733c6ad4f206",
+    "bundleIdentity": "359508d0c1807d39259aa9043c762b493b2dfcae38dc62828805b3f5a1a74e6d",
     "selfContainedRuntime": true
   },
   "health": {
     "status": "ok",
     "service": "studio-server",
     "contractVersion": "2026-07-15",
-    "instanceId": "c88623d7-288b-4b2b-88b4-5621ea33fb3f",
+    "instanceId": "278de93e-6eef-408f-b084-9b1928260d4d",
     "projectScoped": false
   },
   "backup": {
@@ -113,12 +113,12 @@
     "cacheExcluded": true
   },
   "restore": {
-    "destination": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-jxmvg4/Projects/Qualification Restored.chai",
+    "destination": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-A1LVWL/Projects/Qualification Restored.chai",
     "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087",
     "validated": true
   },
   "clone": {
-    "destination": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-jxmvg4/Projects/Qualification Clone.chai",
+    "destination": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-A1LVWL/Projects/Qualification Clone.chai",
     "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087",
     "validated": true
   },
@@ -126,7 +126,7 @@
     "contentIdentity": "c2b1d03be3a3d3ca3e34ad0015b834d66c4c7fbb560a8c9db3ee8bcc22a80087"
   },
   "uninstall": {
-    "removedPrefix": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-jxmvg4/application",
+    "removedPrefix": "/var/folders/yk/p0jj1_6j697ggwfkrmzmrx300000gn/T/chai-p27-qualification-A1LVWL/application",
     "projectsDeleted": false
   },
   "projectPreservation": {
