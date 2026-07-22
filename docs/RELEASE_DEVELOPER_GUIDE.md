@@ -17,7 +17,7 @@ corepack pnpm release:bundle
 corepack pnpm release:archive -- dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64
 ```
 
-`release:bundle` uses pnpm's offline production deploy, repairs and validates workspace links, excludes Chai development source/reports/tests, adds the compiled web application and runtime documentation, and seals every file and symlink in `.chai-studio-release.json`. The resulting CLI serves the web build without Vite. `install` copies that complete bundle into the chosen prefix and verifies it again; pointing back to a development checkout is forbidden.
+`release:bundle` uses pnpm's lockfile-frozen, store-preferred production deploy, repairs and validates workspace links, excludes Chai development source/reports/tests, adds the compiled web application and runtime documentation, and seals every file and symlink in `.chai-studio-release.json`. The resulting CLI serves the web build without Vite. `install` copies that complete bundle into the chosen prefix and verifies it again; pointing back to a development checkout is forbidden.
 
 The archive receipt is technical evidence only and keeps `releaseAuthorized: false`. Owner approval, public-distribution review, release signing, final-gate binding, and the exact candidate tag happen only after qualification and human review.
 

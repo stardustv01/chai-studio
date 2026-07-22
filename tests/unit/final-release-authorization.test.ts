@@ -47,6 +47,7 @@ describe("P28 explicit release authorization", () => {
       new URL("../../scripts/validate-p28-final-contract.mjs", import.meta.url),
       "utf8",
     );
+    const releaseBundle = readFileSync(new URL("../../scripts/release-bundle.mjs", import.meta.url), "utf8");
     const gateRunner = readFileSync(
       new URL("../../scripts/run-acceptance-gate.mjs", import.meta.url),
       "utf8",
@@ -55,12 +56,14 @@ describe("P28 explicit release authorization", () => {
       new URL("../../scripts/release-target.mjs", import.meta.url),
       "utf8",
     );
+    const protectedReleaseJob = workflow.slice(workflow.indexOf("  release-gate:"));
     const governanceCheck = manifest.scripts?.["release:governance:check"] ?? "";
 
     expect(workflow).not.toContain('run: echo "All required');
     expect(workflow).toContain("pnpm release:bundle -- --source-manifest evidence/p27/release-manifest.json");
     expect(workflow).toContain("pnpm release:bundle:verify");
     expect(workflow).toContain("pnpm release:tag:check");
+    expect(protectedReleaseJob).toContain("pnpm exec playwright install chromium");
     expect(workflow.indexOf("run: pnpm build")).toBeLessThan(workflow.indexOf("run: pnpm release:tag:check"));
     expect(workflow).toContain("pnpm release:governance:check");
     expect(workflow).toContain("pnpm p28:technical-contract");
@@ -80,6 +83,9 @@ describe("P28 explicit release authorization", () => {
     expect(gateRunner).toContain("identity: acceptanceGateReportIdentity(reportBody)");
     expect(releaseTargetSource).toContain("packages/diagnostics/src/release-identity.json");
     expect(releaseTargetSource).not.toContain("packages/diagnostics/dist/release.js");
+    expect(releaseBundle).toContain('"--prefer-offline"');
+    expect(releaseBundle).toContain('"--frozen-lockfile"');
+    expect(releaseBundle).not.toContain('"--offline"');
   });
 
   it("permits an evidence-only authority commit but rejects post-freeze source drift", () => {
