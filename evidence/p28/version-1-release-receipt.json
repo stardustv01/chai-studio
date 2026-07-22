@@ -4,11 +4,11 @@
   "version": "1.0.0-rc.4",
   "candidate": "1.0.0-rc.4",
   "distribution": "public",
-  "sourceGateIdentity": "18b330d10ef685f0713c99c32f4febbe66df490fe51b84071876ff60f417b38c",
-  "releaseManifestIdentity": "75cf7fab6b0e194721599a6a74bfac9884c7165baf6609e8754714c17ae5b3f5",
-  "finalManifestIdentity": "9cbfe7047bc18fadd897035f37f71129a0d2a00a5217c907b956a5acbbc929f1",
+  "sourceGateIdentity": "27fab6167694dfda2508726d14aa0682ea11335bd090efe7ecf872bd9e8f3259",
+  "releaseManifestIdentity": "3baee58a8a7d39b6e2b4b17c5925246aa19ba298d1413c04333a51d754a568e7",
+  "finalManifestIdentity": "b8a406018ca9cbc27cb43906eb263deaf8b86c68b42173cc2347f91519be4d01",
   "traceabilityIdentity": "a5c7ac2cb927867bcbd746828036a56ad145924e4d38c2b522e3d0a331126ad4",
-  "technicalGateIdentity": "f402f011621cb76e5fa154d38b5ccb5fb24ed3cf052965170b9463347b2e86b6",
+  "technicalGateIdentity": "28bb80e077185c572e2ba7bf434b9d94721c37e8da8175749bb79a87b1595b6c",
   "technicalGatePassed": true,
   "dependencyLockSha256": "9653b874bb3db24aa76a57fe378f88a535e487154cbeab8e0a8636b308ef1fb1",
   "dependencyInventoryIdentity": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899",
@@ -31,14 +31,14 @@
     "inventoryIdentity": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899",
     "reviewIdentity": "0a23e2dfd455a3c96ffcfab495dc2eb5e476165aaa507f3f19aa48e1b594fefd"
   },
-  "finalGateIdentity": "1af4d787bfd8a9dfa995f2f12476445f8e7689105f5abad2363d15efe2f3ba41",
+  "finalGateIdentity": "007ca4bfe1c43e6bc312a4b08ec72594eac798942f62f8a00643aed4767f67a4",
   "signature": {
     "algorithm": "Ed25519",
-    "value": "NBqUNzLGALvTm40LriGTM48yvgGyYDCP4tzvbL5F4Gd7OqceLe0pgZ070Y9HjW1AL7KurlhE/cbYIAQObNwKDA==",
+    "value": "paQLsm8bYrAYo7T+rdEet1YrmxeNHUaRRRpTeFy+uts0I6KuCWfgFesfIeFWMdzNdAdmQje7gCt2nIENYKZyCw==",
     "publicKeySha256": "bb104fb0556b4039f54ec671ceae41d8b50f3a3040cefab2c291e49340a91f67",
     "publicKeyFile": "evidence/p28/version-1-release-public-key.pem"
   },
   "releaseAuthorized": true,
   "releaseTagAuthorized": true,
-  "candidateIdentity": "8c5eaed627a6525b0f0e5f07aa6041575812ac38d2782f54892d068780c43c6c"
+  "candidateIdentity": "6dfad53305c6605217afc42305a6eb462211bf2d58b3e8b1349b10893608c30c"
 }

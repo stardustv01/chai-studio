@@ -1801,12 +1801,12 @@
     {
       "path": "evidence/p27/release-manifest.json",
       "bytes": 197912,
-      "sha256": "66de6f3ee8550fd0697af88886afefb8a6c3b47507f9ddbdd8f9a292649fe384"
+      "sha256": "81f4083638ddf2208a56327b9ed4e299d4c4989639b0239bd03d8796c780589c"
     },
     {
       "path": "evidence/p28-tech/gate-report.json",
-      "bytes": 61709,
-      "sha256": "5f0d6a092f280b1ac7ef6e7772024a831c1a1ffbf48bd4d7f60760199ec04c3e"
+      "bytes": 62200,
+      "sha256": "c641c4049d7ea8fc98cf162a37bdf0cf3508eb97658134eba8bc97d17c9fc066"
     },
     {
       "path": "evidence/p28/traceability-matrix.json",
@@ -2581,12 +2581,12 @@
     {
       "path": "packages/cli/runtime/.chai-studio-registry-runtime.json",
       "bytes": 3799,
-      "sha256": "dbdc1863367d5b29b082a05e7455c73c23d07b6153691519081e0db72c334308"
+      "sha256": "3d80f81b3bcbffecd6987e3ece27d34fb9f24a0f3a2fe380843f2afb43a2737f"
     },
     {
       "path": "packages/cli/runtime/apps/studio-server/dist/index.js",
-      "bytes": 1147161,
-      "sha256": "04fd32520f7383b86d36e17af7477fa3c941df40cae82409853512ff0c21bb2c"
+      "bytes": 1146801,
+      "sha256": "c46961e5d4127a3de56e08772402002dea097f92c7e0e8efa5a56c2d2b9ac7e6"
     },
     {
       "path": "packages/cli/runtime/apps/studio-web/dist/assets/animation-tools-Dpi9vmUH.js",
@@ -6866,5 +6866,5 @@
   ],
   "releaseAuthorized": false,
   "authorizationSource": "owner-signed exact-candidate receipt",
-  "manifestIdentity": "9cbfe7047bc18fadd897035f37f71129a0d2a00a5217c907b956a5acbbc929f1"
+  "manifestIdentity": "b8a406018ca9cbc27cb43906eb263deaf8b86c68b42173cc2347f91519be4d01"
 }
