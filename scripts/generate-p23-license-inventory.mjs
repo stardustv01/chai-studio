@@ -3,7 +3,6 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { format } from "prettier";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const target = path.join(root, "governance", "licenses", "dependency-inventory.json");
@@ -144,7 +143,7 @@ const inventory = {
   ...inventoryWithoutIdentity,
   identityHash: sha256(canonical(inventoryWithoutIdentity)),
 };
-const serialized = await format(JSON.stringify(inventory), { parser: "json" });
+const serialized = `${JSON.stringify(inventory, null, 2)}\n`;
 if (mode === "write") {
   await writeFile(target, serialized);
 } else {

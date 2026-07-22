@@ -79,8 +79,16 @@
   "browserPayload": {
     "bundledLibraries": [
       {
-        "names": ["react", "react-dom", "scheduler"],
-        "versions": ["19.1.0", "19.1.0", "0.26.0"],
+        "names": [
+          "react",
+          "react-dom",
+          "scheduler"
+        ],
+        "versions": [
+          "19.1.0",
+          "19.1.0",
+          "0.26.0"
+        ],
         "license": "MIT",
         "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
         "licenseText": "apps/studio-web/public/third-party/react-mit.txt"
