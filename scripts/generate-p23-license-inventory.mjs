@@ -101,10 +101,9 @@ const inventoryWithoutIdentity = {
   ),
   ffmpeg: {
     source: "external PATH tool; not bundled by current application",
-    available: ffmpeg.available,
-    executable: ffmpeg.executable,
-    versionLine: ffmpeg.lines[0] ?? null,
-    configurationLine: ffmpeg.lines.find((line) => line.startsWith("configuration:")) ?? null,
+    bundledByCurrentApplication: false,
+    inventoryPolicy:
+      "Host PATH, version, and codec configuration are runtime observations and are not hashed into this deterministic source inventory.",
     distributionObligation:
       "P25 must review the exact binary configuration, linked libraries, enabled codecs, and notices before bundling or distribution.",
   },

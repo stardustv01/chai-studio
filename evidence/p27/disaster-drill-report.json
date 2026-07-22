@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "passed": true,
+  "evidenceSource": "focused P27 disaster-drill test sequence completed immediately before report generation",
+  "drills": [
+    {
+      "id": "commit-crash",
+      "test": "tests/integration/revision-store.test.ts",
+      "passed": true,
+      "acceptedOutcome": "valid prior pointer or complete adopted revision"
+    },
+    {
+      "id": "render-crash",
+      "test": "tests/unit/render-recovery.test.ts",
+      "passed": true,
+      "acceptedOutcome": "resume only hash-validated artifacts"
+    },
+    {
+      "id": "stale-lock",
+      "test": "tests/integration/reliability-repair.test.ts",
+      "passed": true,
+      "acceptedOutcome": "quarantine evidence then reacquire"
+    },
+    {
+      "id": "corrupt-cache",
+      "test": "tests/integration/reliability-repair.test.ts",
+      "passed": true,
+      "acceptedOutcome": "quarantine and regenerate"
+    },
+    {
+      "id": "missing-source-font",
+      "test": "tests/unit/media-asset-workflows.test.ts",
+      "passed": true,
+      "acceptedOutcome": "block with relink or font repair"
+    },
+    {
+      "id": "low-disk",
+      "test": "tests/integration/server-runtime-hygiene.test.ts",
+      "passed": true,
+      "acceptedOutcome": "block before unsafe write"
+    },
+    {
+      "id": "worker-browser-failure",
+      "test": "tests/unit/server-worker-supervisor.test.ts",
+      "passed": true,
+      "acceptedOutcome": "restart within bounded policy or block"
+    },
+    {
+      "id": "output-permission-loss",
+      "test": "tests/integration/server-render-api.test.ts",
+      "passed": true,
+      "acceptedOutcome": "retain prior state and actionable failure"
+    },
+    {
+      "id": "restore-from-backup",
+      "test": "tests/integration/project-backup-restore.test.ts",
+      "passed": true,
+      "acceptedOutcome": "hash-validated restored authority"
+    }
+  ]
+}

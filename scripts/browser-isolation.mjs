@@ -1,6 +1,6 @@
 import { access, readdir } from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
+import { pathIsWithinAnyRoot, playwrightCacheRoots } from "./browser-path-policy.mjs";
 
 const systemChrome = path.normalize("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
 
@@ -14,11 +14,7 @@ async function exists(filePath) {
 }
 
 async function managedChromiumFromCache() {
-  const cacheRoots = [
-    process.env.PLAYWRIGHT_BROWSERS_PATH,
-    path.join(os.homedir(), "Library", "Caches", "ms-playwright"),
-    path.join(os.homedir(), ".cache", "ms-playwright"),
-  ].filter(Boolean);
+  const cacheRoots = playwrightCacheRoots();
   const suffixes = [
     path.join(
       "chrome-mac-arm64",
@@ -60,11 +56,7 @@ async function managedChromiumFromCache() {
 }
 
 async function managedHeadlessShellFromCache() {
-  const cacheRoots = [
-    process.env.PLAYWRIGHT_BROWSERS_PATH,
-    path.join(os.homedir(), "Library", "Caches", "ms-playwright"),
-    path.join(os.homedir(), ".cache", "ms-playwright"),
-  ].filter(Boolean);
+  const cacheRoots = playwrightCacheRoots();
   const suffixes = [
     path.join("chrome-headless-shell-mac-arm64", "chrome-headless-shell"),
     path.join("chrome-headless-shell-mac-x64", "chrome-headless-shell"),
@@ -112,7 +104,7 @@ for (const executable of [isolatedChromiumExecutable, isolatedEngineExecutable])
   if (executable === systemChrome || executable.startsWith(`${path.dirname(systemChrome)}${path.sep}`)) {
     throw new Error("Browser isolation refused the installed Google Chrome executable.");
   }
-  if (!executable.includes(`${path.sep}ms-playwright${path.sep}`)) {
+  if (!(await pathIsWithinAnyRoot(executable, playwrightCacheRoots()))) {
     throw new Error(`Browser isolation requires a Playwright-managed executable, received: ${executable}`);
   }
 }

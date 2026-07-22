@@ -2,25 +2,16 @@
   "schemaVersion": "1.0.0",
   "product": "Chai Studio",
   "version": "1.0.0-rc.4",
-  "channel": "release-candidate",
-  "sourceDate": "2026-07-16T00:00:00.000Z",
-  "launchModel": "localhost-web-server",
+  "releaseTag": "v1.0.0-rc.4",
+  "distribution": "public",
   "supportClass": "apple-m4-16gb",
+  "launchModel": "localhost-web-server",
+  "approvalIdentity": "af9f94f1145f1531dc0412f644ece4091a695c718549dcc8e5f23d4a9b37b4d2",
   "dependencyLockSha256": "9653b874bb3db24aa76a57fe378f88a535e487154cbeab8e0a8636b308ef1fb1",
-  "acceptedGate": {
-    "phase": "P26",
-    "identity": "a342218fcbe2b49c6126ef2e3b2e4b283a58ca5c053919c7e4055c3d337e14cc",
-    "reportSha256": "0480a8d4c7e9cffbbab8bdf75a8e4d4c7b5d46dae44591f9aba7911159f3f4fc"
-  },
-  "licenseInventorySha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e",
-  "sourceCommit": "0f1bbf461bdf88e6a75420fb5499e8d77c0eb83e",
-  "runtimeBundle": {
-    "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64",
-    "bundleIdentity": "fc89384643d2105d1fbd2115c8ca854fe2c78094bdce93c071a2fc71167d1637",
-    "fileCount": 15861,
-    "selfContainedRuntime": true,
-    "distributionScope": "personal-local-only"
-  },
+  "dependencyInventoryIdentity": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899",
+  "dependencyInventorySha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e",
+  "publicDistributionReviewIdentity": "0a23e2dfd455a3c96ffcfab495dc2eb5e476165aaa507f3f19aa48e1b594fefd",
+  "publicDistributionReviewSha256": "ba60032f6df893e23db3008b4c95854ccc981063b4098f4f081d78af5ca313f4",
   "files": [
     {
       "path": ".node-version",
@@ -471,11 +462,6 @@
       "path": "apps/studio-server/dist/worker-supervisor.js.map",
       "bytes": 13910,
       "sha256": "25b45caaeaf96b5dfc06c49f6e344e2b169a24e5db802e9ad1c867aa3ea0287f"
-    },
-    {
-      "path": "apps/studio-server/package.json",
-      "bytes": 1048,
-      "sha256": "6a26831a21ea993364aab7024c0a523f89e1481c034b825dd7ae32c86fe35cb4"
     },
     {
       "path": "apps/studio-web/dist/assets/animation-tools-Dpi9vmUH.js",
@@ -1803,21 +1789,6 @@
       "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
     },
     {
-      "path": "apps/studio-web/package.json",
-      "bytes": 754,
-      "sha256": "6b73d0835039f0c70b6787cb82e7148f58fad5a7c7e519d7f335a146beecfd58"
-    },
-    {
-      "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64/.chai-studio-release.json",
-      "bytes": 4498590,
-      "sha256": "80a9cfb9ce8858c46d3c0205de896409a66d5a57c4dd1188488366299789881d"
-    },
-    {
-      "path": "docs/INSTALLATION.md",
-      "bytes": 3347,
-      "sha256": "4a3b9a0276bab73732e4b6f5f65416e7e679cb039554c3323e466d21b8923a68"
-    },
-    {
       "path": "docs/KNOWN_LIMITATIONS_V1.md",
       "bytes": 1355,
       "sha256": "27ee632bc398149375fda251543428e6eb308692f795390bf3245d76ba183e5c"
@@ -1828,19 +1799,19 @@
       "sha256": "eb55f5214204728a1f0ff6cef994ccde4f254cb3f9f9490376f15867f136e524"
     },
     {
-      "path": "docs/RELEASE_CANDIDATE_CHECKLIST.md",
-      "bytes": 1346,
-      "sha256": "72d8ba414f35ebf5db5400cb62a72bf2912738bba0cbde76605fb97128a226b3"
+      "path": "evidence/p27/release-manifest.json",
+      "bytes": 197912,
+      "sha256": "81f4083638ddf2208a56327b9ed4e299d4c4989639b0239bd03d8796c780589c"
     },
     {
-      "path": "docs/RELEASE_DEVELOPER_GUIDE.md",
-      "bytes": 6573,
-      "sha256": "69dd893f13889cb8d301f0f31da7f39588999f3f731ea5a092949eab0367002a"
+      "path": "evidence/p28-tech/gate-report.json",
+      "bytes": 62200,
+      "sha256": "c641c4049d7ea8fc98cf162a37bdf0cf3508eb97658134eba8bc97d17c9fc066"
     },
     {
-      "path": "evidence/p26/gate-report.json",
-      "bytes": 53248,
-      "sha256": "0480a8d4c7e9cffbbab8bdf75a8e4d4c7b5d46dae44591f9aba7911159f3f4fc"
+      "path": "evidence/p28/traceability-matrix.json",
+      "bytes": 6716,
+      "sha256": "056a7640808e3af3741a0cab1ca728773842cf1483a33c85c191a4dcb68022eb"
     },
     {
       "path": "governance/execution-baseline.json",
@@ -1853,9 +1824,19 @@
       "sha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e"
     },
     {
+      "path": "governance/licenses/public-distribution-review.json",
+      "bytes": 1156,
+      "sha256": "ba60032f6df893e23db3008b4c95854ccc981063b4098f4f081d78af5ca313f4"
+    },
+    {
       "path": "governance/licenses/release-review.json",
       "bytes": 1985,
       "sha256": "23571ea85e888e00e8aec6256d068567da90a600e638340539a52fdcec15a4fe"
+    },
+    {
+      "path": "governance/V1_OWNER_APPROVAL.json",
+      "bytes": 315,
+      "sha256": "ed3352f58b2383872a4d9c0c10f99e239787bdf189f6c8cd90fb1e5bee2e6049"
     },
     {
       "path": "package.json",
@@ -2148,11 +2129,6 @@
       "sha256": "639b058cac348ba638dd6916eab352d84785f5af53f2e03f949d5c242683acb5"
     },
     {
-      "path": "packages/audio/package.json",
-      "bytes": 601,
-      "sha256": "a9cfb60ed2b779c2081696891cb60ca17e3c9e235aac0df13f3b3a4fb1d3d8ed"
-    },
-    {
       "path": "packages/bridge/dist/.tsbuildinfo",
       "bytes": 55177,
       "sha256": "ae18b234e408c1ecd1adb9306c8edee97741f6417d024a7c4caf230102077468"
@@ -2378,11 +2354,6 @@
       "sha256": "b35033d47896c0dd8ce37f8c13bfcf887117987a529611af46a9a12b6992367a"
     },
     {
-      "path": "packages/bridge/package.json",
-      "bytes": 539,
-      "sha256": "2c41356f39ec95e8bd0bc75bb1983cc1bde5566921564d61b67e97b55fd0682e"
-    },
-    {
       "path": "packages/captions/dist/.tsbuildinfo",
       "bytes": 52167,
       "sha256": "9cd20b9ee76ffcb49e70014c5eebd5e693046385046795ea3c75761c64dba2ad"
@@ -2568,9 +2539,1479 @@
       "sha256": "b2304a74c9f7d1addd0755a0c28167c501647baad2872e935b7667272c97f41c"
     },
     {
-      "path": "packages/captions/package.json",
-      "bytes": 372,
-      "sha256": "c233fdec7be6ff46f476744cd30e8755b07939ef60ac12c5dff6538e1b23c92d"
+      "path": "packages/cli/bin/chai-studio.mjs",
+      "bytes": 6566,
+      "sha256": "2a67bcea9fbb12e9e66f22a6daf018bcd4762b360feadb215f915319441211e1"
+    },
+    {
+      "path": "packages/cli/keys/trusted-release-keys.json",
+      "bytes": 45,
+      "sha256": "9861fc136e7a3765eb71b6b2268f8c7e60e17a9cde87b1e1ed1ff60ca6c97a25"
+    },
+    {
+      "path": "packages/cli/lib/installer.d.mts",
+      "bytes": 1985,
+      "sha256": "d4b1195caa768fdde629d40f21bb631485f307834c6fd447588145dfdbdadd31"
+    },
+    {
+      "path": "packages/cli/lib/installer.mjs",
+      "bytes": 20264,
+      "sha256": "68ec22b10d54f4d69286e085b92d80eac9bc7eeac20caad180094572f8c1c99f"
+    },
+    {
+      "path": "packages/cli/LICENSE",
+      "bytes": 11356,
+      "sha256": "5c9817c129b98e7bb966bca028c43c19107102ef8e03fe799bffb4354f4ef015"
+    },
+    {
+      "path": "packages/cli/NOTICE",
+      "bytes": 182,
+      "sha256": "3530199e3dd775698523acb49b4c630f53b500e217f2783321008eab352398a8"
+    },
+    {
+      "path": "packages/cli/package.json",
+      "bytes": 1441,
+      "sha256": "5f1e2fedb17e3496570342bd1050b6bd6a25ea30ed00192776c8d63e9ba8e7dc"
+    },
+    {
+      "path": "packages/cli/README.md",
+      "bytes": 1368,
+      "sha256": "1ef73ef7e26bf26d0dcd97cf70605fe70ad979d6842d17ad5e90aeeec9f9002b"
+    },
+    {
+      "path": "packages/cli/runtime/.chai-studio-registry-runtime.json",
+      "bytes": 3799,
+      "sha256": "3d80f81b3bcbffecd6987e3ece27d34fb9f24a0f3a2fe380843f2afb43a2737f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-server/dist/index.js",
+      "bytes": 1146801,
+      "sha256": "c46961e5d4127a3de56e08772402002dea097f92c7e0e8efa5a56c2d2b9ac7e6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/animation-tools-Dpi9vmUH.js",
+      "bytes": 73847,
+      "sha256": "7470410b6792a2fd91dd443e9569b4822527e515dff85dacae86491825cf123c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/delivery-review-CZTwpRd9.js",
+      "bytes": 59050,
+      "sha256": "e367f121f4c6919ff6bcd945fc00fc0e90ec24360c5007382a4f8a503443db91"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/editing-tools-Cxn_q2Fi.js",
+      "bytes": 137264,
+      "sha256": "b9137f3907efe148980c3da851468f7128fe194f60f32648650d23feb2da0b1d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/index-BmI-mypm.js",
+      "bytes": 162784,
+      "sha256": "5934c4b701358cee027883ecd2ef71305410a7649adbb577b1686781916f3842"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/index-RP2Fn5-a.css",
+      "bytes": 125245,
+      "sha256": "a74d14d00d085ed70f6d106c82b73d984c9235774fbc444ff8aec05e2abbab31"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/react-runtime-BEBNZk8r.js",
+      "bytes": 182488,
+      "sha256": "f79a77a6fdd3bad35aa2bfcce77983d2a5f6d87b2c0f56751f261813917824dd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/brand/chai/v1/chai-app-icon.svg",
+      "bytes": 4037,
+      "sha256": "55c7cdded269b3acb17ef8ec2a861e78707aa2196c7c6c44f8b308e622d10747"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/fonts/NotoSansDevanagari-Medium.ttf",
+      "bytes": 279708,
+      "sha256": "721a423a73902876e297382f0c9be30ce8c8fb523ca4a08886ed5a0ec257f5c1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/fonts/NotoSansDevanagari-Regular.ttf",
+      "bytes": 282060,
+      "sha256": "da2d2135e978c6f68852cfd8201c3a067df1acf73232fe80c58f89e6302ee6e8"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/fonts/NotoSansDevanagari-SemiBold.ttf",
+      "bytes": 278764,
+      "sha256": "3d80db0e3a61f3f94c9ac6aa2533015cc55049b5603eb5f34a7d8adea5172b88"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/fonts/OFL.txt",
+      "bytes": 4386,
+      "sha256": "a216f6f8d85c7228093e0ee5e258d9d377e6671f68acb4db1930b29583d0f331"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/add-track.png",
+      "bytes": 5318,
+      "sha256": "637f5a71810dc4b9830415a34d2c7976c455fddf8b2709cdeee7c780642e3cb6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/animated-property.png",
+      "bytes": 5350,
+      "sha256": "1e6936884c4ac8e44705fe257178373545458d7651b612a839b6b9120f195e4d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/annotation.png",
+      "bytes": 4459,
+      "sha256": "105587e2dab073f0d4bda5d8c27610b3df809cf03c60d595b7259ddc910b60ed"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/approve.png",
+      "bytes": 6540,
+      "sha256": "f268824e8063ecfa9650a1e7490082dcc2a8149790f14713ad3b11389dc507e2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/audio-media.png",
+      "bytes": 4882,
+      "sha256": "f8c0ab49e14387bd6fc90277596f911fa146b89759f654c2064ad44015114043"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/blade-tool.png",
+      "bytes": 6400,
+      "sha256": "5d0c5d3df3849f14e9f044b4f0cd4db50d2c91a22dcb5dfa22ccde64192e8975"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/caption-alignment.png",
+      "bytes": 5665,
+      "sha256": "252f188c12c85d4fad09ac08c0b4f498e055ad500c267c5dbbbf04f0b0d689f0"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/caption-position.png",
+      "bytes": 3959,
+      "sha256": "6f229856025b689f8ff43a00e1a066e3cf832c7e0713784a4ec8ff8bce2c1f5b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/captions.png",
+      "bytes": 2829,
+      "sha256": "a6af61e92cfacfb8b3c93b9f883357820700f6b6e168551467a612e24d2bf568"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/capture-ab.png",
+      "bytes": 4758,
+      "sha256": "f2c4060cc561b7869a45a7a66dd91c6f068085e932a976bf61089da9a281e905"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/capture-alpha.png",
+      "bytes": 4720,
+      "sha256": "8f9ea48822139f15ce7316eb12f005eccaf0a41e1ff1e49949206ad51e7f06ae"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/capture-before-effects.png",
+      "bytes": 5459,
+      "sha256": "67a6fb6269ed7b90978e9a08a938378dc0d95fd2da2d4f7ecb645fcda612836a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/capture-exact.png",
+      "bytes": 5311,
+      "sha256": "3d92c290d9b89ad07bfff96e343c0f856efab5222fcfd79d06ae898b0c6a915d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/capture-isolated.png",
+      "bytes": 3486,
+      "sha256": "4c9123bd3071d0549660aabbca40fbf8aed8c2670740424e1ce2690e43bf2c0e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/channel-map.png",
+      "bytes": 3917,
+      "sha256": "bc21aa0387538b6b6b6cc40ca5e8ff90b74bae24bc654447a0a773f4744a7ab2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/command-palette.png",
+      "bytes": 2741,
+      "sha256": "acdd7eaf45fc0d70685ac55d014795ee961f3be15e2043f72ae5246b0f74f05c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/compare-script.png",
+      "bytes": 5259,
+      "sha256": "e869186fcf808fc48aa0427881a886dae68994332713a6d668900bc7b77d8741"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/composition.png",
+      "bytes": 5445,
+      "sha256": "11e94a70c7819e5a9c4e0ec471947b0ba3a9f38c9e042c96d8731e99dec7e584"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/compound-clip.png",
+      "bytes": 4997,
+      "sha256": "1a34dac1568771049932d9fd5710c00224e7e6cc6a1443bde680296c941ee15f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/confidence-filter.png",
+      "bytes": 4804,
+      "sha256": "7c2f9751772dcdf55cabe9ed130fe54dba9d1acd622bd69a21973143367f1d4b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/contact-sheet.png",
+      "bytes": 7120,
+      "sha256": "5a6458330dce741dbfe86b53a6c019cf13a8044b6d29ec1a8d4a7f9aeeef5ffe"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/copy.png",
+      "bytes": 4298,
+      "sha256": "63e31923b69c6494d1e0e8361bf03b89462d37dd86b825098830cff72332393e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/corrected.png",
+      "bytes": 6487,
+      "sha256": "90d67bf7430acc27813e9c5384ed6e03cbad0c9e7e4eed0cca09036fcab36f8d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/crossfade.png",
+      "bytes": 4875,
+      "sha256": "1443679d3fb551ebeacae03f81d711bf1c24c79a1a8de3877527a67ea8e7ede7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/curve-editor.png",
+      "bytes": 3938,
+      "sha256": "944529cdd6f639f43547beaf843a898a3f75ae17422fca6ce362ac3b23e602ef"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/delete.png",
+      "bytes": 5474,
+      "sha256": "fe2a10ebd4cb85784ef057ea12a338dbc72b008eff1c9dd6aeb3396a6e276776"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/deliver-output.png",
+      "bytes": 5283,
+      "sha256": "4aa344c0f0c08b41af5546b61f2179ab105fc403a6b4f16adbb25c3f1c2a10af"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/delivery-profile.png",
+      "bytes": 3350,
+      "sha256": "58786aabdf595cf7130f22e172bd81be08ba113d2cac3b938a8ce9dc46b4589b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/diagnostics-truth.png",
+      "bytes": 6048,
+      "sha256": "5086f16c02769b807478c6ea055358b068aa2ace2c6b2acca342574f159a96db"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/distribute-time.png",
+      "bytes": 2326,
+      "sha256": "2c8a8b4ba4b7b25187cfeed11eaf35e0e0dc750faf295e8b5484e1162510592f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/ducking.png",
+      "bytes": 6548,
+      "sha256": "fd37799dedcd37808ab44692d50969bc2ab537aa5c9e004a840d905eacf02972"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/duplicate-hash.png",
+      "bytes": 6193,
+      "sha256": "924cef6811de8eb4026c261969377469783828eab93a145ced41869998974aec"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/duplicate.png",
+      "bytes": 3972,
+      "sha256": "ef560de13dcaef2f4a9dfba749bab01781f5a0985a6b5dee666cb851bdfa819c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/fade-in.png",
+      "bytes": 4421,
+      "sha256": "b5a94cdc27893afcd6380c49ab878c88c21c9aef13d52dba4c9766e5f0c06bfd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/fade-out.png",
+      "bytes": 2806,
+      "sha256": "4c16c8b75b328ce0cdbe2ad301460e9dce616bd0b506ab36c7907c5d49fa7ce7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/feedback-request.png",
+      "bytes": 4310,
+      "sha256": "3fb89a4e71b7aa077ef84183dcef2d20af2386e568d4dd079dc17fd58faf40f5"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/folder.png",
+      "bytes": 5509,
+      "sha256": "7b24a96442200bad57c9681ab7348a4c34f01d873ddc3004d9493c1ea3425c62"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/footage.png",
+      "bytes": 5301,
+      "sha256": "eef152cac48a2340074ebbda66337bd6b04600db1fe4bd96501b47c3e279ca54"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/fullscreen.png",
+      "bytes": 4141,
+      "sha256": "3a248be8955ceffa81d72c76bb9ed920dc7faa3cd47106b2ddf30994058d3a76"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/gain.png",
+      "bytes": 3525,
+      "sha256": "d7c867f728e909a758b5f5f06fb478f927dcd2a96a2a92b8fd6e9fadeb6e36b8"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/generate-proxy.png",
+      "bytes": 4924,
+      "sha256": "01fb42074193fb2114a864b3c81e43761376464912304bd64bee26c26c1d2e5b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/graph-speed.png",
+      "bytes": 3526,
+      "sha256": "a0cba6c854fa40dae676e3ecddda02f5b194c3663007beea870c60bd3aa9d574"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/graph-value.png",
+      "bytes": 3690,
+      "sha256": "78ed83b599a16cae28b8b83373dd578d23adcf995a5e0a633b956bb531401565"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/graphic.png",
+      "bytes": 5154,
+      "sha256": "fc83f8a0024b0de866faa6cd707e36c923e4ac12ca7e273b4b2c4c9df82841bc"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/import-media.png",
+      "bytes": 3871,
+      "sha256": "23ea680aa9f0f140d9d27c2c2993cc8b6ef349fefc0e343747b6b36792b02ac4"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/interpolation-bezier.png",
+      "bytes": 3984,
+      "sha256": "d3bcc57e7910dc2e15c6d1d4f830f0d12e5802a284fb835ef1e80da19ccbc6fa"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/interpolation-hold.png",
+      "bytes": 3077,
+      "sha256": "9ca1ad6148610b4d71b0f0b432f60c0b6f03024c51d8be4165b28e0312f095e9"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/interview.png",
+      "bytes": 5945,
+      "sha256": "9f06d277e11a21110e9ca86fcd3797f696d9189bedcd0e2312f7d25b32300fa1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/key-add.png",
+      "bytes": 3923,
+      "sha256": "2b6204259792281ca891fd6c5e1c8e24e95d4c217fb8307080985bad8da91195"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/key-remove.png",
+      "bytes": 3553,
+      "sha256": "4e5d2c5b7d86ca851cb9781d8a90f0bef92fb2380cc56783495a454f0d1e14f1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/keyframe.png",
+      "bytes": 2483,
+      "sha256": "b30ba66e4b4c78e81fe3d80e156439400ed4492bfea9a887ef941c3783c2731d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/linked-clips.png",
+      "bytes": 4615,
+      "sha256": "1b2a3fca6122618ae8f400a4ba5f07bfabc069f24c50359443316e6cec926594"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/loop-range.png",
+      "bytes": 4172,
+      "sha256": "8123cc68128ed48bb89d7b36a21e560e2dc6cc1f23b0fc1b89b12554849fb488"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/loudness.png",
+      "bytes": 5261,
+      "sha256": "6bcb354523c2b926ec91438f3d8b78c604b2d9923367db4da2286c3d0ee01c90"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/mark-in.png",
+      "bytes": 2658,
+      "sha256": "424f494b8f2e825e3b05d647a534dc1ef8c54cecff8b4e2fd814527d2d7a1b8e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/mark-out.png",
+      "bytes": 2727,
+      "sha256": "7dd3973e9dc6283ef722061e4fc950c6ebc1ca4c827c6c380119eb87645e7f8a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/media-offline.png",
+      "bytes": 4016,
+      "sha256": "8945bed3a093fe3b11744dbfc3b7052f8e8d50818b4e395c7db0f4a192a138b4"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/metadata.png",
+      "bytes": 5363,
+      "sha256": "d13d95691464115ec8f478e7dfcd46c6092f7e5aac5a1dbcfa4647b935739c39"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/named-version.png",
+      "bytes": 4175,
+      "sha256": "9ea30c6c77bc4dbc7df0e620ec1dcb6104d66a815631279ba15838426b8055a7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/next-frame.png",
+      "bytes": 4280,
+      "sha256": "b98e07d018630e07a60bd9af822d5a267f631fcb233f3b82d8397c9e888289ba"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/next-key.png",
+      "bytes": 3468,
+      "sha256": "24883f6a4c011442f7723b83dbcb20dfd579f3da388fd26f4cf2ba5a2b7d56be"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/nudge-left.png",
+      "bytes": 3148,
+      "sha256": "ca01acb15eb3dbba6ea918878508d9c8ddda1c962ca7278f0e184d32e3497c92"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/nudge-right.png",
+      "bytes": 3358,
+      "sha256": "44f62a9c3d85b7e2eab04c28b7456b0b50b22be472802b06d600f8d15b0c3214"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/pan.png",
+      "bytes": 3424,
+      "sha256": "239aab0c2264e38ef48d017a86c8248ca779dce3033c7109c6b08787264ff9c1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/panel-collapse-expand.png",
+      "bytes": 5753,
+      "sha256": "10476e4d39c214411ed6cc708340f04943d090e218d148098dc25bca1b591074"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/paste.png",
+      "bytes": 5143,
+      "sha256": "9678db1fc5deea08b010cd7227d9c69b1ccc9445b4f21bdd23c0348315c51158"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/pause.png",
+      "bytes": 3987,
+      "sha256": "4420fd8e6dcff0d4494b8db7f729d1f5e21f5728951e441b03858b80704bfcba"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/play.png",
+      "bytes": 6159,
+      "sha256": "20425861352480772e55687241302befc92ed171128c0e41e6e861bc84319d54"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/playback-rate.png",
+      "bytes": 4755,
+      "sha256": "1c5d67dbe22f7985bacb032cee0613d8118c39c4037c601aec853d4d70ace93c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/preflight.png",
+      "bytes": 5545,
+      "sha256": "a0ae1905c27e7ddb373b16c96d098f644d21667d851000d2257ebfa1065d6eb2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/previous-frame.png",
+      "bytes": 3622,
+      "sha256": "597b3bcd30143832b4c28b9fd4d7e69faec1ef73c92abe0d07f045a2eaaf6439"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/previous-key.png",
+      "bytes": 3238,
+      "sha256": "18702d52dd5b36c09d1f3055093f1050abfc8cac1bd0d5f8da2871cff364415e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/product-media.png",
+      "bytes": 5487,
+      "sha256": "6fbd8da909a199a4b34742c7cef84dfd2b884da4483df6bbfcdc56b2fd3244dd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/project-new.png",
+      "bytes": 3867,
+      "sha256": "41b5864727637db33404fc5819dab267e4c1409c1b4725c9e15ef37381ddf02c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/project-open.png",
+      "bytes": 3681,
+      "sha256": "e7b9e92cac649c62ab52e4313ae7f85af7215e2f30115c44c08b6106db2ad580"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/qa-scan.png",
+      "bytes": 5147,
+      "sha256": "2c3ebd646a2bda9c7948f00ec5596d8972d23713e25482e2ae7894e25236ca64"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/receipt.png",
+      "bytes": 7189,
+      "sha256": "3a93be366dfc80f019ed1d270a58ff3851b2f8aba77915820b98312160a487f7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/redo.png",
+      "bytes": 4134,
+      "sha256": "c730244d929fd0aafec2c5eecc36a309bac222f8d8d4c4c572dbf84951dcc6ab"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/relink.png",
+      "bytes": 5411,
+      "sha256": "0af0a76d050bc8b727a19ff448a302c4c7aedbac89b456751b9fb360f32a1f35"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/render-frame.png",
+      "bytes": 4276,
+      "sha256": "ee897514b295cd61868054c3a0ccbfc01622937e055d01ca0239f831e2d49d26"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/render-queue.png",
+      "bytes": 7091,
+      "sha256": "f6ccfdc3bb51887051cb280e8f7661e97aa1f14907e2720a210def3f3af7cd5b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/render-range.png",
+      "bytes": 4409,
+      "sha256": "6e1124300566fbb55c69be9c2b9caab9621f5eb137e15643e2efe4f0471a3862"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/render-timeline.png",
+      "bytes": 4184,
+      "sha256": "d953699001f9b3e183ea8a8791020a05e857b9c4a8dc10999acfad22b0c8678c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/render.png",
+      "bytes": 4346,
+      "sha256": "18870258758432906a1e8c0430898683a7ff835f3f452533768d9a83ba2e9a42"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/review-bundle.png",
+      "bytes": 5234,
+      "sha256": "5f3c0f3f77fc97b6e345db1b9eb32b5e26d39a4bc4572cd2609b0a6647682bd9"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/review-issue.png",
+      "bytes": 5576,
+      "sha256": "37b10476f11aa44b420dc087aa4bdd8aa63ae2e4f9e299b2b87869621a258415"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/safe-area.png",
+      "bytes": 3719,
+      "sha256": "f9e791c64e0577c6f4243e4b3bad18f2ac6baeb5600da8593aef4834eb91c10e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/save-state.png",
+      "bytes": 5906,
+      "sha256": "14f3c40570d455b541b63ee6730a08ec0e4c83cb90e9bd9e36fc918bd0b6f682"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/search.png",
+      "bytes": 5383,
+      "sha256": "3533702c6ff95015af93e9d011df3a4f4cbb73c9abb2628a0c0d5417ad230fd0"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/seek-end.png",
+      "bytes": 4377,
+      "sha256": "c5fbd2d6683168b489fe26759463b4b3e98d8c8b23d03523ff7830659142f3bd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/seek-start.png",
+      "bytes": 3587,
+      "sha256": "7aac56615d35c94b83c714f3e920249f323be0aa308027dcd31e0caa0bb0687c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/select-tool.png",
+      "bytes": 4331,
+      "sha256": "95044bad198e983cc28383dc77eb857af9da26b2b81ee0f50dc9369986fdfdca"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/shuttle-backward.png",
+      "bytes": 4276,
+      "sha256": "265a6eb5b0fd5ea119f324e2355e30aaca0bf5770e3b007a42ebb0a1ab6848ee"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/shuttle-forward.png",
+      "bytes": 4044,
+      "sha256": "8b07a0cbb55280eb30cedf4f6519212ea1614a4f0370c5e86018ecf8ace5d237"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/snap.png",
+      "bytes": 3897,
+      "sha256": "d599121103a189d6b6342c3afb425073481fb94dca07a9e848db19827ac9b108"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/speaker-filter.png",
+      "bytes": 4414,
+      "sha256": "b4fccab3942f76d7579f819bd3f2658917faec722350ec86cff916a18c35f793"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/split-playhead.png",
+      "bytes": 3338,
+      "sha256": "844b36fa66ef2c6971146341c8a3bdd496a7139224c9ea735e6652a0a99a0b40"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-conflict.png",
+      "bytes": 3758,
+      "sha256": "16553e31476d83dcf3a273ba645e0abd04bea9553026802f41fd92fd82b5ae1c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-danger.png",
+      "bytes": 6564,
+      "sha256": "f6763fa12ba39ea8351a3a691405955be5790bd13c7013890281d99c75e9bc9f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-info.png",
+      "bytes": 5764,
+      "sha256": "bcadb8addb7fe7e45aa0204e7f17fd35e47cc80b5f403ba813aed9e355a18848"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-offline.png",
+      "bytes": 7759,
+      "sha256": "5f5cd3ccd9c33584abfca677534e4e23d80b0839adbc5792925f6c1952ca7dde"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-read-only.png",
+      "bytes": 3809,
+      "sha256": "fa68e01b60faa8e562712fd1b2093f9a78696f3978b2a1fc76deb3f65b85b0fd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-ready.png",
+      "bytes": 5997,
+      "sha256": "5dbe2ef4c0515eb942214bd05e63181f78ee083d6d0da9b66a396e278341c02a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-warning.png",
+      "bytes": 5822,
+      "sha256": "b4777951ddee2666451fe13dcd8848695efb5606a627ab81f2d019f01ccd6547"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/status-working.png",
+      "bytes": 6302,
+      "sha256": "bb362da2442e67b02bf1ce547add72c4beaa0e2d937ecb0a62fdc6e26ec7d077"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/sync-anchor.png",
+      "bytes": 5215,
+      "sha256": "0aa42ad16125c9477d84ae6519be3f7286a8813347829a1722277c8cfb2bbbf8"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/tangent-mode.png",
+      "bytes": 3295,
+      "sha256": "5c183e86bc225baae0d77a77fae6846401eea0161dd2bc279cbe95d1319d0043"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/timeline-marker.png",
+      "bytes": 2789,
+      "sha256": "47a35e8d0221f5b7bca07cf65a85bf7be339bdc96994d6e6fbf88a1716fb1f89"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/track-lock.png",
+      "bytes": 5204,
+      "sha256": "8e5b37e88f58174e56919b6a5c28bf937f667cfd2348e6b4f212dd564cb4b442"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/track-mute.png",
+      "bytes": 5237,
+      "sha256": "4714e40fe42dbeee9086a7c2bece084f3ae302ab918473fdcdbcca0746045358"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/track-solo.png",
+      "bytes": 3200,
+      "sha256": "d968abc12119c01187d015aec0f65638c7842c0973473a8d2d85573ac12b1216"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/transcript.png",
+      "bytes": 5745,
+      "sha256": "9b784f8129ce7277f9bf4444a258d82877ae3e290ee838e658b5c4ceef3f578d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/transition.png",
+      "bytes": 6092,
+      "sha256": "fb33dfeb473c8d798c2cca6f7cf2c900e02d9fef2caed2d9f178da873b010674"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/undo.png",
+      "bytes": 4118,
+      "sha256": "e53f5e9337372105474f7e51d5b904c9b5db7d1f494f68ad1030999b43acfc87"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/validate-source.png",
+      "bytes": 5679,
+      "sha256": "fd4ecef5100a1eaeb7d5a0857e0d15a698db48c88d9d488497704e2522a4a3da"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/visibility.png",
+      "bytes": 6087,
+      "sha256": "8e5e1d792a6ca6363c255a14e1e6b8f6f8aef4a50f1b32238d414bd7581bf895"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/waveform.png",
+      "bytes": 3774,
+      "sha256": "fc22e5c0ffa0cebcfae1999e7bb0a4b09cd9d2d076a12829731fecfd9f8b81c7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/word-highlight.png",
+      "bytes": 4267,
+      "sha256": "cd41a4ab1645827aa349c0ca078ab89a1ece1f8c51b684ceaa85950da51b970b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/workspace-animation.png",
+      "bytes": 4905,
+      "sha256": "aa604087b027d30af82929ac1259301e429d85d45dcc10cee9bcff1814ac59bb"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/workspace-deliver.png",
+      "bytes": 4623,
+      "sha256": "6ce57d40052e1cb3c30c2f33b7663672a12ccad9244b7181d1df62965bc716f0"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/workspace-edit.png",
+      "bytes": 4779,
+      "sha256": "82f8ccadd9a6b534fee7011ea175c80e3fa163c765ea73c20e37cac391c6b006"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/workspace-inspect.png",
+      "bytes": 5319,
+      "sha256": "a208c3651fcfe685d7a63781724cbe29eacb49d079d29bfe23b00971af2f6807"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/dark/workspace-media.png",
+      "bytes": 5943,
+      "sha256": "3e3edaa61c5c029d2a52ec70fba4da1b83f90ed7a8c64e914ee7c8c920a34e95"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/add-track.png",
+      "bytes": 3665,
+      "sha256": "73aa697a682c081c6879a21ff83de40e8a9f221e4e52a1268a4d8ee54c06e02e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/animated-property.png",
+      "bytes": 4895,
+      "sha256": "a2bf2988a440853dddb67d802a87ef72e439a1e0f5804ba5859b879d2309c24c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/annotation.png",
+      "bytes": 3821,
+      "sha256": "317d128e839f9c56c83e7cd169e1ea42da52387904c4b0a7e18faa34169b34ec"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/approve.png",
+      "bytes": 6546,
+      "sha256": "6e6dcc8da8c8c5aa2dc07da88b75702d8eae9e4de9e807ef7b4391ab8ebf4755"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/audio-media.png",
+      "bytes": 3875,
+      "sha256": "ce65e23f8d7e4b35e1dcb254aac67ddde784f90b13ecd080b54019a29d6099c1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/blade-tool.png",
+      "bytes": 4628,
+      "sha256": "8c30506f23aaeb93a2fc2c739432ef39b2432aa18702cfa7a7682829da237094"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/caption-alignment.png",
+      "bytes": 5003,
+      "sha256": "409870f9500b64f40953746b104aa28323a3b425fab2d7f0f17cf6944649baef"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/caption-position.png",
+      "bytes": 3287,
+      "sha256": "93091a2058b4684aaf25a755851a05fd41fe6d57897f6013395d3a7f94f67802"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/captions.png",
+      "bytes": 2291,
+      "sha256": "cb453fe9a417435234b597d7771c75af2fc316dd5d9fc716dfee3322219ff17c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/capture-ab.png",
+      "bytes": 4258,
+      "sha256": "d4e6d97a98f3be0e757c426496c130d133511b11ec6d06b4ac0a22bcf5815a28"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/capture-alpha.png",
+      "bytes": 3428,
+      "sha256": "6ac7a8d841d8407cb0e15a5ab0bf559bf53b4df555b02c27f743841d8c8ff904"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/capture-before-effects.png",
+      "bytes": 4703,
+      "sha256": "b2829080b00f446fa1b5d453e57071f5b1e0b69038e0843d9a3362a69041c9f4"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/capture-exact.png",
+      "bytes": 5036,
+      "sha256": "ec6c60caeeec7d31490dbcb5e92fca3f03708c88ba2c62eb61095a6936b07ab2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/capture-isolated.png",
+      "bytes": 2656,
+      "sha256": "6d99ba26ff0f7418e2f28642d062376fb24b98e2f8c4323e07603b296a787473"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/channel-map.png",
+      "bytes": 4091,
+      "sha256": "f2a74fd8549c3ba9940e615abd0f77688e0d2824c8327cd0e6cd49b4203d03e3"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/command-palette.png",
+      "bytes": 2586,
+      "sha256": "764588733843778c86504de49f6daeb3b1b8fdce82b4534f75965ae00393e53c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/compare-script.png",
+      "bytes": 4105,
+      "sha256": "3ed831ef711cad23354738ac6507250f858263fafbc0a0073dd779550b8b2eb6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/composition.png",
+      "bytes": 4765,
+      "sha256": "140c098f0dcfd46eea40ab9bf08e74773bdc38eeb17f663a1a845a11fd72e494"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/compound-clip.png",
+      "bytes": 3107,
+      "sha256": "90148eedd0c1a9be97707b42dedad3d25f8afda74c54d69ee6dbdf4859d1dd93"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/confidence-filter.png",
+      "bytes": 3844,
+      "sha256": "c63910490f2b4eed03f22b03b07a2a81d54894c357e26941c611b1142f3e5714"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/contact-sheet.png",
+      "bytes": 5785,
+      "sha256": "ecfbfa70d8c00e53e3ed625e99e36f2198023dba040dcb3541a5f044337e60cd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/copy.png",
+      "bytes": 2736,
+      "sha256": "acec2185d6527412f772f92bc3287a2fac6953dc6f2ff02cf1e96e39cb205798"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/corrected.png",
+      "bytes": 5693,
+      "sha256": "8d414e1640de67a96f914bf9f55c13f805fad9e3e8676012b523864dd31c3de7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/crossfade.png",
+      "bytes": 4495,
+      "sha256": "39e799971953bfa7cf1c76482b658114492a8c992e452bea5e2e60b845420148"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/curve-editor.png",
+      "bytes": 4072,
+      "sha256": "046afa5b89884c96a7ac38eb17b062254c9e7a3af2c785cc234034d52dcf7b3f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/delete.png",
+      "bytes": 3095,
+      "sha256": "df98c3506ef79a5359980bcef197c2f6e190b8d0e458fa5076593de23be960e9"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/deliver-output.png",
+      "bytes": 4464,
+      "sha256": "fd29be0be6ebdcdf0b3337c7c2a88a42572506981d1643c294b2197e081b480a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/delivery-profile.png",
+      "bytes": 2884,
+      "sha256": "e965cff8b992aca426584fbef77cd06494a2bb1f81d42212b978603a48324cdb"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/diagnostics-truth.png",
+      "bytes": 6244,
+      "sha256": "cc4491a0cd02a8f46e01d6c37669834e4b2d06a2a5c9641ab662c79368e97e91"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/distribute-time.png",
+      "bytes": 2329,
+      "sha256": "46971a612fd0e841ba3aaf1063401237943eddb1b2a441d814f677b353e164db"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/ducking.png",
+      "bytes": 6591,
+      "sha256": "7352da7e3651b95e87822ebda41d53dbec405308c4b64d01e525c1110b7a084b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/duplicate-hash.png",
+      "bytes": 6228,
+      "sha256": "1ffbe200a5bf707cb44dcd76f5277d5f7aecf6ce369f4ca2ee83e84c721e3ca3"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/duplicate.png",
+      "bytes": 3445,
+      "sha256": "e9eae487a8713d96131406e1c437b185bfbb163d5b8768c5fa8e3155b4c15693"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/fade-in.png",
+      "bytes": 3984,
+      "sha256": "718d0fdd15037001290b6d802e0c54e8efac457bbdfe1b8fbbb1882814cc853f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/fade-out.png",
+      "bytes": 2805,
+      "sha256": "6cba32a8ab608b7dab47dfefc0bca4affffc33d524eb65f84f5836511f6fe716"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/feedback-request.png",
+      "bytes": 4010,
+      "sha256": "1ecd677b87df681f64a9d40fa5627c0b3a8b319ab2b5e8df4c0315cee5efe652"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/folder.png",
+      "bytes": 2110,
+      "sha256": "121e036a37087ccc4aeb0c8fa0970bb02232a0b9e68b8065a28f344964bb47c6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/footage.png",
+      "bytes": 4163,
+      "sha256": "71191bfc129ec686fd00d6f9b91a38ce5320eea183af79e8cf38ad3c3e49e0a0"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/fullscreen.png",
+      "bytes": 3704,
+      "sha256": "bf2a4906a018effdd6ff6694977e0e9815b76ccfa8193f5d16b0d1c1d3488430"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/gain.png",
+      "bytes": 3289,
+      "sha256": "77b2e79ab88fc40956af88e5f0e2393b8897a7beb9a51d4591da4584ba630ada"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/generate-proxy.png",
+      "bytes": 4708,
+      "sha256": "3a4dc053f662960f94aecd0183e9c31144526c929da9129d612b7f9b4ecf417e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/graph-speed.png",
+      "bytes": 3748,
+      "sha256": "9e607d9ca1f7f242dd6e2628a51a3390edd70db77364d18873c74ca49338c42a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/graph-value.png",
+      "bytes": 3886,
+      "sha256": "2407d2a14a3e4934eb5d2659453f54e2301252a257e15c2e8d2c0c26a7abbb17"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/graphic.png",
+      "bytes": 4128,
+      "sha256": "a1d0192b7fc6a452ca96af6aee9430fb997e483e6bd486f14e140f9f90cb7768"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/import-media.png",
+      "bytes": 3551,
+      "sha256": "deb9163503c81d117c62c883418c0ad53024db5ab27cd5bc3d997f3e969f7ed8"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/interpolation-bezier.png",
+      "bytes": 3870,
+      "sha256": "03bfbfbd95055d7ef2a3e8c2d620fe88719b21d577c386351d8ec120675f179a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/interpolation-hold.png",
+      "bytes": 2906,
+      "sha256": "ea7398e7ff4d805baae320c290faebc002cf5063aa59835199fa0f969afc9837"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/interview.png",
+      "bytes": 4748,
+      "sha256": "c85c7f466ad0d6b72eab924c6712e9f227e2f3d141e881a0f776a3b54caf4a77"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/key-add.png",
+      "bytes": 3863,
+      "sha256": "7609132e736cdba895b4dcffc736f407cb229340476fe96191444e75e843a64d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/key-remove.png",
+      "bytes": 2698,
+      "sha256": "cd43da8961f35ba7bf47a1e215c1e6e19440af19c8537dbd1cd5c35310817e20"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/keyframe.png",
+      "bytes": 2163,
+      "sha256": "e0ff66c792b1e3abc2ffb55e86eacb5efdfd5adc48cca947f347c3dda42e35ca"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/linked-clips.png",
+      "bytes": 3703,
+      "sha256": "e75afff469d0eda2c6e782a23688fdaf2a301d673492610ceee15403a2f629fe"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/loop-range.png",
+      "bytes": 3448,
+      "sha256": "54a17cf42673bac093a3eeabd19664cb78bf0797b923192d6748a2d206721020"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/loudness.png",
+      "bytes": 4930,
+      "sha256": "648cc73b112bd707a2bbcd3555a5c7f8bd70cb4ec07934c423fe1631f89e424d"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/mark-in.png",
+      "bytes": 1988,
+      "sha256": "76b45ad66b575981066a06f360c05e8c154671619578df66ae862c4ed53156ee"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/mark-out.png",
+      "bytes": 2022,
+      "sha256": "8133d38c348e032a168a366bb29fcfe317eda443da00e4a6ad86cd4ca19d7d60"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/media-offline.png",
+      "bytes": 3848,
+      "sha256": "4299c8da63b8f8b7aa2c04c8d714adc11a4eac4263c68527ffe2d663e8cdb2a6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/metadata.png",
+      "bytes": 4647,
+      "sha256": "5f6041ef50a041af612950192e06e66c8506e5e45989e18c17a68b4e8b3e0dfa"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/named-version.png",
+      "bytes": 3480,
+      "sha256": "4846426eebe7e8427fd3549754f68e11b4b58ac4ffd2d0af5a98a96a17eb1d03"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/next-frame.png",
+      "bytes": 2887,
+      "sha256": "725b909e8ba2106b4387b5febae6ac1e511c6cda14f7c1aad6938fc10ff0e00c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/next-key.png",
+      "bytes": 2700,
+      "sha256": "7023d4f1470d1a39093deab7364b258725a9a0b4613bfc5c21db33b6d629c3cc"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/nudge-left.png",
+      "bytes": 3008,
+      "sha256": "ca5be6354276c5a9e53a63223189e6c5de4da51d1796f7b84a499dc9e9c254fe"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/nudge-right.png",
+      "bytes": 3124,
+      "sha256": "fb4de0d6cc7f8c162e29311ac6d8e5f92ba3d2479c89de45f9b3fc3c6ce67f66"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/pan.png",
+      "bytes": 3373,
+      "sha256": "fe8eae498cc2df5f7400b2c0a8915d926cec48c789f49a16817255ff1e5bd2c8"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/panel-collapse-expand.png",
+      "bytes": 5299,
+      "sha256": "42a647db867b0cfd536dff454be95b601b40b8dd0c3556e5edf0b0b285ddb276"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/paste.png",
+      "bytes": 4153,
+      "sha256": "9de2bbd1161814c8df4462a2c1219d685de811fa01df0b90095e94a6f04b1306"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/pause.png",
+      "bytes": 2365,
+      "sha256": "483aa988212a7c2b178c36a163ef6c3e359c4377c98894690be8c4016581339a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/play.png",
+      "bytes": 5565,
+      "sha256": "bd3a7441bbb5d3bb53e08d3707728b16395db2d395f10fb918b3930fc57fc6f5"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/playback-rate.png",
+      "bytes": 4548,
+      "sha256": "c1286315611f728a4d426ddcb635ae557c279f6247dbbc04cb94a8a632be1923"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/preflight.png",
+      "bytes": 4671,
+      "sha256": "60fa0cf8bca627db84012da4814cc2ea22d1b1566d8b94613563a5025ba58692"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/previous-frame.png",
+      "bytes": 2708,
+      "sha256": "5c106bbbe063973ab6208b91c7166be8fe1f4471f8fc64e06122944d606e55ae"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/previous-key.png",
+      "bytes": 2642,
+      "sha256": "c57d8218ea62cdb94f88da6d41c0795e85dbaed66513705e69fdcd9d83d599c1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/product-media.png",
+      "bytes": 4298,
+      "sha256": "5f2852dab3932f48ef5cd6d3653230b9e71a7ebdb07a616a99b43661e1c7eef2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/project-new.png",
+      "bytes": 3373,
+      "sha256": "d7a079394c6ee17cd58224c13205f13d94e64b926370acae11e85b33c1eb299b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/project-open.png",
+      "bytes": 3179,
+      "sha256": "239b5d3dc20947fd8e373b98a1f4bbd76b4f4b6ca6a68273045d2131bc30e42f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/qa-scan.png",
+      "bytes": 5202,
+      "sha256": "15a087f8a2abd7f37ab437e302b35afc6489480a3d4a1a254aafa47fcdd0ad2b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/receipt.png",
+      "bytes": 4830,
+      "sha256": "ebd4ee46ca7f31cde4bc655b7ef9c82439d619d92cb818d2496eddc11a8eb17a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/redo.png",
+      "bytes": 2685,
+      "sha256": "388be837e4baaa71b43ec3cd9e72efc12fbeec8b3536adbf9d6053bcc4931d10"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/relink.png",
+      "bytes": 5396,
+      "sha256": "dba2f9df033c163dbf385c285dbb871685f7444c26542e00772156bd4ccf737a"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/render-frame.png",
+      "bytes": 2921,
+      "sha256": "6ccddace290656dbd9017e1074fc0376ac09ceb8597c6fca381f1db128177283"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/render-queue.png",
+      "bytes": 5841,
+      "sha256": "0bb48e6ba3ee1beab80abdc5169ea5563c868a9244dd7b8f84afb116032fcca6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/render-range.png",
+      "bytes": 4261,
+      "sha256": "236574e658dea970e2c4f01ad3857c403de1866020cb6a9e1f97602db9abdbf3"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/render-timeline.png",
+      "bytes": 3725,
+      "sha256": "34b3cdadb501ef12de846b7ab8b35d7cc1e3c0edb0aef686ca98a5cf266a27e6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/render.png",
+      "bytes": 4036,
+      "sha256": "a3d59280f8b8f669036573d63bb5c60e89c6fd9487d431d3d94ec84ff292785f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/review-bundle.png",
+      "bytes": 4443,
+      "sha256": "7b55ab86d57d6794585115e67b4f85f26694ddb7a34ee240f20d2e5ef1af1b97"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/review-issue.png",
+      "bytes": 5172,
+      "sha256": "43b5d1c86cdc4ffaefb9f0e3388603ff39dc62509bf9d61ba6a91ee9761bc5a8"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/safe-area.png",
+      "bytes": 3877,
+      "sha256": "bc3fbcc2e0ab88b6a66ec9efa00ea58f0be5c3b8a74f0b3d6282fb2517b9ea5b"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/save-state.png",
+      "bytes": 5405,
+      "sha256": "d4a9d14daeba08d555e4e8d6d637c5bcf56b368fd91d2711da981781a8f29527"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/search.png",
+      "bytes": 5400,
+      "sha256": "077a515643ebbf974e6e7b16779ccfc8046c18dda0f26ecd0ea33a936e8b1dc6"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/seek-end.png",
+      "bytes": 3099,
+      "sha256": "2050d8ebd80fb977070c4e19afd94650f2dc1f88bd6c6e32859899fe5c1636f2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/seek-start.png",
+      "bytes": 2463,
+      "sha256": "8df04952e8265971247767ba6b422fdad3522aa29958aa7c57bfd843760af9b9"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/select-tool.png",
+      "bytes": 2964,
+      "sha256": "b1e00b28704a23f742f02c66a8c6f736ba4d566f96c77d39522de41838e29f4f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/shuttle-backward.png",
+      "bytes": 2955,
+      "sha256": "349da5d69c2dfc4f572cc426d287dce294021f3f97f039a2fcfacd37bf7cbc42"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/shuttle-forward.png",
+      "bytes": 2933,
+      "sha256": "95a699cd81a314c97dc89d729216495cada498321a0ff66271ca87e611727ff2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/snap.png",
+      "bytes": 3258,
+      "sha256": "c01b9579bb20760bbecdd1c98e127c8052250a5451fb94cb0a190fc374a10e2f"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/speaker-filter.png",
+      "bytes": 3766,
+      "sha256": "e59156f404c29d8d5b8c67d5dba9d25d16706ad20d304666fd7bad27f16c7000"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/split-playhead.png",
+      "bytes": 3161,
+      "sha256": "8df98d32ebcbe50a277e65b8628ad03288ed29038a7a4e67120b6e5001ded665"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-conflict.png",
+      "bytes": 3748,
+      "sha256": "b1afe89c9069e8738053838ccf94005a99633656e86af08b8d2ac00585620ad3"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-danger.png",
+      "bytes": 6380,
+      "sha256": "0320d4be320ac7cc4dbe32b8da4572fec34db728409accc832ea31592f5c0553"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-info.png",
+      "bytes": 5498,
+      "sha256": "c38a7a720b5b89af41e46b4082dbf49fb74081196e70623030b037dbf5f1f7ac"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-offline.png",
+      "bytes": 7400,
+      "sha256": "7a35946bc195b3bfaa09c83ad165ceebdf3df97a2c454c87b46a983bc2d763cd"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-read-only.png",
+      "bytes": 3291,
+      "sha256": "c5b50676a579cd4889d8715bb65a18c8165569f698169db23e563e0838653b31"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-ready.png",
+      "bytes": 5981,
+      "sha256": "8396eb8a0073335aed740e06c9f80c2f7e74ef36ddec3700fa7699c9fae04ee4"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-warning.png",
+      "bytes": 5221,
+      "sha256": "c015b01217a3e8acf434eb7bd7aef2c7777e42d8a7225a5ab839fe18ab2a74b2"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/status-working.png",
+      "bytes": 5808,
+      "sha256": "f305c7d69bf686d502ad56b4fd2e99b30a3504d7f4c49cee82fc79dbf035dcbf"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/sync-anchor.png",
+      "bytes": 5070,
+      "sha256": "4346749839b81adb1bebc09c09f7718b92e78b232361b091b275e410348fae9e"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/tangent-mode.png",
+      "bytes": 3311,
+      "sha256": "519b8791523f5b4007778296d3d02ffb4467fd70255efda14b6bbcffea2bea71"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/timeline-marker.png",
+      "bytes": 2530,
+      "sha256": "11dc3213af4d761a76f0ddf678a39d395055bc4ced73c670e6bf8e68c3a75ab3"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/track-lock.png",
+      "bytes": 3909,
+      "sha256": "9f1535c0be036075b7edb073f55a2fa389878d33fd1bbde36e6f14976e0dee47"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/track-mute.png",
+      "bytes": 4229,
+      "sha256": "f4cbf6dad95e0f4ce0085ed94028a86cb7702189901119340a67bdfaf86fd3eb"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/track-solo.png",
+      "bytes": 2806,
+      "sha256": "bb81b50f7ee474c92089431b7d0be146fa2009cfac8f477aeac93a08c7b5bf32"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/transcript.png",
+      "bytes": 4721,
+      "sha256": "a704d53b171c0a8178154e5beda61354509cafe30f9f9831461e2d7ebe16ca56"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/transition.png",
+      "bytes": 4450,
+      "sha256": "ce113a2c3b3f1fe4d85fa5c9e04f18be78cb64a12e3201d080c7333432bda441"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/undo.png",
+      "bytes": 2826,
+      "sha256": "b03faabbe69007383692b3686f8fae357ca4417f40f5514970e3dce545200110"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/validate-source.png",
+      "bytes": 5135,
+      "sha256": "b3e357caad4dfc9cd98cba839c92bdc0d531fbed6d4b047b41d5b49df7c14257"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/visibility.png",
+      "bytes": 6072,
+      "sha256": "abb36d2d1118e574048a4d7f8f13e03b7b218503b20c866622f8be7ea398668c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/waveform.png",
+      "bytes": 3388,
+      "sha256": "07f1370bc0ae0be664731e4048ba343b849245143a85c659052acdaefc2bd07c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/word-highlight.png",
+      "bytes": 2833,
+      "sha256": "f47f618866396b702cc0a97c6fc35715ffa482ff824a6478188b607f7d25c3fb"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/workspace-animation.png",
+      "bytes": 4287,
+      "sha256": "300d3ec15825027028ed0db5ff0ecb29142eeb9fcc59218f2ef2a2e7b2cb2bba"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/workspace-deliver.png",
+      "bytes": 4377,
+      "sha256": "51e38e4296f52fffae512f74959e397966b63643290dd5c0e92b08fd05d624d1"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/workspace-edit.png",
+      "bytes": 3857,
+      "sha256": "b641b5895b3b158e292ae30320acba4616f25b03cc0948b2fa63bc68c031bd66"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/workspace-inspect.png",
+      "bytes": 4994,
+      "sha256": "3bbf7e308862aa1a3c6dc4dd6fdedea95a6468a5b905f76c71594916163438b9"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/light/workspace-media.png",
+      "bytes": 4453,
+      "sha256": "f02eccedf082dd4182943e93413df5d397fe99c4fc88b19b9ff0a1c0c496154c"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/icons/chai/manifest.json",
+      "bytes": 43124,
+      "sha256": "2c6b5ff75bae1d75d7900dc0e7f018ec755b07333a7e6692d444b44c600a0e75"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/index.html",
+      "bytes": 871,
+      "sha256": "8e090b2c30619425d6eb0a6d16a034c53e00522733b9c2a718964a7a7536eac7"
+    },
+    {
+      "path": "packages/cli/runtime/apps/studio-web/dist/third-party/react-mit.txt",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "packages/cli/runtime/governance/licenses/dependency-inventory.json",
+      "bytes": 108664,
+      "sha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e"
+    },
+    {
+      "path": "packages/cli/runtime/governance/licenses/release-review.json",
+      "bytes": 1985,
+      "sha256": "23571ea85e888e00e8aec6256d068567da90a600e638340539a52fdcec15a4fe"
+    },
+    {
+      "path": "packages/cli/runtime/LICENSE",
+      "bytes": 11356,
+      "sha256": "5c9817c129b98e7bb966bca028c43c19107102ef8e03fe799bffb4354f4ef015"
+    },
+    {
+      "path": "packages/cli/runtime/NOTICE",
+      "bytes": 338,
+      "sha256": "a43c4edd43b8198e14c6e7ac7b70da780df598721bd74d4fa7eb1b86dc440b6a"
+    },
+    {
+      "path": "packages/cli/runtime/package.json",
+      "bytes": 139,
+      "sha256": "d6e60681f2b2622ff31932ba6bb2250a5b8e0a540199301e22aa1ada3d85d61b"
+    },
+    {
+      "path": "packages/cli/runtime/pnpm-lock.yaml",
+      "bytes": 172653,
+      "sha256": "9653b874bb3db24aa76a57fe378f88a535e487154cbeab8e0a8636b308ef1fb1"
+    },
+    {
+      "path": "packages/cli/runtime/scripts/browser-isolation.mjs",
+      "bytes": 4281,
+      "sha256": "30e9deded6c2a4978e9469065f2d002bc5c800fcaddac02c559fecc46b8c57e4"
+    },
+    {
+      "path": "packages/cli/runtime/scripts/browser-path-policy.mjs",
+      "bytes": 906,
+      "sha256": "fae68475411e4dfbe91b7e8fd7ce52162e927ceb51d0bc0582dc718bfad31d4f"
+    },
+    {
+      "path": "packages/cli/runtime/scripts/chai-studio.mjs",
+      "bytes": 8693,
+      "sha256": "9faf0517706a31736872a69d8759169a886775e7170d3ccc17c307ea00aef17c"
+    },
+    {
+      "path": "packages/cli/runtime/scripts/release-bundle.mjs",
+      "bytes": 12122,
+      "sha256": "74f6d251e602e49e0e7ff458b6d8c65180114c9fbfe4034eba50847df532ddd1"
+    },
+    {
+      "path": "packages/cli/runtime/scripts/release-operations.mjs",
+      "bytes": 12115,
+      "sha256": "8c96082f035280116b7fa4531f0658b04b66546f3a1fc5a4d1c6dbf9a7ebad34"
+    },
+    {
+      "path": "packages/cli/runtime/scripts/runtime-web-server.mjs",
+      "bytes": 6440,
+      "sha256": "14f55e41ed6601fa0e4f35bffa805d59d868c0191c8eebcca303414c7933c91a"
+    },
+    {
+      "path": "packages/cli/runtime/THIRD_PARTY_NOTICES.md",
+      "bytes": 3654,
+      "sha256": "5dee85292dd2d2190dc85d143b8fd631ccd2bc4a829f007706b8cc80667205a8"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/beat-analyzer.global.js",
+      "bytes": 12063,
+      "sha256": "d0766b2a8b3f2de0adb82e00567a2ab5efc79aea986e9cf62b8fef679bff7161"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/cli.js",
+      "bytes": 9805169,
+      "sha256": "c52508756671d7593a077c07b332990c4997694254e5d52518bf2752a894b803"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/commands/contrast-audit.browser.js",
+      "bytes": 19301,
+      "sha256": "9bf11cfe15a0a60105c3bbdd5f53aa563378858c3dd436f4e4fe6090eb6035dc"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/commands/layout-audit.browser.js",
+      "bytes": 59676,
+      "sha256": "48f387b9b4473f6169e8b98db46c4264381475a2262343cfe0b2b622ef64e9c8"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/commands/motion-sample.browser.js",
+      "bytes": 4111,
+      "sha256": "c2d127d6ba55e436c4549fe009d23c871e4bc09a8357cc628bc6c28236e71cef"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/hyperframe-runtime.js",
+      "bytes": 260382,
+      "sha256": "26b6b90097a8b00ef66b183b2d9ae7e45d5d1ecc8427463897e1008d68dbf8f3"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/hyperframe.manifest.json",
+      "bytes": 536,
+      "sha256": "923a0e01a09527df2e0e4afb5d0174dd14dac5ca194ae293895283788971dd19"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/hyperframe.runtime.iife.js",
+      "bytes": 260382,
+      "sha256": "26b6b90097a8b00ef66b183b2d9ae7e45d5d1ecc8427463897e1008d68dbf8f3"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/hyperframes-player.global.js",
+      "bytes": 54592,
+      "sha256": "560521e88f5957933db7ec9f5aa3782dfe65d8d23112a7ab2927e5d534a8460d"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/hyperframes-slideshow.global.js",
+      "bytes": 40540,
+      "sha256": "eb9eaa04f45a4195b5a0907d02fb14555ba84e9fbbf3d36249507b3ef723be12"
+    },
+    {
+      "path": "packages/cli/runtime/vendor/hyperframes/shaderTransitionWorker.js",
+      "bytes": 24664,
+      "sha256": "6b29293d995ffdb88347332eb650ca9771b96951bc334041e252ae3306365bc1"
+    },
+    {
+      "path": "packages/cli/THIRD_PARTY_NOTICES.md",
+      "bytes": 1620,
+      "sha256": "19ed057ca9d581694ab022607168c2621a81edbb7ddc30ce6604ba6d716ae746"
     },
     {
       "path": "packages/diagnostics/dist/.tsbuildinfo",
@@ -2663,9 +4104,14 @@
       "sha256": "f43165ee47d84fe8925cd39a24c5535a0eec72b740c8adbe18a65372401f2df9"
     },
     {
-      "path": "packages/diagnostics/package.json",
-      "bytes": 607,
-      "sha256": "b7d161dd7a4438b977df744fcc8ef2fe39fadb204e7a5b6a5dc977ece981b299"
+      "path": "packages/diagnostics/src/release-identity.json",
+      "bytes": 591,
+      "sha256": "29739b745661f1f6bbb5fc6d53c2964f72b3eda33967543119a08273214adae1"
+    },
+    {
+      "path": "packages/diagnostics/src/release.ts",
+      "bytes": 1307,
+      "sha256": "1fcd91171a0ee2395e39f0def699dc8238366096caed471c356e3e9c565be27e"
     },
     {
       "path": "packages/engine-adapters/dist/.tsbuildinfo",
@@ -3253,11 +4699,6 @@
       "sha256": "9f9dcb3448d5e8d3760e067b35961cdf350552736741969aa7d5a823e018f28a"
     },
     {
-      "path": "packages/engine-adapters/package.json",
-      "bytes": 610,
-      "sha256": "0ef76fbab81f9fe5df9cc6b0269ea4b416dbceaca7181608f0646c14b931eeb9"
-    },
-    {
       "path": "packages/media/dist/.tsbuildinfo",
       "bytes": 54664,
       "sha256": "55c7f42494d7c301c6910f22cbad4ebfcc8a609df3b33d81804ccd0518feb347"
@@ -3541,11 +4982,6 @@
       "path": "packages/media/dist/proxy-time-map.js.map",
       "bytes": 5621,
       "sha256": "3c9ba9297e2b9df50c28c17128199afcaf595f29c1b121901f328f8141b22dfb"
-    },
-    {
-      "path": "packages/media/package.json",
-      "bytes": 416,
-      "sha256": "6ebf52d6e177ca63a743baf20f757db40bd61387f3de350177c75f9d4be5b308"
     },
     {
       "path": "packages/preview/dist/.tsbuildinfo",
@@ -3993,11 +5429,6 @@
       "sha256": "fe0ec679911141574cee24a8149c73aa9b4025db6f25105ba3dfa997a1bbeba6"
     },
     {
-      "path": "packages/preview/package.json",
-      "bytes": 578,
-      "sha256": "f24a3728065598176e98d4257824e8269842e80662fd0ae7acebde42e3723ef6"
-    },
-    {
       "path": "packages/qa/dist/.tsbuildinfo",
       "bytes": 52174,
       "sha256": "4d00950409bb5c7ddfca99eb272dc65218dc26f725b377ea29e9363b05c97710"
@@ -4181,11 +5612,6 @@
       "path": "packages/qa/dist/visual.js.map",
       "bytes": 4651,
       "sha256": "614951e3947d72372331a9760dcf59c1f0a72355e89c070c8a94cf154622ce74"
-    },
-    {
-      "path": "packages/qa/package.json",
-      "bytes": 366,
-      "sha256": "9e74e8df64795a0835b8f67680fead93c1af1bfc8ca153f570a7c092e5e7f1de"
     },
     {
       "path": "packages/render/dist/.tsbuildinfo",
@@ -4493,11 +5919,6 @@
       "sha256": "9ca78536685c4af582a2cf40b8c58b73d5bd3fc3cbd6b2629e3b6adbac4bc488"
     },
     {
-      "path": "packages/render/package.json",
-      "bytes": 421,
-      "sha256": "9190ce7da1ceca7de536eed884837909d4fc4470a1c2618350cae7e1bb9041a3"
-    },
-    {
       "path": "packages/review/dist/.tsbuildinfo",
       "bytes": 50361,
       "sha256": "e4aa4245c046513a1db2809053185571825b6346bf44bda34db82708163dc751"
@@ -4521,11 +5942,6 @@
       "path": "packages/review/dist/index.js.map",
       "bytes": 12493,
       "sha256": "000aaa8577fe7a77f2d4096fbea9095c9d895b519a515482ae2d2eef560e475a"
-    },
-    {
-      "path": "packages/review/package.json",
-      "bytes": 370,
-      "sha256": "f90d241f64363956f32c078ca914c027751962c5b3efe92a9916813c9caf86fc"
     },
     {
       "path": "packages/schema/dist/.tsbuildinfo",
@@ -4893,11 +6309,6 @@
       "sha256": "e96f1cd5fb706f379194ca694f581d5f9b60e534beae069a571b9ef37709acf4"
     },
     {
-      "path": "packages/schema/package.json",
-      "bytes": 541,
-      "sha256": "71784cda80c16d4b3daf2df6236d6291dba7b4c034949f3937bff35134c38231"
-    },
-    {
       "path": "packages/security/dist/.tsbuildinfo",
       "bytes": 49326,
       "sha256": "abf47010bc83d44968647e635453fef1ad2c0abf042a0c86698511e792cfe8b0"
@@ -5101,11 +6512,6 @@
       "path": "packages/security/dist/worker-isolation.js.map",
       "bytes": 2854,
       "sha256": "ba9c1146a387ff26da271c8945cc6a5f8fed8dcc005b9012b4f53385e4ffa18b"
-    },
-    {
-      "path": "packages/security/package.json",
-      "bytes": 306,
-      "sha256": "f1e8f6543a26e2df2137c3a352366dcdc8000ff96529c82afbd83cf620234ca1"
     },
     {
       "path": "packages/timeline/dist/.tsbuildinfo",
@@ -5453,69 +6859,12 @@
       "sha256": "6a399c5ad733ca1c4bc70f15758fd10513487acef84c3fbf07856c83e5711d42"
     },
     {
-      "path": "packages/timeline/package.json",
-      "bytes": 560,
-      "sha256": "b70fb707487dff124ab645bcdf3c9cb13594dc0f4daea72687b5ae8c988776ec"
-    },
-    {
-      "path": "packages/ui-components/package.json",
-      "bytes": 447,
-      "sha256": "c7903dd924f6a8c10cce21cdafbf822e425cbb3027701ed1a31eaf7b9d1b044a"
-    },
-    {
       "path": "pnpm-lock.yaml",
       "bytes": 172653,
       "sha256": "9653b874bb3db24aa76a57fe378f88a535e487154cbeab8e0a8636b308ef1fb1"
-    },
-    {
-      "path": "scripts/browser-isolation.mjs",
-      "bytes": 4281,
-      "sha256": "30e9deded6c2a4978e9469065f2d002bc5c800fcaddac02c559fecc46b8c57e4"
-    },
-    {
-      "path": "scripts/browser-path-policy.mjs",
-      "bytes": 906,
-      "sha256": "fae68475411e4dfbe91b7e8fd7ce52162e927ceb51d0bc0582dc718bfad31d4f"
-    },
-    {
-      "path": "scripts/chai-studio.mjs",
-      "bytes": 8693,
-      "sha256": "9faf0517706a31736872a69d8759169a886775e7170d3ccc17c307ea00aef17c"
-    },
-    {
-      "path": "scripts/create-release-archive.mjs",
-      "bytes": 2161,
-      "sha256": "5da6967d78090dd636543036684716c7764a529884b3d5987b749babd07dd17d"
-    },
-    {
-      "path": "scripts/create-release-bundle.mjs",
-      "bytes": 2097,
-      "sha256": "a24ebb7449b0fc9692b1afd04b66ff4e12c76b61fbceb674086d97d48cb7a858"
-    },
-    {
-      "path": "scripts/release-bundle.mjs",
-      "bytes": 12122,
-      "sha256": "74f6d251e602e49e0e7ff458b6d8c65180114c9fbfe4034eba50847df532ddd1"
-    },
-    {
-      "path": "scripts/release-operations.mjs",
-      "bytes": 12115,
-      "sha256": "8c96082f035280116b7fa4531f0658b04b66546f3a1fc5a4d1c6dbf9a7ebad34"
-    },
-    {
-      "path": "scripts/runtime-web-server.mjs",
-      "bytes": 6440,
-      "sha256": "14f55e41ed6601fa0e4f35bffa805d59d868c0191c8eebcca303414c7933c91a"
-    },
-    {
-      "path": "scripts/validate-release-bundle.mjs",
-      "bytes": 650,
-      "sha256": "86ca9ef4d7f9076bba0279381ab6af9fcdae44167b3073a54305698edbbeddd0"
     }
   ],
-  "signature": {
-    "status": "not-required-personal-local",
-    "policy": "Checksums and gate identity are authoritative until public distribution or a desktop wrapper requires platform signing."
-  },
-  "manifestIdentity": "3baee58a8a7d39b6e2b4b17c5925246aa19ba298d1413c04333a51d754a568e7"
+  "releaseAuthorized": false,
+  "authorizationSource": "owner-signed exact-candidate receipt",
+  "manifestIdentity": "b8a406018ca9cbc27cb43906eb263deaf8b86c68b42173cc2347f91519be4d01"
 }

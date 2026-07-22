@@ -33,6 +33,14 @@ try {
     "runtime/apps/studio-web/dist/index.html",
     "runtime/apps/studio-web/dist/fonts/OFL.txt",
     "runtime/apps/studio-web/dist/third-party/react-mit.txt",
+    "runtime/vendor/hyperframes/cli.js",
+    "runtime/vendor/hyperframes/commands/contrast-audit.browser.js",
+    "runtime/vendor/hyperframes/commands/layout-audit.browser.js",
+    "runtime/vendor/hyperframes/commands/motion-sample.browser.js",
+    "runtime/vendor/hyperframes/hyperframe-runtime.js",
+    "runtime/vendor/hyperframes/hyperframe.runtime.iife.js",
+    "runtime/vendor/hyperframes/hyperframe.manifest.json",
+    "runtime/scripts/browser-path-policy.mjs",
     "runtime/scripts/chai-studio.mjs",
   ];
   const observedFiles = report?.files?.map((file) => file.path).sort() ?? [];
@@ -62,17 +70,27 @@ try {
     },
     {
       id: "bounded-registry-artifact",
-      passed: report?.unpackedSize > 0 && report.unpackedSize < 10_000_000,
+      passed: report?.unpackedSize > 0 && report.unpackedSize < 20_000_000,
     },
     {
       id: "registry-resolved-third-party-runtime",
       passed:
         runtimeMarker.version === packageManifest.version &&
         runtimeMarker.license === "Apache-2.0" &&
-        runtimeMarker.thirdPartyDelivery === "npm-direct-dependencies" &&
+        runtimeMarker.thirdPartyDelivery === "npm-direct-dependencies-with-vendored-hyperframes-cli" &&
         runtimeMarker.ffmpegDelivery === "external-system-tool" &&
         runtimeMarker.externalPackages?.every((name) => packageManifest.dependencies?.[name] !== undefined) &&
         JSON.stringify(runtimeMarker.runtimeDependencies) === JSON.stringify(packageManifest.dependencies) &&
+        runtimeMarker.runtimeDependencies.hyperframes === undefined &&
+        runtimeMarker.bundledHyperframesCli?.version === "0.7.58" &&
+        runtimeMarker.bundledHyperframesCli?.license === "Apache-2.0" &&
+        runtimeMarker.bundledHyperframesCli?.files?.length === 11 &&
+        runtimeMarker.bundledHyperframesCli.files.every(
+          (entry) =>
+            typeof entry.path === "string" &&
+            typeof entry.bytes === "number" &&
+            typeof entry.sha256 === "string",
+        ) &&
         runtimeMarker.bundledBrowserLibraries?.some(
           (entry) => entry.license === "MIT" && entry.licenseText.endsWith("react-mit.txt"),
         ) &&

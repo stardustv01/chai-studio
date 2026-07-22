@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0.0",
+  "passed": true,
+  "releaseCandidate": "1.0.0-rc.4",
+  "distribution": "public",
+  "attendanceDoesNotImplyApproval": true,
+  "areas": [
+    {
+      "area": "Edit",
+      "passed": true,
+      "evidence": [
+        "timeline-editor.spec.ts",
+        "professional-editing.spec.ts"
+      ]
+    },
+    {
+      "area": "Inspect",
+      "passed": true,
+      "evidence": [
+        "contextual-inspector.spec.ts",
+        "program-monitor.spec.ts"
+      ]
+    },
+    {
+      "area": "Deliver",
+      "passed": true,
+      "evidence": [
+        "delivery-workspace.spec.ts",
+        "qa-delivery-gate.spec.ts"
+      ]
+    },
+    {
+      "area": "Codex bridge",
+      "passed": true,
+      "evidence": [
+        "bridge-context-capture.test.ts",
+        "review-workspace.spec.ts"
+      ]
+    },
+    {
+      "area": "Mixed-engine fidelity",
+      "passed": true,
+      "evidence": [
+        "preview-mixed-engine.test.ts",
+        "qa-visual-sync.test.ts"
+      ]
+    },
+    {
+      "area": "Recovery",
+      "passed": true,
+      "evidence": [
+        "reliability-repair.test.ts",
+        "project-backup-restore.test.ts"
+      ]
+    },
+    {
+      "area": "Security status",
+      "passed": true,
+      "evidence": [
+        "security-policy.test.ts",
+        "security-path-containment.test.ts"
+      ]
+    },
+    {
+      "area": "Professional Expansion",
+      "passed": true,
+      "evidence": [
+        "professional-timeline.test.ts",
+        "professional-reopen-parity.test.ts"
+      ]
+    }
+  ],
+  "corrections": [],
+  "unresolvedFindings": [],
+  "ownerApprovalInferred": false
+}

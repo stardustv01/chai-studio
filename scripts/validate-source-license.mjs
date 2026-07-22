@@ -87,25 +87,41 @@ results.push(
 const runtimeBuildSource = await readText("scripts/build-cli-runtime.mjs");
 const nativeRuntimeSource = await readText("apps/studio-server/src/native-composition-runtime.ts");
 const requiredRegistryDependencies = {
+  "@hono/node-server": "2.0.11",
   "@playwright/test": "1.61.1",
+  "@puppeteer/browsers": "3.0.6",
   "@remotion/bundler": "4.0.489",
   "@remotion/player": "4.0.489",
   "@remotion/renderer": "4.0.489",
+  "adm-zip": "0.6.0",
   ajv: "8.20.0",
-  hyperframes: "0.7.58",
+  "compare-versions": "6.1.1",
+  debug: "4.4.3",
+  esbuild: "0.28.1",
+  fontkit: "2.0.4",
+  hono: "4.12.30",
+  open: "10.2.0",
+  postcss: "8.5.19",
+  "puppeteer-core": "25.3.0",
   react: "19.1.0",
   "react-dom": "19.1.0",
   remotion: "4.0.489",
   sharp: "0.35.3",
 };
+const registryDependencies = cliManifest?.dependencies ?? {};
+const forbiddenRegistryDependencies = ["hyperframes", "onnxruntime-common", "onnxruntime-node"];
 results.push(
   check(
     "registry-runtime-dependency-boundary",
-    Object.entries(requiredRegistryDependencies).every(
-      ([name, version]) => cliManifest?.dependencies?.[name] === version,
-    ) &&
+    Object.keys(registryDependencies).length === Object.keys(requiredRegistryDependencies).length &&
+      Object.entries(requiredRegistryDependencies).every(
+        ([name, version]) => registryDependencies[name] === version,
+      ) &&
+      forbiddenRegistryDependencies.every((name) => registryDependencies[name] === undefined) &&
       runtimeBuildSource.includes('packages: "external"') &&
       runtimeBuildSource.includes('name: "bundle-chai-workspace-code"') &&
+      runtimeBuildSource.includes('path.join(runtimeRoot, "vendor/hyperframes", file)') &&
+      nativeRuntimeSource.includes('"../../../vendor/hyperframes/cli.js"') &&
       nativeRuntimeSource.includes('import.meta.resolve("hyperframes/dist/cli.js")'),
   ),
 );

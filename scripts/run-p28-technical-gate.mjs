@@ -76,6 +76,8 @@ await runAcceptanceGate({
     "scripts/release-target.d.mts",
     "scripts/release-operations.mjs",
     "scripts/release-operations.d.mts",
+    "scripts/p28-technical-evidence.mjs",
+    "scripts/p28-technical-evidence.d.mts",
     "tests/integration/release-operations.test.ts",
     "docs/KNOWN_LIMITATIONS_V1.md",
     "docs/OPERATIONAL_HANDOFF_V1.md",

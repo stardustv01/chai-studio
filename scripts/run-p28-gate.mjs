@@ -29,6 +29,8 @@ await runAcceptanceGate({
     "scripts/release-approval.d.mts",
     "scripts/release-target.mjs",
     "scripts/release-target.d.mts",
+    "scripts/p28-technical-evidence.mjs",
+    "scripts/p28-technical-evidence.d.mts",
     "scripts/validate-release-tag.mjs",
     "scripts/validate-release-tag.d.mts",
     "scripts/generate-p28-version-manifest.mjs",

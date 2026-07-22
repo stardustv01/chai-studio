@@ -22,6 +22,7 @@ export const releaseBundleMarker = ".chai-studio-release.json";
 const execFileAsync = promisify(execFile);
 const runtimeScripts = [
   "browser-isolation.mjs",
+  "browser-path-policy.mjs",
   "chai-studio.mjs",
   "release-bundle.mjs",
   "release-operations.mjs",

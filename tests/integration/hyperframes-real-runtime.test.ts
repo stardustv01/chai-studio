@@ -19,7 +19,9 @@ import { isolatedEngineExecutable, isolatedEngineIdentity } from "../../scripts/
 const directories: string[] = [];
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const projectRoot = path.join(root, "spikes/milestone-0/fixtures/hyperframes");
-const executable = path.join(root, "packages/engine-adapters/node_modules/.bin/hyperframes");
+const executable =
+  process.env.CHAI_HYPERFRAMES_EXECUTABLE ??
+  path.join(root, "packages/engine-adapters/node_modules/.bin/hyperframes");
 const browserExecutable = isolatedEngineExecutable;
 
 afterEach(async () => {

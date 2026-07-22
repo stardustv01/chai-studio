@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": "Chai Studio",
+  "version": "1.0.0-rc.4",
+  "candidate": "1.0.0-rc.4",
+  "distribution": "public",
+  "sourceGateIdentity": "27fab6167694dfda2508726d14aa0682ea11335bd090efe7ecf872bd9e8f3259",
+  "releaseManifestIdentity": "3baee58a8a7d39b6e2b4b17c5925246aa19ba298d1413c04333a51d754a568e7",
+  "finalManifestIdentity": "b8a406018ca9cbc27cb43906eb263deaf8b86c68b42173cc2347f91519be4d01",
+  "traceabilityIdentity": "a5c7ac2cb927867bcbd746828036a56ad145924e4d38c2b522e3d0a331126ad4",
+  "technicalGateIdentity": "28bb80e077185c572e2ba7bf434b9d94721c37e8da8175749bb79a87b1595b6c",
+  "technicalGatePassed": true,
+  "dependencyLockSha256": "9653b874bb3db24aa76a57fe378f88a535e487154cbeab8e0a8636b308ef1fb1",
+  "dependencyInventoryIdentity": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899",
+  "dependencyInventorySha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e",
+  "publicDistributionReviewIdentity": "0a23e2dfd455a3c96ffcfab495dc2eb5e476165aaa507f3f19aa48e1b594fefd",
+  "publicDistributionReviewSha256": "ba60032f6df893e23db3008b4c95854ccc981063b4098f4f081d78af5ca313f4",
+  "supportClass": "apple-m4-16gb",
+  "environmentFingerprint": "bdb45e80a3ead9eb4ab04b4e79d16fc81738e4add1b763f8e17cd3db9d02313a",
+  "knownLimitations": "docs/KNOWN_LIMITATIONS_V1.md",
+  "operationalHandoff": "docs/OPERATIONAL_HANDOFF_V1.md",
+  "ownerApproval": {
+    "status": "explicitly-approved",
+    "inferred": false,
+    "evidence": "governance/V1_OWNER_APPROVAL.json",
+    "approvalSha256": "af9f94f1145f1531dc0412f644ece4091a695c718549dcc8e5f23d4a9b37b4d2"
+  },
+  "publicDistributionReview": {
+    "status": "approved-public-distribution",
+    "evidence": "governance/licenses/public-distribution-review.json",
+    "inventoryIdentity": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899",
+    "reviewIdentity": "0a23e2dfd455a3c96ffcfab495dc2eb5e476165aaa507f3f19aa48e1b594fefd"
+  },
+  "finalGateIdentity": "007ca4bfe1c43e6bc312a4b08ec72594eac798942f62f8a00643aed4767f67a4",
+  "signature": {
+    "algorithm": "Ed25519",
+    "value": "paQLsm8bYrAYo7T+rdEet1YrmxeNHUaRRRpTeFy+uts0I6KuCWfgFesfIeFWMdzNdAdmQje7gCt2nIENYKZyCw==",
+    "publicKeySha256": "bb104fb0556b4039f54ec671ceae41d8b50f3a3040cefab2c291e49340a91f67",
+    "publicKeyFile": "evidence/p28/version-1-release-public-key.pem"
+  },
+  "releaseAuthorized": true,
+  "releaseTagAuthorized": true,
+  "candidateIdentity": "6dfad53305c6605217afc42305a6eb462211bf2d58b3e8b1349b10893608c30c"
+}

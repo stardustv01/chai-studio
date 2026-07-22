@@ -98,6 +98,23 @@ results.push(
       verifyManifestDocumentIdentity(manifest ?? {}),
   ),
 );
+const manifestPaths = new Set(manifest?.files?.map((file) => file.path) ?? []);
+results.push(
+  result(
+    "registry-package-boundary",
+    [
+      "packages/cli/package.json",
+      "packages/cli/bin/chai-studio.mjs",
+      "packages/cli/keys/trusted-release-keys.json",
+      "packages/cli/lib/installer.mjs",
+      "packages/cli/runtime/.chai-studio-registry-runtime.json",
+      "packages/cli/runtime/apps/studio-server/dist/index.js",
+      "packages/cli/runtime/apps/studio-web/dist/index.html",
+      "packages/cli/runtime/LICENSE",
+      "packages/cli/runtime/THIRD_PARTY_NOTICES.md",
+    ].every((file) => manifestPaths.has(file)),
+  ),
+);
 results.push(
   result(
     "passing-technical-gate",

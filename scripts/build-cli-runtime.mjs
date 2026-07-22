@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { build } from "esbuild";
 
@@ -65,8 +65,42 @@ await cp(path.join(root, "apps/studio-web/dist"), path.join(runtimeRoot, "apps/s
   recursive: true,
   filter: (source) => !source.endsWith(".map"),
 });
+const hyperframesPackageRoot = await realpath(
+  path.join(root, "packages/engine-adapters/node_modules/hyperframes"),
+);
+const hyperframesManifest = await readJson(path.join(hyperframesPackageRoot, "package.json"));
+if (hyperframesManifest.version !== "0.7.58" || hyperframesManifest.license !== "Apache-2.0") {
+  throw new Error("The vendored HyperFrames CLI does not match the reviewed release identity.");
+}
+const hyperframesRuntimeFiles = [
+  "beat-analyzer.global.js",
+  "cli.js",
+  "commands/contrast-audit.browser.js",
+  "commands/layout-audit.browser.js",
+  "commands/motion-sample.browser.js",
+  "hyperframe-runtime.js",
+  "hyperframe.manifest.json",
+  "hyperframe.runtime.iife.js",
+  "hyperframes-player.global.js",
+  "hyperframes-slideshow.global.js",
+  "shaderTransitionWorker.js",
+];
+const bundledHyperframesFiles = [];
+for (const file of hyperframesRuntimeFiles) {
+  const source = path.join(hyperframesPackageRoot, "dist", file);
+  const destination = path.join(runtimeRoot, "vendor/hyperframes", file);
+  await mkdir(path.dirname(destination), { recursive: true });
+  await cp(source, destination, { force: false, errorOnExist: true });
+  const bytes = await readFile(destination);
+  bundledHyperframesFiles.push({
+    path: `vendor/hyperframes/${file}`,
+    bytes: bytes.byteLength,
+    sha256: createHash("sha256").update(bytes).digest("hex"),
+  });
+}
 for (const relative of [
   "scripts/browser-isolation.mjs",
+  "scripts/browser-path-policy.mjs",
   "scripts/chai-studio.mjs",
   "scripts/release-bundle.mjs",
   "scripts/release-operations.mjs",
@@ -100,11 +134,17 @@ const marker = {
   product: "Chai Studio registry runtime",
   version: rootManifest.version,
   license: "Apache-2.0",
-  thirdPartyDelivery: "npm-direct-dependencies",
+  thirdPartyDelivery: "npm-direct-dependencies-with-vendored-hyperframes-cli",
   ffmpegDelivery: "external-system-tool",
   bundledChaiServerSha256: createHash("sha256").update(serverBytes).digest("hex"),
   externalPackages,
   runtimeDependencies: cliManifest.dependencies,
+  bundledHyperframesCli: {
+    version: hyperframesManifest.version,
+    license: hyperframesManifest.license,
+    sourceRepository: "https://github.com/heygen-com/hyperframes",
+    files: bundledHyperframesFiles,
+  },
   bundledBrowserLibraries: [
     {
       names: ["react", "react-dom", "scheduler"],

@@ -10,7 +10,9 @@ managed browser downloads, FFmpeg binaries, or generated application bundles. Us
 dependencies from their original publishers under those publishers' terms.
 
 The registry CLI contains compiled Chai Studio server and browser code. Node-side third-party
-libraries are declared as exact npm dependencies and are not copied into the Chai server bundle.
+libraries are normally declared as exact npm dependencies. The reviewed HyperFrames 0.7.58 CLI and
+frame-runtime files are copied into `runtime/vendor/hyperframes` under Apache License 2.0 so the
+public installer does not inherit HyperFrames' unrelated optional dependency tree.
 The browser payload contains the production builds of React, React DOM, and Scheduler; their MIT
 license text is shipped at `apps/studio-web/dist/third-party/react-mit.txt`. The application payload
 also includes the font and artwork described below. It does not include FFmpeg or Chromium.

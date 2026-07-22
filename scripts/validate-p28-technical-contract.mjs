@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { assessAuthorizationLifecycle, traceabilityMatchesLifecycle } from "./p28-technical-evidence.mjs";
 import { resolveReleaseTarget } from "./release-target.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -95,32 +96,19 @@ results.push({
   missingSymbols: [],
 });
 const traceability = await readJson("evidence/p28/traceability-matrix.json");
-const traceStatuses = Array.isArray(traceability?.rows) ? traceability.rows.map((row) => row.status) : [];
+const receipt = await readJson("evidence/p28/version-1-release-receipt.json");
+const authorization = assessAuthorizationLifecycle(receipt, target);
 results.push({
   task: "P28.18",
   file: "evidence/p28/traceability-matrix.json",
-  passed:
-    traceability?.rows?.length === 20 &&
-    traceStatuses.filter((status) => status === "passed").length === 18 &&
-    traceability?.unexplainedWaivers === 0 &&
-    traceability?.unresolvedTechnicalBlockers === 0,
+  passed: traceabilityMatchesLifecycle(traceability, authorization),
   exists: traceability !== null,
   missingSymbols: [],
 });
-const receipt = await readJson("evidence/p28/version-1-release-receipt.json");
-const publicReviewStatus = receipt?.publicDistributionReview?.status;
 results.push({
   task: "P28.19-P28.20",
   file: "evidence/p28/version-1-release-receipt.json",
-  passed:
-    receipt?.version === target.version &&
-    receipt?.candidate === target.version &&
-    receipt?.distribution === target.distribution &&
-    receipt?.ownerApproval?.status === "pending-explicit-owner-approval" &&
-    receipt?.ownerApproval?.inferred === false &&
-    ["pending-public-distribution-review", "approved-public-distribution"].includes(publicReviewStatus) &&
-    receipt?.signature === null &&
-    receipt?.releaseAuthorized === false,
+  passed: authorization.valid,
   exists: receipt !== null,
   missingSymbols: [],
 });
@@ -131,7 +119,8 @@ console.log(
       phase: "P28-TECHNICAL",
       taskRange: "P28.01-P28.20-preapproval",
       passed,
-      ownerApprovalRequired: true,
+      ownerApprovalRequired: authorization.ownerApprovalRequired,
+      authorizationStage: authorization.stage,
       results,
     },
     null,

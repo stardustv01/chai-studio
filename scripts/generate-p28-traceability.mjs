@@ -233,7 +233,7 @@ const matrixPayload = {
         : null,
   })),
   inScopeRequirementCount: 20,
-  implementedTechnicalCount: releaseApproved ? 20 : ownerApproved ? 19 : 18,
+  implementedTechnicalCount: releaseApproved ? 20 : 18,
   unexplainedWaivers: 0,
   unresolvedTechnicalBlockers: 0,
   deferredOutOfScope: [

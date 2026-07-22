@@ -511,9 +511,9 @@ const managedHeadlessShell = async (): Promise<
         const canonicalCandidate = await realpath(candidate);
         const relativeCandidate = path.relative(canonicalCacheRoot, canonicalCandidate);
         if (
+          relativeCandidate === ".." ||
           relativeCandidate.startsWith(`..${path.sep}`) ||
-          path.isAbsolute(relativeCandidate) ||
-          !canonicalCandidate.includes(`${path.sep}ms-playwright${path.sep}`)
+          path.isAbsolute(relativeCandidate)
         ) {
           throw new Error("Native rendering refused a non-Playwright browser executable.");
         }
@@ -542,6 +542,8 @@ const managedHeadlessShell = async (): Promise<
 
 const hyperframesExecutable = (): string => {
   const runtimeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const embeddedExecutable = path.resolve(runtimeDirectory, "../../../vendor/hyperframes/cli.js");
+  if (existsSync(embeddedExecutable)) return embeddedExecutable;
   const workspaceExecutable = path.resolve(
     runtimeDirectory,
     "../../../packages/engine-adapters/node_modules/.bin/hyperframes",

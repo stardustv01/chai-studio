@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": "Chai Studio",
+  "version": "1.0.0-rc.4",
+  "trigger": "public-distribution",
+  "decision": "approved-public-distribution",
+  "reviewer": "Navin",
+  "reviewedAt": "2026-07-22T11:02:05.000Z",
+  "inventoryIdentity": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899",
+  "noticesAndObligations": [
+    "The Apache-2.0 source and CLI license is included in the published package.",
+    "THIRD_PARTY_NOTICES.md is included at source, CLI, and packaged-runtime boundaries.",
+    "Bundled React MIT and Noto Sans Devanagari OFL-1.1 license texts are included with their browser assets.",
+    "FFmpeg and FFprobe are not bundled and remain external system tools supplied by the user.",
+    "The reviewed HyperFrames 0.7.58 CLI/runtime subset is vendored with its Apache-2.0 notice and per-file integrity hashes.",
+    "Registry-resolved runtime dependencies retain their upstream licenses and are recorded in the frozen dependency inventory."
+  ],
+  "reReviewCondition": "Review again whenever the dependency inventory identity, package contents, licensing terms, or public distribution model changes."
+}
