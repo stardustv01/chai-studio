@@ -194,6 +194,15 @@ describe("P16 authoritative audio core", () => {
     expect(measurement.integratedLufs).not.toBeNull();
   });
 
+  it("rejects channel layouts with mismatched sample counts", () => {
+    expect(() =>
+      measurePcmAudio({
+        sampleRate: 48_000,
+        channels: [new Float32Array(2), new Float32Array(1)],
+      }),
+    ).toThrow("Audio measurement channels must have equal sample counts.");
+  });
+
   it("follows scheduler sessions and never becomes the master clock", async () => {
     const graph = createAudioGraphFixture();
     const backend = new FakeAudioPreviewBackend();

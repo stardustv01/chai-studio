@@ -64,6 +64,30 @@ describe("frame-exact snapping candidates", () => {
       /threshold/,
     );
   });
+
+  it("collects the end boundary of a ranged marker", () => {
+    const timeline = snappingTimeline();
+    const markerId = stableEntityId("marker-beat-0001");
+    const marker = timeline.markers[markerId];
+    if (marker === undefined) throw new Error("Ranged marker fixture is missing.");
+    const candidates = collectSnapCandidates(
+      {
+        ...timeline,
+        markers: {
+          ...timeline.markers,
+          [markerId]: {
+            ...marker,
+            duration: masterFrame(12n),
+          },
+        },
+      },
+      { playhead: null, userGuides: [], transcriptPhrases: [] },
+    );
+
+    expect(candidates).toContainEqual(
+      expect.objectContaining({ id: `marker:${markerId}:end`, frame: masterFrame(112n) }),
+    );
+  });
 });
 
 const snappingTimeline = (): TimelineSnapshotV1 => {

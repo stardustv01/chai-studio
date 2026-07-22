@@ -16,6 +16,48 @@ afterEach(async () => {
 });
 
 describe("native composition manifest boundary", () => {
+  it("validates every declared Remotion source dependency inside the project", async () => {
+    const root = await temporaryDirectory("chai-native-remotion-");
+    const sourceRoot = path.join(root, "native", "remotion");
+    await mkdir(sourceRoot, { recursive: true });
+    await Promise.all([
+      writeFile(path.join(sourceRoot, "entry.ts"), "export {};"),
+      writeFile(path.join(sourceRoot, "component.tsx"), "export const Composition = () => null;"),
+    ]);
+    await writeFile(
+      path.join(root, "manifest.json"),
+      JSON.stringify({
+        schemaVersion: "1.0.0",
+        engine: "remotion",
+        projectRoot: "native/remotion",
+        entryPoint: "entry.ts",
+        componentPath: "component.tsx",
+        compositionId: "NativeRemotion",
+        declaredFps: { numerator: "24", denominator: "1" },
+        inputProps: {},
+        inputPropsSchema: null,
+        allowDelayRender: false,
+        delayTimeoutMs: 30_000,
+        assetPaths: [],
+        fontPaths: [],
+        generatedCodePaths: [],
+        approvedNetworkResources: [],
+      }),
+    );
+
+    await expect(
+      validateNativeCompositionManifest({
+        projectRoot: root,
+        manifestPath: "manifest.json",
+        expectedEngine: "remotion",
+      }),
+    ).resolves.toEqual({
+      engine: "remotion",
+      compositionId: "NativeRemotion",
+      fps: { numerator: "24", denominator: "1" },
+    });
+  });
+
   it("registers a structurally valid project-contained manifest without executing it", async () => {
     const parent = await temporaryDirectory("chai-native-manifest-");
     const root = path.join(parent, "Native.chai");
