@@ -7,6 +7,8 @@ import path from "node:path";
 test("authenticated Studio resolves the recorded editor, capture, persistence, and render feedback", async ({
   page,
 }) => {
+  // This end-to-end journey intentionally performs real proxy, render, QA, and capture work.
+  test.slow();
   await page.goto("/?workspace=edit");
   await expect(page.getByTestId("server-status")).toContainText("Local");
   await expect(page.locator('.brand-icon img[data-chai-brand="approved-v1"]')).toBeVisible();
@@ -557,17 +559,23 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect(comparisonDialog).toHaveCount(0);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expectRevisionIdentityAligned(page);
+  await expect.poll(() => activeStudioJobCount(page), { timeout: 30_000 }).toBe(0);
 
   await page.locator(".project-identity").click();
   await page.getByRole("button", { name: "Switch project" }).click();
   const resetLauncher = page.getByRole("dialog", { name: "Open or create a Chai Studio project" });
+  const resetProjectPath = path.join(os.tmpdir(), "chai-studio-authenticated-e2e", "Evidence Reset.chai");
   await resetLauncher.getByLabel("Project title").fill("Evidence Reset");
-  await resetLauncher
-    .getByLabel("Absolute target path")
-    .fill(path.join(os.tmpdir(), "chai-studio-authenticated-e2e", "Evidence Reset.chai"));
+  await resetLauncher.getByLabel("Absolute target path").fill(resetProjectPath);
   await resetLauncher.getByLabel("Starter").selectOption("empty");
   await resetLauncher.getByRole("button", { name: "Create project" }).click();
+  const createdToast = page.locator(".studio-toast").filter({
+    has: page.getByText("Project created", { exact: true }),
+  });
+  await expect(createdToast).toContainText(resetProjectPath, { timeout: 30_000 });
   await expect(resetLauncher).toHaveCount(0);
+  await expect(page.locator(".project-identity")).toContainText("Evidence Reset");
+  await expectRevisionIdentityAligned(page);
   await page.getByRole("button", { name: "Deliver", exact: true }).click();
   const resetReceipt = page.getByLabel("QA and render receipt");
   await expect(resetReceipt).toContainText("No output");
@@ -599,6 +607,20 @@ const expectRevisionIdentityAligned = async (page: Page): Promise<void> => {
     })
     .toBe(true);
 };
+
+const activeStudioJobCount = async (page: Page): Promise<number> =>
+  page.evaluate(async () => {
+    const session = window.__CHAI_STUDIO_SESSION__;
+    if (session === undefined) throw new Error("Authenticated Studio session is unavailable.");
+    const response = await fetch(`${session.serverOrigin}/api/v1/jobs`, {
+      headers: { authorization: `Bearer ${session.token}` },
+    });
+    if (!response.ok) throw new Error(`Studio job listing failed with ${String(response.status)}.`);
+    const envelope = (await response.json()) as {
+      readonly data?: readonly { readonly status?: string }[];
+    };
+    return (envelope.data ?? []).filter((job) => job.status === "queued" || job.status === "running").length;
+  });
 
 const moveImportedAudioToFrame = async (
   page: Page,
