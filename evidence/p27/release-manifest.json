@@ -13,10 +13,10 @@
     "reportSha256": "0480a8d4c7e9cffbbab8bdf75a8e4d4c7b5d46dae44591f9aba7911159f3f4fc"
   },
   "licenseInventorySha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e",
-  "sourceCommit": "576be3b6bcc5ae6b278b171ec092579f6cfa4a65",
+  "sourceCommit": "ada2982b185b907795e4ba8999b5fbf735c5d152",
   "runtimeBundle": {
     "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64",
-    "bundleIdentity": "b2ff69fc8d48c0d1347df5a22b0986617bf8c7719e22c72656a238286daa210f",
+    "bundleIdentity": "a2bc3fc3a3842848e5d82b451133745284df2af1bda9a899821f969863a2d5f5",
     "fileCount": 15806,
     "selfContainedRuntime": true,
     "distributionScope": "personal-local-only"
@@ -493,24 +493,24 @@
       "sha256": "de600bc7527427048666b93313e0521c359070f78e34a282f9b0043215eac016"
     },
     {
-      "path": "apps/studio-web/dist/assets/editing-tools-Cxn_q2Fi.js",
-      "bytes": 137264,
-      "sha256": "b9137f3907efe148980c3da851468f7128fe194f60f32648650d23feb2da0b1d"
+      "path": "apps/studio-web/dist/assets/editing-tools-DuqMVATv.js",
+      "bytes": 137476,
+      "sha256": "d0083b65cd11335d739a478e2147a91b7204a059b703af926327732f6826f6c6"
     },
     {
-      "path": "apps/studio-web/dist/assets/editing-tools-Cxn_q2Fi.js.map",
-      "bytes": 438917,
-      "sha256": "10abfd5b011146c5d1ba9ec81e67fc557bd65bdd2addacab6bf9e148f2ffda09"
+      "path": "apps/studio-web/dist/assets/editing-tools-DuqMVATv.js.map",
+      "bytes": 439926,
+      "sha256": "8625fa6fc72755a81d9d41705797e6cb093692e7eb18c5a1984b26a94c79e4f2"
     },
     {
-      "path": "apps/studio-web/dist/assets/index-BmI-mypm.js",
+      "path": "apps/studio-web/dist/assets/index-B8FJP-nR.js",
       "bytes": 162784,
-      "sha256": "5934c4b701358cee027883ecd2ef71305410a7649adbb577b1686781916f3842"
+      "sha256": "9920be8c14635230103f4233df72c7064625524134472548e715c4f1ad6bb572"
     },
     {
-      "path": "apps/studio-web/dist/assets/index-BmI-mypm.js.map",
+      "path": "apps/studio-web/dist/assets/index-B8FJP-nR.js.map",
       "bytes": 511921,
-      "sha256": "74df00036ee5d22be13e72f026c4ff4df094562983f20b8f6be86b57309a1e9d"
+      "sha256": "4bbc66f5224b14ab9c725c4e45421ab2686c0593e89517c1fd10f8e57a086df4"
     },
     {
       "path": "apps/studio-web/dist/assets/index-RP2Fn5-a.css",
@@ -1790,7 +1790,7 @@
     {
       "path": "apps/studio-web/dist/index.html",
       "bytes": 871,
-      "sha256": "8e090b2c30619425d6eb0a6d16a034c53e00522733b9c2a718964a7a7536eac7"
+      "sha256": "7c8f9d985b09ecee52dbf6695fc8522cf0c4b37eb99d7d434e0b637054e15421"
     },
     {
       "path": "apps/studio-web/dist/third-party/react-mit.txt",
@@ -1805,7 +1805,7 @@
     {
       "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64/.chai-studio-release.json",
       "bytes": 4483083,
-      "sha256": "a2ca52ba0d61e0a2218cbcb09a50fe10260519a1bbd79a54466d1f4c51199e9a"
+      "sha256": "27c9342f73c063b664550a277cc00b673a3137bd3a0642ae5a3de7dd9380c400"
     },
     {
       "path": "docs/INSTALLATION.md",
@@ -5547,5 +5547,5 @@
     "status": "not-required-personal-local",
     "policy": "Checksums and gate identity are authoritative until public distribution or a desktop wrapper requires platform signing."
   },
-  "manifestIdentity": "f3586771139c9f449e2eedb94023c7844d7db2b36a5e50ed412926c1fcf97336"
+  "manifestIdentity": "85f90a2a38ca8f2640d0bd4281a0169121acadc6f17504e727c32a6c989d64fd"
 }
