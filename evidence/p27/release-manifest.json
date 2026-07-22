@@ -13,10 +13,10 @@
     "reportSha256": "0480a8d4c7e9cffbbab8bdf75a8e4d4c7b5d46dae44591f9aba7911159f3f4fc"
   },
   "licenseInventorySha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e",
-  "sourceCommit": "d2c18de558ec732538945d7d3ad7867d24f950ad",
+  "sourceCommit": "28f9932f2789d05f3548eb98a3868ebc91fb8cdb",
   "runtimeBundle": {
     "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64",
-    "bundleIdentity": "fa4a9c4b5d9deabe9f953512ee0f4ffd27e4d6d48e072dd2ffa2d7ae3f32c51d",
+    "bundleIdentity": "327c072e80a432fc75ac3d3d9eb07bc3016142a37a56b3e6d6a18ed30ec2c0ba",
     "fileCount": 15806,
     "selfContainedRuntime": true,
     "distributionScope": "personal-local-only"
@@ -1805,7 +1805,7 @@
     {
       "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64/.chai-studio-release.json",
       "bytes": 4483083,
-      "sha256": "19f03b04087e6bb08135069dc5b278c788db5e600b9baa9b8a9c1a46aa3a0f18"
+      "sha256": "d6bf63763a4237f954bdc842fd7ed20c8be8f5adccc88fdaad41f704c0adf0b0"
     },
     {
       "path": "docs/INSTALLATION.md",
@@ -5524,8 +5524,8 @@
     },
     {
       "path": "scripts/release-bundle.mjs",
-      "bytes": 16308,
-      "sha256": "e6625a3cd11de99ce3780d161b5f4c654e9eb054d2af5cf72992eea613c10cc0"
+      "bytes": 16905,
+      "sha256": "dac9dad7797f5f7ec54d32bc1a644ab02d5104f16b5e1e63f87b56beffbacfe6"
     },
     {
       "path": "scripts/release-operations.mjs",
@@ -5547,5 +5547,5 @@
     "status": "not-required-personal-local",
     "policy": "Checksums and gate identity are authoritative until public distribution or a desktop wrapper requires platform signing."
   },
-  "manifestIdentity": "ffc0db3e8c0b2c3e244a40bc750c7cb10134b2091a4592c548de411f6d3a2490"
+  "manifestIdentity": "e3f4a1bb5d635bc5440d734ead56445bc7f54af7b01b5d8b5c7cbadbeeb95342"
 }

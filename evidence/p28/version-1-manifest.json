@@ -1796,12 +1796,12 @@
     {
       "path": "evidence/p27/release-manifest.json",
       "bytes": 199402,
-      "sha256": "219f03ded64abd5394d2824ddc88eb54111c09af7883b225914bbb7407e69841"
+      "sha256": "686c4ff619b0d6545757b2c5b9b567b8589662f62f399adadd487d5718365740"
     },
     {
       "path": "evidence/p28-tech/gate-report.json",
-      "bytes": 62353,
-      "sha256": "5d80674642d527206662e3b7cd277f29344053f5a79531a877fdc2a6021a55ab"
+      "bytes": 61994,
+      "sha256": "cf820d3806698967bb3002c974f48436ebbe703c0c982b0a409cf338b7c95985"
     },
     {
       "path": "evidence/p28/traceability-matrix.json",
@@ -4015,8 +4015,8 @@
     },
     {
       "path": "packages/cli/runtime/scripts/release-bundle.mjs",
-      "bytes": 16308,
-      "sha256": "e6625a3cd11de99ce3780d161b5f4c654e9eb054d2af5cf72992eea613c10cc0"
+      "bytes": 16905,
+      "sha256": "dac9dad7797f5f7ec54d32bc1a644ab02d5104f16b5e1e63f87b56beffbacfe6"
     },
     {
       "path": "packages/cli/runtime/scripts/release-operations.mjs",
@@ -6896,5 +6896,5 @@
   ],
   "releaseAuthorized": false,
   "authorizationSource": "owner-signed exact-candidate receipt",
-  "manifestIdentity": "cce62bb5578aeea877bffeff4c706b8a2aa8e7a82b25bc111da0845b7c0a9bcf"
+  "manifestIdentity": "c05fadc24334ee4eeb60d6e90aa1f4f83949eb7d05458b2eb60c6bd7f2a31a48"
 }

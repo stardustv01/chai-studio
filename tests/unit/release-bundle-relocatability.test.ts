@@ -52,6 +52,36 @@ describe("release bundle relocatability", () => {
     const root = await temporaryRoot();
     const forbidden = path.join(root, "host-workspace");
     await writeFile(path.join(root, "leak.txt"), `resolved from ${forbidden}\n`);
+    await expect(assertNoHostPaths(root, [], { textOnlyPaths: [forbidden] })).rejects.toThrow(/host path/iu);
+  });
+
+  it("continues to reject a CI home path in text runtime metadata", async () => {
+    const root = await temporaryRoot();
+    const forbidden = "/Users/runner";
+    await writeFile(path.join(root, "runtime-config.json"), JSON.stringify({ cache: forbidden }));
+
+    await expect(assertNoHostPaths(root, [forbidden])).rejects.toThrow(/host path/iu);
+  });
+
+  it("does not treat embedded native build metadata as a runtime host-path leak", async () => {
+    const root = await temporaryRoot();
+    const forbidden = "/Users/runner";
+    await writeFile(
+      path.join(root, "native-runtime.dylib"),
+      Buffer.concat([Buffer.from([0xcf, 0xfa, 0xed, 0xfe, 0]), Buffer.from(forbidden)]),
+    );
+
+    await expect(assertNoHostPaths(root, [], { textOnlyPaths: [forbidden] })).resolves.toBeUndefined();
+  });
+
+  it("still rejects an exact checkout or staging path embedded in a native binary", async () => {
+    const root = await temporaryRoot();
+    const forbidden = path.join(root, "checkout");
+    await writeFile(
+      path.join(root, "native-runtime.node"),
+      Buffer.concat([Buffer.from([0xcf, 0xfa, 0xed, 0xfe, 0]), Buffer.from(forbidden)]),
+    );
+
     await expect(assertNoHostPaths(root, [forbidden])).rejects.toThrow(/host path/iu);
   });
 

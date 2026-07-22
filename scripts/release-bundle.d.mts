@@ -20,7 +20,11 @@ export interface ReleaseBundleMarker {
 export declare const releaseBundleMarker: string;
 export declare const assertPostFreezeAuthorityChanges: (changedFiles: readonly string[]) => void;
 export declare const sanitizeDeployedNodeModules: (applicationRoot: string) => Promise<void>;
-export declare const assertNoHostPaths: (root: string, forbiddenPaths: readonly string[]) => Promise<void>;
+export declare const assertNoHostPaths: (
+  root: string,
+  forbiddenPaths: readonly string[],
+  options?: { readonly textOnlyPaths?: readonly string[] },
+) => Promise<void>;
 export declare const createReleaseBundle: (input: {
   readonly sourceRoot: string;
   readonly destination: string;
