@@ -4,9 +4,9 @@
   "version": "1.0.0-rc.4",
   "candidate": "1.0.0-rc.4",
   "distribution": "public",
-  "sourceGateIdentity": "299fc9740035e2742f80c0c4b0eb114a5c3ec07398f13cc5b70cd52ed2baeb67",
-  "releaseManifestIdentity": "e3f4a1bb5d635bc5440d734ead56445bc7f54af7b01b5d8b5c7cbadbeeb95342",
-  "finalManifestIdentity": "c05fadc24334ee4eeb60d6e90aa1f4f83949eb7d05458b2eb60c6bd7f2a31a48",
+  "sourceGateIdentity": "91f2f9f978aaa86f4f93beab56ba2b7f7e55e708167b0a795f1d24a99ce7a298",
+  "releaseManifestIdentity": "f3586771139c9f449e2eedb94023c7844d7db2b36a5e50ed412926c1fcf97336",
+  "finalManifestIdentity": "d00c3759ebc60e253e509ae4dcf92cd529e1b16231b4a347ffcd7b1c028eeb12",
   "traceabilityIdentity": "a5c7ac2cb927867bcbd746828036a56ad145924e4d38c2b522e3d0a331126ad4",
   "technicalGateIdentity": "a4f30d2e0717ee74cce3273682690d2b80a0d6e3cd14e3632774be82b3a49450",
   "technicalGatePassed": true,
@@ -34,11 +34,11 @@
   "finalGateIdentity": "bb8d5a0f091dac80dbd1433060d5cac8d884d2dcc4856c80d30826f7c440b1f0",
   "signature": {
     "algorithm": "Ed25519",
-    "value": "OMqyVrSrRqFkKGqUpuDZF0P1g0k7TOpQg8+aiaEjgr3MS1djcQBPwb37ciZICX87ycKUrsWI8GZTeqWpr4ndDw==",
+    "value": "rBvhdpqp9kthAO6ZJZBEgZD5pfb5gvPWdK+2KsYBstNzB4teeaeEoBqTlEhjMVmg6GDiP96GlLxTm9BA2YpyBA==",
     "publicKeySha256": "bb104fb0556b4039f54ec671ceae41d8b50f3a3040cefab2c291e49340a91f67",
     "publicKeyFile": "evidence/p28/version-1-release-public-key.pem"
   },
   "releaseAuthorized": true,
   "releaseTagAuthorized": true,
-  "candidateIdentity": "9b1f0985bd301933593c2d7a4c83e7666b037e21112d1ca123c7fda3f70d88e3"
+  "candidateIdentity": "f2f41c06017d60c009588e9ccffc475a29e706d3c10ed289b1c72df55c09496a"
 }

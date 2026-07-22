@@ -331,8 +331,8 @@ export const assertNoHostPaths = async (root, forbiddenPaths, { textOnlyPaths = 
       else if (entry.isFile()) {
         const bytes = await readFile(absolute);
         // Exact checkout and staging paths remain forbidden in every file. Broader paths such as
-        // HOME are checked only in text: native dependencies can contain an upstream builder's
-        // home in non-runtime metadata (for example, Sharp's `/Users/runner` debug strings).
+        // HOME is checked only in text because native dependencies can contain an upstream
+        // builder's home in non-runtime debug metadata.
         const checkedPaths = bytes.includes(0) ? normalized : [...normalized, ...normalizedTextOnly];
         const leaked = checkedPaths.find((value) => bytes.includes(Buffer.from(value)));
         if (leaked !== undefined) {
