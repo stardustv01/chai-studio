@@ -60,6 +60,7 @@ const exactFiles = [
   "docs/OPERATIONAL_HANDOFF_V1.md",
 ];
 const trees = [
+  "governance/planning-baseline",
   "apps/studio-server/dist",
   "apps/studio-web/dist",
   "packages/cli/runtime",
@@ -85,7 +86,7 @@ for (const file of exactFiles) {
   files.push({ path: file, bytes: bytes.byteLength, sha256: await sha256File(path.join(root, file)) });
 }
 for (const tree of trees) {
-  const entries = await hashTree(path.join(root, tree));
+  const entries = await hashTree(path.join(root, tree), new Set([".tsbuildinfo"]));
   files.push(...entries.map((entry) => ({ ...entry, path: path.posix.join(tree, entry.path) })));
 }
 files.sort((left, right) => left.path.localeCompare(right.path, "en"));

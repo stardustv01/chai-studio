@@ -5,7 +5,10 @@ import { fileURLToPath } from "node:url";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const workspace = path.resolve(directory, "..");
-const planningRoot = path.resolve(workspace, "..");
+const configuredPlanningRoot = process.env.CHAI_STUDIO_PLANNING_ROOT?.trim();
+const planningRoot = configuredPlanningRoot
+  ? path.resolve(workspace, configuredPlanningRoot)
+  : path.resolve(workspace, "..");
 const writeReport = process.argv.includes("--write");
 const graph = JSON.parse(
   await readFile(path.join(planningRoot, "CHAI_STUDIO_FINAL_TASK_GRAPH.json"), "utf8"),

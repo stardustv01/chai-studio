@@ -8,6 +8,7 @@ pnpm-lock.yaml
 governance/*.json
 governance/contracts/*.json
 governance/licenses/dependency-inventory.json
+governance/planning-baseline
 fixtures/goldens/checksum-manifest.json
 packages/schema/src/generated
 evidence

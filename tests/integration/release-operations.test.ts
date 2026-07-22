@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -106,10 +106,19 @@ const projectFixture = async (root: string) => {
 
 const releaseFixture = async (root: string) => {
   await mkdir(path.join(root, "scripts"), { recursive: true });
+  await mkdir(path.join(root, "vendor", "hyperframes"), { recursive: true });
+  const deployedDependencies = path.join(root, "apps", "studio-server", "node_modules");
+  await mkdir(deployedDependencies, { recursive: true });
   await writeFile(
     path.join(root, "scripts", "chai-studio.mjs"),
     '#!/usr/bin/env node\nprocess.stdout.write("standalone release fixture\\n");\n',
   );
+  await writeFile(
+    path.join(root, "vendor", "hyperframes", "cli.js"),
+    '#!/usr/bin/env node\nprocess.stdout.write("hyperframes v0.7.58 fixture\\n");\n',
+  );
+  const dependencyLink = path.join(root, "vendor", "hyperframes", "node_modules");
+  await symlink(path.relative(path.dirname(dependencyLink), deployedDependencies), dependencyLink, "dir");
   await sealReleaseBundle({
     root,
     metadata: {

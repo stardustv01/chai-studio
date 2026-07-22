@@ -1,6 +1,6 @@
 import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { execFile } from "node:child_process";
-import { cp, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { URL } from "node:url";
@@ -117,6 +117,9 @@ const releaseFixture = async (
 ) => {
   const bundle = path.join(root, `chai-studio-${version}`);
   await mkdir(path.join(bundle, "scripts"), { recursive: true });
+  await mkdir(path.join(bundle, "vendor", "hyperframes"), { recursive: true });
+  const deployedDependencies = path.join(bundle, "apps", "studio-server", "node_modules");
+  await mkdir(deployedDependencies, { recursive: true });
   for (const script of [
     "browser-isolation.mjs",
     "browser-path-policy.mjs",
@@ -127,6 +130,12 @@ const releaseFixture = async (
   ]) {
     await cp(path.resolve("scripts", script), path.join(bundle, "scripts", script));
   }
+  await writeFile(
+    path.join(bundle, "vendor", "hyperframes", "cli.js"),
+    '#!/usr/bin/env node\nprocess.stdout.write("hyperframes v0.7.58 fixture\\n");\n',
+  );
+  const dependencyLink = path.join(bundle, "vendor", "hyperframes", "node_modules");
+  await symlink(path.relative(path.dirname(dependencyLink), deployedDependencies), dependencyLink, "dir");
   const marker = await sealReleaseBundle({
     root: bundle,
     metadata: {

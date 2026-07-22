@@ -48,6 +48,18 @@ describe("P28 explicit release authorization", () => {
       "utf8",
     );
     const releaseBundle = readFileSync(new URL("../../scripts/release-bundle.mjs", import.meta.url), "utf8");
+    const cliRuntimeBuilder = readFileSync(
+      new URL("../../scripts/build-cli-runtime.mjs", import.meta.url),
+      "utf8",
+    );
+    const p27ManifestGenerator = readFileSync(
+      new URL("../../scripts/generate-p27-release-manifest.mjs", import.meta.url),
+      "utf8",
+    );
+    const p28ManifestGenerator = readFileSync(
+      new URL("../../scripts/generate-p28-version-manifest.mjs", import.meta.url),
+      "utf8",
+    );
     const gateRunner = readFileSync(
       new URL("../../scripts/run-acceptance-gate.mjs", import.meta.url),
       "utf8",
@@ -58,14 +70,25 @@ describe("P28 explicit release authorization", () => {
     );
     const protectedReleaseJob = workflow.slice(workflow.indexOf("  release-gate:"));
     const governanceCheck = manifest.scripts?.["release:governance:check"] ?? "";
+    const releaseBuild = manifest.scripts?.["release:build"] ?? "";
 
     expect(workflow).not.toContain('run: echo "All required');
     expect(workflow).toContain("pnpm release:bundle -- --source-manifest evidence/p27/release-manifest.json");
     expect(workflow).toContain("pnpm release:bundle:verify");
     expect(workflow).toContain("pnpm release:tag:check");
+    expect(protectedReleaseJob).toContain("if: startsWith(github.ref, 'refs/tags/v')");
+    expect(protectedReleaseJob).not.toContain("github.event_name == 'workflow_dispatch'");
     expect(protectedReleaseJob).toContain("pnpm exec playwright install chromium");
-    expect(workflow.indexOf("run: pnpm build")).toBeLessThan(workflow.indexOf("run: pnpm release:tag:check"));
+    expect(protectedReleaseJob).toContain("run: pnpm release:build");
+    expect(protectedReleaseJob.indexOf("run: pnpm release:build")).toBeLessThan(
+      protectedReleaseJob.indexOf("pnpm release:bundle --"),
+    );
+    expect(protectedReleaseJob.indexOf("run: pnpm release:tag:check")).toBeLessThan(
+      protectedReleaseJob.indexOf("Install FFmpeg runtime"),
+    );
+    expect(releaseBuild).toContain("tsc -b --force");
     expect(workflow).toContain("pnpm release:governance:check");
+    expect(protectedReleaseJob).toContain("CHAI_STUDIO_PLANNING_ROOT: governance/planning-baseline");
     expect(workflow).toContain("pnpm p28:technical-contract");
     expect(workflow).toContain("generate-p28-version-manifest.mjs --check");
     expect(workflow).toContain("validate-p28-final-contract.mjs --require-final-gate");
@@ -77,6 +100,7 @@ describe("P28 explicit release authorization", () => {
     expect(governanceCheck).toContain("generate-p27-release-manifest.mjs --check");
     expect(governanceCheck).not.toMatch(/sign-p28|V1_OWNER_APPROVAL|releaseAuthorized/iu);
     expect(taskGraphValidator).toContain('process.argv.includes("--write")');
+    expect(taskGraphValidator).toContain("process.env.CHAI_STUDIO_PLANNING_ROOT");
     expect(contractValidator).toContain('process.argv.includes("--write")');
     expect(signer).toContain("verifyAcceptanceGateReportIdentity(finalGate)");
     expect(finalValidator).toContain("verifyAcceptanceGateReportIdentity(finalGate ?? {})");
@@ -86,6 +110,17 @@ describe("P28 explicit release authorization", () => {
     expect(releaseBundle).toContain('"--prefer-offline"');
     expect(releaseBundle).toContain('"--frozen-lockfile"');
     expect(releaseBundle).not.toContain('"--offline"');
+    expect(releaseBundle).toContain("sanitizeDeployedNodeModules");
+    expect(releaseBundle).toContain("assertNoHostPaths");
+    expect(releaseBundle).toContain('"packages/cli/runtime/vendor/hyperframes"');
+    expect(releaseBundle).toContain('"vendor/hyperframes/cli.js"');
+    expect(releaseBundle).toContain("assertEmbeddedHyperframesCliStarts");
+    expect(releaseBundle).toContain("stdout.trimEnd()");
+    expect(cliRuntimeBuilder).toContain("absWorkingDir: root");
+    expect(p27ManifestGenerator).toContain('new Set([".tsbuildinfo"])');
+    expect(p28ManifestGenerator).toContain('new Set([".tsbuildinfo"])');
+    expect(p27ManifestGenerator).toContain('"governance/planning-baseline"');
+    expect(p28ManifestGenerator).toContain('"governance/planning-baseline"');
   });
 
   it("permits an evidence-only authority commit but rejects post-freeze source drift", () => {

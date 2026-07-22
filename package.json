@@ -16,6 +16,7 @@
     "dev:server": "pnpm --filter @chai-studio/studio-server dev",
     "dev:web": "pnpm --filter @chai-studio/studio-web dev",
     "build": "pnpm schema:check && tsc -b && pnpm --filter @chai-studio/studio-web build && node scripts/validate-web-release-boundary.mjs",
+    "release:build": "pnpm schema:check && tsc -b --force && pnpm --filter @chai-studio/studio-web build && node scripts/validate-web-release-boundary.mjs",
     "typecheck": "tsc -b --pretty false && tsc -p tsconfig.tools.json --noEmit --pretty false",
     "lint:code": "eslint . --max-warnings 0",
     "lint:format": "prettier --check .",

@@ -56,6 +56,7 @@ const exactFiles = [
   ].map((directory) => `${directory}/package.json`),
 ];
 const trees = [
+  "governance/planning-baseline",
   "apps/studio-server/dist",
   "apps/studio-web/dist",
   "packages/audio/dist",
@@ -81,7 +82,7 @@ for (const file of exactFiles) {
   });
 }
 for (const tree of trees) {
-  const entries = await hashTree(path.join(root, tree));
+  const entries = await hashTree(path.join(root, tree), new Set([".tsbuildinfo"]));
   files.push(...entries.map((entry) => ({ ...entry, path: path.posix.join(tree, entry.path) })));
 }
 files.sort((left, right) => left.path.localeCompare(right.path, "en"));

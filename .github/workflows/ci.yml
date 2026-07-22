@@ -109,7 +109,7 @@ jobs:
 
   release-gate:
     name: protected-release-gate
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: [quality, build, end-to-end]
     runs-on: macos-15
     timeout-minutes: 20
@@ -122,6 +122,7 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: corepack prepare pnpm@11.11.0 --activate
+      - run: pnpm release:tag:check
       - name: Install FFmpeg runtime
         run: brew install ffmpeg
       - id: install
@@ -129,15 +130,16 @@ jobs:
       - name: Install isolated Playwright Chromium
         run: pnpm exec playwright install chromium
       - id: release_build
-        run: pnpm build
+        run: pnpm release:build
       - name: Build exact npm registry runtime
         run: pnpm run cli:runtime:build
-      - run: pnpm release:tag:check
       - run: pnpm release:bundle -- --source-manifest evidence/p27/release-manifest.json
       - run: pnpm release:bundle:verify
       - id: governance
         name: Validate frozen governance, current isolation, licenses, and release manifest
         run: pnpm release:governance:check
+        env:
+          CHAI_STUDIO_PLANNING_ROOT: governance/planning-baseline
       - id: technical
         name: Validate P28 technical evidence
         if: ${{ always() && steps.install.outcome == 'success' }}
