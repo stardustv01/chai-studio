@@ -68,6 +68,7 @@ describe("P28 explicit release authorization", () => {
     expect(workflow).toContain("validate-p28-final-contract.mjs --require-final-gate");
     expect(governanceCheck).toContain("validate-task-graph.mjs --check");
     expect(governanceCheck).toContain("validate-contract-index.mjs --check");
+    expect(governanceCheck).toContain("validate-source-license.mjs");
     expect(governanceCheck).toContain("generate-p23-license-inventory.mjs --check");
     expect(governanceCheck).toContain("run-isolation-spike.mjs --check");
     expect(governanceCheck).toContain("generate-p27-release-manifest.mjs --check");

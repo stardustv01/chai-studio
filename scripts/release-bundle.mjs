@@ -28,6 +28,9 @@ const runtimeScripts = [
   "runtime-web-server.mjs",
 ];
 const runtimeDocuments = [
+  "LICENSE",
+  "NOTICE",
+  "THIRD_PARTY_NOTICES.md",
   "docs/INSTALLATION.md",
   "docs/KNOWN_LIMITATIONS_V1.md",
   "docs/OPERATIONAL_HANDOFF_V1.md",

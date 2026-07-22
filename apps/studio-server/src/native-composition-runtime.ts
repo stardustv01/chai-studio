@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { createReadStream } from "node:fs";
+import { createReadStream, existsSync } from "node:fs";
 import { access, copyFile, readFile, readdir, realpath } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -540,11 +540,19 @@ const managedHeadlessShell = async (): Promise<
   throw new Error("No Playwright-managed Chromium headless shell is available for native rendering.");
 };
 
-const hyperframesExecutable = (): string =>
-  path.resolve(
-    path.dirname(fileURLToPath(import.meta.url)),
+const hyperframesExecutable = (): string => {
+  const runtimeDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const workspaceExecutable = path.resolve(
+    runtimeDirectory,
     "../../../packages/engine-adapters/node_modules/.bin/hyperframes",
   );
+  if (existsSync(workspaceExecutable)) return workspaceExecutable;
+  try {
+    return fileURLToPath(import.meta.resolve("hyperframes/dist/cli.js"));
+  } catch {
+    throw new Error("The pinned HyperFrames CLI is unavailable in this Chai Studio installation.");
+  }
+};
 
 const clipOverrides = (clip: TimelineClip | undefined, prefix: string): Readonly<Record<string, unknown>> =>
   Object.fromEntries(

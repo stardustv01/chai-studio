@@ -23,6 +23,13 @@ const results = [
     passed: workflow.baseline.decision === "allowed-personal-local-only",
   },
   {
+    check: "apache-source-publication-boundary",
+    passed:
+      workflow.baseline.sourcePublishing === "allowed-apache-2.0" &&
+      workflow.baseline.prebuiltRuntimePublishing === "unsupported-pending-review" &&
+      inventory.scope.sourceDistribution === "apache-2.0-open-source",
+  },
+  {
     check: "release-triggers-present-and-blocking",
     passed: mandatoryTriggers.every((id) =>
       workflow.triggers.some(
@@ -44,8 +51,21 @@ const results = [
     check: "browser-font-asset-obligations-recorded",
     passed:
       inventory.browser.length === 2 &&
-      Array.isArray(inventory.fonts.bundledApplicationFonts) &&
-      Array.isArray(inventory.assets.bundledApplicationMedia),
+      inventory.browserPayload.bundledLibraries.some(
+        (entry) =>
+          entry.license === "MIT" &&
+          entry.names.join(",") === "react,react-dom,scheduler" &&
+          entry.licenseText.endsWith("react-mit.txt"),
+      ) &&
+      inventory.fonts.bundledApplicationFonts.length === 3 &&
+      inventory.fonts.bundledApplicationFonts.every(
+        (entry) => entry.license === "OFL-1.1" && entry.licenseText.endsWith("OFL.txt"),
+      ) &&
+      inventory.assets.bundledApplicationMedia.length === 2 &&
+      inventory.assets.bundledApplicationMedia.every(
+        (entry) =>
+          entry.license === "Apache-2.0" && entry.distributionClass === "chai-owned-application-artwork",
+      ),
   },
   {
     check: "unknown-license-release-block",

@@ -10,7 +10,11 @@ npx @chai-studio/cli@latest doctor
 npx @chai-studio/cli@latest launch
 ```
 
-The registry package is only a small verified downloader; it does not contain the application or require pnpm. A global command is optional: `npm install --global @chai-studio/cli` makes the same operations available as `chai-studio install`, `chai-studio doctor`, and `chai-studio launch`.
+The registry package contains the compiled Chai-owned application, declares its Node-side runtime
+libraries as exact npm dependencies, and does not require pnpm. `install` downloads the isolated
+Playwright Chromium and runs the runtime doctor; FFmpeg/FFprobe must already be available on `PATH`.
+A global command is optional: `npm install --global @chai-studio/cli` makes the same operations
+available as `chai-studio install`, `chai-studio doctor`, and `chai-studio launch`.
 
 For an offline personal-local RC, verify and unpack the supplied archive instead. End users still do not install pnpm, compile TypeScript, or run Vite:
 
@@ -30,4 +34,9 @@ On the first default launch, Chai Studio creates `~/Movies/Chai Studio/Chai Stud
 
 The installed runtime serves the compiled web application directly; Vite and the source checkout are not used. The launcher injects a new session token before React starts. Opening the web URL without that bootstrap shows only a fail-closed “Launch Chai Studio from the CLI” screen; it never exposes the development UI fixture or project actions. The token is not placed in the URL or printed to the terminal.
 
-Uninstall a registry installation with `npx @chai-studio/cli@latest uninstall`, or use the exact offline launcher with `uninstall --prefix "$HOME/Applications/Chai Studio Local"`. It accepts only an exact Chai installation marker, refuses a prefix containing a `.chai` project, and reports `projectsDeleted: false`. Projects, backups, archives, and approved outputs outside the application prefix are never removed.
+An `npx` invocation is ephemeral and has no application prefix to uninstall. Remove a global registry
+installation with `npm uninstall --global @chai-studio/cli`. The exact offline personal launcher
+still supports `uninstall --prefix "$HOME/Applications/Chai Studio Local"`; it accepts only an exact
+Chai installation marker, refuses a prefix containing a `.chai` project, and reports
+`projectsDeleted: false`. Projects, backups, archives, and approved outputs outside the application
+prefix are never removed.

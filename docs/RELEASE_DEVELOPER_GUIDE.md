@@ -40,4 +40,14 @@ node scripts/validate-p28-final-contract.mjs --require-final-gate
 
 `p28:sign` creates `~/.config/chai-studio/release-signing-ed25519.pem` with mode `0600` only after every pre-signing check passes. Never commit, upload, or paste this private key. Back it up in encrypted owner-controlled storage. Its public key is written to `evidence/p28/version-1-release-public-key.pem` and may be committed.
 
-The small registry CLI remains `private` and ships with an empty trust store until those gates pass. Validate its exact six-file payload with `pnpm cli:package:check`. After final authorization, create the signed HTTPS download index with `pnpm cli:release-index -- --archive-receipt PATH --archive-url HTTPS_URL --private-key ~/.config/chai-studio/release-signing-ed25519.pem --output PATH`. The generator independently verifies that P27, P28, the receipt, and archive all name the same exact public candidate before producing a publishable record. Adding the public key to the CLI trust store, making the registry package publishable, creating the GitHub release, tagging, and publishing npm remain separate explicit owner actions.
+The registry CLI is configured with `private: false` and public npm access. Its prepack step bundles
+only Chai workspace server code, copies the compiled browser payload, and leaves Node-side
+third-party libraries as exact npm dependencies. This configuration permits publication but does not
+perform or authorize it. Validate the complete tarball, included licenses, runtime marker, and
+absence of `node_modules` with `pnpm cli:package:check`.
+
+The signed HTTPS archive index is a legacy personal-install mechanism. Its generator now refuses the
+current `personal-local-only` bundle and can accept only a separately reviewed
+`public-prebuilt-runtime` archive. The public npm path does not use that archive. Making the registry
+package publishable, creating the exact Git tag, creating a GitHub release, and publishing npm remain
+separate explicit owner actions after final authorization.

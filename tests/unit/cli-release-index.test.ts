@@ -22,7 +22,7 @@ describe("CLI release index generation", () => {
       version: "1.0.0-rc.4",
       sourceCommit,
       licenseInventorySha256: dependencyInventorySha256,
-      runtimeBundle: { bundleIdentity },
+      runtimeBundle: { bundleIdentity, distributionScope: "public-prebuilt-runtime" },
     });
     const finalManifest = identified({
       schemaVersion: "1.0.0",
@@ -71,6 +71,8 @@ describe("CLI release index generation", () => {
       version: "1.0.0-rc.4",
       sourceCommit,
       bundleIdentity,
+      distributionScope: "public-prebuilt-runtime",
+      deliveryModel: "self-contained-archive",
       bytes: 123,
       sha256: "c".repeat(64),
       releaseAuthorized: false,
@@ -92,6 +94,18 @@ describe("CLI release index generation", () => {
     expect(release).toBeDefined();
     if (release === undefined) throw new Error("Expected one signed release record.");
     expect(verifyReleaseRecord(release, publicKey)).toBe(true);
+    expect(() =>
+      buildCliReleaseIndex({
+        archiveReceipt: { ...archiveReceipt, distributionScope: "personal-local-only" },
+        p27Manifest,
+        finalManifest,
+        releaseReceipt,
+        publicKeyPem: publicKey,
+        privateKeyPem: privateKey,
+        archiveUrl: "https://example.test/chai.tar.gz",
+        keyId: "chai-studio-v1",
+      }),
+    ).toThrow(/public prebuilt runtime/iu);
     const contradictoryUnsignedReceipt = {
       ...unsignedReceipt,
       publicDistributionReviewIdentity: "2".repeat(64),

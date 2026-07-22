@@ -7,9 +7,11 @@ test-results
 pnpm-lock.yaml
 governance/*.json
 governance/contracts/*.json
+governance/licenses/dependency-inventory.json
 fixtures/goldens/checksum-manifest.json
 packages/schema/src/generated
 evidence
 design/chai-logo-production-v1
 design/chai-logo-production-v2-faithful
 design/chai-icon-system-plan
+design/devpost-thumbnail/gif-composition/assets/gsap.min.js

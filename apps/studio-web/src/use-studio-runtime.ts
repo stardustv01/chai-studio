@@ -77,6 +77,10 @@ export interface RecentProjectView {
   readonly lastOpenedAt: string;
 }
 
+export type PreviewResyncAction =
+  | Readonly<{ type: "preview-state"; payload: Readonly<Record<string, unknown>> }>
+  | Readonly<{ type: "preview-local"; preview: PreviewTruth }>;
+
 type RuntimeAction =
   | Readonly<{ type: "workspace"; workspace: WorkspaceId }>
   | Readonly<{ type: "shell-state"; shellState: ShellStateId }>
@@ -96,8 +100,7 @@ type RuntimeAction =
       captionDocuments: readonly CaptionDocument[];
     }>
   | Readonly<{ type: "timeline-history"; direction: "undo" | "redo" }>
-  | Readonly<{ type: "preview-state"; payload: Readonly<Record<string, unknown>> }>
-  | Readonly<{ type: "preview-local"; preview: PreviewTruth }>
+  | PreviewResyncAction
   | Readonly<{ type: "preview-tick" }>
   | Readonly<{ type: "render-state"; payload: unknown }>
   | Readonly<{ type: "resynced" }>
@@ -152,7 +155,7 @@ export interface StudioRuntime extends RuntimeState {
     readonly title: string;
     readonly starter: "empty" | "showcase" | "launch-film";
   }) => Promise<boolean>;
-  readonly resync: () => Promise<void>;
+  readonly resync: () => Promise<boolean>;
   readonly capture: () => void;
   readonly requestCapture: (
     mode: MonitorCaptureMode,
@@ -199,7 +202,7 @@ export const useStudioRuntime = (): StudioRuntime => {
   latestPreviewRef.current = state.snapshot.preview;
   const monitorCommandQueue = useRef<Promise<void>>(Promise.resolve());
   const timelineMutationQueue = useRef<Promise<void>>(Promise.resolve());
-  const resyncQueue = useRef<Promise<void>>(Promise.resolve());
+  const resyncQueue = useRef<Promise<boolean>>(Promise.resolve(true));
   const eventCursor = useRef<number | null>(null);
 
   const enqueueTimelineMutation = useCallback((task: () => Promise<void>): Promise<void> => {
@@ -223,23 +226,31 @@ export const useStudioRuntime = (): StudioRuntime => {
     }
   }, [client]);
 
-  const resync = useCallback((): Promise<void> => {
-    const run = async (): Promise<void> => {
-      if (client.sessionToken === null) return;
+  const resync = useCallback((): Promise<boolean> => {
+    const run = async (): Promise<boolean> => {
+      if (client.sessionToken === null) return false;
       const startedAt = performance.now();
       try {
-        const [project, revisions, preview, queue] = await Promise.all([
-          client.projectSnapshot(),
-          client.projectRevisions(),
-          client.previewSnapshot(),
-          client.renderQueue(),
-        ]);
-        dispatch({ type: "project-snapshot", payload: { ...project, revisionNumber: revisions.length } });
-        dispatch({ type: "preview-state", payload: preview });
-        dispatch({ type: "render-state", payload: queue });
+        const { project, preview, queue } = await fetchStudioResyncState(client);
+        dispatch({ type: "project-snapshot", payload: project });
+        let optionalStateFailed = false;
+        const previewAction = previewResyncActionFromSettled(preview);
+        if (previewAction !== null) {
+          dispatch(previewAction);
+        } else if (preview.status === "rejected") {
+          optionalStateFailed = true;
+          handleRuntimeError(preview.reason, dispatch);
+        }
+        if (queue.status === "fulfilled") {
+          dispatch({ type: "render-state", payload: queue.value });
+        } else {
+          optionalStateFailed = true;
+          handleRuntimeError(queue.reason, dispatch);
+        }
         dispatch({ type: "resynced" });
         dispatch({ type: "shell-state", shellState: "ready" });
-        dispatch({ type: "diagnostic", diagnostic: null });
+        if (!optionalStateFailed) dispatch({ type: "diagnostic", diagnostic: null });
+        return true;
       } catch (cause: unknown) {
         if (cause instanceof StudioApiError && cause.diagnostic.code === "server.project-not-open") {
           const recent = await client.recentProjects().catch(() => []);
@@ -249,6 +260,7 @@ export const useStudioRuntime = (): StudioRuntime => {
         } else {
           handleRuntimeError(cause, dispatch);
         }
+        return false;
       } finally {
         performanceMonitor.record("project-open", performance.now() - startedAt, {
           dataSource: "server",
@@ -256,7 +268,7 @@ export const useStudioRuntime = (): StudioRuntime => {
       }
     };
     const pending = resyncQueue.current.then(run, run);
-    resyncQueue.current = pending.catch(() => undefined);
+    resyncQueue.current = pending.catch(() => false);
     return pending;
   }, [client, performanceMonitor]);
 
@@ -346,7 +358,9 @@ export const useStudioRuntime = (): StudioRuntime => {
           },
         });
       },
-      onResyncRequired: resync,
+      onResyncRequired: async () => {
+        await resync();
+      },
     });
     return () => {
       controller.abort();
@@ -379,8 +393,11 @@ export const useStudioRuntime = (): StudioRuntime => {
       if (client.sessionToken === null || rootPath.trim().length === 0) return false;
       dispatch({ type: "shell-state", shellState: "loading" });
       try {
-        await client.openProject(rootPath.trim());
-        await resync();
+        await retryProjectSessionTransition(() => client.openProject(rootPath.trim()));
+        if (!(await resync())) {
+          dispatch({ type: "shell-state", shellState: "empty" });
+          return false;
+        }
         await refreshRecentProjects();
         dispatch({
           type: "toast",
@@ -417,12 +434,17 @@ export const useStudioRuntime = (): StudioRuntime => {
       }
       dispatch({ type: "shell-state", shellState: "loading" });
       try {
-        await client.createProject({
-          targetPath: input.targetPath.trim(),
-          title: input.title.trim(),
-          starter: input.starter,
-        });
-        await resync();
+        await retryProjectSessionTransition(() =>
+          client.createProject({
+            targetPath: input.targetPath.trim(),
+            title: input.title.trim(),
+            starter: input.starter,
+          }),
+        );
+        if (!(await resync())) {
+          dispatch({ type: "shell-state", shellState: "empty" });
+          return false;
+        }
         await refreshRecentProjects();
         dispatch({
           type: "toast",
@@ -2082,6 +2104,65 @@ const waitForSynchronizedPreview = async (
     });
   }
   throw new Error("Exact capture output completed, but preview revision synchronization timed out.");
+};
+
+const projectSessionRetryWindowMs = 10_000;
+const projectSessionMaximumRetryDelayMs = 1_000;
+
+export type StudioResyncClient = Pick<
+  StudioApiClient,
+  "previewSnapshot" | "projectRevisions" | "projectSnapshot" | "renderQueue"
+>;
+
+export interface StudioResyncState {
+  readonly project: Readonly<Record<string, unknown>>;
+  readonly preview: PromiseSettledResult<Readonly<Record<string, unknown>>>;
+  readonly queue: PromiseSettledResult<readonly unknown[]>;
+}
+
+export const fetchStudioResyncState = async (client: StudioResyncClient): Promise<StudioResyncState> => {
+  const optionalState = Promise.allSettled([client.previewSnapshot(), client.renderQueue()]);
+  const [project, revisions] = await Promise.all([client.projectSnapshot(), client.projectRevisions()]);
+  const [preview, queue] = await optionalState;
+  return { project: { ...project, revisionNumber: revisions.length }, preview, queue };
+};
+
+export const previewResyncActionFromSettled = (
+  preview: PromiseSettledResult<Readonly<Record<string, unknown>>>,
+): PreviewResyncAction | null => {
+  if (preview.status === "fulfilled") return { type: "preview-state", payload: preview.value };
+  if (
+    preview.reason instanceof StudioApiError &&
+    preview.reason.diagnostic.code === "server.preview-not-loaded"
+  ) {
+    return { type: "preview-local", preview: initialStudioSnapshot.preview };
+  }
+  return null;
+};
+
+export const retryProjectSessionTransition = async <Result>(
+  operation: () => Promise<Result>,
+): Promise<Result> => {
+  const deadline = Date.now() + projectSessionRetryWindowMs;
+  let delay = 50;
+  for (;;) {
+    try {
+      return await operation();
+    } catch (cause: unknown) {
+      if (
+        !(cause instanceof StudioApiError) ||
+        cause.diagnostic.code !== "server.project-state-conflict" ||
+        Date.now() >= deadline
+      ) {
+        throw cause;
+      }
+      const remaining = deadline - Date.now();
+      await new Promise<void>((resolve) => {
+        globalThis.setTimeout(resolve, Math.min(delay, remaining));
+      });
+      delay = Math.min(delay * 2, projectSessionMaximumRetryDelayMs);
+    }
+  }
 };
 
 const handleRuntimeError = (cause: unknown, dispatch: (action: RuntimeAction) => void): void => {
