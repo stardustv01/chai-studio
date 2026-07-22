@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0.0",
+  "product": "Chai Studio",
+  "version": "1.0.0-rc.4",
+  "distribution": "public",
+  "approved": true,
+  "inferred": false,
+  "owner": "Navin",
+  "approvedAt": "2026-07-22T10:26:20.000Z",
+  "statement": "I explicitly approve and authorize Chai Studio 1.0.0-rc.4 for public release."
+}

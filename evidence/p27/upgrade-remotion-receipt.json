@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": "remotion",
+  "candidate": "4.0.489",
+  "selectedFamilyOnly": true,
+  "otherEnginePin": "0.7.58",
+  "registryBefore": "d1e7bd63d172cb516f4ed691494990b41b6ab0adca0b2344131bbc926aeed145",
+  "registryAfter": "d1e7bd63d172cb516f4ed691494990b41b6ab0adca0b2344131bbc926aeed145",
+  "capabilityRegistryChanged": false,
+  "audioSyncCoverage": "full P27 gate",
+  "realRuntimeCoverage": "full P27 gate",
+  "passed": true,
+  "results": [
+    {
+      "name": "strict-adapter-types",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "adapter-contract",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/unit/remotion-discovery-validation.test.ts (4 tests) 9ms\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  16:42:30\n   Duration  467ms (transform 142ms, setup 0ms, import 400ms, tests 9ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/reports/junit/vitest-unit-remotion-discovery-validation.xml\n",
+      "stderr": ""
+    },
+    {
+      "name": "golden-integrity",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "{\n  \"passed\": true,\n  \"checked\": 44,\n  \"reviewedUiGoldens\": 41,\n  \"missing\": [],\n  \"stale\": [],\n  \"mismatches\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "performance-budget",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "{\n  \"passed\": true,\n  \"sampleCount\": 224,\n  \"budgetCount\": 8,\n  \"hardware\": {\n    \"id\": \"apple-m4-16gb\",\n    \"platform\": \"darwin\",\n    \"architecture\": \"arm64\",\n    \"cpuModel\": \"Apple M4\",\n    \"logicalCpuCount\": 10,\n    \"memoryGiB\": 16,\n    \"gpuClass\": \"Apple M4 integrated\",\n    \"osRelease\": \"25.5.0\"\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "security",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "{\n  \"passed\": true,\n  \"unsolicitedTelemetry\": false,\n  \"problems\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "license-review",
+      "passed": true,
+      "exitCode": 0,
+      "stdout": "{\n  \"phase\": \"P23\",\n  \"passed\": true,\n  \"results\": [\n    {\n      \"check\": \"personal-local-baseline\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"apache-source-publication-boundary\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"release-triggers-present-and-blocking\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"exact-engine-inventory\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"ffmpeg-obligation-recorded\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"browser-font-asset-obligations-recorded\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"unknown-license-release-block\",\n      \"passed\": true\n    },\n    {\n      \"check\": \"native-compositor-license-classification\",\n      \"passed\": true\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  ]
+}
