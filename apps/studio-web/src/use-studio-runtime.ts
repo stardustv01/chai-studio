@@ -77,6 +77,10 @@ export interface RecentProjectView {
   readonly lastOpenedAt: string;
 }
 
+export type PreviewResyncAction =
+  | Readonly<{ type: "preview-state"; payload: Readonly<Record<string, unknown>> }>
+  | Readonly<{ type: "preview-local"; preview: PreviewTruth }>;
+
 type RuntimeAction =
   | Readonly<{ type: "workspace"; workspace: WorkspaceId }>
   | Readonly<{ type: "shell-state"; shellState: ShellStateId }>
@@ -96,8 +100,7 @@ type RuntimeAction =
       captionDocuments: readonly CaptionDocument[];
     }>
   | Readonly<{ type: "timeline-history"; direction: "undo" | "redo" }>
-  | Readonly<{ type: "preview-state"; payload: Readonly<Record<string, unknown>> }>
-  | Readonly<{ type: "preview-local"; preview: PreviewTruth }>
+  | PreviewResyncAction
   | Readonly<{ type: "preview-tick" }>
   | Readonly<{ type: "render-state"; payload: unknown }>
   | Readonly<{ type: "resynced" }>
@@ -228,19 +231,13 @@ export const useStudioRuntime = (): StudioRuntime => {
       if (client.sessionToken === null) return false;
       const startedAt = performance.now();
       try {
-        const optionalState = Promise.allSettled([client.previewSnapshot(), client.renderQueue()]);
-        const [project, revisions] = await Promise.all([client.projectSnapshot(), client.projectRevisions()]);
-        dispatch({ type: "project-snapshot", payload: { ...project, revisionNumber: revisions.length } });
-        const [preview, queue] = await optionalState;
+        const { project, preview, queue } = await fetchStudioResyncState(client);
+        dispatch({ type: "project-snapshot", payload: project });
         let optionalStateFailed = false;
-        if (preview.status === "fulfilled") {
-          dispatch({ type: "preview-state", payload: preview.value });
-        } else if (
-          preview.reason instanceof StudioApiError &&
-          preview.reason.diagnostic.code === "server.preview-not-loaded"
-        ) {
-          dispatch({ type: "preview-local", preview: initialStudioSnapshot.preview });
-        } else {
+        const previewAction = previewResyncActionFromSettled(preview);
+        if (previewAction !== null) {
+          dispatch(previewAction);
+        } else if (preview.status === "rejected") {
           optionalStateFailed = true;
           handleRuntimeError(preview.reason, dispatch);
         }
@@ -2112,7 +2109,40 @@ const waitForSynchronizedPreview = async (
 const projectSessionRetryWindowMs = 10_000;
 const projectSessionMaximumRetryDelayMs = 1_000;
 
-const retryProjectSessionTransition = async <Result>(operation: () => Promise<Result>): Promise<Result> => {
+export type StudioResyncClient = Pick<
+  StudioApiClient,
+  "previewSnapshot" | "projectRevisions" | "projectSnapshot" | "renderQueue"
+>;
+
+export interface StudioResyncState {
+  readonly project: Readonly<Record<string, unknown>>;
+  readonly preview: PromiseSettledResult<Readonly<Record<string, unknown>>>;
+  readonly queue: PromiseSettledResult<readonly unknown[]>;
+}
+
+export const fetchStudioResyncState = async (client: StudioResyncClient): Promise<StudioResyncState> => {
+  const optionalState = Promise.allSettled([client.previewSnapshot(), client.renderQueue()]);
+  const [project, revisions] = await Promise.all([client.projectSnapshot(), client.projectRevisions()]);
+  const [preview, queue] = await optionalState;
+  return { project: { ...project, revisionNumber: revisions.length }, preview, queue };
+};
+
+export const previewResyncActionFromSettled = (
+  preview: PromiseSettledResult<Readonly<Record<string, unknown>>>,
+): PreviewResyncAction | null => {
+  if (preview.status === "fulfilled") return { type: "preview-state", payload: preview.value };
+  if (
+    preview.reason instanceof StudioApiError &&
+    preview.reason.diagnostic.code === "server.preview-not-loaded"
+  ) {
+    return { type: "preview-local", preview: initialStudioSnapshot.preview };
+  }
+  return null;
+};
+
+export const retryProjectSessionTransition = async <Result>(
+  operation: () => Promise<Result>,
+): Promise<Result> => {
   const deadline = Date.now() + projectSessionRetryWindowMs;
   let delay = 50;
   for (;;) {
