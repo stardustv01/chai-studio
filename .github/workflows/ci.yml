@@ -126,6 +126,8 @@ jobs:
         run: brew install ffmpeg
       - id: install
         run: pnpm install --frozen-lockfile
+      - name: Install isolated Playwright Chromium
+        run: pnpm exec playwright install chromium
       - id: release_build
         run: pnpm build
       - name: Build exact npm registry runtime

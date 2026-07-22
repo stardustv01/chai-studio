@@ -13,10 +13,10 @@
     "reportSha256": "0480a8d4c7e9cffbbab8bdf75a8e4d4c7b5d46dae44591f9aba7911159f3f4fc"
   },
   "licenseInventorySha256": "2f34410afd9acc75f0a9c76dd30418ed675eb5ad887c64ba6d6e1914d612629e",
-  "sourceCommit": "d6affe85afb1e25ec96ab2b8927c733c6ad4f206",
+  "sourceCommit": "357da3d7063d0603cc2b05d59565d2bed85f2f51",
   "runtimeBundle": {
     "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64",
-    "bundleIdentity": "359508d0c1807d39259aa9043c762b493b2dfcae38dc62828805b3f5a1a74e6d",
+    "bundleIdentity": "e79bfe0407884a45cf7db8df2d6522c5b59e9667b85a278ef332d85615870aa4",
     "fileCount": 15861,
     "selfContainedRuntime": true,
     "distributionScope": "personal-local-only"
@@ -1810,7 +1810,7 @@
     {
       "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64/.chai-studio-release.json",
       "bytes": 4498590,
-      "sha256": "d94943ff7f991c066739c9335a57f1653c74dcd8e88a0145c4311820fb8d8f4e"
+      "sha256": "6a221aadb4cc165984481e06ee6ad0b69b09cd13cb9d08938ed94a687400f7da"
     },
     {
       "path": "docs/INSTALLATION.md",
@@ -1834,8 +1834,8 @@
     },
     {
       "path": "docs/RELEASE_DEVELOPER_GUIDE.md",
-      "bytes": 6573,
-      "sha256": "69dd893f13889cb8d301f0f31da7f39588999f3f731ea5a092949eab0367002a"
+      "bytes": 6598,
+      "sha256": "4229d75feef169a31b68729e3e748edb5eb07bec77c145648fd8428747763745"
     },
     {
       "path": "evidence/p26/gate-report.json",
@@ -5494,8 +5494,8 @@
     },
     {
       "path": "scripts/release-bundle.mjs",
-      "bytes": 12122,
-      "sha256": "74f6d251e602e49e0e7ff458b6d8c65180114c9fbfe4034eba50847df532ddd1"
+      "bytes": 12158,
+      "sha256": "b9fb81a435c8a25b77e3ca23f81b001ce1f42d6dd90ab4d48af9d47de456fd95"
     },
     {
       "path": "scripts/release-operations.mjs",
@@ -5517,5 +5517,5 @@
     "status": "not-required-personal-local",
     "policy": "Checksums and gate identity are authoritative until public distribution or a desktop wrapper requires platform signing."
   },
-  "manifestIdentity": "a4db794f7e620c317e4d0484f9754d9907fed2c36a4c0972afa40d5e71d02ba9"
+  "manifestIdentity": "d8174eb828f30abc11f7d207585a9c6d63ec1b03ac90792df0488c2d6585de67"
 }
