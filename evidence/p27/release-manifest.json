@@ -12,11 +12,11 @@
     "identity": "a342218fcbe2b49c6126ef2e3b2e4b283a58ca5c053919c7e4055c3d337e14cc",
     "reportSha256": "0480a8d4c7e9cffbbab8bdf75a8e4d4c7b5d46dae44591f9aba7911159f3f4fc"
   },
-  "licenseInventorySha256": "477d2201a708700ab2bc1ed4072558de6a7b8a0201f6c7f2c1ba9804d089239f",
-  "sourceCommit": "35a226935ce63e40ec9e90afdbfe2b2fef9ea528",
+  "licenseInventorySha256": "b7ca7d8a4a01c12fad2628fce80597fecc35120811a2cabe9e7c52cfae77176c",
+  "sourceCommit": "40c0f3377dd948d457f178c82fb7cac6e9085888",
   "runtimeBundle": {
     "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64",
-    "bundleIdentity": "7096f075d51619806240c77061a1014d6898a07c41e344f49c1faadd3b97e6a8",
+    "bundleIdentity": "eaf767fa3529afc5d95e30ca8a54de25fdd14c0d185de1140625cc73a8b31589",
     "fileCount": 15890,
     "selfContainedRuntime": true,
     "distributionScope": "personal-local-only"
@@ -1810,7 +1810,7 @@
     {
       "path": "dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64/.chai-studio-release.json",
       "bytes": 4506861,
-      "sha256": "d14df93383cec88af52f974f8b84ffe60ec5f1dce2208089cc1f9fee685a3dff"
+      "sha256": "68f9da38ef552ce3ba6b129ade10119e134714b7c190858598e05be7d19c4c12"
     },
     {
       "path": "docs/INSTALLATION.md",
@@ -1849,8 +1849,8 @@
     },
     {
       "path": "governance/licenses/dependency-inventory.json",
-      "bytes": 109588,
-      "sha256": "477d2201a708700ab2bc1ed4072558de6a7b8a0201f6c7f2c1ba9804d089239f"
+      "bytes": 109668,
+      "sha256": "b7ca7d8a4a01c12fad2628fce80597fecc35120811a2cabe9e7c52cfae77176c"
     },
     {
       "path": "governance/licenses/release-review.json",
@@ -5512,5 +5512,5 @@
     "status": "not-required-personal-local",
     "policy": "Checksums and gate identity are authoritative until public distribution or a desktop wrapper requires platform signing."
   },
-  "manifestIdentity": "7b22a8e84a6af546b02db64a5df33180b7f6ad1bd6352dd5ed601417fcaa09ec"
+  "manifestIdentity": "cedfcb225b5c77d6d62e265cfd57d971bf2f9e098fc9b6919f31866625eb769b"
 }
