@@ -102,6 +102,11 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     rights: "owned",
     validationState: "valid",
   });
+  const uploadedFrameRate = uploadedRecord?.fps as
+    Readonly<{ numerator?: unknown; denominator?: unknown }> | undefined;
+  expect(typeof uploadedFrameRate?.numerator).toBe("string");
+  expect(typeof uploadedFrameRate?.denominator).toBe("string");
+  const uploadedRate = `${String(uploadedFrameRate?.numerator)}/${String(uploadedFrameRate?.denominator)}`;
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   const importedAssetRow = leftPanel.getByRole("button", { name: /owner-review\.png/ });
   await expect(importedAssetRow).toHaveAttribute("draggable", "true");
@@ -270,7 +275,11 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     .locator(".media-center")
     .getByRole("button", { name: /owner-review\.png/ })
     .click();
-  await sourceMonitor.getByRole("tab", { name: "Image" }).click();
+  await expect(sourceMonitor.getByRole("tab", { name: "Image" })).toHaveAttribute("aria-selected", "true");
+  await expect(sourceMonitor.locator(".source-metadata")).toContainText(String(uploadedRecord?.id));
+  await expect(sourceMonitor.locator(".source-metadata")).toContainText(uploadedRate);
+  await expect(sourceMonitor.locator(".source-mark-row code").nth(0)).toHaveText("0");
+  await expect(sourceMonitor.locator(".source-mark-row code").nth(1)).toHaveText("1");
   const decodedSourceFrame = sourceMonitor.getByTestId("source-decoded-frame");
   await expect(decodedSourceFrame).toBeVisible({ timeout: 20_000 });
   expect(
@@ -283,8 +292,11 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect(sourceMonitor).toContainText("sha256");
   await sourceMonitor.getByRole("button", { name: "Capture source frame" }).click();
   await expect(page.getByText("Source frame completed", { exact: true })).toBeVisible();
-  await sourceMonitor.getByRole("tab", { name: "Video" }).click();
+  const videoSourceTab = sourceMonitor.getByRole("tab", { name: "Video" });
+  await videoSourceTab.click();
+  await expect(videoSourceTab).toHaveAttribute("aria-selected", "true");
   await sourceMonitor.getByRole("radio", { name: "Insert" }).click();
+  await expect(videoSourceTab).toHaveAttribute("aria-selected", "true");
   const revisionBeforeSourceEdit = await page.locator(".project-identity").getAttribute("data-revision-id");
   await sourceMonitor.getByRole("button", { name: "Apply three-point edit" }).click();
   await expect
@@ -400,6 +412,7 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
 
   await page.getByRole("button", { name: "Deliver", exact: true }).click();
   const queue = page.getByLabel("Authoritative render queue");
+  const realWorkTimeout = 60_000;
   await expect(queue).not.toContainText("Sample projection");
   const receipt = page.getByLabel("QA and render receipt");
   await expect(receipt).toContainText("No preflight recorded.");
@@ -407,7 +420,9 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect(page.locator(".global-timecode")).not.toHaveText("00:00:00;00");
   await page.getByLabel("Delivery profiles").getByText("Still frame", { exact: true }).click();
   await queue.getByRole("button", { name: "Render frame" }).click();
-  await expect(queue.getByText("Rendered · QA not run", { exact: true })).toBeVisible({ timeout: 20_000 });
+  await expect(queue.getByText("Rendered · QA not run", { exact: true })).toBeVisible({
+    timeout: realWorkTimeout,
+  });
   await expect(queue.getByText(/renders\/output-.*\/frame-.*\.png/)).toBeVisible();
   await expect(receipt).toContainText("rendered unchecked");
   await expect(receipt).toContainText("exact timeline composition");
@@ -429,7 +444,7 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect(artifactDialog).toHaveCount(0);
 
   await receipt.getByRole("button", { name: "Run output QA" }).click();
-  await expect(receipt).toContainText("qa passed", { timeout: 20_000 });
+  await expect(receipt).toContainText("qa passed", { timeout: realWorkTimeout });
   await expect(receipt).toContainText("Artifact bytes and ffprobe version");
   const checklistFrames = await receipt.locator(".qa-check strong").allTextContents();
   expect(checklistFrames).toEqual([
@@ -444,11 +459,11 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await page.getByLabel("Delivery profiles").getByText("Review proxy", { exact: true }).click();
   await queue.getByRole("button", { name: "Render range" }).click();
   const videoOutput = queue.locator(".output-card.active");
-  await expect(videoOutput).toContainText("program.mp4", { timeout: 30_000 });
+  await expect(videoOutput).toContainText("program.mp4", { timeout: realWorkTimeout });
   await expect(videoOutput).toContainText("rendered unchecked");
   await expect(videoOutput).toContainText("1280×720");
   await receipt.getByRole("button", { name: "Run output QA" }).click();
-  await expect(receipt).toContainText("qa passed", { timeout: 30_000 });
+  await expect(receipt).toContainText("qa passed", { timeout: realWorkTimeout });
   const avEvidence = await authenticatedAvEvidence(page);
   expect(avEvidence.output).toMatchObject({
     profileId: "profile-review-proxy",
@@ -480,7 +495,7 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await monitor.getByRole("button", { name: "Capture exact", exact: true }).click();
   await expect(page.getByText("Exact fidelity frame completed", { exact: true })).toBeVisible({
-    timeout: 20_000,
+    timeout: realWorkTimeout,
   });
   const exactCapture = await page.evaluate(async () => {
     const session = window.__CHAI_STUDIO_SESSION__;
@@ -530,14 +545,14 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
     await expect(item).toBeEnabled();
     await item.click();
     await expect(page.getByText(captureMode.completed, { exact: true })).toBeVisible({
-      timeout: 20_000,
+      timeout: realWorkTimeout,
     });
   }
   await page.getByRole("button", { name: "Deliver", exact: true }).click();
   // The queue contains the authored still, the review proxy, and the immutable
   // still created by Capture exact. The specialized capture modes persist
   // capture evidence without publishing additional delivery outputs.
-  await expect(queue.locator(".output-card")).toHaveCount(3, { timeout: 20_000 });
+  await expect(queue.locator(".output-card")).toHaveCount(3, { timeout: realWorkTimeout });
   const compareButton = queue.locator(".output-card.active").getByRole("button", {
     name: "Compare",
     exact: true,

@@ -479,24 +479,24 @@
       "sha256": "de600bc7527427048666b93313e0521c359070f78e34a282f9b0043215eac016"
     },
     {
-      "path": "apps/studio-web/dist/assets/editing-tools-Cxn_q2Fi.js",
-      "bytes": 137264,
-      "sha256": "b9137f3907efe148980c3da851468f7128fe194f60f32648650d23feb2da0b1d"
+      "path": "apps/studio-web/dist/assets/editing-tools-BATqV8dq.js",
+      "bytes": 137940,
+      "sha256": "87231cf5101a6734f501de0acd5adb8b86050e466c378d7e1fa4169b12bff5fe"
     },
     {
-      "path": "apps/studio-web/dist/assets/editing-tools-Cxn_q2Fi.js.map",
-      "bytes": 438917,
-      "sha256": "10abfd5b011146c5d1ba9ec81e67fc557bd65bdd2addacab6bf9e148f2ffda09"
+      "path": "apps/studio-web/dist/assets/editing-tools-BATqV8dq.js.map",
+      "bytes": 442108,
+      "sha256": "71f5d4cfa4022329d69ab22a901d3baa83e4cf49041a98033d9ceefffb95939f"
     },
     {
-      "path": "apps/studio-web/dist/assets/index-BmI-mypm.js",
+      "path": "apps/studio-web/dist/assets/index-Df66QmFd.js",
       "bytes": 162784,
-      "sha256": "5934c4b701358cee027883ecd2ef71305410a7649adbb577b1686781916f3842"
+      "sha256": "522a0d5205d5f8c2c163a955ed1380ff1c3bd2f87d6e05ec964946af422665be"
     },
     {
-      "path": "apps/studio-web/dist/assets/index-BmI-mypm.js.map",
+      "path": "apps/studio-web/dist/assets/index-Df66QmFd.js.map",
       "bytes": 511921,
-      "sha256": "74df00036ee5d22be13e72f026c4ff4df094562983f20b8f6be86b57309a1e9d"
+      "sha256": "7f7449b3564e84206a94cfd1d3a9a04f84dadffcb264554a3e9e28e2b94e1e42"
     },
     {
       "path": "apps/studio-web/dist/assets/index-RP2Fn5-a.css",
@@ -1776,7 +1776,7 @@
     {
       "path": "apps/studio-web/dist/index.html",
       "bytes": 871,
-      "sha256": "8e090b2c30619425d6eb0a6d16a034c53e00522733b9c2a718964a7a7536eac7"
+      "sha256": "d18291eb5b1c3768587f05663b51da1be8df3e40b88d6ba54b85cd63f5584cf4"
     },
     {
       "path": "apps/studio-web/dist/third-party/react-mit.txt",
@@ -1796,12 +1796,12 @@
     {
       "path": "evidence/p27/release-manifest.json",
       "bytes": 199402,
-      "sha256": "97b0c3dcf6eec480caa664af62497c972beb86c68af5fda106fca64c888ca4fd"
+      "sha256": "9488ce63ee2ba07311d79ff9be97f94d07a13135b90131138685ebcec81c297c"
     },
     {
       "path": "evidence/p28-tech/gate-report.json",
-      "bytes": 62084,
-      "sha256": "15760cd4685f3374db73fc7f50dd3b96e12f94a9452dc5fc6aceb3f961432256"
+      "bytes": 62114,
+      "sha256": "75f0ed516baa501d493a5394a8c8316975bdd5a9b7bce23c3e436b69fd62a392"
     },
     {
       "path": "evidence/p28/traceability-matrix.json",
@@ -2679,14 +2679,14 @@
       "sha256": "e367f121f4c6919ff6bcd945fc00fc0e90ec24360c5007382a4f8a503443db91"
     },
     {
-      "path": "packages/cli/runtime/apps/studio-web/dist/assets/editing-tools-Cxn_q2Fi.js",
-      "bytes": 137264,
-      "sha256": "b9137f3907efe148980c3da851468f7128fe194f60f32648650d23feb2da0b1d"
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/editing-tools-BATqV8dq.js",
+      "bytes": 137940,
+      "sha256": "87231cf5101a6734f501de0acd5adb8b86050e466c378d7e1fa4169b12bff5fe"
     },
     {
-      "path": "packages/cli/runtime/apps/studio-web/dist/assets/index-BmI-mypm.js",
+      "path": "packages/cli/runtime/apps/studio-web/dist/assets/index-Df66QmFd.js",
       "bytes": 162784,
-      "sha256": "5934c4b701358cee027883ecd2ef71305410a7649adbb577b1686781916f3842"
+      "sha256": "522a0d5205d5f8c2c163a955ed1380ff1c3bd2f87d6e05ec964946af422665be"
     },
     {
       "path": "packages/cli/runtime/apps/studio-web/dist/assets/index-RP2Fn5-a.css",
@@ -3961,7 +3961,7 @@
     {
       "path": "packages/cli/runtime/apps/studio-web/dist/index.html",
       "bytes": 871,
-      "sha256": "8e090b2c30619425d6eb0a6d16a034c53e00522733b9c2a718964a7a7536eac7"
+      "sha256": "d18291eb5b1c3768587f05663b51da1be8df3e40b88d6ba54b85cd63f5584cf4"
     },
     {
       "path": "packages/cli/runtime/apps/studio-web/dist/third-party/react-mit.txt",
@@ -6896,5 +6896,5 @@
   ],
   "releaseAuthorized": false,
   "authorizationSource": "owner-signed exact-candidate receipt",
-  "manifestIdentity": "d00c3759ebc60e253e509ae4dcf92cd529e1b16231b4a347ffcd7b1c028eeb12"
+  "manifestIdentity": "3e578b8e30d8fed4a2e3559f7e82fcf036dffbaa2a944958122b3fc6723e42c1"
 }

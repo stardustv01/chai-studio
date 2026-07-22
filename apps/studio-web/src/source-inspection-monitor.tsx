@@ -54,6 +54,13 @@ interface SourceDescriptor {
   readonly audio: string;
 }
 
+interface SourceRangeSelection {
+  readonly sourceKind: SourceInspectionState["sourceKind"];
+  readonly sourceId: string;
+  readonly sourceIn: string;
+  readonly sourceOut: string;
+}
+
 const fallbackSourceDescriptors: Readonly<Record<SourceInspectionState["sourceKind"], SourceDescriptor>> = {
   video: {
     sourceId: "asset-interview-nav-0001",
@@ -103,31 +110,35 @@ export const SourceInspectionMonitor = ({
 }: SourceInspectionMonitorProps) => {
   assertFoundationSourceInspectionBoundary();
   const allowFixtureFallback = window.__CHAI_STUDIO_SESSION__ === undefined;
-  const initialKind = selectedSourceKind(assets, timeline, selectedAssetId) ?? "video";
+  const selectedKind = selectedSourceKind(assets, timeline, selectedAssetId);
+  const initialKind = selectedKind ?? "video";
+  const selectedDescriptor =
+    selectedKind === null
+      ? null
+      : sourceDescriptor(selectedKind, timeline, assets, selectedAssetId, allowFixtureFallback);
+  const initialDescriptor =
+    selectedDescriptor ??
+    sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback);
+  const selectedSourceId = selectedDescriptor?.sourceId ?? null;
+  const selectedDurationFrames = selectedDescriptor?.durationFrames ?? null;
+  const selectedFpsNumerator = selectedDescriptor?.fps.numerator ?? null;
+  const selectedFpsDenominator = selectedDescriptor?.fps.denominator ?? null;
   const [source, setSource] = useState<SourceInspectionState>(() => {
-    const initial = sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback);
     return {
       ...defaultSourceState,
       sourceKind: initialKind,
-      sourceId: initial.sourceId,
+      sourceId: initialDescriptor.sourceId,
       currentFrame: allowFixtureFallback ? defaultSourceState.currentFrame : "0",
-      durationFrames: initial.durationFrames,
-      fps: initial.fps,
+      durationFrames: initialDescriptor.durationFrames,
+      fps: initialDescriptor.fps,
     };
   });
   const [sourceKind, setSourceKind] = useState<SourceInspectionState["sourceKind"]>(initialKind);
-  const [sourceIn, setSourceIn] = useState<string | null>(
-    () =>
-      sourceRangeDefaults(
-        sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback).durationFrames,
-      ).sourceIn,
-  );
-  const [sourceOut, setSourceOut] = useState<string | null>(
-    () =>
-      sourceRangeDefaults(
-        sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback).durationFrames,
-      ).sourceOut,
-  );
+  const [sourceRange, setSourceRange] = useState<SourceRangeSelection>(() => ({
+    sourceKind: initialKind,
+    sourceId: initialDescriptor.sourceId,
+    ...sourceRangeDefaults(initialDescriptor.durationFrames),
+  }));
   const [targetTrackId, setTargetTrackId] = useState(timeline.trackIds[0] ?? "");
   const [editKind, setEditKind] = useState<"insert" | "overwrite" | "replace">("overwrite");
   const [editStatus, setEditStatus] = useState("Three points ready");
@@ -157,11 +168,46 @@ export const SourceInspectionMonitor = ({
     setSource((current) => applySourceInspectionCommand(current, command));
   };
   useEffect(() => {
-    const selectedKind = selectedSourceKind(assets, timeline, selectedAssetId);
-    if (selectedKind !== null) setSourceKind(selectedKind);
-  }, [assets, selectedAssetId, timeline]);
+    if (
+      selectedKind === null ||
+      selectedSourceId === null ||
+      selectedDurationFrames === null ||
+      selectedFpsNumerator === null ||
+      selectedFpsDenominator === null
+    ) {
+      return;
+    }
+    setSourceKind(selectedKind);
+    setSource((current) => {
+      if (
+        current.sourceKind === selectedKind &&
+        current.sourceId === selectedSourceId &&
+        current.durationFrames === selectedDurationFrames &&
+        current.fps.numerator === selectedFpsNumerator &&
+        current.fps.denominator === selectedFpsDenominator
+      ) {
+        return current;
+      }
+      return {
+        ...current,
+        sourceKind: selectedKind,
+        sourceId: selectedSourceId,
+        currentFrame: "0",
+        durationFrames: selectedDurationFrames,
+        fps: { numerator: selectedFpsNumerator, denominator: selectedFpsDenominator },
+        auditionValues: {},
+        auditionDirty: false,
+      };
+    });
+    setSourceRange({
+      sourceKind: selectedKind,
+      sourceId: selectedSourceId,
+      ...sourceRangeDefaults(selectedDurationFrames),
+    });
+  }, [selectedDurationFrames, selectedFpsDenominator, selectedFpsNumerator, selectedKind, selectedSourceId]);
   useEffect(() => {
     setSource((current) => {
+      if (current.sourceKind !== sourceKind) return current;
       if (
         current.sourceId === descriptor.sourceId &&
         current.durationFrames === descriptor.durationFrames &&
@@ -185,10 +231,16 @@ export const SourceInspectionMonitor = ({
     });
   }, [descriptor, sourceKind]);
   useEffect(() => {
-    const defaults = sourceRangeDefaults(descriptor.durationFrames);
-    setSourceIn(defaults.sourceIn);
-    setSourceOut(defaults.sourceOut);
-  }, [descriptor.durationFrames, descriptor.sourceId]);
+    setSourceRange((current) =>
+      current.sourceKind === sourceKind
+        ? {
+            sourceKind,
+            sourceId: descriptor.sourceId,
+            ...sourceRangeDefaults(descriptor.durationFrames),
+          }
+        : current,
+    );
+  }, [descriptor.durationFrames, descriptor.sourceId, sourceKind]);
   useEffect(() => {
     if (sourceKind !== "video" && sourceKind !== "image") {
       setDecodedFrame({
@@ -263,28 +315,42 @@ export const SourceInspectionMonitor = ({
     const fallback = Object.values(timeline.clips)[0];
     const template = selected ?? fallback;
     const target = timeline.tracks[targetTrackId as keyof typeof timeline.tracks];
-    if (template === undefined || target === undefined || sourceIn === null || sourceOut === null) {
+    if (template === undefined || target === undefined) {
       setEditStatus("Select a source range and target track");
       return;
     }
     try {
-      const availableEnd = masterFrame(BigInt(source.durationFrames));
+      const activeRange =
+        sourceRange.sourceKind === sourceKind && sourceRange.sourceId === descriptor.sourceId
+          ? sourceRange
+          : {
+              sourceKind,
+              sourceId: descriptor.sourceId,
+              ...sourceRangeDefaults(descriptor.durationFrames),
+            };
+      const currentFrame =
+        source.sourceKind === sourceKind && source.sourceId === descriptor.sourceId
+          ? source.currentFrame
+          : "0";
+      const availableEnd = masterFrame(BigInt(descriptor.durationFrames));
       const sourceTemplate: ClipSnapshot = {
         ...template,
         id: stableEntityId(`clip-source-${crypto.randomUUID()}`),
         trackId: target.id,
-        assetId: stableEntityId(source.sourceId),
+        assetId: stableEntityId(descriptor.sourceId),
         nestedSequenceId: null,
         engine:
-          source.sourceKind === "hyperframes"
-            ? "hyperframes"
-            : source.sourceKind === "remotion"
-              ? "remotion"
-              : "shared",
-        name: `Source · ${source.sourceKind}`,
-        range: createFrameRange(masterFrame(0n), masterFrame(BigInt(sourceOut) - BigInt(sourceIn))),
-        sourceRange: createFrameRange(masterFrame(BigInt(sourceIn)), masterFrame(BigInt(sourceOut))),
-        sourceRate: normalizeRational(BigInt(source.fps.numerator), BigInt(source.fps.denominator)),
+          sourceKind === "hyperframes" ? "hyperframes" : sourceKind === "remotion" ? "remotion" : "shared",
+        name: `Source · ${sourceKind}`,
+        range: createFrameRange(
+          masterFrame(0n),
+          masterFrame(BigInt(activeRange.sourceOut) - BigInt(activeRange.sourceIn)),
+        ),
+        sourceRange: createFrameRange(
+          masterFrame(BigInt(activeRange.sourceIn)),
+          masterFrame(BigInt(activeRange.sourceOut)),
+        ),
+        sourceRate: normalizeRational(BigInt(descriptor.fps.numerator), BigInt(descriptor.fps.denominator)),
         speed: normalizeRational(1n, 1n),
         availableSourceRange: createFrameRange(masterFrame(0n), availableEnd),
         transitionInId: null,
@@ -301,17 +367,17 @@ export const SourceInspectionMonitor = ({
           replaceClipId: editKind === "replace" ? (selected?.id ?? null) : null,
           timelineRate: timeline.fps,
           marks: {
-            sourceIn: masterFrame(BigInt(sourceIn)),
-            sourceOut: masterFrame(BigInt(sourceOut)),
+            sourceIn: masterFrame(BigInt(activeRange.sourceIn)),
+            sourceOut: masterFrame(BigInt(activeRange.sourceOut)),
             timelineIn: masterFrame(BigInt(timelineFrame)),
             timelineOut: null,
           },
         },
-        masterFrame(BigInt(source.currentFrame)),
+        masterFrame(BigInt(currentFrame)),
       );
       onTimelineCommand(built.command);
       setEditStatus(
-        `${capitalize(editKind)} submitted to ${target.name} at frame ${timelineFrame} · source ${sourceIn}–${sourceOut} · derived ${built.resolved.derivedPoint.replace("-", " ")} · awaiting saved revision`,
+        `${capitalize(editKind)} submitted to ${target.name} at frame ${timelineFrame} · source ${activeRange.sourceIn}–${activeRange.sourceOut} · derived ${built.resolved.derivedPoint.replace("-", " ")} · awaiting saved revision`,
       );
     } catch (error) {
       setEditStatus(error instanceof Error ? error.message : "Source edit failed validation");
@@ -336,8 +402,11 @@ export const SourceInspectionMonitor = ({
                 const next = sourceDescriptor(kind, timeline, assets, selectedAssetId, allowFixtureFallback);
                 const marks = sourceRangeDefaults(next.durationFrames);
                 setSourceKind(kind);
-                setSourceIn(marks.sourceIn);
-                setSourceOut(marks.sourceOut);
+                setSourceRange({
+                  sourceKind: kind,
+                  sourceId: next.sourceId,
+                  ...marks,
+                });
                 setSource((current) => ({
                   ...current,
                   sourceId: next.sourceId,
@@ -438,21 +507,24 @@ export const SourceInspectionMonitor = ({
               <Button
                 variant="ghost"
                 onClick={() => {
-                  setSourceIn(source.currentFrame);
+                  setSourceRange((current) => ({ ...current, sourceIn: source.currentFrame }));
                 }}
               >
                 <ChaiIcon name="mark-in" size={14} /> Mark I
               </Button>
-              <code>{sourceIn ?? "—"}</code>
+              <code>{sourceRange.sourceIn}</code>
               <Button
                 variant="ghost"
                 onClick={() => {
-                  setSourceOut(String(BigInt(source.currentFrame) + 1n));
+                  setSourceRange((current) => ({
+                    ...current,
+                    sourceOut: String(BigInt(source.currentFrame) + 1n),
+                  }));
                 }}
               >
                 <ChaiIcon name="mark-out" size={14} /> Mark O
               </Button>
-              <code>{sourceOut ?? "—"}</code>
+              <code>{sourceRange.sourceOut}</code>
             </div>
             <label className="source-patch-field">
               <span>Target track</span>
