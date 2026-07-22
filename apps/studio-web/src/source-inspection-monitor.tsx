@@ -112,13 +112,17 @@ export const SourceInspectionMonitor = ({
   const allowFixtureFallback = window.__CHAI_STUDIO_SESSION__ === undefined;
   const selectedKind = selectedSourceKind(assets, timeline, selectedAssetId);
   const initialKind = selectedKind ?? "video";
-  const initialDescriptor = sourceDescriptor(
-    initialKind,
-    timeline,
-    assets,
-    selectedAssetId,
-    allowFixtureFallback,
-  );
+  const selectedDescriptor =
+    selectedKind === null
+      ? null
+      : sourceDescriptor(selectedKind, timeline, assets, selectedAssetId, allowFixtureFallback);
+  const initialDescriptor =
+    selectedDescriptor ??
+    sourceDescriptor(initialKind, timeline, assets, selectedAssetId, allowFixtureFallback);
+  const selectedSourceId = selectedDescriptor?.sourceId ?? null;
+  const selectedDurationFrames = selectedDescriptor?.durationFrames ?? null;
+  const selectedFpsNumerator = selectedDescriptor?.fps.numerator ?? null;
+  const selectedFpsDenominator = selectedDescriptor?.fps.denominator ?? null;
   const [source, setSource] = useState<SourceInspectionState>(() => {
     return {
       ...defaultSourceState,
@@ -164,8 +168,43 @@ export const SourceInspectionMonitor = ({
     setSource((current) => applySourceInspectionCommand(current, command));
   };
   useEffect(() => {
-    if (selectedKind !== null) setSourceKind(selectedKind);
-  }, [selectedKind]);
+    if (
+      selectedKind === null ||
+      selectedSourceId === null ||
+      selectedDurationFrames === null ||
+      selectedFpsNumerator === null ||
+      selectedFpsDenominator === null
+    ) {
+      return;
+    }
+    setSourceKind(selectedKind);
+    setSource((current) => {
+      if (
+        current.sourceKind === selectedKind &&
+        current.sourceId === selectedSourceId &&
+        current.durationFrames === selectedDurationFrames &&
+        current.fps.numerator === selectedFpsNumerator &&
+        current.fps.denominator === selectedFpsDenominator
+      ) {
+        return current;
+      }
+      return {
+        ...current,
+        sourceKind: selectedKind,
+        sourceId: selectedSourceId,
+        currentFrame: "0",
+        durationFrames: selectedDurationFrames,
+        fps: { numerator: selectedFpsNumerator, denominator: selectedFpsDenominator },
+        auditionValues: {},
+        auditionDirty: false,
+      };
+    });
+    setSourceRange({
+      sourceKind: selectedKind,
+      sourceId: selectedSourceId,
+      ...sourceRangeDefaults(selectedDurationFrames),
+    });
+  }, [selectedDurationFrames, selectedFpsDenominator, selectedFpsNumerator, selectedKind, selectedSourceId]);
   useEffect(() => {
     setSource((current) => {
       if (current.sourceKind !== sourceKind) return current;
