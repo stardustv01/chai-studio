@@ -21,6 +21,7 @@ minimumReleaseAgeExclude:
   - hyperframes@0.7.58
 
 overrides:
+  "@hono/node-server@<2.0.11": 2.0.11
   "adm-zip@<0.6.0": 0.6.0
   "fast-uri@<3.1.4": 3.1.4
   sharp: 0.35.3

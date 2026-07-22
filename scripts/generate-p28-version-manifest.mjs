@@ -39,6 +39,15 @@ const exactFiles = [
   ".node-version",
   "packages/diagnostics/src/release.ts",
   "packages/diagnostics/src/release-identity.json",
+  "packages/cli/package.json",
+  "packages/cli/README.md",
+  "packages/cli/LICENSE",
+  "packages/cli/NOTICE",
+  "packages/cli/THIRD_PARTY_NOTICES.md",
+  "packages/cli/bin/chai-studio.mjs",
+  "packages/cli/keys/trusted-release-keys.json",
+  "packages/cli/lib/installer.d.mts",
+  "packages/cli/lib/installer.mjs",
   "governance/V1_OWNER_APPROVAL.json",
   "governance/execution-baseline.json",
   "governance/licenses/dependency-inventory.json",
@@ -53,6 +62,7 @@ const exactFiles = [
 const trees = [
   "apps/studio-server/dist",
   "apps/studio-web/dist",
+  "packages/cli/runtime",
   ...[
     "audio",
     "bridge",

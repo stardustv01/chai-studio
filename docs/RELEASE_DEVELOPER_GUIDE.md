@@ -23,7 +23,7 @@ The archive receipt is technical evidence only and keeps `releaseAuthorized: fal
 
 The protected tag/workflow-dispatch job is fail-closed. It rebuilds and verifies the self-contained runtime from the P27 manifest's frozen source commit, checks the frozen planning and contract identities without rewriting them, runs a fresh macOS isolation probe in read-only mode, validates the exact dependency inventory and P27 manifest, and then invokes both P28 technical and final-contract validators. A later evidence/authority commit may reference that frozen source only when every intervening tracked change is under generated evidence or one of the two exact human-authority record paths; any application, dependency, script, documentation, or policy change rejects the historical source identity. The final validator requires an already bound final-gate identity; CI never creates approval, review, signature, or authorization records.
 
-The job also requires a Git tag ref exactly equal to `v${package.version}` and checks the P28 version manifest after the production build. Release identity comes from the tracked typed diagnostics identity JSON, not source-text matching. Dependency inventory identity and bytes plus public-distribution-review identity and bytes are bound through the final manifest, preapproval receipt, signed receipt, final validator, and CLI publication index. P28 gate-report identities are recomputed from their full pass state and check outcomes; a failed, mutated, empty, or merely relabeled report is rejected.
+The job also requires a Git tag ref exactly equal to `v${package.version}` and checks the P28 version manifest after the production build. Release identity comes from the tracked typed diagnostics identity JSON, not source-text matching. Dependency inventory identity and bytes plus public-distribution-review identity and bytes are bound through the final manifest, preapproval receipt, signed receipt, and final validator. The final manifest also hashes the complete generated registry runtime and every publishable CLI source file. P28 gate-report identities are recomputed from their full pass state and check outcomes; a failed, mutated, empty, or merely relabeled report is rejected.
 
 `validate-task-graph.mjs` and `validate-contract-index.mjs` are read-only by default (`--check` is accepted for explicit CI intent). Only an approved evidence refresh may pass `--write`; running either validator normally never repairs or conceals drift.
 
@@ -41,10 +41,14 @@ node scripts/validate-p28-final-contract.mjs --require-final-gate
 `p28:sign` creates `~/.config/chai-studio/release-signing-ed25519.pem` with mode `0600` only after every pre-signing check passes. Never commit, upload, or paste this private key. Back it up in encrypted owner-controlled storage. Its public key is written to `evidence/p28/version-1-release-public-key.pem` and may be committed.
 
 The registry CLI is configured with `private: false` and public npm access. Its prepack step bundles
-only Chai workspace server code, copies the compiled browser payload, and leaves Node-side
-third-party libraries as exact npm dependencies. This configuration permits publication but does not
+Chai workspace server code, copies the compiled browser payload, and vendors the reviewed
+HyperFrames 0.7.58 CLI/runtime subset. Other Node-side third-party libraries remain exact npm
+dependencies. This configuration permits publication but does not
 perform or authorize it. Validate the complete tarball, included licenses, runtime marker, and
-absence of `node_modules` with `pnpm cli:package:check`.
+absence of `node_modules` with `pnpm cli:package:check`. Before generating or checking the P28
+version manifest, run `pnpm run cli:runtime:build`; the protected tag workflow does this explicitly so
+the signed manifest binds the exact runtime bytes. Publish one inspected `.tgz` produced from that
+candidate rather than rebuilding during `npm publish`.
 
 The signed HTTPS archive index is a legacy personal-install mechanism. Its generator now refuses the
 current `personal-local-only` bundle and can accept only a separately reviewed

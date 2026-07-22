@@ -53,7 +53,7 @@ const checks = [
   ],
   [
     "P27.04",
-    "packages/diagnostics/src/release.ts",
+    "packages/diagnostics/src/release-identity.json",
     ["1.0.0-rc.4", "4.0.489", "0.7.58", "playwright-managed:chromium-1228", "localhost-web-server"],
   ],
   [

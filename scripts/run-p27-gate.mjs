@@ -62,6 +62,7 @@ await runAcceptanceGate({
     "packages/diagnostics/package.json",
     "packages/diagnostics/src/index.ts",
     "packages/diagnostics/src/release.ts",
+    "packages/diagnostics/src/release-identity.json",
     "apps/studio-web/src/App.tsx",
     "apps/studio-web/vite.config.ts",
     "fixtures/release/support-matrix.json",

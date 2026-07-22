@@ -52,10 +52,8 @@
   ],
   "ffmpeg": {
     "source": "external PATH tool; not bundled by current application",
-    "available": true,
-    "executable": "/opt/homebrew/bin/ffmpeg",
-    "versionLine": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
-    "configurationLine": "configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/7.1.1_3 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon",
+    "bundledByCurrentApplication": false,
+    "inventoryPolicy": "Host PATH, version, and codec configuration are runtime observations and are not hashed into this deterministic source inventory.",
     "distributionObligation": "P25 must review the exact binary configuration, linked libraries, enabled codecs, and notices before bundling or distribution."
   },
   "browser": [
@@ -430,9 +428,9 @@
     },
     {
       "name": "@hono/node-server",
-      "version": "1.19.14",
+      "version": "2.0.11",
       "license": "MIT",
-      "source": "https://github.com/honojs/node-server.git",
+      "source": "git+https://github.com/honojs/node-server.git",
       "notice": null,
       "distributionClass": "installed-development-tree"
     },
@@ -3592,5 +3590,5 @@
     "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents.",
     "Preserve the React MIT and Noto OFL license texts inside every compiled browser payload."
   ],
-  "identityHash": "bc56d76dde55304552b81b3663c2abe9f9dd66dca14ec2ef1edd7cddf6c63dd0"
+  "identityHash": "2951263f659c73f624544ba3ec63681252d1aced40fd71db4d8a734bbf25c899"
 }

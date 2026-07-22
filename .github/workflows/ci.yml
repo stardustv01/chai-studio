@@ -128,6 +128,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - id: release_build
         run: pnpm build
+      - name: Build exact npm registry runtime
+        run: pnpm run cli:runtime:build
       - run: pnpm release:tag:check
       - run: pnpm release:bundle -- --source-manifest evidence/p27/release-manifest.json
       - run: pnpm release:bundle:verify

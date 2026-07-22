@@ -22,6 +22,7 @@ const exactFiles = [
   "governance/licenses/release-review.json",
   "evidence/p26/gate-report.json",
   "scripts/browser-isolation.mjs",
+  "scripts/browser-path-policy.mjs",
   "scripts/chai-studio.mjs",
   "scripts/release-bundle.mjs",
   "scripts/release-operations.mjs",
