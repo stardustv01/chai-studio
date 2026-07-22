@@ -283,8 +283,11 @@ test("authenticated Studio resolves the recorded editor, capture, persistence, a
   await expect(sourceMonitor).toContainText("sha256");
   await sourceMonitor.getByRole("button", { name: "Capture source frame" }).click();
   await expect(page.getByText("Source frame completed", { exact: true })).toBeVisible();
-  await sourceMonitor.getByRole("tab", { name: "Video" }).click();
+  const videoSourceTab = sourceMonitor.getByRole("tab", { name: "Video" });
+  await videoSourceTab.click();
+  await expect(videoSourceTab).toHaveAttribute("aria-selected", "true");
   await sourceMonitor.getByRole("radio", { name: "Insert" }).click();
+  await expect(videoSourceTab).toHaveAttribute("aria-selected", "true");
   const revisionBeforeSourceEdit = await page.locator(".project-identity").getAttribute("data-revision-id");
   await sourceMonitor.getByRole("button", { name: "Apply three-point edit" }).click();
   await expect
