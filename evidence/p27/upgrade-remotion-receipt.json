@@ -22,7 +22,7 @@
       "name": "adapter-contract",
       "passed": true,
       "exitCode": 0,
-      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/unit/remotion-discovery-validation.test.ts (4 tests) 9ms\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  23:32:42\n   Duration  463ms (transform 140ms, setup 0ms, import 395ms, tests 9ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/reports/junit/vitest-unit-remotion-discovery-validation.xml\n",
+      "stdout": "\n RUN  v4.1.10 /Users/praveengupta/Desktop/studio2/chai-studio\n\n ✓ tests/unit/remotion-discovery-validation.test.ts (4 tests) 9ms\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  00:20:26\n   Duration  475ms (transform 150ms, setup 0ms, import 406ms, tests 9ms, environment 0ms)\n\nJUNIT report written to /Users/praveengupta/Desktop/studio2/chai-studio/reports/junit/vitest-unit-remotion-discovery-validation.xml\n",
       "stderr": ""
     },
     {
