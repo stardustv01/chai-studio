@@ -5,8 +5,8 @@
   "candidate": "1.0.0-rc.4",
   "distribution": "public",
   "sourceGateIdentity": "27fab6167694dfda2508726d14aa0682ea11335bd090efe7ecf872bd9e8f3259",
-  "releaseManifestIdentity": "3baee58a8a7d39b6e2b4b17c5925246aa19ba298d1413c04333a51d754a568e7",
-  "finalManifestIdentity": "b8a406018ca9cbc27cb43906eb263deaf8b86c68b42173cc2347f91519be4d01",
+  "releaseManifestIdentity": "a4db794f7e620c317e4d0484f9754d9907fed2c36a4c0972afa40d5e71d02ba9",
+  "finalManifestIdentity": "dc3f9178b72a4a8702396bb3507f66bd6bbf3d79517d09aeffc8309e3dfc23cf",
   "traceabilityIdentity": "a5c7ac2cb927867bcbd746828036a56ad145924e4d38c2b522e3d0a331126ad4",
   "technicalGateIdentity": "28bb80e077185c572e2ba7bf434b9d94721c37e8da8175749bb79a87b1595b6c",
   "technicalGatePassed": true,
@@ -34,11 +34,11 @@
   "finalGateIdentity": "007ca4bfe1c43e6bc312a4b08ec72594eac798942f62f8a00643aed4767f67a4",
   "signature": {
     "algorithm": "Ed25519",
-    "value": "paQLsm8bYrAYo7T+rdEet1YrmxeNHUaRRRpTeFy+uts0I6KuCWfgFesfIeFWMdzNdAdmQje7gCt2nIENYKZyCw==",
+    "value": "j+4n+l4UOwXE75PygBqnI8U2lu3hAX1ksW38oh3N4MSX5AnolDGHZye+91pjOiGgsLf+T+hAOY8gxJCWMba/AQ==",
     "publicKeySha256": "bb104fb0556b4039f54ec671ceae41d8b50f3a3040cefab2c291e49340a91f67",
     "publicKeyFile": "evidence/p28/version-1-release-public-key.pem"
   },
   "releaseAuthorized": true,
   "releaseTagAuthorized": true,
-  "candidateIdentity": "6dfad53305c6605217afc42305a6eb462211bf2d58b3e8b1349b10893608c30c"
+  "candidateIdentity": "dd124a9378d213d35251f865f8bcfa590ecde0f53babd08ae267f362e18d21e4"
 }
