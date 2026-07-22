@@ -122,10 +122,9 @@ export const createReleaseBundle = async ({
     await pruneCompiledDevelopmentFiles(path.join(staging, "apps/studio-server"));
     await pruneCompiledDevelopmentFiles(path.join(staging, "apps/studio-web/dist"));
     await writeBundleLauncher(staging);
-    await assertNoHostPaths(
-      staging,
-      [root, staging, process.env.HOME].filter((value) => typeof value === "string" && value !== ""),
-    );
+    await assertNoHostPaths(staging, [root, staging], {
+      textOnlyPaths: [process.env.HOME].filter((value) => typeof value === "string" && value !== ""),
+    });
     await assertEmbeddedHyperframesCliStarts(staging);
     const dependencyLockSha256 = await sha256File(path.join(staging, "pnpm-lock.yaml"));
     const licenseInventorySha256 = await sha256File(
@@ -318,15 +317,24 @@ const assertEmbeddedHyperframesCliStarts = async (bundleRoot) => {
   }
 };
 
-export const assertNoHostPaths = async (root, forbiddenPaths) => {
+export const assertNoHostPaths = async (root, forbiddenPaths, { textOnlyPaths = [] } = {}) => {
   const normalized = [...new Set(forbiddenPaths.map((value) => path.resolve(value)))];
+  const normalizedTextOnly = [
+    ...new Set(
+      textOnlyPaths.map((value) => path.resolve(value)).filter((value) => !normalized.includes(value)),
+    ),
+  ];
   const visit = async (directory) => {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
       const absolute = path.join(directory, entry.name);
       if (entry.isDirectory()) await visit(absolute);
       else if (entry.isFile()) {
         const bytes = await readFile(absolute);
-        const leaked = normalized.find((value) => bytes.includes(Buffer.from(value)));
+        // Exact checkout and staging paths remain forbidden in every file. Broader paths such as
+        // HOME are checked only in text: native dependencies can contain an upstream builder's
+        // home in non-runtime metadata (for example, Sharp's `/Users/runner` debug strings).
+        const checkedPaths = bytes.includes(0) ? normalized : [...normalized, ...normalizedTextOnly];
+        const leaked = checkedPaths.find((value) => bytes.includes(Buffer.from(value)));
         if (leaked !== undefined) {
           throw new Error(
             `Release bundle contains a host path in ${path.relative(root, absolute)}: ${leaked}`,
