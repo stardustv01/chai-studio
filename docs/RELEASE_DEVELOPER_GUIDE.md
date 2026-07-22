@@ -12,7 +12,7 @@ Build the end-user runtime only from a committed candidate:
 
 ```sh
 CI=true corepack pnpm install --frozen-lockfile
-corepack pnpm build
+corepack pnpm release:build
 corepack pnpm release:bundle
 corepack pnpm release:archive -- dist/releases/chai-studio-1.0.0-rc.4-darwin-arm64
 ```

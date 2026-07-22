@@ -20,6 +20,7 @@ await requireFile(path.join(root, "apps/studio-web/dist/index.html"));
 await rm(runtimeRoot, { recursive: true, force: true });
 await mkdir(path.join(runtimeRoot, "apps/studio-server/dist"), { recursive: true });
 const bundle = await build({
+  absWorkingDir: root,
   entryPoints: [path.join(root, "apps/studio-server/dist/index.js")],
   outfile: path.join(runtimeRoot, "apps/studio-server/dist/index.js"),
   bundle: true,

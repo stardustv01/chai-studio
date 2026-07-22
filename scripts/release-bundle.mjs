@@ -42,6 +42,10 @@ const runtimeDocuments = [
   "governance/licenses/dependency-inventory.json",
   "governance/licenses/release-review.json",
 ];
+const requiredReleaseBundleEntries = [
+  { path: "vendor/hyperframes/cli.js", kind: "file" },
+  { path: "vendor/hyperframes/node_modules", kind: "symlink" },
+];
 
 export const createReleaseBundle = async ({
   sourceRoot,
@@ -78,6 +82,7 @@ export const createReleaseBundle = async ({
   if (await exists(output)) throw new Error("Release bundle destination already exists.");
   await requireFile(path.join(root, "apps/studio-server/dist/index.js"));
   await requireFile(path.join(root, "apps/studio-web/dist/index.html"));
+  await requireFile(path.join(root, "packages/cli/runtime/vendor/hyperframes/cli.js"));
 
   await mkdir(path.dirname(output), { recursive: true });
   const staging = await mkdtemp(path.join(path.dirname(output), ".chai-studio-bundle-"));
@@ -98,8 +103,15 @@ export const createReleaseBundle = async ({
       ],
       { cwd: root, env: { ...process.env, CI: "true" }, maxBuffer: 16 * 1024 * 1024 },
     );
-    await repairDeploySelfLink(path.join(staging, "apps", "studio-server"));
+    const deployedServer = path.join(staging, "apps", "studio-server");
+    await sanitizeDeployedNodeModules(deployedServer);
+    await repairDeploySelfLink(deployedServer);
     await copyTree(path.join(root, "apps/studio-web/dist"), path.join(staging, "apps/studio-web/dist"));
+    await copyTree(
+      path.join(root, "packages/cli/runtime/vendor/hyperframes"),
+      path.join(staging, "vendor/hyperframes"),
+    );
+    await linkDeployedHyperframesDependencies(staging, deployedServer);
     for (const script of runtimeScripts) {
       await copyFileAt(root, staging, `scripts/${script}`);
     }
@@ -110,6 +122,11 @@ export const createReleaseBundle = async ({
     await pruneCompiledDevelopmentFiles(path.join(staging, "apps/studio-server"));
     await pruneCompiledDevelopmentFiles(path.join(staging, "apps/studio-web/dist"));
     await writeBundleLauncher(staging);
+    await assertNoHostPaths(
+      staging,
+      [root, staging, process.env.HOME].filter((value) => typeof value === "string" && value !== ""),
+    );
+    await assertEmbeddedHyperframesCliStarts(staging);
     const dependencyLockSha256 = await sha256File(path.join(staging, "pnpm-lock.yaml"));
     const licenseInventorySha256 = await sha256File(
       path.join(staging, "governance/licenses/dependency-inventory.json"),
@@ -170,10 +187,16 @@ export const validateReleaseBundle = async (root) => {
   const payload = { ...marker, entries };
   delete payload.bundleIdentity;
   const actualIdentity = sha256(Buffer.from(canonicalJson(payload)));
+  const requiredFilesPresent = requiredReleaseBundleEntries.every((required) =>
+    entries.some((entry) => entry.kind === required.kind && entry.path === required.path),
+  );
   const passed =
-    actualIdentity === marker.bundleIdentity && canonicalJson(entries) === canonicalJson(marker.entries);
+    requiredFilesPresent &&
+    actualIdentity === marker.bundleIdentity &&
+    canonicalJson(entries) === canonicalJson(marker.entries);
   return {
     passed,
+    requiredFilesPresent,
     expectedIdentity: marker.bundleIdentity,
     actualIdentity,
     marker,
@@ -242,6 +265,79 @@ const repairDeploySelfLink = async (applicationRoot) => {
   await symlink(path.relative(path.dirname(link), applicationRoot), link);
 };
 
+export const sanitizeDeployedNodeModules = async (applicationRoot) => {
+  const nodeModules = path.join(applicationRoot, "node_modules");
+  if (!(await exists(nodeModules))) return;
+  for (const metadata of [".modules.yaml", ".package-map.json", ".pnpm/lock.yaml"]) {
+    await rm(path.join(nodeModules, metadata), { force: true });
+  }
+  const visit = async (directory) => {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const absolute = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === ".bin") await rm(absolute, { recursive: true, force: true });
+        else await visit(absolute);
+      } else if (entry.isFile() && entry.name === ".tsbuildinfo") {
+        await rm(absolute);
+      }
+    }
+  };
+  await visit(nodeModules);
+};
+
+const linkDeployedHyperframesDependencies = async (bundleRoot, applicationRoot) => {
+  const pnpmRoot = path.join(applicationRoot, "node_modules/.pnpm");
+  const candidates = [];
+  for (const entry of await readdir(pnpmRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory() || !entry.name.startsWith("hyperframes@")) continue;
+    const packageRoot = path.join(pnpmRoot, entry.name, "node_modules/hyperframes");
+    if (!(await exists(path.join(packageRoot, "package.json")))) continue;
+    const manifest = await readJson(path.join(packageRoot, "package.json"));
+    if (manifest.version === "0.7.58") candidates.push(path.dirname(packageRoot));
+  }
+  if (candidates.length !== 1) {
+    throw new Error(
+      `Release bundle requires exactly one HyperFrames 0.7.58 runtime, found ${candidates.length}.`,
+    );
+  }
+  const link = path.join(bundleRoot, "vendor/hyperframes/node_modules");
+  await rm(link, { recursive: true, force: true });
+  await symlink(path.relative(path.dirname(link), candidates[0]), link, "dir");
+};
+
+const assertEmbeddedHyperframesCliStarts = async (bundleRoot) => {
+  const executable = path.join(bundleRoot, "vendor/hyperframes/cli.js");
+  const { stdout } = await execFileAsync(process.execPath, [executable, "--help"], {
+    cwd: bundleRoot,
+    env: { ...process.env, NO_COLOR: "1" },
+    timeout: 15_000,
+    maxBuffer: 2 * 1024 * 1024,
+  });
+  if (!stdout.includes("hyperframes v0.7.58")) {
+    throw new Error("The embedded HyperFrames CLI did not report the reviewed runtime identity.");
+  }
+};
+
+export const assertNoHostPaths = async (root, forbiddenPaths) => {
+  const normalized = [...new Set(forbiddenPaths.map((value) => path.resolve(value)))];
+  const visit = async (directory) => {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const absolute = path.join(directory, entry.name);
+      if (entry.isDirectory()) await visit(absolute);
+      else if (entry.isFile()) {
+        const bytes = await readFile(absolute);
+        const leaked = normalized.find((value) => bytes.includes(Buffer.from(value)));
+        if (leaked !== undefined) {
+          throw new Error(
+            `Release bundle contains a host path in ${path.relative(root, absolute)}: ${leaked}`,
+          );
+        }
+      }
+    }
+  };
+  await visit(path.resolve(root));
+};
+
 const pruneCompiledDevelopmentFiles = async (root) => {
   if (!(await exists(root))) return;
   const visit = async (directory) => {
@@ -278,7 +374,7 @@ const copyTree = async (source, destination) => {
 
 const git = async (root, arguments_) => {
   const { stdout } = await execFileAsync("git", arguments_, { cwd: root });
-  return stdout.trim();
+  return stdout.trimEnd();
 };
 
 const assertEvidenceOnlyCommitRange = async (root, sourceCommit, headCommit) => {
