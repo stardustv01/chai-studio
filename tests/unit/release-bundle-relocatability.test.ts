@@ -16,6 +16,11 @@ afterEach(async () =>
 );
 
 describe("release bundle relocatability", () => {
+  it("does not embed the CI home example inside the bundled scanner itself", async () => {
+    const source = await readFile(new URL("../../scripts/release-bundle.mjs", import.meta.url), "utf8");
+    expect(source).not.toContain("/Users/runner");
+  });
+
   it("removes pnpm host metadata and generated shims without pruning runtime packages", async () => {
     const root = await temporaryRoot();
     const application = path.join(root, "studio-server");
