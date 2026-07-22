@@ -24,17 +24,22 @@ test("approved production icons load without policy or accessibility regressions
       `${workspace} should expose the production icon language`,
     ).toBeGreaterThan(5);
     await expect(page.locator('img.chai-icon[data-icon-policy="micro-unsupported"]')).toHaveCount(0);
-    const failures = await visibleIcons.evaluateAll((icons) =>
-      icons.flatMap((icon) => {
-        if (!(icon instanceof HTMLImageElement)) return ["non-image icon node"];
-        return icon.complete && icon.naturalWidth === 96 && icon.naturalHeight === 96
-          ? []
-          : [
-              `${icon.dataset.chaiIcon ?? "unknown"}:${String(icon.naturalWidth)}x${String(icon.naturalHeight)}`,
-            ];
-      }),
-    );
-    expect(failures).toEqual([]);
+    await expect
+      .poll(
+        () =>
+          visibleIcons.evaluateAll((icons) =>
+            icons.flatMap((icon) => {
+              if (!(icon instanceof HTMLImageElement)) return ["non-image icon node"];
+              return icon.complete && icon.naturalWidth === 96 && icon.naturalHeight === 96
+                ? []
+                : [
+                    `${icon.dataset.chaiIcon ?? "unknown"}:${String(icon.naturalWidth)}x${String(icon.naturalHeight)}`,
+                  ];
+            }),
+          ),
+        { message: `${workspace} production icons should finish loading` },
+      )
+      .toEqual([]);
   }
 
   const iconOnlyButtonsWithoutNames = await page.locator("button:visible").evaluateAll((buttons) =>
