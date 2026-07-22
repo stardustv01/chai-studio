@@ -4,6 +4,7 @@
   "generatedAtPolicy": "deterministic-no-timestamp",
   "scope": {
     "baseline": "personal-use macOS local application",
+    "sourceDistribution": "apache-2.0-open-source",
     "publicDistribution": "blocked-pending-release-review",
     "commercialization": "blocked-pending-release-review"
   },
@@ -75,12 +76,74 @@
       "licenseReview": "Chromium notices and bundled-codec configuration must be captured by P25 packaging."
     }
   ],
+  "browserPayload": {
+    "bundledLibraries": [
+      {
+        "names": ["react", "react-dom", "scheduler"],
+        "versions": ["19.1.0", "19.1.0", "0.26.0"],
+        "license": "MIT",
+        "copyright": "Copyright (c) Meta Platforms, Inc. and affiliates.",
+        "licenseText": "apps/studio-web/public/third-party/react-mit.txt"
+      }
+    ]
+  },
   "fonts": {
-    "bundledApplicationFonts": [],
+    "bundledApplicationFonts": [
+      {
+        "family": "Noto Sans Devanagari",
+        "weight": "Regular",
+        "path": "apps/studio-web/public/fonts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "da2d2135e978c6f68852cfd8201c3a067df1acf73232fe80c58f89e6302ee6e8",
+        "copyright": "Copyright 2022 The Noto Project Authors",
+        "license": "OFL-1.1",
+        "licenseText": "apps/studio-web/public/fonts/OFL.txt",
+        "source": "https://github.com/notofonts/devanagari"
+      },
+      {
+        "family": "Noto Sans Devanagari",
+        "weight": "Medium",
+        "path": "apps/studio-web/public/fonts/NotoSansDevanagari-Medium.ttf",
+        "sha256": "721a423a73902876e297382f0c9be30ce8c8fb523ca4a08886ed5a0ec257f5c1",
+        "copyright": "Copyright 2022 The Noto Project Authors",
+        "license": "OFL-1.1",
+        "licenseText": "apps/studio-web/public/fonts/OFL.txt",
+        "source": "https://github.com/notofonts/devanagari"
+      },
+      {
+        "family": "Noto Sans Devanagari",
+        "weight": "SemiBold",
+        "path": "apps/studio-web/public/fonts/NotoSansDevanagari-SemiBold.ttf",
+        "sha256": "3d80db0e3a61f3f94c9ac6aa2533015cc55049b5603eb5f34a7d8adea5172b88",
+        "copyright": "Copyright 2022 The Noto Project Authors",
+        "license": "OFL-1.1",
+        "licenseText": "apps/studio-web/public/fonts/OFL.txt",
+        "source": "https://github.com/notofonts/devanagari"
+      }
+    ],
     "rule": "Project fonts remain user assets with hash/rights evidence; any P25 bundled font requires a new inventory row."
   },
   "assets": {
-    "bundledApplicationMedia": [],
+    "bundledApplicationMedia": [
+      {
+        "id": "chai-app-icon",
+        "path": "apps/studio-web/public/brand/chai/v1/chai-app-icon.svg",
+        "sha256": "55c7cdded269b3acb17ef8ec2a861e78707aa2196c7c6c44f8b308e622d10747",
+        "license": "Apache-2.0",
+        "rightsHolder": "Navin",
+        "distributionClass": "chai-owned-application-artwork"
+      },
+      {
+        "id": "chai-ui-icon-system-v2",
+        "manifestPath": "apps/studio-web/public/icons/chai/manifest.json",
+        "manifestSha256": "2c6b5ff75bae1d75d7900dc0e7f018ec755b07333a7e6692d444b44c600a0e75",
+        "sourceManifestSha256": "4835d5956dea1b7a3e4d1dee59a2bcfbefa1cd9e675ce9246489eb65e2776ed0",
+        "baseIconCount": 123,
+        "distributedVariantCount": 246,
+        "license": "Apache-2.0",
+        "rightsHolder": "Navin",
+        "distributionClass": "chai-owned-application-artwork"
+      }
+    ],
     "rule": "Golden fixtures and test media are not application distribution assets; shipped assets require source, hash, license, notice, and restrictions."
   },
   "reviewedLicenseClassifications": [
@@ -111,119 +174,119 @@
     {
       "name": "@chai-studio/audio",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/audio",
       "private": true
     },
     {
       "name": "@chai-studio/bridge",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/bridge",
       "private": true
     },
     {
       "name": "@chai-studio/captions",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/captions",
       "private": true
     },
     {
       "name": "@chai-studio/cli",
-      "version": "0.1.0",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "version": "1.0.0-rc.4",
+      "license": "Apache-2.0",
       "source": "packages/cli",
-      "private": true
+      "private": false
     },
     {
       "name": "@chai-studio/diagnostics",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/diagnostics",
       "private": true
     },
     {
       "name": "@chai-studio/engine-adapters",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/engine-adapters",
       "private": true
     },
     {
       "name": "@chai-studio/media",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/media",
       "private": true
     },
     {
       "name": "@chai-studio/preview",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/preview",
       "private": true
     },
     {
       "name": "@chai-studio/qa",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/qa",
       "private": true
     },
     {
       "name": "@chai-studio/render",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/render",
       "private": true
     },
     {
       "name": "@chai-studio/review",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/review",
       "private": true
     },
     {
       "name": "@chai-studio/schema",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/schema",
       "private": true
     },
     {
       "name": "@chai-studio/security",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/security",
       "private": true
     },
     {
       "name": "@chai-studio/studio-server",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "apps/studio-server",
       "private": true
     },
     {
       "name": "@chai-studio/studio-web",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "apps/studio-web",
       "private": true
     },
     {
       "name": "@chai-studio/timeline",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/timeline",
       "private": true
     },
     {
       "name": "@chai-studio/ui-components",
       "version": "1.0.0-rc.4",
-      "license": "UNPUBLISHED-PERSONAL-BASELINE",
+      "license": "Apache-2.0",
       "source": "packages/ui-components",
       "private": true
     }
@@ -415,7 +478,7 @@
     },
     {
       "name": "@img/sharp-darwin-arm64",
-      "version": "0.34.5",
+      "version": "0.35.3",
       "license": "Apache-2.0",
       "source": "git+https://github.com/lovell/sharp.git",
       "notice": null,
@@ -423,7 +486,7 @@
     },
     {
       "name": "@img/sharp-libvips-darwin-arm64",
-      "version": "1.2.4",
+      "version": "1.3.2",
       "license": "LGPL-3.0-or-later",
       "source": "git+https://github.com/lovell/sharp-libvips.git",
       "notice": null,
@@ -1883,7 +1946,7 @@
     },
     {
       "name": "fast-uri",
-      "version": "3.1.3",
+      "version": "3.1.4",
       "license": "BSD-3-Clause",
       "source": "git+https://github.com/fastify/fast-uri.git",
       "notice": null,
@@ -2987,9 +3050,9 @@
     },
     {
       "name": "sharp",
-      "version": "0.34.5",
+      "version": "0.35.3",
       "license": "Apache-2.0",
-      "source": "git://github.com/lovell/sharp.git",
+      "source": "git+https://github.com/lovell/sharp.git",
       "notice": null,
       "distributionClass": "installed-development-tree"
     },
@@ -3518,7 +3581,8 @@
     "Preserve every required license and notice for packaged code.",
     "Re-review current Remotion terms before public distribution, commercialization, team growth, automation-scale change, or engine upgrade.",
     "Review the exact FFmpeg binary and codec configuration before bundling.",
-    "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents."
+    "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents.",
+    "Preserve the React MIT and Noto OFL license texts inside every compiled browser payload."
   ],
-  "identityHash": "2e03803a3be61b67561fdd7081b763b760a72fffdeeedcffddeeefa9c42f8b00"
+  "identityHash": "bc56d76dde55304552b81b3663c2abe9f9dd66dca14ec2ef1edd7cddf6c63dd0"
 }

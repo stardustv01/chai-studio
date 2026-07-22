@@ -1,8 +1,21 @@
 {
   "name": "@chai-studio/cli",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0-rc.4",
+  "private": false,
+  "license": "Apache-2.0",
   "description": "Verified installer and launcher for Chai Studio",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stardustv01/chai-studio.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/stardustv01/chai-studio#readme",
+  "bugs": {
+    "url": "https://github.com/stardustv01/chai-studio/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "bin": {
     "chai-studio": "./bin/chai-studio.mjs"
@@ -11,10 +24,28 @@
     "bin",
     "keys",
     "lib",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md",
+    "runtime"
   ],
+  "scripts": {
+    "prepack": "node ../../scripts/build-cli-runtime.mjs"
+  },
   "engines": {
     "node": ">=22.17.0"
   },
-  "license": "UNLICENSED"
+  "dependencies": {
+    "@playwright/test": "1.61.1",
+    "@remotion/bundler": "4.0.489",
+    "@remotion/player": "4.0.489",
+    "@remotion/renderer": "4.0.489",
+    "ajv": "8.20.0",
+    "hyperframes": "0.7.58",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.489",
+    "sharp": "0.35.3"
+  }
 }

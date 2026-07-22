@@ -3,6 +3,7 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { format } from "prettier";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const target = path.join(root, "governance", "licenses", "dependency-inventory.json");
@@ -13,6 +14,46 @@ const remotionCompositorClassification = JSON.parse(
     "utf8",
   ),
 );
+const webPublicRoot = path.join(root, "apps", "studio-web", "public");
+const bundledFonts = await Promise.all(
+  ["Regular", "Medium", "SemiBold"].map(async (weight) => {
+    const relativePath = `apps/studio-web/public/fonts/NotoSansDevanagari-${weight}.ttf`;
+    return {
+      family: "Noto Sans Devanagari",
+      weight,
+      path: relativePath,
+      sha256: await sha256File(path.join(root, relativePath)),
+      copyright: "Copyright 2022 The Noto Project Authors",
+      license: "OFL-1.1",
+      licenseText: "apps/studio-web/public/fonts/OFL.txt",
+      source: "https://github.com/notofonts/devanagari",
+    };
+  }),
+);
+const chaiIconManifest = JSON.parse(
+  await readFile(path.join(webPublicRoot, "icons", "chai", "manifest.json"), "utf8"),
+);
+const bundledApplicationMedia = [
+  {
+    id: "chai-app-icon",
+    path: "apps/studio-web/public/brand/chai/v1/chai-app-icon.svg",
+    sha256: await sha256File(path.join(webPublicRoot, "brand", "chai", "v1", "chai-app-icon.svg")),
+    license: "Apache-2.0",
+    rightsHolder: "Navin",
+    distributionClass: "chai-owned-application-artwork",
+  },
+  {
+    id: "chai-ui-icon-system-v2",
+    manifestPath: "apps/studio-web/public/icons/chai/manifest.json",
+    manifestSha256: await sha256File(path.join(webPublicRoot, "icons", "chai", "manifest.json")),
+    sourceManifestSha256: chaiIconManifest.sourceManifestSha256,
+    baseIconCount: chaiIconManifest.total,
+    distributedVariantCount: Object.values(chaiIconManifest.variants).flat().length,
+    license: "Apache-2.0",
+    rightsHolder: "Navin",
+    distributionClass: "chai-owned-application-artwork",
+  },
+];
 
 const installed = await installedPackages();
 const workspaces = await workspacePackages();
@@ -50,6 +91,7 @@ const inventoryWithoutIdentity = {
   generatedAtPolicy: "deterministic-no-timestamp",
   scope: {
     baseline: "personal-use macOS local application",
+    sourceDistribution: "apache-2.0-open-source",
     publicDistribution: "blocked-pending-release-review",
     commercialization: "blocked-pending-release-review",
   },
@@ -68,12 +110,23 @@ const inventoryWithoutIdentity = {
       "P25 must review the exact binary configuration, linked libraries, enabled codecs, and notices before bundling or distribution.",
   },
   browser,
+  browserPayload: {
+    bundledLibraries: [
+      {
+        names: ["react", "react-dom", "scheduler"],
+        versions: ["19.1.0", "19.1.0", "0.26.0"],
+        license: "MIT",
+        copyright: "Copyright (c) Meta Platforms, Inc. and affiliates.",
+        licenseText: "apps/studio-web/public/third-party/react-mit.txt",
+      },
+    ],
+  },
   fonts: {
-    bundledApplicationFonts: [],
+    bundledApplicationFonts: bundledFonts,
     rule: "Project fonts remain user assets with hash/rights evidence; any P25 bundled font requires a new inventory row.",
   },
   assets: {
-    bundledApplicationMedia: [],
+    bundledApplicationMedia,
     rule: "Golden fixtures and test media are not application distribution assets; shipped assets require source, hash, license, notice, and restrictions.",
   },
   reviewedLicenseClassifications: [remotionCompositorClassification],
@@ -84,13 +137,14 @@ const inventoryWithoutIdentity = {
     "Re-review current Remotion terms before public distribution, commercialization, team growth, automation-scale change, or engine upgrade.",
     "Review the exact FFmpeg binary and codec configuration before bundling.",
     "Generate a packaging-time SBOM because this installed development tree is not proof of final bundle contents.",
+    "Preserve the React MIT and Noto OFL license texts inside every compiled browser payload.",
   ],
 };
 const inventory = {
   ...inventoryWithoutIdentity,
   identityHash: sha256(canonical(inventoryWithoutIdentity)),
 };
-const serialized = `${JSON.stringify(inventory, null, 2)}\n`;
+const serialized = await format(JSON.stringify(inventory), { parser: "json" });
 if (mode === "write") {
   await writeFile(target, serialized);
 } else {
@@ -194,7 +248,7 @@ async function workspacePackages() {
       packages.push({
         name: manifest.name,
         version: manifest.version,
-        license: "UNPUBLISHED-PERSONAL-BASELINE",
+        license: normalizeLicense(manifest.license),
         source: `${owner}/${entry.name}`,
         private: manifest.private === true,
       });
@@ -234,4 +288,8 @@ function canonical(value) {
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+async function sha256File(file) {
+  return sha256(await readFile(file));
 }

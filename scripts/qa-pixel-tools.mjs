@@ -10,9 +10,30 @@ const loadSharp = async () => {
   if (sharpPromise !== undefined) return sharpPromise;
   sharpPromise = (async () => {
     const pnpmRoot = path.join(root, "node_modules", ".pnpm");
-    const directory = (await readdir(pnpmRoot)).find((name) => name.startsWith("sharp@"));
+    const serverManifest = JSON.parse(
+      await readFile(path.join(root, "apps", "studio-server", "package.json"), "utf8"),
+    );
+    const version = serverManifest.dependencies?.sharp;
+    if (typeof version !== "string") {
+      throw new Error("The Studio server does not declare a Sharp runtime for pixel QA.");
+    }
+    const directory = (await readdir(pnpmRoot)).find(
+      (name) => name === `sharp@${version}` || name.startsWith(`sharp@${version}_`),
+    );
     if (directory === undefined) throw new Error("The frozen workspace has no Sharp runtime for pixel QA.");
-    const modulePath = path.join(pnpmRoot, directory, "node_modules", "sharp", "lib", "index.js");
+    const packageRoot = path.join(pnpmRoot, directory, "node_modules", "sharp");
+    const manifest = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8"));
+    const importExport = manifest.exports?.["."]?.import;
+    const runtimeEntry =
+      typeof importExport === "string"
+        ? importExport
+        : typeof importExport?.default === "string"
+          ? importExport.default
+          : manifest.main;
+    if (typeof runtimeEntry !== "string") {
+      throw new Error("The installed Sharp package does not expose an importable runtime entry.");
+    }
+    const modulePath = path.join(packageRoot, runtimeEntry);
     return (await import(pathToFileURL(modulePath).href)).default;
   })();
   return sharpPromise;

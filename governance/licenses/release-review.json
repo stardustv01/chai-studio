@@ -3,7 +3,8 @@
   "baseline": {
     "scope": "personal-use macOS local-only",
     "decision": "allowed-personal-local-only",
-    "publishing": "unsupported"
+    "sourcePublishing": "allowed-apache-2.0",
+    "prebuiltRuntimePublishing": "unsupported-pending-review"
   },
   "unknownLicenseDecision": "blocked-pending-review",
   "publicDistributionApprovalRecord": "governance/licenses/public-distribution-review.json",

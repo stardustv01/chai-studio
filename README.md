@@ -2,6 +2,17 @@
 
 macOS-first local professional video studio operated through Codex.
 
+## License
+
+Chai Studio source owned by its contributors is open source under the
+[Apache License 2.0](LICENSE). Third-party components retain their original licenses; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the generated dependency inventory.
+
+The public repository excludes installed dependencies, package-manager stores, managed browsers,
+FFmpeg binaries, and generated runtime bundles. During npm packaging, the registry-facing CLI builds
+the compiled Chai-owned server and browser payload. Node-side third-party runtime packages are exact
+npm dependencies, while system FFmpeg/FFprobe are checked by `chai-studio doctor`.
+
 ## Current implementation state
 
 The full editor, authenticated launcher, compositor, render/QA lifecycle, professional editing,
@@ -23,8 +34,9 @@ pnpm release:bundle
 pnpm dev
 ```
 
-The release bundle contains its own compiled application and production dependencies. Its launcher
-does not depend on this development checkout. See [docs/INSTALLATION.md](docs/INSTALLATION.md) and
+The currently qualified personal-use release bundle contains its own compiled application and
+production dependencies. It is not the public registry package payload. See
+[docs/INSTALLATION.md](docs/INSTALLATION.md) and
 [docs/RELEASE_DEVELOPER_GUIDE.md](docs/RELEASE_DEVELOPER_GUIDE.md).
 
 The planning authority remains in the parent directory:

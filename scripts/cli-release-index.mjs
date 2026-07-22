@@ -49,13 +49,18 @@ export const buildCliReleaseIndex = ({
     archiveReceipt?.schemaVersion !== "1.0.0" ||
     archiveReceipt?.product !== "Chai Studio" ||
     archiveReceipt?.releaseAuthorized !== false ||
+    archiveReceipt?.distributionScope !== "public-prebuilt-runtime" ||
+    archiveReceipt?.deliveryModel !== "self-contained-archive" ||
     archiveReceipt?.version !== p27Manifest?.version ||
     archiveReceipt?.sourceCommit !== p27Manifest?.sourceCommit ||
     archiveReceipt?.bundleIdentity !== p27Manifest?.runtimeBundle?.bundleIdentity ||
+    archiveReceipt?.distributionScope !== p27Manifest?.runtimeBundle?.distributionScope ||
     archiveReceipt?.sha256 === undefined ||
     archiveReceipt?.bytes === undefined
   ) {
-    throw new Error("Archive receipt does not match the P27 immutable runtime bundle.");
+    throw new Error(
+      "Archive receipt is not an explicitly reviewed public prebuilt runtime matching the P27 bundle.",
+    );
   }
   if (
     !/^[a-f0-9]{40}$/u.test(archiveReceipt.sourceCommit) ||

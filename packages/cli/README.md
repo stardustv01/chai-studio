@@ -1,12 +1,14 @@
 # Chai Studio CLI
 
-This package is the small, registry-facing installer for Chai Studio. It does not contain the
-application runtime. It resolves an authorized release record, verifies its Ed25519 signature,
-downloads the matching immutable archive, verifies the archive SHA-256 and byte count, and then
-delegates installation to the archive's integrity-checking installer.
+This Apache-2.0 package is the registry-facing installer and launcher for Chai Studio. It contains
+the compiled Chai-owned server and browser payload so `npx` can launch the editor without cloning the
+repository. Node-side third-party runtime libraries are exact npm dependencies; FFmpeg remains a
+system tool, and Playwright downloads its managed Chromium only after an explicit install command.
 
-The package is intentionally private until public-distribution licensing, a trusted production
-release key, owner approval, and registry provenance are complete.
+The package is configured for public npm access. Publication is still a separate release action and
+must use an exact validated candidate with owner approval and provenance. Third-party packages must
+be obtained from their original registries under their own terms. FFmpeg/FFprobe must be provided by
+the user's system and are checked by `chai-studio doctor`.
 
 Planned public usage:
 
@@ -19,5 +21,6 @@ npx @chai-studio/cli@latest launch
 Users who prefer a persistent global command may install the same package with
 `npm install --global @chai-studio/cli` and then use `chai-studio` directly.
 
-Development builds must provide `--release-index` and `--public-key`. File URLs and unsigned
-release records are never accepted by the executable.
+The signed archive installer remains only as a legacy personal-development fallback when the packaged
+registry runtime is absent. It does not authorize publishing the current personal self-contained
+archive. File URLs and unsigned release records are never accepted by that fallback.

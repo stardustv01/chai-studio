@@ -33,6 +33,8 @@ const receipt = {
   version: validation.marker.version,
   sourceCommit: validation.marker.sourceCommit,
   bundleIdentity: validation.actualIdentity,
+  distributionScope: validation.marker.distributionScope,
+  deliveryModel: "self-contained-archive",
   archive: path.basename(archive),
   bytes: (await stat(archive)).size,
   sha256: archiveSha256,

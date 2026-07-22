@@ -7,7 +7,7 @@ import { renderOfflineAudioMix, type OfflineAudioMixArtifact } from "@chai-studi
 import { authorizeAssetPath, sha256File, type ApprovedExternalAssetRoot } from "@chai-studio/media";
 import type { AssetRecord, AudioGraphDocument, TimelineClip, TimelineDocument } from "@chai-studio/schema";
 import type { DeliveryProfile, RenderScope } from "@chai-studio/render";
-import sharp from "sharp";
+import sharp, { type Blend, type OverlayOptions } from "sharp";
 import {
   renderNativeCompositionLayer,
   type NativeCompositionInspection,
@@ -334,7 +334,7 @@ const compositeFrame = async (input: {
   readonly propertyMode: "evaluated" | "defaults";
   readonly outputPath: string;
 }): Promise<void> => {
-  const composites: sharp.OverlayOptions[] = [];
+  const composites: OverlayOptions[] = [];
   for (const layer of input.prepared) {
     if (input.masterFrame < layer.timelineStart || input.masterFrame >= layer.timelineEnd) continue;
     const sourcePath =
@@ -976,8 +976,8 @@ const audioCodecArguments = (codec: string | null): readonly string[] => {
   throw new Error(`Unsupported delivery audio codec: ${codec ?? "none"}.`);
 };
 
-const blendMode = (value: string): sharp.Blend => {
-  const aliases: Readonly<Record<string, sharp.Blend>> = {
+const blendMode = (value: string): Blend => {
+  const aliases: Readonly<Record<string, Blend>> = {
     normal: "over",
     add: "add",
     multiply: "multiply",
